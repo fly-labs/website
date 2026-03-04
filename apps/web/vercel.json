@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm install --prefix ../..",
+  "installCommand": "npm install --prefix ../.. --omit=optional && npm install --prefix ../.. @rollup/rollup-linux-x64-gnu",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
