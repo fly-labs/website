@@ -6,7 +6,8 @@
     "dev": "npm run dev --prefix apps/web",
     "build": "npm run build --prefix apps/web",
     "preview": "npm run start --prefix apps/web",
-    "lint": "npm run lint --prefix apps/web"
+    "lint": "npm run lint --prefix apps/web",
+    "deploy": "git add -A && git commit -m \"Update site\" && git push origin main"
   },
   "workspaces": [
     "apps/*"
