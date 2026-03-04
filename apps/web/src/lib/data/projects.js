@@ -1,0 +1,57 @@
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb } from 'lucide-react';
+
+export const categories = ['All', 'Templates', 'Prompts', 'Micro Tools', 'Community'];
+
+export const projects = [
+  {
+    title: 'Garmin to Notion',
+    description: 'Never manually log a workout again. Your Garmin data flows into Notion every day: steps, sleep, heart rate, workouts.',
+    icon: LayoutTemplate,
+    link: '/templates/garmin-to-notion',
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/10',
+    status: 'Live',
+    category: 'Templates',
+  },
+  {
+    title: 'Prompt Library',
+    description: 'Stop staring at a blank prompt. Copy-paste AI prompts for shipping code faster, writing better, and thinking clearer.',
+    icon: Sparkles,
+    link: '/prompts',
+    color: 'text-primary',
+    bgColor: 'bg-primary/10',
+    status: 'Live',
+    category: 'Prompts',
+    isGated: true,
+  },
+  {
+    title: 'Micro Tools',
+    description: 'Small apps that do one thing really well. No bloat, no features you don\'t need. The first batch is cooking now.',
+    icon: Code,
+    link: '/microsaas',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-500/10',
+    status: 'Beta',
+    category: 'Micro Tools',
+  },
+  {
+    title: 'The Newsletter',
+    description: 'Money, career, and building products. Written in English and Portuguese for builders who refuse to stay still.',
+    icon: Mail,
+    link: '/newsletter',
+    color: 'text-purple-500',
+    bgColor: 'bg-purple-500/10',
+    status: 'Live',
+    category: 'Community',
+  },
+  {
+    title: 'Got an idea?',
+    description: 'Shape what gets built next. Vote on requests, suggest tools, get lifetime access when they ship.',
+    icon: Lightbulb,
+    link: '/ideas',
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-500/10',
+    status: 'Open',
+    category: 'Community',
+  },
+];

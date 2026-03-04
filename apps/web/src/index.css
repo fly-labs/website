@@ -1,0 +1,126 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Vibrant Green, adjusted for AA contrast on white */
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Vibrant Cyan, adjusted for AA contrast on white */
+    --secondary: 186 100% 30%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    /* Magenta, adjusted for AA contrast on white */
+    --accent: 292 84% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142 76% 36%;
+    --radius: 0.75rem;
+
+    --glow-primary: 0, 180, 60;
+    --glow-secondary: 0, 180, 180;
+    --glow-accent: 180, 0, 180;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Bright Vibrant Green */
+    --primary: 120 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    /* Bright Vibrant Cyan */
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+
+    /* Bright Vibrant Magenta */
+    --accent: 300 100% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 120 100% 50%;
+
+    --glow-primary: 0, 255, 0;
+    --glow-secondary: 0, 255, 255;
+    --glow-accent: 255, 0, 255;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
+    font-family: 'Nunito', 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .btn-playful {
+    @apply relative inline-flex items-center justify-center font-bold rounded-xl transition-all duration-150 active:translate-y-1 active:border-b-0 border-2 border-transparent;
+  }
+  .btn-playful-primary {
+    @apply bg-primary text-primary-foreground border-b-4 border-primary/50 hover:bg-primary/90;
+    &:hover {
+      box-shadow: 0 0 15px rgba(var(--glow-primary), 0.5);
+    }
+  }
+  .btn-playful-secondary {
+    @apply bg-secondary text-secondary-foreground border-b-4 border-secondary/50 hover:bg-secondary/90;
+    &:hover {
+      box-shadow: 0 0 15px rgba(var(--glow-secondary), 0.5);
+    }
+  }
+  .btn-playful-accent {
+    @apply bg-accent text-accent-foreground border-b-4 border-accent/50 hover:bg-accent/90;
+    &:hover {
+      box-shadow: 0 0 15px rgba(var(--glow-accent), 0.5);
+    }
+  }
+  .btn-playful-outline {
+    @apply bg-transparent text-foreground border-2 border-b-4 border-border hover:bg-muted;
+  }
+  .card-playful {
+    @apply bg-card border-2 border-border rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/50;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

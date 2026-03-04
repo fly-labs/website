@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /templates
+Disallow: /profile
+Disallow: /login
+Disallow: /signup
+Sitemap: https://flylabs.fun/sitemap.xml
