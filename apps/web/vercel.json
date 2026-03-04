@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm install --prefix ../.. --ignore-scripts && npm rebuild --prefix ../..",
+  "installCommand": "npm install --prefix ../..",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "headers": [
     {
