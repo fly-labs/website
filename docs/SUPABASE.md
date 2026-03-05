@@ -45,3 +45,7 @@ Or apply manually in the [Supabase SQL Editor](https://supabase.com/dashboard/pr
 2. Run migrations in order (or use `supabase db push`)
 3. Enable Email and Google auth in Authentication > Providers
 4. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to `.env`
+
+## Existing Projects
+
+If you already have tables, run the migrations anyway. They use `CREATE TABLE IF NOT EXISTS` and `CREATE OR REPLACE FUNCTION`, so existing tables are preserved. The new `get_waitlist_count` RPC is required for the Micro Tools waitlist count to display.
