@@ -62,6 +62,7 @@ const SignupPage = () => {
       seo={{
         title: "Join Fly Labs | Free Account",
         description: "Create a free account to access the Prompt Library, Notion templates, and micro tools.",
+        url: "https://flylabs.fun/signup",
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"
     >

@@ -91,6 +91,7 @@ const LoginPage = () => {
       seo={{
         title: "Log In | Fly Labs",
         description: "Log in to access your Fly Labs tools and templates.",
+        url: "https://flylabs.fun/login",
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"
     >

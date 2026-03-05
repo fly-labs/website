@@ -120,6 +120,7 @@ const ProfilePage = () => {
       seo={{
         title: 'Profile | Fly Labs',
         description: 'Manage your Fly Labs profile.',
+        url: 'https://flylabs.fun/profile',
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"
     >

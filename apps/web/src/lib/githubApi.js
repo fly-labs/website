@@ -66,7 +66,7 @@ export async function fetchContributions() {
   }
 
   try {
-    const res = await fetch(API_URL);
+    const res = await fetch(API_URL, { signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
 

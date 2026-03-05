@@ -14,7 +14,7 @@ const NewsletterPage = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://falacomigo.substack.com/feed');
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://falacomigo.substack.com/feed', { signal: AbortSignal.timeout(10000) });
         const data = await res.json();
         if (data.status === 'ok') {
           setArticles(data.items);
