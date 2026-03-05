@@ -87,6 +87,19 @@ const PromptsPage = () => {
         setUserVotes(myVotes);
       }
 
+      // Fetch total vote counts for all prompts
+      const { data: allVoteData, error: voteCountError } = await supabase
+        .from('prompt_votes')
+        .select('prompt_id');
+
+      if (!voteCountError && allVoteData) {
+        const counts = {};
+        for (const v of allVoteData) {
+          counts[v.prompt_id] = (counts[v.prompt_id] || 0) + 1;
+        }
+        setVoteCounts(counts);
+      }
+
       // Fetch comments
       const { data: commentData, error: commentsError } = await supabase
         .from('prompt_comments')
