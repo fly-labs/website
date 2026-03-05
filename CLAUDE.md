@@ -63,7 +63,7 @@ apps/web/
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
 │   │   ├── githubApi.js      # GitHub contribution API
-│   │   └── utils.js          # cn() helper (clsx + tailwind-merge), timeAgo()
+│   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx
 │       ├── ExplorePage.jsx
@@ -105,12 +105,10 @@ apps/web/
 | `/templates/garmin-to-notion` | GarminToNotionPage | Protected |
 | `/profile` | ProfilePage | Protected |
 
-## Supabase Tables
-- **profiles** - User profiles (synced with auth)
-- **ideas** - Community idea submissions with voting
-- **prompt_votes** - Upvotes on prompts (RPC: toggle_prompt_vote)
-- **prompt_comments** - Comments on prompts
-- **waitlist** - Email waitlist capture (source: 'micro-tools')
+## Supabase
+- **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
+- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist
+- **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_waitlist_count(p_source)`
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
@@ -145,7 +143,8 @@ apps/web/
 - **No em dashes:** Never use the em dash character in text or documentation. Use periods, colons, or hyphens instead
 - **Mobile-first responsive:** Use Tailwind breakpoint prefixes (`sm:`, `md:`, `lg:`) to progressively enhance. Touch targets must be at least 44px (use `p-3` on icon-only buttons). Hover-only interactions (tooltips, opacity reveals) must have a touch fallback (e.g., `onClick` toggle or always-visible on mobile with `opacity-60 sm:opacity-0 sm:group-hover:opacity-100`). Fixed left padding/margins (e.g., `pl-[52px]`) should collapse on mobile (`pl-0 sm:pl-[52px]`). Test at 375px (iPhone SE) in DevTools
 - **No layout-shifting transitions on tappable elements:** Never use `transition-all`, `hover:-translate-y-*`, or `hover:scale-*` on Links, buttons, or anchors. These shift touch targets on mobile tap, making elements untappable. Use `transition-colors` (or scoped like `transition-[color,background-color,border-color,box-shadow]`). `group-hover:scale-*` on child icons inside a tappable parent is fine. Framer Motion `layout` prop must not be used on card grid containers or individual card wrappers (causes persistent CSS transforms)
-- **Security headers:** CSP, COOP, HSTS, and Permissions-Policy configured in `vercel.json`. External domains must be allowlisted in `connect-src` or `img-src` as needed
+- **Security headers:** CSP, COOP, HSTS, and Permissions-Policy in `vercel.json`. CSP uses `https://*.supabase.co` (no hardcoded project URL). GA4 requires `unsafe-inline` for script-src
+- **Validation:** Use `isValidEmail()` from `@/lib/utils.js` for email fields (waitlist, ideas)
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.

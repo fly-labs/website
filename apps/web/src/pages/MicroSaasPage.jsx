@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import supabase from '@/lib/supabaseClient.js';
+import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 const MicroSaasPage = () => {
@@ -27,13 +28,9 @@ const MicroSaasPage = () => {
 
   useEffect(() => {
     const fetchCount = async () => {
-      const { count, error } = await supabase
-        .from('waitlist')
-        .select('*', { count: 'exact', head: true })
-        .eq('source', 'micro-tools');
-
-      if (!error && count !== null) {
-        setWaitlistCount(count);
+      const { data, error } = await supabase.rpc('get_waitlist_count', { p_source: 'micro-tools' });
+      if (!error && typeof data === 'number') {
+        setWaitlistCount(data);
       }
     };
     fetchCount();
@@ -43,6 +40,10 @@ const MicroSaasPage = () => {
     e.preventDefault();
     const trimmed = email.trim().toLowerCase();
     if (!trimmed) return;
+    if (!isValidEmail(trimmed)) {
+      toast({ title: "Invalid email", description: "Please enter a valid email address.", variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
 

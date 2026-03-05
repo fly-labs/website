@@ -95,7 +95,7 @@ apps/web/
 │   │   ├── data/             # Static data (projects, prompts, ideas)
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers
-│   │   └── utils.js          # cn(), timeAgo()
+│   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/                # Route pages
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js
@@ -119,38 +119,19 @@ apps/web/
 
 ## Supabase Setup
 
-You need the following tables in your Supabase project. Enable Row Level Security on all tables.
+Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `supabase db push` or manually in the [Supabase SQL Editor](https://supabase.com/dashboard/project/_/sql). See [docs/SUPABASE.md](docs/SUPABASE.md) for details.
 
 ### Tables
 
-**profiles** - User profiles (synced with Supabase Auth)
+**profiles** - User profiles (synced with Supabase Auth, auto-created on signup)
 
-**ideas** - Community idea submissions
+**ideas** - Community idea submissions (public read when approved, anyone can insert)
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | Primary key, auto-generated |
-| created_at | timestamptz | Auto-generated |
-| name | text | Optional |
-| email | text | Required |
-| idea_title | text | Required |
-| idea_description | text | Required |
-| category | text | Default: 'Tool' |
-
-**prompt_votes** - Upvotes on prompts (uses RPC: `toggle_prompt_vote`)
+**prompt_votes** - Upvotes on prompts (RPC: `toggle_prompt_vote`)
 
 **prompt_comments** - Comments on prompts
 
-**waitlist** - Email waitlist capture
-
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid | Primary key, auto-generated |
-| email | text | Required |
-| source | text | Default: 'micro-tools' |
-| created_at | timestamptz | Auto-generated |
-
-Unique constraint on `(email, source)`. RLS policy: anyone can INSERT, only admins can SELECT.
+**waitlist** - Email capture (anyone can insert; use RPC `get_waitlist_count` for counts)
 
 ### Auth
 

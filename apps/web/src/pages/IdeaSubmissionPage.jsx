@@ -10,7 +10,7 @@ import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
 import { categories, statusConfig, sortOptions } from '@/lib/data/ideas.js';
-import { timeAgo } from '@/lib/utils.js';
+import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 const IdeaSubmissionPage = () => {
@@ -123,6 +123,10 @@ const IdeaSubmissionPage = () => {
       });
       return;
     }
+    if (!isValidEmail(formData.email.trim())) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
 
     const VALID_CATEGORIES = categories.map(c => c.value);
     if (!VALID_CATEGORIES.includes(formData.category)) {
@@ -146,7 +150,7 @@ const IdeaSubmissionPage = () => {
     try {
       const sanitized = {
         name: formData.name.trim(),
-        email: formData.email.trim(),
+        email: formData.email.trim().toLowerCase(),
         idea_title: formData.idea_title.trim(),
         idea_description: formData.idea_description.trim(),
         category: formData.category,

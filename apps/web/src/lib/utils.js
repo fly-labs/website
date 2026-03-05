@@ -5,6 +5,14 @@ export function cn(...inputs) {
 	return twMerge(clsx(inputs));
 }
 
+/** RFC 5322 simplified: local@domain.tld, max 254 chars */
+export function isValidEmail(email) {
+	if (!email || typeof email !== 'string') return false;
+	const trimmed = email.trim();
+	if (trimmed.length > 254) return false;
+	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
 export function timeAgo(dateStr) {
 	const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
 	if (seconds < 60) return 'just now';
