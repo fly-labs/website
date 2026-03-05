@@ -73,8 +73,9 @@ apps/web/
 │       ├── LoginPage.jsx
 │       ├── SignupPage.jsx
 │       ├── PromptsPage.jsx        # Hybrid: 5 public / full library for members
-│       ├── NotionTemplatesPage.jsx # Protected
+│       ├── TemplatesPage.jsx        # Protected
 │       ├── GarminToNotionPage.jsx  # Protected
+│       ├── WebsiteBlueprintPage.jsx # Public
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ProfilePage.jsx         # Protected
 │       └── NotFoundPage.jsx
@@ -101,8 +102,9 @@ apps/web/
 | `/signup` | SignupPage | Public |
 | `/prompts` | PromptsPage | Hybrid (5 public, full library for members) |
 | `/microsaas` | MicroSaasPage | Public (waitlist capture) |
-| `/templates` | NotionTemplatesPage | Protected |
+| `/templates` | TemplatesPage | Protected |
 | `/templates/garmin-to-notion` | GarminToNotionPage | Protected |
+| `/templates/website-blueprint` | WebsiteBlueprintPage | Public |
 | `/profile` | ProfilePage | Protected |
 
 ## Supabase
@@ -161,7 +163,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `waitlist_joined` | MicroSaasPage | `source` |
 | `newsletter_click` | NewsletterPage, AboutPage | `location` |
 | `article_click` | NewsletterPage | `article_title`, `location` |
-| `outbound_click` | Footer, AboutPage, GarminToNotionPage | `link_url`, `link_label`, `location` |
+| `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage | `link_url`, `link_label`, `location` |
 | `cta_click` | HomePage, PromptsPage | `cta`, `location` |
 | `project_click` | ExplorePage | `project`, `category` |
 | `profile_updated` | ProfilePage | `fields_filled` |

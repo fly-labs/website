@@ -11,7 +11,8 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 - **Idea Submissions** - Public form where anyone can submit tool ideas with community voting
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
-- **Notion Templates** - Downloadable templates for members
+- **Templates** - Systems, tools, and blueprints built for real use
+- **Website Blueprint** - Full stack breakdown of how this site was built (open source)
 - **Member Profiles** - Auth-gated profiles with account management
 
 ## Tech Stack
@@ -114,7 +115,8 @@ apps/web/
 | `/about` | About | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
-| `/templates` | Notion Templates | Members only |
+| `/templates` | Templates | Members only |
+| `/templates/website-blueprint` | Website Blueprint | Public |
 | `/profile` | User Profile | Members only |
 
 ## Supabase Setup
