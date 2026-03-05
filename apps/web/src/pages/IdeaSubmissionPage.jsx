@@ -297,7 +297,7 @@ const IdeaSubmissionPage = () => {
               <motion.div
                 className="flex flex-col gap-3"
               >
-                <AnimatePresence mode="popLayout">
+                <AnimatePresence mode="wait">
                   {sorted.map((idea, i) => {
                     const hasVoted = votedIds.includes(idea.id);
                     const status = statusConfig[idea.status] || statusConfig.open;

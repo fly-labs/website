@@ -74,7 +74,7 @@ const ExplorePage = () => {
           </motion.div>
 
           {/* Project Grid */}
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="wait">
             {filteredProjects.length === 0 ? (
               <motion.p
                 key="empty"
