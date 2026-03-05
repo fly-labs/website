@@ -6,7 +6,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 ## What's Inside
 
-- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 free, full library for members
+- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 public, full library for members
 - **Explore** - Catalog of projects and tools built by the team
 - **Idea Submissions** - Public form where anyone can submit tool ideas with community voting
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
@@ -112,7 +112,7 @@ apps/web/
 | `/ideas` | Idea submissions | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About | Public |
-| `/prompts` | AI Prompt Library | Hybrid (5 free, full for members) |
+| `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
 | `/templates` | Notion Templates | Members only |
 | `/profile` | User Profile | Members only |

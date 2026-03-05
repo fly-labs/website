@@ -15,7 +15,7 @@ const pillars = [
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     link: '/prompts',
-    badge: '5 free prompts',
+    badge: 'Sample prompts',
   },
   {
     title: 'Templates',

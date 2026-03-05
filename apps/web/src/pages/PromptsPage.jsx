@@ -343,7 +343,7 @@ const PromptsPage = () => {
               {isAuthenticated ? (
                 <><ShieldCheck className="w-4 h-4" /> Member Access</>
               ) : (
-                <><Sparkles className="w-4 h-4" /> 5 Free Prompts</>
+                <><Sparkles className="w-4 h-4" /> 5 Sample Prompts</>
               )}
             </div>
           </div>

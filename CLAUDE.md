@@ -72,7 +72,7 @@ apps/web/
 │       ├── AboutPage.jsx
 │       ├── LoginPage.jsx
 │       ├── SignupPage.jsx
-│       ├── PromptsPage.jsx        # Hybrid: 5 free / full library for members
+│       ├── PromptsPage.jsx        # Hybrid: 5 public / full library for members
 │       ├── NotionTemplatesPage.jsx # Protected
 │       ├── GarminToNotionPage.jsx  # Protected
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
@@ -99,7 +99,7 @@ apps/web/
 | `/about` | AboutPage | Public |
 | `/login` | LoginPage | Public |
 | `/signup` | SignupPage | Public |
-| `/prompts` | PromptsPage | Hybrid (5 free public, full library for members) |
+| `/prompts` | PromptsPage | Hybrid (5 public, full library for members) |
 | `/microsaas` | MicroSaasPage | Public (waitlist capture) |
 | `/templates` | NotionTemplatesPage | Protected |
 | `/templates/garmin-to-notion` | GarminToNotionPage | Protected |
