@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, LayoutTemplate, ArrowRight, Activity, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, LayoutTemplate, ArrowRight, Activity, Globe } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 
@@ -10,24 +10,34 @@ const templates = [
     id: 'garmin-to-notion',
     title: 'Garmin to Notion Sync',
     description: 'Automatically sync your Garmin workouts to a Notion database. Set it and forget it.',
-    category: 'Health & Fitness',
+    type: 'Notion',
     icon: Activity,
     path: '/templates/garmin-to-notion',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
     border: 'border-secondary/20',
-    comingSoon: false
+  },
+  {
+    id: 'website-blueprint',
+    title: 'Website Blueprint',
+    description: 'See exactly how I built this site. Full stack breakdown, architecture, and design decisions.',
+    type: 'Development',
+    icon: Globe,
+    path: '/templates/website-blueprint',
+    color: 'text-primary',
+    bg: 'bg-primary/10',
+    border: 'border-primary/20',
   }
 ];
 
-const NotionTemplatesPage = () => {
+const TemplatesPage = () => {
 
   return (
     <PageLayout
       seo={{
-        title: "Notion Templates",
-        description: "Notion templates and automation workflows built to solve real productivity problems.",
-        keywords: "Notion templates, Notion automation, productivity templates, workflow automation",
+        title: "Templates | Fly Labs",
+        description: "Systems, tools, and blueprints built for real use. Notion templates, developer resources, and more.",
+        keywords: "templates, Notion templates, developer tools, automation workflows, website blueprint",
         url: "https://flylabs.fun/templates",
       }}
       className="pt-32 pb-24"
@@ -43,9 +53,6 @@ const NotionTemplatesPage = () => {
             <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
             </Link>
-            <div className="flex items-center gap-2 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
-              <ShieldCheck className="w-4 h-4" /> Member Access
-            </div>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 mb-16">
@@ -53,8 +60,8 @@ const NotionTemplatesPage = () => {
               <LayoutTemplate className="w-7 h-7 md:w-10 md:h-10 text-secondary" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight">Notion Templates</h1>
-              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Systems and dashboards I built to run my own life.</p>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tight">Templates</h1>
+              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Systems, tools, and blueprints I built for real use. Yours for free.</p>
             </div>
           </div>
 
@@ -75,14 +82,16 @@ const NotionTemplatesPage = () => {
                     <div className={`h-48 ${template.bg} border-b border-border relative flex items-center justify-center overflow-hidden`}>
                       <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
                       <template.icon className={`w-16 h-16 ${template.color} relative z-10 group-hover:scale-110 transition-transform duration-500`} />
+                      <span className={`absolute top-3 right-3 z-10 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                        template.type === 'Notion' ? 'bg-secondary/10 text-secondary border-secondary/20' :
+                        'bg-primary/10 text-primary border-primary/20'
+                      }`}>
+                        {template.type}
+                      </span>
                     </div>
 
                     {/* Card Content */}
                     <div className="p-6 flex flex-col flex-grow">
-                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${template.bg} ${template.color} font-bold text-xs border ${template.border} mb-4 w-fit`}>
-                        {template.category}
-                      </div>
-
                       <h3 className="text-2xl font-black mb-3 group-hover:text-secondary transition-colors">
                         {template.title}
                       </h3>
@@ -92,7 +101,7 @@ const NotionTemplatesPage = () => {
                       </p>
 
                       <div className="mt-auto flex items-center font-black text-foreground">
-                        Get Template <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                        View Template <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform" />
                       </div>
                     </div>
                   </div>
@@ -107,4 +116,4 @@ const NotionTemplatesPage = () => {
   );
 };
 
-export default NotionTemplatesPage;
+export default TemplatesPage;

@@ -17,7 +17,7 @@ import { trackPageView } from '@/lib/analytics.js';
 const HomePage = lazy(() => import('@/pages/HomePage.jsx'));
 const ExplorePage = lazy(() => import('@/pages/ExplorePage.jsx'));
 const PromptsPage = lazy(() => import('@/pages/PromptsPage.jsx'));
-const NotionTemplatesPage = lazy(() => import('@/pages/NotionTemplatesPage.jsx'));
+const TemplatesPage = lazy(() => import('@/pages/TemplatesPage.jsx'));
 const GarminToNotionPage = lazy(() => import('@/pages/GarminToNotionPage.jsx'));
 const NewsletterPage = lazy(() => import('@/pages/NewsletterPage.jsx'));
 const IdeaSubmissionPage = lazy(() => import('@/pages/IdeaSubmissionPage.jsx'));
@@ -62,7 +62,7 @@ const AnimatedRoutes = () => {
 
         {/* Protected Routes */}
         <Route path="/prompts" element={<PromptsPage />} />
-        <Route path="/templates" element={<ProtectedRoute><NotionTemplatesPage /></ProtectedRoute>} />
+        <Route path="/templates" element={<ProtectedRoute><TemplatesPage /></ProtectedRoute>} />
         <Route path="/templates/garmin-to-notion" element={<ProtectedRoute><GarminToNotionPage /></ProtectedRoute>} />
         <Route path="/microsaas" element={<MicroSaasPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
