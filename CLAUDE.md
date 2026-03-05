@@ -114,17 +114,20 @@ apps/web/
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
-- **Primary:** Vibrant green `hsl(120 100% 40%)` / `hsl(120 100% 50%)` dark
-- **Secondary:** Vibrant cyan `hsl(180 100% 40%)` / `hsl(180 100% 50%)` dark
-- **Accent:** Magenta `hsl(300 100% 50%)`
-- **Background:** White / Very dark blue `hsl(240 10% 3.9%)`
-- **Foreground:** Near-black / Off-white
+- **Primary:** Green `hsl(142 76% 36%)` light / `hsl(120 100% 50%)` dark
+- **Secondary:** Cyan `hsl(186 100% 30%)` light / `hsl(180 100% 50%)` dark
+- **Accent:** Magenta `hsl(292 84% 40%)` light / `hsl(300 100% 50%)` dark
+- **Background:** White `hsl(0 0% 100%)` / Very dark blue `hsl(240 10% 3.9%)`
+- **Foreground:** Near-black `hsl(240 10% 3.9%)` / Off-white `hsl(0 0% 98%)`
 
 **Font:** Nunito (primary), Inter (fallback), system-ui
 
 **Radius:** 0.75rem base (--radius)
 
-**Custom classes:** `.btn-playful`, `.btn-playful-primary`, `.card-playful` (in index.css)
+**Custom classes (in index.css):**
+- `.btn-playful` - 3D press effect with `active:translate-y-1` (intentional, uses `transition-all`)
+- `.btn-playful-primary`, `.btn-playful-secondary`, `.btn-playful-accent`, `.btn-playful-outline` - color variants with glow on hover
+- `.card-playful` - card with shadow + border highlight (uses scoped transitions, NOT `transition-all`)
 
 ## Coding Conventions
 - **JSX only** - no TypeScript, no `.tsx` files
@@ -134,13 +137,14 @@ apps/web/
 - **Styling:** Tailwind utility classes. Use `cn()` from `@/lib/utils.js` for conditional classes
 - **Animation:** Framer Motion `motion.div` with `initial/animate/exit`. Use `AnimatePresence` for mount/unmount
 - **Icons:** Import individually from `lucide-react` (tree-shakeable)
-- **Pages:** Always include `<SEO>` component, `<Header>`, `<Footer>`, background component
+- **Pages:** Wrap in `<PageLayout>` (provides SEO, Header, Footer, and background). Pass `seo={{ title, description, ... }}` prop
 - **Protected pages:** Wrap content in `<ProtectedRoute>` or check auth + show `<AuthModal>`
 - **Hybrid pages:** Use `useAuth()` to render different content for guests vs members (e.g., PromptsPage)
 - **State:** Local state (`useState`) for UI, Context for auth/theme. No Redux or external state lib
 - **Supabase:** Use `supabase` client from `@/lib/supabaseClient.js`. RPC for atomic operations
 - **No em dashes:** Never use the em dash character in text or documentation. Use periods, colons, or hyphens instead
 - **Mobile-first responsive:** Use Tailwind breakpoint prefixes (`sm:`, `md:`, `lg:`) to progressively enhance. Touch targets must be at least 44px (use `p-3` on icon-only buttons). Hover-only interactions (tooltips, opacity reveals) must have a touch fallback (e.g., `onClick` toggle or always-visible on mobile with `opacity-60 sm:opacity-0 sm:group-hover:opacity-100`). Fixed left padding/margins (e.g., `pl-[52px]`) should collapse on mobile (`pl-0 sm:pl-[52px]`). Test at 375px (iPhone SE) in DevTools
+- **No layout-shifting transitions on tappable elements:** Never use `transition-all`, `hover:-translate-y-*`, or `hover:scale-*` on Links, buttons, or anchors. These shift touch targets on mobile tap, making elements untappable. Use `transition-colors` (or scoped like `transition-[color,background-color,border-color,box-shadow]`). `group-hover:scale-*` on child icons inside a tappable parent is fine. Framer Motion `layout` prop must not be used on card grid containers or individual card wrappers (causes persistent CSS transforms)
 - **Security headers:** CSP, COOP, HSTS, and Permissions-Policy configured in `vercel.json`. External domains must be allowlisted in `connect-src` or `img-src` as needed
 
 ## Analytics Events (GA4)
