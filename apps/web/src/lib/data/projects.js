@@ -1,4 +1,4 @@
-import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb } from 'lucide-react';
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe } from 'lucide-react';
 
 export const categories = ['All', 'Templates', 'Prompts', 'Micro Tools', 'Community'];
 
@@ -10,6 +10,16 @@ export const projects = [
     link: '/templates/garmin-to-notion',
     color: 'text-secondary',
     bgColor: 'bg-secondary/10',
+    status: 'Live',
+    category: 'Templates',
+  },
+  {
+    title: 'Website Blueprint',
+    description: 'See exactly how I built this site. Full stack breakdown, open source, and free to fork.',
+    icon: Globe,
+    link: '/templates/website-blueprint',
+    color: 'text-primary',
+    bgColor: 'bg-primary/10',
     status: 'Live',
     category: 'Templates',
   },
