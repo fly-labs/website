@@ -64,7 +64,7 @@ const NewsletterPage = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Subscribe on Substack (opens in new tab)"
-            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105"
+            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-colors"
             onClick={() => trackEvent('newsletter_click', { location: 'newsletter_hero' })}
           >
             Subscribe on Substack <ExternalLink className="w-5 h-5 ml-2" />
@@ -134,7 +134,7 @@ const NewsletterPage = () => {
                     <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
                       {article.description.replace(/<[^>]*>?/gm, '')}
                     </p>
-                    <span className="inline-flex items-center text-sm font-medium text-primary transition-all">
+                    <span className="inline-flex items-center text-sm font-medium text-primary transition-colors">
                       Read on Substack
                       <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300" />
                     </span>
@@ -160,7 +160,7 @@ const NewsletterPage = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Subscribe on Substack (opens in new tab)"
-            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105"
+            className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-colors"
             onClick={() => trackEvent('newsletter_click', { location: 'newsletter_bottom_cta' })}
           >
             Subscribe on Substack <ExternalLink className="w-5 h-5 ml-2" />

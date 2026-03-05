@@ -87,7 +87,6 @@ const ExplorePage = () => {
               </motion.p>
             ) : (
               <motion.div
-                layout
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4"
               >
                 {filteredProjects.map((project, i) => {
@@ -96,7 +95,6 @@ const ExplorePage = () => {
                   return (
                     <motion.div
                       key={project.title}
-                      layout
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.97 }}
@@ -104,7 +102,7 @@ const ExplorePage = () => {
                     >
                       <Link
                         to={project.link}
-                        className="group flex flex-col h-full p-5 md:p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-all duration-200"
+                        className="group flex flex-col h-full p-5 md:p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
                         onClick={() => trackEvent('project_click', { project: project.title, category: project.category })}
                       >
                         <div className="flex items-start justify-between mb-3">

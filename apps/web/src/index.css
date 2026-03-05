@@ -113,7 +113,7 @@
     @apply bg-transparent text-foreground border-2 border-b-4 border-border hover:bg-muted;
   }
   .card-playful {
-    @apply bg-card border-2 border-border rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-primary/50;
+    @apply bg-card border-2 border-border rounded-xl shadow-lg hover:shadow-2xl transition-[color,background-color,border-color,box-shadow] duration-300 hover:border-primary/50;
   }
 }
 

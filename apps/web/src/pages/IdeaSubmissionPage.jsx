@@ -219,7 +219,7 @@ const IdeaSubmissionPage = () => {
               </p>
               <Link
                 to="/templates/garmin-to-notion"
-                className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-all duration-200"
+                className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
               >
                 <div className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
                   <Activity className="w-5 h-5" />
@@ -295,7 +295,6 @@ const IdeaSubmissionPage = () => {
               </motion.div>
             ) : (
               <motion.div
-                layout
                 className="flex flex-col gap-3"
               >
                 <AnimatePresence mode="popLayout">
@@ -311,12 +310,11 @@ const IdeaSubmissionPage = () => {
                     return (
                       <motion.div
                         key={idea.id}
-                        layout
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.97 }}
                         transition={{ duration: 0.3, delay: i * 0.04 }}
-                        className={`group px-5 py-4 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border hover:-translate-y-0.5 transition-all duration-200 ${
+                        className={`group px-5 py-4 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200 ${
                           hasVoted ? 'border-l-2 border-l-primary/40' : ''
                         }`}
                       >
@@ -326,7 +324,7 @@ const IdeaSubmissionPage = () => {
                             onClick={() => handleVote(idea.id)}
                             disabled={hasVoted}
                             aria-label={`Vote for ${idea.idea_title}${hasVoted ? ' (voted)' : ''}`}
-                            className={`flex flex-col items-center gap-0.5 pt-0.5 shrink-0 transition-all duration-200 ${
+                            className={`flex flex-col items-center gap-0.5 pt-0.5 shrink-0 transition-colors duration-200 ${
                               hasVoted
                                 ? 'text-primary cursor-default'
                                 : 'text-muted-foreground hover:text-primary cursor-pointer'
