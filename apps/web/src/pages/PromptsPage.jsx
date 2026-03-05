@@ -63,15 +63,27 @@ const PromptsPage = () => {
   const visiblePrompts = isAuthenticated ? prompts : prompts.filter(p => p.featured);
   const lockedCount = prompts.length - prompts.filter(p => p.featured).length;
 
-  // Fetch votes and comments on mount (only for authenticated users)
+  // Fetch public vote counts on mount (works without auth via SECURITY DEFINER RPC)
+  useEffect(() => {
+    const fetchVoteCounts = async () => {
+      const { data: countData, error } = await supabase
+        .rpc('get_prompt_vote_counts');
+      if (!error && countData) {
+        setVoteCounts(countData);
+      }
+    };
+    fetchVoteCounts();
+  }, []);
+
+  // Fetch auth-gated data (user votes + comments) when logged in
   useEffect(() => {
     if (!currentUser) return;
 
-    const fetchData = async () => {
+    const fetchAuthData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      // Fetch current user's votes only (vote counts come from RPC)
+      // Fetch current user's votes only
       const { data: myVoteData, error: votesError } = await supabase
         .from('prompt_votes')
         .select('prompt_id')
@@ -85,14 +97,6 @@ const PromptsPage = () => {
           myVotes.add(v.prompt_id);
         }
         setUserVotes(myVotes);
-      }
-
-      // Fetch total vote counts via RPC (no direct table access needed)
-      const { data: countData, error: voteCountError } = await supabase
-        .rpc('get_prompt_vote_counts');
-
-      if (!voteCountError && countData) {
-        setVoteCounts(countData);
       }
 
       // Fetch comments
@@ -128,7 +132,7 @@ const PromptsPage = () => {
       }
     };
 
-    fetchData();
+    fetchAuthData();
   }, [currentUser]);
 
   // Copy handler
