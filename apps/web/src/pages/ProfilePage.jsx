@@ -93,7 +93,8 @@ const ProfilePage = () => {
     setIsSaving(false);
 
     if (result.success) {
-      trackEvent('profile_updated', { fields_filled: filledCount });
+      const filledFields = Object.values(updates).filter(v => v !== null).length;
+      trackEvent('profile_updated', { fields_filled: filledFields });
       toast({
         title: 'Profile updated',
         description: 'Your changes have been saved.',
