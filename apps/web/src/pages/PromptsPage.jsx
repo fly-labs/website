@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Sparkles, Copy, Check, Search, ShieldCheck, X,
@@ -287,8 +287,8 @@ const PromptsPage = () => {
     return maxId;
   })();
 
-  // Filter and sort
-  const filtered = visiblePrompts.filter(p => {
+  // Filter and sort (memoized to avoid recalculating on every render)
+  const filtered = useMemo(() => visiblePrompts.filter(p => {
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
     const q = searchQuery.toLowerCase();
     const matchesSearch = !q ||
@@ -296,9 +296,9 @@ const PromptsPage = () => {
       p.category.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
-  });
+  }), [visiblePrompts, activeCategory, searchQuery]);
 
-  const sorted = (() => {
+  const sorted = useMemo(() => {
     const arr = [...filtered];
     if (sortBy === 'hot') return arr.sort((a, b) => (voteCounts[b.id] || 0) - (voteCounts[a.id] || 0));
     if (sortBy === 'new') return arr.sort((a, b) => b.id - a.id);
@@ -308,13 +308,16 @@ const PromptsPage = () => {
       if (catDiff !== 0) return catDiff;
       return a.title.localeCompare(b.title);
     });
-  })();
+  }, [filtered, sortBy, voteCounts]);
 
   // Category counts for filter pills
-  const categoryCounts = {};
-  for (const p of visiblePrompts) {
-    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
-  }
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    for (const p of visiblePrompts) {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    }
+    return counts;
+  }, [visiblePrompts]);
 
   return (
     <PageLayout
