@@ -87,17 +87,12 @@ const PromptsPage = () => {
         setUserVotes(myVotes);
       }
 
-      // Fetch total vote counts for all prompts
-      const { data: allVoteData, error: voteCountError } = await supabase
-        .from('prompt_votes')
-        .select('prompt_id');
+      // Fetch total vote counts via RPC (no direct table access needed)
+      const { data: countData, error: voteCountError } = await supabase
+        .rpc('get_prompt_vote_counts');
 
-      if (!voteCountError && allVoteData) {
-        const counts = {};
-        for (const v of allVoteData) {
-          counts[v.prompt_id] = (counts[v.prompt_id] || 0) + 1;
-        }
-        setVoteCounts(counts);
+      if (!voteCountError && countData) {
+        setVoteCounts(countData);
       }
 
       // Fetch comments
@@ -209,11 +204,14 @@ const PromptsPage = () => {
       }
     }
 
-    setVotingIds(prev => {
-      const next = new Set(prev);
-      next.delete(promptId);
-      return next;
-    });
+    // 500ms cooldown to prevent rapid-click lock
+    setTimeout(() => {
+      setVotingIds(prev => {
+        const next = new Set(prev);
+        next.delete(promptId);
+        return next;
+      });
+    }, 500);
   }, [isAuthenticated, votingIds, userVotes, voteCounts, toast]);
 
   // Comment handlers
