@@ -6,6 +6,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, User, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics.js';
 
 const ProfilePage = () => {
   const { currentUser, profile, updateProfile } = useAuth();
@@ -92,6 +93,7 @@ const ProfilePage = () => {
     setIsSaving(false);
 
     if (result.success) {
+      trackEvent('profile_updated', { fields_filled: filledCount });
       toast({
         title: 'Profile updated',
         description: 'Your changes have been saved.',

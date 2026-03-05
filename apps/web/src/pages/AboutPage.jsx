@@ -7,6 +7,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const socials = [
   { href: 'mailto:luiz@flylabs.fun', icon: Mail, label: 'Email', color: 'text-primary' },
@@ -63,6 +64,7 @@ const AboutPage = () => {
                   className="p-2.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors"
                   title={s.label}
                   aria-label={s.label}
+                  onClick={() => trackEvent('outbound_click', { link_url: s.href, link_label: s.label, location: 'about_hero' })}
                 >
                   <s.icon className={`w-4 h-4 ${s.color}`} />
                 </a>
@@ -154,6 +156,7 @@ const AboutPage = () => {
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center text-sm font-semibold text-primary hover:underline"
+              onClick={() => trackEvent('newsletter_click', { location: 'about_bottom' })}
             >
               Subscribe on Substack <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </a>

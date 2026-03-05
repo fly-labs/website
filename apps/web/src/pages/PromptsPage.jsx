@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { prompts } from '@/lib/data/prompts.js';
 import supabase from '@/lib/supabaseClient.js';
 import { timeAgo } from '@/lib/utils.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Thinking'];
 const SORT_OPTIONS = [
@@ -130,6 +131,13 @@ const PromptsPage = () => {
       toast({ title: "Copied to clipboard!" });
       setTimeout(() => setCopiedId(null), 2000);
 
+      const p = prompts.find(x => x.id === id);
+      trackEvent('prompt_copied', {
+        prompt_id: id,
+        prompt_title: p?.title,
+        category: p?.category,
+      });
+
       setCopyCounts(prev => {
         const updated = { ...prev, [id]: (prev[id] || 0) + 1 };
         localStorage.setItem('prompt_copy_counts', JSON.stringify(updated));
@@ -178,6 +186,14 @@ const PromptsPage = () => {
       toast({ title: "Vote failed", variant: "destructive" });
     } else if (data) {
       setVoteCounts(prev => ({ ...prev, [promptId]: data.count }));
+      if (!wasVoted) {
+        const p = prompts.find(x => x.id === promptId);
+        trackEvent('prompt_voted', {
+          prompt_id: promptId,
+          prompt_title: p?.title,
+          category: p?.category,
+        });
+      }
     }
 
     setVotingIds(prev => {
@@ -213,6 +229,13 @@ const PromptsPage = () => {
         [promptId]: [...(prev[promptId] || []), newComment],
       }));
       setCommentInputs(prev => ({ ...prev, [promptId]: '' }));
+
+      const p = prompts.find(x => x.id === promptId);
+      trackEvent('prompt_commented', {
+        prompt_id: promptId,
+        prompt_title: p?.title,
+        category: p?.category,
+      });
     }
 
     setSubmittingComment(null);
@@ -758,6 +781,7 @@ const PromptsPage = () => {
                   <Link
                     to="/signup"
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                    onClick={() => trackEvent('cta_click', { cta: 'signup', location: 'prompts_gate' })}
                   >
                     Create Free Account <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>

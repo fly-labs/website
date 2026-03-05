@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import supabase from '@/lib/supabaseClient.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const MicroSaasPage = () => {
   const { currentUser } = useAuth();
@@ -60,6 +61,7 @@ const MicroSaasPage = () => {
       }
     } else {
       setIsSubmitted(true);
+      trackEvent('waitlist_joined', { source: 'micro-tools' });
       toast({ title: "You are in!", description: "We will let you know when tools drop." });
     }
   };

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Github, ExternalLink, CheckCircle2, Activity, Database, Zap, ArrowRight } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
+import { trackEvent } from '@/lib/analytics.js';
 import { motion } from 'framer-motion';
 
 const GarminToNotionPage = () => {
@@ -41,10 +42,10 @@ const GarminToNotionPage = () => {
                 Stop manually logging your workouts. Automatically sync your Garmin health data, activities, and sleep metrics directly into your Notion workspace.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
-                <a href="https://github.com/fly-labs/garmin-to-notion" target="_blank" rel="noreferrer" className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2">
+                <a href="https://github.com/fly-labs/garmin-to-notion" target="_blank" rel="noreferrer" className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2" onClick={() => trackEvent('outbound_click', { link_url: 'https://github.com/fly-labs/garmin-to-notion', link_label: 'GitHub', location: 'garmin_hero' })}>
                   <Github className="w-5 h-5" /> View on GitHub
                 </a>
-                <a href="https://substack.com/home/post/p-189585499" target="_blank" rel="noreferrer" className="btn-playful btn-playful-outline text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2 bg-card">
+                <a href="https://substack.com/home/post/p-189585499" target="_blank" rel="noreferrer" className="btn-playful btn-playful-outline text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2 bg-card" onClick={() => trackEvent('outbound_click', { link_url: 'https://substack.com/home/post/p-189585499', link_label: 'Read the Story', location: 'garmin_hero' })}>
                   Read the Story <ExternalLink className="w-5 h-5" />
                 </a>
               </div>
@@ -126,7 +127,7 @@ const GarminToNotionPage = () => {
             </div>
             <div className="mt-10 pt-8 border-t border-border text-center">
               <p className="text-muted-foreground font-bold mb-4">Detailed instructions available in the GitHub repository.</p>
-              <a href="https://github.com/fly-labs/garmin-to-notion" target="_blank" rel="noreferrer" className="btn-playful btn-playful-outline px-6 py-3 inline-flex items-center">
+              <a href="https://github.com/fly-labs/garmin-to-notion" target="_blank" rel="noreferrer" className="btn-playful btn-playful-outline px-6 py-3 inline-flex items-center" onClick={() => trackEvent('outbound_click', { link_url: 'https://github.com/fly-labs/garmin-to-notion', link_label: 'View Documentation', location: 'garmin_setup' })}>
                 View Documentation
               </a>
             </div>

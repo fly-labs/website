@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Github, Youtube, Linkedin, Mail, BookOpen } from 'lucide-react';
 import { XIcon } from '@/components/XIcon.jsx';
+import { trackEvent } from '@/lib/analytics.js';
 
 const footerLinks = [
   { name: 'Explore', path: '/explore' },
@@ -48,6 +49,7 @@ const Footer = () => {
                 rel={link.href.startsWith('mailto') ? undefined : 'noreferrer'}
                 className="p-3 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                 aria-label={link.label}
+                onClick={() => trackEvent('outbound_click', { link_url: link.href, link_label: link.label, location: 'footer' })}
               >
                 <link.icon className="w-5 h-5" />
               </a>

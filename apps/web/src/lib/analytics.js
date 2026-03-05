@@ -13,9 +13,26 @@ if (GA_ID && typeof window !== 'undefined') {
   window.gtag('config', GA_ID, { send_page_view: false });
 }
 
-export const trackPageView = (path) => {
+const gtag = (...args) => {
   if (typeof window !== 'undefined' && window.gtag && GA_ID) {
-    window.gtag('event', 'page_view', { page_path: path });
+    window.gtag(...args);
   }
 };
 
+export const trackPageView = (path) => {
+  gtag('event', 'page_view', { page_path: path });
+};
+
+export const trackEvent = (eventName, params = {}) => {
+  gtag('event', eventName, params);
+};
+
+// Set GA4 user properties for authenticated sessions
+export const setUserProperties = (properties) => {
+  gtag('set', 'user_properties', properties);
+};
+
+// Set user ID for cross-device tracking
+export const setUserId = (userId) => {
+  gtag('config', GA_ID, { user_id: userId || undefined });
+};

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import supabase from '@/lib/supabaseClient.js';
+import { trackEvent, setUserProperties, setUserId } from '@/lib/analytics.js';
 
 const AuthContext = createContext();
 
@@ -49,21 +50,45 @@ export const AuthProvider = ({ children }) => {
     return { success: true };
   };
 
+  const prevUserRef = useRef(null);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       const user = session?.user ?? null;
       setCurrentUser(user);
-      if (user) fetchProfile(user.id);
+      prevUserRef.current = user;
+      if (user) {
+        fetchProfile(user.id);
+        setUserId(user.id);
+        setUserProperties({
+          auth_provider: user.app_metadata?.provider || 'email',
+          is_member: true,
+        });
+      }
       setIsLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const user = session?.user ?? null;
+      const wasLoggedIn = !!prevUserRef.current;
       setCurrentUser(user);
+      prevUserRef.current = user;
+
       if (user) {
         fetchProfile(user.id);
+        const provider = user.app_metadata?.provider || 'email';
+        setUserId(user.id);
+        setUserProperties({ auth_provider: provider, is_member: true });
+
+        if (event === 'SIGNED_IN' && !wasLoggedIn) {
+          const isNewUser = user.created_at &&
+            (Date.now() - new Date(user.created_at).getTime()) < 60000;
+          trackEvent(isNewUser ? 'sign_up' : 'login', { method: provider });
+        }
       } else {
         setProfile(null);
+        setUserId(null);
+        setUserProperties({ is_member: false });
       }
     });
 

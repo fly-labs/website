@@ -6,6 +6,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects, categories } from '@/lib/data/projects.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const ExplorePage = () => {
   const { isAuthenticated } = useAuth();
@@ -104,6 +105,7 @@ const ExplorePage = () => {
                       <Link
                         to={project.link}
                         className="group flex flex-col h-full p-5 md:p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-all duration-200"
+                        onClick={() => trackEvent('project_click', { project: project.title, category: project.category })}
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className={`w-10 h-10 rounded-lg ${project.bgColor} ${project.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>

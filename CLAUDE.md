@@ -22,7 +22,7 @@ npm run lint     # ESLint (quiet mode)
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
 - **Auth:** Email/password + Google OAuth via Supabase
 - **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root)
-- **Analytics:** Google Analytics 4 (gtag)
+- **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, setUserProperties, setUserId)
 - **Deploy:** Vercel (auto-deploy on push to `main`)
 
 ## Project Structure
@@ -60,7 +60,7 @@ apps/web/
 │   │   │   ├── prompts.js        # Prompts data (featured flag for lead magnet)
 │   │   │   └── ideas.js          # Idea categories, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init
-│   │   ├── analytics.js      # GA4 helpers
+│   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
 │   │   ├── githubApi.js      # GitHub contribution API
 │   │   └── utils.js          # cn() helper (clsx + tailwind-merge), timeAgo()
@@ -142,6 +142,26 @@ apps/web/
 - **No em dashes:** Never use the em dash character in text or documentation. Use periods, colons, or hyphens instead
 - **Mobile-first responsive:** Use Tailwind breakpoint prefixes (`sm:`, `md:`, `lg:`) to progressively enhance. Touch targets must be at least 44px (use `p-3` on icon-only buttons). Hover-only interactions (tooltips, opacity reveals) must have a touch fallback (e.g., `onClick` toggle or always-visible on mobile with `opacity-60 sm:opacity-0 sm:group-hover:opacity-100`). Fixed left padding/margins (e.g., `pl-[52px]`) should collapse on mobile (`pl-0 sm:pl-[52px]`). Test at 375px (iPhone SE) in DevTools
 - **Security headers:** CSP, COOP, HSTS, and Permissions-Policy configured in `vercel.json`. External domains must be allowlisted in `connect-src` or `img-src` as needed
+
+## Analytics Events (GA4)
+All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.
+
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `sign_up` | AuthContext | `method` (email/google) |
+| `login` | AuthContext | `method` |
+| `prompt_copied` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+| `prompt_voted` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+| `prompt_commented` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+| `idea_submitted` | IdeaSubmissionPage | `category` |
+| `idea_voted` | IdeaSubmissionPage | `idea_id`, `idea_title`, `category` |
+| `waitlist_joined` | MicroSaasPage | `source` |
+| `newsletter_click` | NewsletterPage, AboutPage | `location` |
+| `article_click` | NewsletterPage | `article_title`, `location` |
+| `outbound_click` | Footer, AboutPage, GarminToNotionPage | `link_url`, `link_label`, `location` |
+| `cta_click` | HomePage, PromptsPage | `cta`, `location` |
+| `project_click` | ExplorePage | `project`, `category` |
+| `profile_updated` | ProfilePage | `fields_filled` |
 
 ## Environment Variables
 ```

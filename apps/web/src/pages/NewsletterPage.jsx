@@ -4,6 +4,7 @@ import { ExternalLink, Calendar, Loader2, ArrowRight, AlertCircle } from 'lucide
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const NewsletterPage = () => {
   const [articles, setArticles] = useState([]);
@@ -64,6 +65,7 @@ const NewsletterPage = () => {
             rel="noopener noreferrer"
             aria-label="Subscribe on Substack (opens in new tab)"
             className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105"
+            onClick={() => trackEvent('newsletter_click', { location: 'newsletter_hero' })}
           >
             Subscribe on Substack <ExternalLink className="w-5 h-5 ml-2" />
           </a>
@@ -93,6 +95,7 @@ const NewsletterPage = () => {
                 rel="noopener noreferrer"
                 aria-label="Read directly on Substack (opens in new tab)"
                 className="text-primary font-semibold hover:underline inline-flex items-center"
+                onClick={() => trackEvent('newsletter_click', { location: 'newsletter_error_fallback' })}
               >
                 Read directly on Substack <ArrowRight className="w-4 h-4 ml-1" />
               </a>
@@ -106,6 +109,7 @@ const NewsletterPage = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Read "${article.title}" on Substack (opens in new tab)`}
+                  onClick={() => trackEvent('article_click', { article_title: article.title, location: 'newsletter_feed' })}
                   {...fadeUp}
                   transition={{ duration: 0.4 }}
                   className="flex flex-col md:flex-row gap-6 py-8 group"
@@ -157,6 +161,7 @@ const NewsletterPage = () => {
             rel="noopener noreferrer"
             aria-label="Subscribe on Substack (opens in new tab)"
             className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground text-lg font-bold rounded-xl hover:bg-primary/90 transition-all hover:scale-105"
+            onClick={() => trackEvent('newsletter_click', { location: 'newsletter_bottom_cta' })}
           >
             Subscribe on Substack <ExternalLink className="w-5 h-5 ml-2" />
           </a>

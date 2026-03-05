@@ -5,6 +5,7 @@ import { GitHubHeatmap } from '@/components/GitHubHeatmap.jsx';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp } from '@/lib/animations.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const pillars = [
   {
@@ -74,6 +75,7 @@ const HomePage = () => {
             <Link
               to="/explore"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:bg-primary/90 transition-colors"
+              onClick={() => trackEvent('cta_click', { cta: 'explore', location: 'home_hero' })}
             >
               Explore what I've built <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
@@ -112,6 +114,7 @@ const HomePage = () => {
                 <Link
                   to={pillar.link}
                   className="group flex flex-col h-full p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border hover:-translate-y-0.5 transition-all duration-200"
+                  onClick={() => trackEvent('cta_click', { cta: pillar.title.toLowerCase(), location: 'home_pillars' })}
                 >
                   <div className={`w-10 h-10 rounded-lg ${pillar.bgColor} ${pillar.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200 mb-4`}>
                     <pillar.icon className="w-5 h-5" />

@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 
 import { categories, statusConfig, sortOptions } from '@/lib/data/ideas.js';
 import { timeAgo } from '@/lib/utils.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const IdeaSubmissionPage = () => {
   const { toast } = useToast();
@@ -85,6 +86,13 @@ const IdeaSubmissionPage = () => {
     );
 
     // Atomic increment via RPC (race-safe)
+    const idea = ideas.find(i => i.id === id);
+    trackEvent('idea_voted', {
+      idea_id: id,
+      idea_title: idea?.idea_title,
+      category: idea?.category,
+    });
+
     const { error } = await supabase.rpc('increment_vote', { idea_id: id });
     if (error) {
       // Revert optimistic update
@@ -145,6 +153,8 @@ const IdeaSubmissionPage = () => {
       };
       const { error } = await supabase.from('ideas').insert(sanitized);
       if (error) throw error;
+
+      trackEvent('idea_submitted', { category: formData.category });
 
       toast({
         title: 'Idea received!',
