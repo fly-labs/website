@@ -70,6 +70,7 @@ function Tooltip({ children, text }) {
       className="relative"
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
+      onClick={() => setShow(prev => !prev)}
     >
       {children}
       {show && (

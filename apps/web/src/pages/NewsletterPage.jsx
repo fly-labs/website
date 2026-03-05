@@ -21,7 +21,7 @@ const NewsletterPage = () => {
           setError(true);
         }
       } catch (err) {
-        console.error("Failed to fetch articles", err);
+        // silently fail
         setError(true);
       } finally {
         setLoadingArticles(false);

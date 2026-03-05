@@ -8,6 +8,7 @@ export default defineConfig({
 		port: 3001,
 	},
 	build: {
+		sourcemap: false,
 		rollupOptions: {
 			output: {
 				manualChunks: {

@@ -43,7 +43,7 @@ const AboutPage = () => {
               <img
                 src="/images/luiz-alves.png"
                 alt="Luiz Alves"
-                className="w-44 h-44 md:w-56 md:h-56 object-cover rounded-2xl border border-border shadow-xl grayscale hover:grayscale-0 transition-all duration-700"
+                className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 object-cover rounded-2xl border border-border shadow-xl grayscale hover:grayscale-0 transition-all duration-700"
               />
             </div>
           </div>

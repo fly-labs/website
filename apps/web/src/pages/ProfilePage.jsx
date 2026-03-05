@@ -192,7 +192,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Phone + Country */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="profile-phone" className="text-sm font-medium text-muted-foreground">Phone</label>
                 <input
@@ -222,7 +222,7 @@ const ProfilePage = () => {
             </div>
 
             {/* City + Age */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label htmlFor="profile-city" className="text-sm font-medium text-muted-foreground">City</label>
                 <input

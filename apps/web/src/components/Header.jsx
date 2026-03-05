@@ -107,7 +107,7 @@ const Header = () => {
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
+              className="p-3 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
               aria-label="Toggle menu"
               aria-expanded={mobileMenuOpen}
             >

@@ -33,9 +33,14 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (updates) => {
     if (!currentUser) return { success: false, error: 'Not authenticated' };
+    const allowedFields = ['name', 'phone', 'country', 'city', 'age', 'gender', 'bio', 'avatar_url'];
+    const safeUpdates = Object.fromEntries(
+      allowedFields.filter(k => k in updates).map(k => [k, updates[k]])
+    );
+    safeUpdates.updated_at = new Date().toISOString();
     const { data, error } = await supabase
       .from('profiles')
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .update(safeUpdates)
       .eq('id', currentUser.id)
       .select()
       .single();

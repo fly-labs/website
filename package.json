@@ -1,18 +1,26 @@
 {
   "name": "flylabs-website",
   "version": "1.0.0",
+  "description": "The Fly Labs website. Tools, templates, and AI prompts built in public.",
   "private": true,
+  "license": "MIT",
+  "author": "Fly Labs <talktoflyflabs@gmail.com> (https://flylabs.fun)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fly-labs/website.git"
+  },
+  "homepage": "https://flylabs.fun",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "npm run dev --prefix apps/web",
     "build": "npm run build --prefix apps/web",
     "preview": "npm run start --prefix apps/web",
     "lint": "npm run lint --prefix apps/web",
-    "deploy": "git add -A && git commit -m \"Update site\" && git push origin main"
+    "deploy": "git push origin main"
   },
   "workspaces": [
     "apps/*"
-  ],
-  "dependencies": {
-    "@rollup/rollup-darwin-arm64": "^4.59.0"
-  }
+  ]
 }

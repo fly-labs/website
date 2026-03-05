@@ -64,7 +64,7 @@ const HomePage = () => {
           <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">
             The vibe builder's lab
           </p>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
             I build things I wish existed.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
@@ -160,7 +160,7 @@ const HomePage = () => {
                 <img
                   src="/images/luiz-alves.png"
                   alt="Luiz Alves"
-                  className="w-44 h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 rounded-2xl object-cover border border-border grayscale hover:grayscale-0 transition-all duration-700"
+                  className="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 rounded-2xl object-cover border border-border grayscale hover:grayscale-0 transition-all duration-700"
                 />
               </div>
               <div className="text-center md:text-left">

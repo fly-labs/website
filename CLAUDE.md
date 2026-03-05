@@ -6,7 +6,7 @@ A React SPA built by Luiz Alves. Community-facing site with public pages (explor
 
 ## Quick Start
 ```bash
-cd /Users/luiz/Negócios/FlyLabs/Website
+npm install
 npm run dev      # Dev server on http://localhost:3001
 npm run build    # Production build (Vite)
 npm run lint     # ESLint (quiet mode)
@@ -21,7 +21,7 @@ npm run lint     # ESLint (quiet mode)
 - **Icons:** Lucide React
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
 - **Auth:** Email/password + Google OAuth via Supabase
-- **SEO:** React Helmet + JSON-LD
+- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root)
 - **Analytics:** Google Analytics 4 (gtag)
 - **Deploy:** Vercel (auto-deploy on push to `main`)
 
@@ -140,7 +140,8 @@ apps/web/
 - **State:** Local state (`useState`) for UI, Context for auth/theme. No Redux or external state lib
 - **Supabase:** Use `supabase` client from `@/lib/supabaseClient.js`. RPC for atomic operations
 - **No em dashes:** Never use the em dash character in text or documentation. Use periods, colons, or hyphens instead
-- **Homepage:** Uses a local `pillars` array for generic category cards (distinct from the `projects` array in `lib/data/projects.js`). Sections use varied container widths (hero max-w-4xl, pillars max-w-6xl with 4-col grid on lg, about/newsletter max-w-5xl) and varied vertical rhythm
+- **Mobile-first responsive:** Use Tailwind breakpoint prefixes (`sm:`, `md:`, `lg:`) to progressively enhance. Touch targets must be at least 44px (use `p-3` on icon-only buttons). Hover-only interactions (tooltips, opacity reveals) must have a touch fallback (e.g., `onClick` toggle or always-visible on mobile with `opacity-60 sm:opacity-0 sm:group-hover:opacity-100`). Fixed left padding/margins (e.g., `pl-[52px]`) should collapse on mobile (`pl-0 sm:pl-[52px]`). Test at 375px (iPhone SE) in DevTools
+- **Security headers:** CSP, COOP, HSTS, and Permissions-Policy configured in `vercel.json`. External domains must be allowlisted in `connect-src` or `img-src` as needed
 
 ## Environment Variables
 ```

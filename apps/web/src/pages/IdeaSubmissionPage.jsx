@@ -57,7 +57,7 @@ const IdeaSubmissionPage = () => {
         if (error) throw error;
         setIdeas(data || []);
       } catch (error) {
-        console.error('Failed to fetch ideas:', error);
+        // silently fail
       } finally {
         setLoading(false);
       }
@@ -404,7 +404,7 @@ const IdeaSubmissionPage = () => {
                 <button
                   onClick={() => setShowModal(false)}
                   type="button"
-                  className="absolute top-4 right-4 p-2 rounded-full bg-background/50 hover:bg-muted text-muted-foreground transition-colors z-20"
+                  className="absolute top-4 right-4 p-3 rounded-full bg-background/50 hover:bg-muted text-muted-foreground transition-colors z-20"
                   aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />

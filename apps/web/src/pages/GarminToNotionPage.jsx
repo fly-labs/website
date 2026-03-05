@@ -104,7 +104,7 @@ const GarminToNotionPage = () => {
           </div>
 
           {/* Setup Instructions */}
-          <div className="card-playful p-8 md:p-12 bg-card border-2 border-border mb-20">
+          <div className="card-playful p-5 sm:p-8 md:p-12 bg-card border-2 border-border mb-20">
             <h2 className="text-3xl font-black mb-8">How to set it up</h2>
             <div className="space-y-8">
               {[

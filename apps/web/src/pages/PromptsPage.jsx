@@ -70,23 +70,19 @@ const PromptsPage = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      // Fetch votes
-      const { data: votes, error: votesError } = await supabase
+      // Fetch current user's votes only (vote counts come from RPC)
+      const { data: myVoteData, error: votesError } = await supabase
         .from('prompt_votes')
-        .select('prompt_id, user_id');
+        .select('prompt_id')
+        .eq('user_id', session.user.id);
 
       if (votesError) {
-        console.error('Failed to fetch votes:', votesError.message);
-      } else if (votes) {
-        const counts = {};
+        // silently fail - votes are non-critical
+      } else if (myVoteData) {
         const myVotes = new Set();
-        for (const v of votes) {
-          counts[v.prompt_id] = (counts[v.prompt_id] || 0) + 1;
-          if (v.user_id === currentUser.id) {
-            myVotes.add(v.prompt_id);
-          }
+        for (const v of myVoteData) {
+          myVotes.add(v.prompt_id);
         }
-        setVoteCounts(counts);
         setUserVotes(myVotes);
       }
 
@@ -97,7 +93,7 @@ const PromptsPage = () => {
         .order('created_at', { ascending: true });
 
       if (commentsError) {
-        console.error('Failed to fetch comments:', commentsError.message);
+        // silently fail - comments are non-critical
       } else if (commentData) {
         const userIds = [...new Set(commentData.map(c => c.user_id))];
         const profileMap = {};
@@ -229,7 +225,8 @@ const PromptsPage = () => {
     const { error } = await supabase
       .from('prompt_comments')
       .delete()
-      .eq('id', commentId);
+      .eq('id', commentId)
+      .eq('user_id', currentUser.id);
 
     if (error) {
       toast({ title: "Delete failed", variant: "destructive" });
@@ -553,7 +550,7 @@ const PromptsPage = () => {
                               >
                                 <div className="px-4 md:px-5 pb-5 pt-1">
                                   {/* Description + author */}
-                                  <div className="pl-[52px] mb-4">
+                                  <div className="pl-0 sm:pl-[52px] mb-4">
                                     <p className="text-sm text-muted-foreground font-medium">
                                       {prompt.description}
                                     </p>
@@ -565,9 +562,9 @@ const PromptsPage = () => {
                                   </div>
 
                                   {/* Prompt content block */}
-                                  <div className="ml-[52px]">
+                                  <div className="ml-0 sm:ml-[52px]">
                                     <div className="relative group/code">
-                                      <pre className="bg-muted/50 p-4 pr-24 rounded-xl text-sm font-mono text-foreground/80 border border-border/50 whitespace-pre-wrap leading-relaxed mb-4">
+                                      <pre className="bg-muted/50 p-4 pr-4 sm:pr-24 rounded-xl text-sm font-mono text-foreground/80 border border-border/50 whitespace-pre-wrap leading-relaxed mb-4">
                                         {prompt.content}
                                       </pre>
                                       <button
@@ -626,7 +623,7 @@ const PromptsPage = () => {
                                         </p>
 
                                         {promptComments.length > 0 && (
-                                          <div className="space-y-2.5 max-h-64 overflow-y-auto">
+                                          <div className="space-y-2.5 max-h-[50vh] sm:max-h-64 overflow-y-auto">
                                             {promptComments.map(comment => (
                                               <div key={comment.id} className="flex gap-2 group/comment py-1">
                                                 <div className="flex-1 min-w-0">
@@ -639,7 +636,7 @@ const PromptsPage = () => {
                                                 {currentUser && comment.user_id === currentUser.id && (
                                                   <button
                                                     onClick={() => handleDeleteComment(comment.id, prompt.id)}
-                                                    className="opacity-0 group-hover/comment:opacity-100 shrink-0 p-1 text-muted-foreground/50 hover:text-destructive transition-all"
+                                                    className="opacity-60 sm:opacity-0 sm:group-hover/comment:opacity-100 shrink-0 p-2 text-muted-foreground/50 hover:text-destructive transition-all"
                                                     aria-label="Delete comment"
                                                   >
                                                     <Trash2 className="w-3.5 h-3.5" />

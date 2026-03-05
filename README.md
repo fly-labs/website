@@ -1,80 +1,106 @@
 # FlyLabs Website
 
-The playground for creators. Tools, templates, and experiments built by the FlyLabs team.
+The playground for creators. Tools, templates, and AI prompts built in public.
 
-**Live:** [https://flylabs.fun](https://flylabs.fun)
+**Live:** [flylabs.fun](https://flylabs.fun)
 
-## Stack
+## What's Inside
 
-- **Frontend:** React 18 + Vite + Tailwind CSS + Radix UI (shadcn/ui pattern)
-- **Backend:** Supabase (Auth, PostgreSQL, Storage)
-- **Hosting:** Vercel (SPA static deploy)
-- **Domain:** flylabs.fun (DNS managed via Vercel)
+- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 free, full library for members
+- **Explore** - Catalog of projects and tools built by the team
+- **Idea Submissions** - Public form where anyone can submit tool ideas with community voting
+- **Newsletter** - RSS-powered feed from the Fala Comigo Substack
+- **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
+- **Notion Templates** - Downloadable templates for members
+- **Member Profiles** - Auth-gated profiles with account management
 
-## Prerequisites
+## Tech Stack
 
-- Node.js >= 18
-- npm >= 9
-- A Supabase project ([supabase.com](https://supabase.com))
+| Layer | Technology |
+|-------|------------|
+| Framework | React 18 + Vite 7 (JSX, no TypeScript) |
+| Styling | Tailwind CSS 3.4 + CSS variables (HSL theming) |
+| Components | shadcn/ui pattern (Radix UI + CVA) |
+| Routing | React Router DOM v7 |
+| Animation | Framer Motion 11 |
+| Icons | Lucide React |
+| Backend | Supabase (PostgreSQL + Auth + Storage) |
+| Auth | Email/password + Google OAuth |
+| Analytics | Google Analytics 4 |
+| Deploy | Vercel (auto-deploy on push to `main`) |
 
 ## Getting Started
 
-```bash
-# Clone
-git clone https://github.com/fly-labs/flylabs-website.git
-cd flylabs-website
+### Prerequisites
 
-# Install dependencies
+- Node.js >= 20 (see `.nvmrc`)
+- npm
+- A [Supabase](https://supabase.com) project
+
+### Setup
+
+```bash
+git clone https://github.com/fly-labs/website.git
+cd website
 npm install
 
-# Set up environment variables
+# Configure environment
 cp apps/web/.env.example apps/web/.env
 # Edit apps/web/.env with your Supabase credentials
 
 # Start dev server
 npm run dev
-# Opens at http://localhost:3000
+# Opens at http://localhost:3001
 ```
 
-## Environment Variables
+### Environment Variables
 
-All env vars live in `apps/web/.env` and use the `VITE_` prefix (exposed to the client).
+All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 
-| Variable | Description |
-|----------|-------------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL (`https://xxx.supabase.co`) |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anon/public key |
-| `VITE_GA_ID` | Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`) |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VITE_SUPABASE_URL` | Yes | Supabase project URL (`https://xxx.supabase.co`) |
+| `VITE_SUPABASE_ANON_KEY` | Yes | Supabase anon/public key |
+| `VITE_GA_ID` | No | Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`) |
 
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start Vite dev server on port 3000 |
+| `npm run dev` | Start Vite dev server on port 3001 |
 | `npm run build` | Production build to `apps/web/dist/` |
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint |
+| `npm run deploy` | Stage, commit, and push to `main` (triggers Vercel deploy) |
 
 ## Project Structure
 
 ```
-├── package.json              # Root (delegates to apps/web)
-├── apps/
-│   └── web/
-│       ├── index.html        # Entry HTML
-│       ├── vite.config.js    # Vite configuration
-│       ├── tailwind.config.js
-│       ├── vercel.json       # SPA rewrites for Vercel
-│       ├── public/           # Static assets (sitemap, robots.txt)
-│       └── src/
-│           ├── main.jsx      # React entry point
-│           ├── App.jsx       # Router and providers
-│           ├── index.css     # Tailwind + CSS variables (light/dark theme)
-│           ├── pages/        # Route pages
-│           ├── components/   # Shared components (UI, Header, Footer, modals)
-│           ├── contexts/     # AuthContext, ThemeContext
-│           ├── hooks/        # Custom hooks (use-toast)
-│           └── lib/          # Supabase client, analytics, utils
+apps/web/
+├── src/
+│   ├── main.jsx              # Entry point
+│   ├── App.jsx               # Router + providers
+│   ├── index.css             # Tailwind + design tokens (CSS vars)
+│   ├── components/
+│   │   ├── ui/               # shadcn/ui primitives (button, avatar, tabs, toast...)
+│   │   ├── Header.jsx        # Sticky nav with blur backdrop
+│   │   ├── Footer.jsx        # Footer with social links
+│   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, background)
+│   │   ├── AuthModal.jsx     # Login/signup modal
+│   │   ├── GitHubHeatmap.jsx # GitHub contribution heatmap (compact + full)
+│   │   └── ...
+│   ├── contexts/             # AuthContext, ThemeContext
+│   ├── hooks/                # use-toast
+│   ├── lib/
+│   │   ├── data/             # Static data (projects, prompts, ideas)
+│   │   ├── supabaseClient.js # Supabase init
+│   │   ├── analytics.js      # GA4 helpers
+│   │   └── utils.js          # cn(), timeAgo()
+│   └── pages/                # Route pages
+├── public/                   # Static assets (sitemap, robots.txt, images)
+├── vite.config.js
+├── tailwind.config.js
+└── vercel.json               # SPA rewrites + security headers
 ```
 
 ## Routes
@@ -83,21 +109,23 @@ All env vars live in `apps/web/.env` and use the `VITE_` prefix (exposed to the 
 |------|------|--------|
 | `/` | Home | Public |
 | `/explore` | Explore (project catalog) | Public |
-| `/ideas` | Idea submission form | Public |
+| `/ideas` | Idea submissions | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
-| `/about` | About page | Public |
-| `/login` | Login | Public |
-| `/signup` | Signup | Public |
-| `/prompts` | AI Prompt Library | Authenticated |
-| `/templates` | Notion Templates | Authenticated |
-| `/templates/garmin-to-notion` | Garmin to Notion | Authenticated |
-| `/microsaas` | Micro SaaS Tools | Authenticated |
+| `/about` | About | Public |
+| `/prompts` | AI Prompt Library | Hybrid (5 free, full for members) |
+| `/microsaas` | Micro Tools | Public (waitlist capture) |
+| `/templates` | Notion Templates | Members only |
+| `/profile` | User Profile | Members only |
 
 ## Supabase Setup
 
+You need the following tables in your Supabase project. Enable Row Level Security on all tables.
+
 ### Tables
 
-**ideas** -- Idea submissions from visitors
+**profiles** - User profiles (synced with Supabase Auth)
+
+**ideas** - Community idea submissions
 
 | Column | Type | Notes |
 |--------|------|-------|
@@ -109,39 +137,40 @@ All env vars live in `apps/web/.env` and use the `VITE_` prefix (exposed to the 
 | idea_description | text | Required |
 | category | text | Default: 'Tool' |
 
-**notifications** -- Email notification signups
+**prompt_votes** - Upvotes on prompts (uses RPC: `toggle_prompt_vote`)
+
+**prompt_comments** - Comments on prompts
+
+**waitlist** - Email waitlist capture
 
 | Column | Type | Notes |
 |--------|------|-------|
 | id | uuid | Primary key, auto-generated |
+| email | text | Required |
+| source | text | Default: 'micro-tools' |
 | created_at | timestamptz | Auto-generated |
-| email | text | Required, unique |
+
+Unique constraint on `(email, source)`. RLS policy: anyone can INSERT, only admins can SELECT.
 
 ### Auth
 
 - Email/password authentication
-- Google OAuth (requires Google Cloud Console credentials)
-
-### Row Level Security
-
-- Both tables allow anonymous INSERT (public forms)
-- SELECT restricted to authenticated users
+- Google OAuth (requires Google Cloud Console credentials in Supabase dashboard)
 
 ## Deployment
 
 Deployed automatically via Vercel on push to `main`.
 
-### Vercel Configuration
+**Vercel settings:**
+- Framework: Vite
+- Root Directory: `apps/web`
+- Build Command: `vite build`
+- Output Directory: `dist`
 
-- **Framework:** Vite
-- **Root Directory:** `apps/web`
-- **Build Command:** `vite build`
-- **Output Directory:** `dist`
+## Building in Public
 
-### DNS
-
-Domain `flylabs.fun` uses Vercel nameservers (`ns1.vercel-dns.com`, `ns2.vercel-dns.com`).
+This project is built in public by [Luiz Alves](https://flylabs.fun/about). Follow along on the [Fala Comigo newsletter](https://falacomigo.substack.com) for updates on the process, decisions, and lessons learned.
 
 ## License
 
-Private -- All rights reserved.
+MIT - see [LICENSE](LICENSE) for details.

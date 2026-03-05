@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster.jsx';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import GridBackground from '@/components/GridBackground.jsx';
 import { ProtectedRoute } from '@/components/ProtectedRoute.jsx';
+import { HelmetProvider } from 'react-helmet-async';
 import { AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 
@@ -75,22 +76,24 @@ const AnimatedRoutes = () => {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Router>
-          <ErrorBoundary>
-            <ScrollToTop />
-            <PageTracker />
-            <GridBackground />
+    <HelmetProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
+            <ErrorBoundary>
+              <ScrollToTop />
+              <PageTracker />
+              <GridBackground />
 
-            <Suspense fallback={<PageFallback />}>
-              <AnimatedRoutes />
-            </Suspense>
-            <Toaster />
-          </ErrorBoundary>
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+              <Suspense fallback={<PageFallback />}>
+                <AnimatedRoutes />
+              </Suspense>
+              <Toaster />
+            </ErrorBoundary>
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   );
 }
 
