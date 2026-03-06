@@ -34,12 +34,13 @@ const pillars = [
     link: '/microsaas',
   },
   {
-    title: 'Community',
+    title: 'Idea Board',
     icon: Users,
-    description: 'Shape what gets built next. Submit ideas, vote on features, and get early access to everything.',
+    description: 'Got a problem? Drop it here. AI scores every idea with Hormozi and Dan Koe frameworks. If yours flies, we partner up.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
+    badge: 'AI-scored',
   },
 ];
 
@@ -240,7 +241,7 @@ const HomePage = () => {
           transition={{ duration: 0.8 }}
           className="text-2xl md:text-3xl font-black text-muted-foreground/70 tracking-tight text-center"
         >
-          What would you build?
+          What problem would you solve?
         </motion.p>
       </section>
 

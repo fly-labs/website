@@ -21,7 +21,7 @@
     "id": 3,
     "title": "Voice control for AI coding breaks when I change my mind mid-sentence. Need an AI intermediary that cleans up prompts through conversation before sending.",
     "category": "Ai",
-    "tags": "AI,Dev,Other",
+    "tags": "AI,Dev,Productivity,Other",
     "country": "Netherlands",
     "date": "2026-02-23",
     "url": "https://problemhunt.pro/en/ai/2k6f44lb51-voice-control-for-ai-coding-breaks-when"
@@ -37,510 +37,420 @@
   },
   {
     "id": 5,
-    "title": "Nigeria's transport trap: Uber/Bolt too expensive, buses unreliable. Need a platform for verified shared rides along fixed routes.",
+    "title": "Nigeria's transport trap: Uber/Bolt too expensive, okada too deadly, Danfo buses a nightmare. Millions need safe, affordable carpooling. Ready to pay.",
     "category": "Transportation",
     "tags": "Transportation,Other",
     "country": "Nigeria",
-    "date": "2026-02-16",
+    "date": "2026-02-13",
     "url": "https://problemhunt.pro/en/transportation/i0p4ciscj1-nigerias-transport-trap-uberbolt-too-exp"
   },
   {
     "id": 6,
-    "title": "Micro-influencer cannot monetize a loyal audience through personal merch due to high production costs and lack of logistics",
+    "title": "Micro-influencer cannot monetize a loyal audience: there is no safe and effective platform for deals with small brands and those willing to work with small influencers in India.",
     "category": "Media",
-    "tags": "Media,Marketing & Sales,Design & Creative,Retail,Other",
+    "tags": "Media,Marketing & Sales,Other",
     "country": "India",
-    "date": "2026-02-16",
+    "date": "2026-02-11",
     "url": "https://problemhunt.pro/en/media/1430dgg9o1-micro-influencer-cannot-monetize-a-loyal"
   },
   {
     "id": 7,
-    "title": "Global problem: Dating apps fail for complex requirements — no platform lets you combine multiple criteria (religion, interests, location, lifestyle) into a truly personalized match.",
+    "title": "Global problem: Dating apps fail for complex lives (illness, relocation, unfulfilled youth). A platform is needed for matching based on life path compatibility.",
     "category": "Dating Community",
-    "tags": "Dating & Community,AI,Other",
+    "tags": "Dating & Community,Psychology,Other",
     "country": "Russia",
-    "date": "2026-02-16",
+    "date": "2026-02-11",
     "url": "https://problemhunt.pro/en/dating-community/8bua20bf01-global-problem-dating-apps-fail-for-comp"
   },
   {
     "id": 8,
-    "title": "An African entrepreneur cannot accept international payments easily, cheaply, and legally — existing solutions are slow, expensive, or blocked.",
+    "title": "An African entrepreneur cannot accept international payments on Shopify. PayPal blocks, Stripe is unavailable. There is no payment gateway that does not discriminate based on geography.",
     "category": "Finance",
-    "tags": "Finance,Business,Other",
+    "tags": "Finance,Legal,Business,Other",
     "country": "Benin",
-    "date": "2026-02-16",
+    "date": "2026-02-11",
     "url": "https://problemhunt.pro/en/finance/ces298ikj1-an-african-entrepreneur-cannot-accept-in"
   },
   {
     "id": 9,
-    "title": "Daily routine after every client meeting — an entrepreneur manually creates a deal in CRM, writes a summary, and sends a follow-up email. Need an AI that does this automatically.",
+    "title": "Daily routine: after every client meeting, I need to write a structured report for colleagues. Existing corporate tools (Microsoft 365) are inefficient and slow for this.",
     "category": "Productivity",
-    "tags": "Productivity,AI,Marketing & Sales,Business,Other",
-    "country": "Russia",
-    "date": "2026-02-16",
+    "tags": "Productivity,Business,Other",
+    "country": "UK",
+    "date": "2026-02-10",
     "url": "https://problemhunt.pro/en/productivity/goxzmndvc1-daily-routine-after-every-client-meeting"
   },
   {
     "id": 10,
-    "title": "A startup founder loses focus and productive time every day due to scattered tasks. Needs a personal AI assistant that consolidates all apps, manages the schedule, and keeps them in flow.",
+    "title": "A startup founder loses focus and productivity juggling 5-7 tools for a single project. Existing «all-in-one» platforms don't provide the feel of a unified workspace.",
     "category": "Productivity",
-    "tags": "Productivity,AI,Other",
-    "country": "USA",
-    "date": "2026-02-16",
+    "tags": "Productivity,VC & Startups,Other",
+    "country": "India",
+    "date": "2026-02-09",
     "url": "https://problemhunt.pro/en/productivity/nglbafr5o1-a-startup-founder-loses-focus-and-produc"
   },
   {
     "id": 11,
-    "title": "A self-taught developer loses months building the wrong things because there's no curated, practical roadmap. Existing resources are fragmented, outdated, or too academic.",
-    "category": "Education",
-    "tags": "Education,Dev,Other",
+    "title": "A 3-year search for a simple tool to track both personal and business finances in one place. Nothing fits.",
+    "category": "Finance",
+    "tags": "Finance,Freelance,Other",
     "country": "USA",
-    "date": "2026-02-16",
-    "url": "https://problemhunt.pro/en/education/a40vsmgkq1-a-self-taught-developer-loses-months-bui"
+    "date": "2026-01-29",
+    "url": "https://problemhunt.pro/en/finance/mc8mvksu31-a-3-year-search-for-a-simple-tool-to-tra"
   },
   {
     "id": 12,
-    "title": "Immigrants lack an AI service for finding familiar and verified places (pharmacies, doctors, banks) in a new country, causing daily stress and time loss",
-    "category": "Immigration",
-    "tags": "Immigration,AI,Other",
-    "country": "Germany",
-    "date": "2026-02-16",
-    "url": "https://problemhunt.pro/en/zlt9tnxv31-immigrants-lack-an-ai-service-for-findin"
+    "title": "A freelancer often loses in proposal competitions due to the inability to quickly create personalized and visual website concepts for each job order.",
+    "category": "Freelance",
+    "tags": "Freelance,AI,Marketing & Sales,Other",
+    "country": "Australia",
+    "date": "2026-01-29",
+    "url": "https://problemhunt.pro/en/freelance/c3y54z8xz1-a-freelancer-often-loses-in-proposal-com"
   },
   {
     "id": 13,
-    "title": "Startup founders get lost in legal, accounting, and administrative tasks after incorporation, leading to stress and risks due to the lack of a clear, step-by-step plan",
-    "category": "Legal",
-    "tags": "Legal,VC & Startups,Finance,Other",
-    "country": "Germany",
-    "date": "2026-02-16",
-    "url": "https://problemhunt.pro/en/legal/6rdbp6php1-startup-founders-get-lost-in-legal-accou"
+    "title": "A Telegram channel owner is losing their audience without understanding the reasons for unsubscriptions. There is no simple tool for automatically collecting feedback from departed subscribers.",
+    "category": "Media",
+    "tags": "Media,AI,Other",
+    "country": "Georgia",
+    "date": "2026-01-29",
+    "url": "https://problemhunt.pro/en/media/dkr31xnko1-a-telegram-channel-owner-is-losing-their"
   },
   {
     "id": 14,
-    "title": "A 12-year-old girl wants to learn programming through game development but can't find an age-appropriate platform that teaches real coding concepts while being fun enough to keep her engaged",
-    "category": "Education",
-    "tags": "Education,Dev,Other",
+    "title": "An indie hacker spends 20-30 hours manually «cold launching» each new product in directories, Reddit, and blogs. There is no tool that fully automates this and proves its effectiveness.",
+    "category": "Ai",
+    "tags": "AI,Media,Marketing & Sales,VC & Startups,Other",
     "country": "UK",
-    "date": "2026-02-16",
-    "url": "https://problemhunt.pro/en/education/s2c8c3l5f1-a-12-year-old-girl-wants-to-learn-progra"
+    "date": "2026-01-29",
+    "url": "https://problemhunt.pro/en/ai/1trzcj1cz1-an-indie-hacker-spends-20-30-hours-manua"
   },
   {
     "id": 15,
-    "title": "Fans of paper planners lack an iPad app that would allow importing PDF layout templates and using them as a foundation for digital notes",
-    "category": "Productivity",
-    "tags": "Productivity,Other",
-    "country": "Ukraine",
-    "date": "2026-02-14",
-    "url": "https://problemhunt.pro/en/productivity/l3grb6t2f1-fans-of-paper-planners-lack-an-ipad-app"
+    "title": "Website owners constantly need minor edits in the admin panel. They are forced to pay specialists for 5-minute tasks. We need an AI agent that does this on command in the browser.",
+    "category": "Ai",
+    "tags": "AI,No-Code,Freelance,Other",
+    "country": "USA",
+    "date": "2026-01-28",
+    "url": "https://problemhunt.pro/en/ai/smpdtt9zc1-website-owners-constantly-need-minor-edi"
   },
   {
     "id": 16,
-    "title": "Problem Analysis: Owners of small B2B businesses cannot build a growth system. Do they need a fractional CMO, or can a SaaS be built?",
-    "category": "Business",
-    "tags": "Business,Marketing & Sales,Other",
-    "country": "USA",
-    "date": "2026-02-13",
-    "url": "https://problemhunt.pro/en/business/3pb7gtrku1-problem-analysis-owners-of-small-b2b-bus"
+    "title": "Republished: There is no app for Nigerian passengers that shows the real-time flight status and helps claim compensation for delays and cancellations.",
+    "category": "Legal",
+    "tags": "Legal,Travel,Other",
+    "country": "Nigeria",
+    "date": "2026-01-26",
+    "url": "https://problemhunt.pro/en/legal/rdydysy711-republished-there-is-no-app-for-nigerian"
   },
   {
     "id": 17,
-    "title": "Search for a controlled and stable channel for attracting clients to a banquet hall, as an alternative to unpredictable social media advertising",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/marketing-sales/g9lxp72ug1-search-for-a-controlled-and-stable-chann"
+    "title": "Constantly forgetting minor tasks due to the impulsive habit of «swiping» reminders away. Needs a tool that breaks this behavioral pattern.",
+    "category": "Productivity",
+    "tags": "Productivity,Psychology,Other",
+    "country": "USA",
+    "date": "2026-01-24",
+    "url": "https://problemhunt.pro/en/productivity/6hmyvb2mk1-constantly-forgetting-minor-tasks-due-to"
   },
   {
     "id": 18,
-    "title": "Marketing directors and founders have nowhere to find verified contractors (targeting specialists, SMM managers) — the existing search process is a lottery that wastes time and budget",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,HR & Career,Freelance,Other",
+    "title": "It's impossible to order truly fresh farm vegetables and bread through delivery aggregators — product quality is low, and you have to go to the market yourself.",
+    "category": "Food Nutrition",
+    "tags": "Food & Nutrition,Logistics & Delivery,Retail,Other",
     "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/marketing-sales/lk4uc1xvl1-marketing-directors-and-founders-have-no"
+    "date": "2026-01-22",
+    "url": "https://problemhunt.pro/en/food-nutrition/a6dgf1icc1-its-impossible-to-order-truly-fresh-farm"
   },
   {
     "id": 19,
-    "title": "It's impossible to donate to animal shelters due to complete distrust in charity fundraisers. There is no service with guaranteed transparency and audit",
-    "category": "Other",
-    "tags": "Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/other/1adxzgi7b1-its-impossible-to-donate-to-animal-shelt"
-  },
-  {
-    "id": 20,
-    "title": "Aviation safety expert seeks a technical co-founder to develop an AI solution that prevents daily bird strikes, a $1.2B/year industry problem affecting global aviation safety",
-    "category": "Ai",
-    "tags": "AI,Transportation,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/ai/72bqjmds11-aviation-safety-expert-seeks-a-technical"
-  },
-  {
-    "id": 21,
-    "title": "Patients with chronic diseases get the same generic advice from doctors during short visits — no tools exist to translate their unique daily data (glucose, sleep, diet) into personalized, actionable plans.",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,AI,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/medicine-health/rexffrmxu1-patients-with-chronic-diseases-get-the-s"
-  },
-  {
-    "id": 22,
-    "title": "A non-technical founder spent weeks trying to create a simple product demo and still ended up with something that looked unprofessional.",
-    "category": "No Code",
-    "tags": "No-Code,Design & Creative,VC & Startups,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/no-code/iu4bkfxfj1-a-non-technical-founder-spent-weeks-try"
-  },
-  {
-    "id": 23,
-    "title": "Startups in Russia struggle with finding mentors and knowledge in English — both for learning and international expansion",
-    "category": "Vc Startups",
-    "tags": "VC & Startups,Education,Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/vc-startups/3cdxqf4xq1-startups-in-russia-struggle-with-findin"
-  },
-  {
-    "id": 24,
-    "title": "An indie hacker earning less than $5K/month can't afford a personal marketing team — yet needs professional-level content, SEO, and distribution to grow.",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,SEO & GEO,AI,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/marketing-sales/9z72u3f1a1-an-indie-hacker-earning-less-than-5kmont"
-  },
-  {
-    "id": 25,
-    "title": "SEO is dead for small websites. Google prioritizes big brands and AI-generated results, making organic traffic nearly impossible for indie creators and small businesses.",
-    "category": "Seo Geo",
-    "tags": "SEO & GEO,Marketing & Sales,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/seo-geo/i1bk7jbrc1-seo-is-dead-for-small-websites-google-p"
-  },
-  {
-    "id": 26,
-    "title": "Frequent travelers need a travel SIM/eSIM that works seamlessly across multiple countries without overpaying, dealing with local carriers, or losing their home number.",
-    "category": "Travel",
-    "tags": "Travel,Other",
-    "country": "UK",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/travel/9ij3q27701-frequent-travelers-need-a-travel-simesim"
-  },
-  {
-    "id": 27,
-    "title": "There's no personalized real estate search tool that aggregates listings from all platforms and matches them to a buyer's unique criteria, lifestyle needs, and financial constraints.",
-    "category": "Realty",
-    "tags": "Realty,AI,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/realty/9pvtzc0k91-theres-no-personalized-real-estate-searc"
-  },
-  {
-    "id": 28,
-    "title": "It's difficult for parents of newborns in India to organize vaccination: there is no service for easy doctor search and a «turnkey» process provision",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Other",
-    "country": "India",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/medicine-health/o94v8yjuj1-its-difficult-for-parents-of-newborns-in"
-  },
-  {
-    "id": 29,
-    "title": "Courier app navigation and grouping issues in «Vozy Ozon»",
-    "category": "Logistics Delivery",
-    "tags": "Logistics & Delivery,Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/logistics-delivery/69hxkoys91-courier-app-navigation-and-grouping-issu"
-  },
-  {
-    "id": 30,
-    "title": "Need a service for generating names and instantly checking domain availability",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,Dev,VC & Startups,Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/marketing-sales/s4e5ajoj91-need-a-service-for-generating-names-and"
-  },
-  {
-    "id": 31,
-    "title": "Need for a service to package website deliveries professionally",
-    "category": "Freelance",
-    "tags": "Freelance,Design & Creative,Dev,Other",
-    "country": "Canada",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/freelance/kb6ioy7hb1-need-for-a-service-to-package-website-de"
-  },
-  {
-    "id": 32,
-    "title": "Startup founders have nowhere to order quality, in-depth research on specific projects or niches — existing services provide superficial and unreliable reports",
-    "category": "Vc Startups",
-    "tags": "VC & Startups,Marketing & Sales,Other",
-    "country": "Russia",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/vc-startups/l74cvddaj1-startup-founders-have-nowhere-to-order-q"
-  },
-  {
-    "id": 33,
-    "title": "Young people in India face dead-end career guidance — existing tools give generic advice, no one maps their unique skills to real opportunities with a step-by-step plan.",
-    "category": "Hr Career",
-    "tags": "HR & Career,Education,AI,Other",
-    "country": "India",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/hr-career/7bvfkubyp1-young-people-in-india-face-dead-end-care"
-  },
-  {
-    "id": 34,
-    "title": "Calorie tracking is broken: current apps are tedious, inaccurate, and unsustainable. Need a passive solution that logs nutrition without manual effort.",
-    "category": "Food Nutrition",
-    "tags": "Food & Nutrition,AI,Medicine & Health,Other",
-    "country": "UK",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/food-nutrition/zs5gcjc6p1-calorie-tracking-is-broken-current-apps"
-  },
-  {
-    "id": 35,
-    "title": "Psychology students and early-career therapists struggle to practice diagnostic skills — there's no safe, realistic simulation tool for clinical interviews.",
-    "category": "Psychology",
-    "tags": "Psychology,Education,AI,Other",
-    "country": "USA",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/psychology/j2l3abxpj1-psychology-students-and-early-career-ther"
-  },
-  {
-    "id": 36,
-    "title": "Filipino farmers can't get fair prices — middlemen take 30-50%, and no platform connects them directly to buyers.",
-    "category": "Agtech",
-    "tags": "AgTech,Other",
-    "country": "Philippines",
-    "date": "2026-02-12",
-    "url": "https://problemhunt.pro/en/agtech/lhj2yjgiu1-filipino-farmers-cant-get-fair-prices-mi"
-  },
-  {
-    "id": 37,
-    "title": "A non-technical startup founder wastes weeks evaluating dev agencies, only to hire one that delivers poor code. There's no reliable way to verify technical competence before signing a contract.",
-    "category": "Dev",
-    "tags": "Dev,VC & Startups,Other",
-    "country": "USA",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/dev/1ldg5v81e1-a-non-technical-startup-founder-wastes-we"
-  },
-  {
-    "id": 38,
-    "title": "The 'cold start' problem in influencer marketing for e-commerce: Brands waste budgets on wrong influencers while good micro-influencers can't find brand deals.",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,Retail,Other",
-    "country": "Russia",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/marketing-sales/xo2f1ypcp1-the-cold-start-problem-in-influencer-mar"
-  },
-  {
-    "id": 39,
-    "title": "Difficulty of finding relevant business events and building meaningful connections through networking.",
-    "category": "Business",
-    "tags": "Business,Marketing & Sales,Other",
-    "country": "Russia",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/business/ym8jfqfhr1-difficulty-of-finding-relevant-business-e"
-  },
-  {
-    "id": 40,
-    "title": "Home sellers in the US get stuck between expensive agents (5-6% fees) and complex FSBO (For Sale By Owner) — no tool guides them step-by-step through selling a home without an agent.",
-    "category": "Realty",
-    "tags": "Realty,Legal,Finance,Other",
-    "country": "USA",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/realty/d1eftwjxw1-home-sellers-in-the-us-get-stuck-between"
-  },
-  {
-    "id": 41,
-    "title": "Tourists want authentic local food — but restaurant apps show tourist traps, and local spots have no digital presence. Need a way to discover what locals actually eat.",
-    "category": "Travel",
-    "tags": "Travel,Food & Nutrition,Other",
-    "country": "Russia",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/travel/xhsgd3mz01-tourists-want-authentic-local-food-but-re"
-  },
-  {
-    "id": 42,
-    "title": "Real estate agents spend 2-3 hours writing each property listing. Need an AI tool that instantly generates professional, localized descriptions from property data.",
-    "category": "Realty",
-    "tags": "Realty,AI,Marketing & Sales,Other",
-    "country": "Cyprus",
-    "date": "2026-02-10",
-    "url": "https://problemhunt.pro/en/realty/75jsnpnxy1-real-estate-agents-spend-23-hours-writin"
-  },
-  {
-    "id": 43,
-    "title": "Anyone buying a used car faces the same nightmare — hidden problems, shady dealers, and no reliable way to verify history. Existing services give incomplete data.",
-    "category": "Transportation",
-    "tags": "Transportation,AI,Finance,Other",
-    "country": "USA",
-    "date": "2026-02-09",
-    "url": "https://problemhunt.pro/en/transportation/5fhjy4tvd1-anyone-buying-a-used-car-faces-the-same-n"
-  },
-  {
-    "id": 44,
-    "title": "A founder's health is declining from burnout and sedentary lifestyle while running a startup — existing wellness apps don't account for the unpredictable, high-stress founder lifestyle.",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,Psychology,AI,Other",
-    "country": "UK",
-    "date": "2026-02-09",
-    "url": "https://problemhunt.pro/en/sport-fitness/5mw1pqd1r1-a-founders-health-is-declining-from-burn"
-  },
-  {
-    "id": 45,
-    "title": "Remote freelancers in developing countries can't access affordable coworking spaces — local options are either too expensive, too far, or non-existent.",
-    "category": "Freelance",
-    "tags": "Freelance,Realty,Other",
-    "country": "Nigeria",
-    "date": "2026-02-09",
-    "url": "https://problemhunt.pro/en/freelance/sdbwjy5d81-remote-freelancers-in-developing-countr"
-  },
-  {
-    "id": 46,
-    "title": "AI startup founders spend weeks writing grant applications and investor decks. There's no tool that auto-generates funding documents from a startup's existing data.",
-    "category": "Vc Startups",
-    "tags": "VC & Startups,AI,Finance,Other",
-    "country": "UK",
-    "date": "2026-02-09",
-    "url": "https://problemhunt.pro/en/vc-startups/21b8kcajm1-ai-startup-founders-spend-weeks-writing"
-  },
-  {
-    "id": 47,
-    "title": "A Telegram channel owner is losing their audience without understanding the reasons. They need an AI-based analytics tool that not only provides metrics but also explains them and suggests ideas for improving content.",
-    "category": "Media",
-    "tags": "Media,AI,Marketing & Sales,Other",
-    "country": "Georgia",
-    "date": "2026-01-29",
-    "url": "https://problemhunt.pro/en/media/l4y11ufqw1-a-telegram-channel-owner-is-losing-their"
-  },
-  {
-    "id": 48,
-    "title": "An indie hacker spends 20-30 hours manually «cold launching» each new product in communities, emails, and social media. Needs an AI agent that automates the first 48 hours of launch distribution.",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,AI,Dev,Other",
-    "country": "UK",
-    "date": "2026-01-29",
-    "url": "https://problemhunt.pro/en/marketing-sales/h7nbjcm0k1-an-indie-hacker-spends-2030-hours-manual"
-  },
-  {
-    "id": 49,
-    "title": "Website owners constantly need minor edits in the admin panel. They are forced to either pay a developer or struggle with a complicated CMS every time.",
-    "category": "Dev",
-    "tags": "Dev,No-Code,AI,Other",
-    "country": "USA",
-    "date": "2026-01-28",
-    "url": "https://problemhunt.pro/en/dev/wl99o0lwk1-website-owners-constantly-need-minor-edit"
-  },
-  {
-    "id": 50,
-    "title": "Republished: There is no app for Nigerian passengers that shows the real-time flight status of local airlines, leading to wasted time and money at the airport.",
-    "category": "Transportation",
-    "tags": "Transportation,Travel,Other",
-    "country": "Nigeria",
-    "date": "2026-01-26",
-    "url": "https://problemhunt.pro/en/transportation/p0ywwuobx1-republished-there-is-no-app-for-nigerian"
-  },
-  {
-    "id": 51,
-    "title": "Constantly forgetting minor tasks due to the impulsive habit of «swiping» reminders away. Need a way to manage small tasks that survives the habit of instant dismissal.",
-    "category": "Productivity",
-    "tags": "Productivity,Other",
-    "country": "USA",
-    "date": "2026-01-24",
-    "url": "https://problemhunt.pro/en/productivity/35s3qm7nt1-constantly-forgetting-minor-tasks-due-to"
-  },
-  {
-    "id": 52,
-    "title": "It's impossible to order truly fresh farm vegetables and bread through delivery services. Even premium platforms deliver factory-made products labeled as 'farm' goods.",
-    "category": "Food Nutrition",
-    "tags": "Food & Nutrition,Logistics & Delivery,Other",
-    "country": "Russia",
-    "date": "2026-01-22",
-    "url": "https://problemhunt.pro/en/food-nutrition/rvsjhb2k71-its-impossible-to-order-truly-fresh-farm"
-  },
-  {
-    "id": 53,
-    "title": "Online clothes shopping is a lottery. There's no accessible technology to see how a garment will actually look on your body type before buying.",
+    "title": "Online clothes shopping is a lottery. There's no accessible technology to see how an item will fit your body, especially in small stores. It's a pain for the buyer and a loss for the seller.",
     "category": "Retail",
     "tags": "Retail,AI,Other",
     "country": "India",
     "date": "2026-01-22",
-    "url": "https://problemhunt.pro/en/retail/3jhkf7h7p1-online-clothes-shopping-is-a-lottery-ther"
+    "url": "https://problemhunt.pro/en/retail/k5z415d0z1-online-clothes-shopping-is-a-lottery-the"
   },
   {
-    "id": 54,
-    "title": "Need an AI «Jarvis» that turns chaotic voice/text updates into automatically structured reports, meeting notes, and action items — without manual editing.",
-    "category": "Productivity",
-    "tags": "Productivity,AI,Other",
+    "id": 20,
+    "title": "Need an AI «Jarvis» that turns chaotic voice/text updates into automatically structured tasks, projects, and dashboards for managing all of life and work.",
+    "category": "Ai",
+    "tags": "AI,Productivity,Other",
     "country": "USA",
     "date": "2026-01-21",
-    "url": "https://problemhunt.pro/en/productivity/fy2j9p8401-need-an-ai-jarvis-that-turns-chaotic-voi"
+    "url": "https://problemhunt.pro/en/ai/kmtor7kz31-need-an-ai-jarvis-that-turns-chaotic-voi"
   },
   {
-    "id": 55,
-    "title": "A musician in India can't find a simple, localized tool to manage bookings, payments, and client communication — global tools are too complex and expensive for the local market.",
-    "category": "Freelance",
-    "tags": "Freelance,Other",
-    "country": "India",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/freelance/q5nw65s4k1-a-musician-in-india-cant-find-a-simple-l"
+    "id": 21,
+    "title": "VPN users have nowhere to find out if a service will work reliably on their network — there is no up-to-date rating based on real-time quality monitoring.",
+    "category": "Productivity",
+    "tags": "Productivity,Other",
+    "country": "Russia",
+    "date": "2026-01-21",
+    "url": "https://problemhunt.pro/en/productivity/a20h8f74z1-vpn-users-have-nowhere-to-find-out-if-a"
   },
   {
-    "id": 56,
-    "title": "Therapists spend hours writing clinical notes after sessions — no HIPAA-compliant AI tool automatically turns session recordings into structured therapy notes.",
-    "category": "Psychology",
-    "tags": "Psychology,AI,Medicine & Health,Other",
+    "id": 22,
+    "title": "A musician from Lebanon cannot sell his music: streaming pays pennies, and Bandcamp doesn't accept payments in his country. Needs a fair radio-platform with direct sales.",
+    "category": "Media",
+    "tags": "Media,Other",
+    "country": "Lebanon",
+    "date": "2026-01-21",
+    "url": "https://problemhunt.pro/en/media/0vvg4xzv91-a-musician-from-lebanon-cannot-sell-his"
+  },
+  {
+    "id": 23,
+    "title": "Hours of manual searching for parts for Chinese cars. Need an AI agent that understands queries from photos or text and finds the part.",
+    "category": "Retail",
+    "tags": "Retail,AI,Business,Other",
+    "country": "Russia",
+    "date": "2026-01-21",
+    "url": "https://problemhunt.pro/en/retail/a035m95nv1-hours-of-manual-searching-for-parts-for"
+  },
+  {
+    "id": 24,
+    "title": "The lack of a service that creates hyper-personalized, gamified English courses (in the Duolingo format) for narrow professional niches (e.g., for a barista in a vegan coffee shop or a startup founder",
+    "category": "Education",
+    "tags": "Education,AI,HR & Career,Other",
     "country": "USA",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/psychology/lqjzc6dzq1-therapists-spend-hours-writing-clinical-n"
+    "date": "2026-01-20",
+    "url": "https://problemhunt.pro/en/education/jdez9r0101-the-lack-of-a-service-that-creates-hyper"
   },
   {
-    "id": 57,
-    "title": "Parents can't find trusted, affordable childcare on short notice — existing apps have inconsistent vetting, no real-time availability, and aren't designed for last-minute bookings.",
+    "id": 25,
+    "title": "Automating cross-posting of an indie hacker's technical content across multiple platforms (Twitter, LinkedIn, Product Hunt) while adhering to each platform's best practices.",
+    "category": "Media",
+    "tags": "Media,Marketing & Sales,AI,VC & Startups,Other",
+    "country": "Morocco",
+    "date": "2026-01-20",
+    "url": "https://problemhunt.pro/en/media/3i2dy4ryd1-automating-cross-posting-of-an-indie-hac"
+  },
+  {
+    "id": 26,
+    "title": "The monthly headache of being remote tech support for elderly relatives who constantly need help with the same computer problems",
+    "category": "Ai",
+    "tags": "AI,Other",
+    "country": "Serbia",
+    "date": "2026-01-20",
+    "url": "https://problemhunt.pro/en/ai/u9prt4av11-the-monthly-headache-of-being-remote-tec"
+  },
+  {
+    "id": 27,
+    "title": "Searching for direct hotel contacts to book without overpaying to aggregators, which markup prices by 15-30%",
+    "category": "Travel",
+    "tags": "Travel,AI,Other",
+    "country": "UK",
+    "date": "2026-01-19",
+    "url": "https://problemhunt.pro/en/travel/kymbn6kp61-searching-for-direct-hotel-contacts-to-b"
+  },
+  {
+    "id": 28,
+    "title": "A beginner in online business needs not a course, but a personalized AI guide that will create and lead them through an individual step-by-step plan.",
+    "category": "Ai",
+    "tags": "AI,Business,VC & Startups,Other",
+    "country": "USA",
+    "date": "2026-01-18",
+    "url": "https://problemhunt.pro/en/ai/h0x8gh7a71-a-beginner-in-online-business-needs-not"
+  },
+  {
+    "id": 29,
+    "title": "A pre-check of the approval chances for a construction project with the Australian council before making significant investments",
+    "category": "Realty",
+    "tags": "Realty,Legal,AI,Other",
+    "country": "Australia",
+    "date": "2026-01-18",
+    "url": "https://problemhunt.pro/en/realty/38t2m50py1-a-pre-check-of-the-approval-chances-for"
+  },
+  {
+    "id": 30,
+    "title": "Users of credit products regularly overpay due to non-transparent bank terms. There is no advocate service that would analyze their spending and find hidden fees.",
+    "category": "Finance",
+    "tags": "Finance,Legal,Other",
+    "country": "Russia",
+    "date": "2026-01-18",
+    "url": "https://problemhunt.pro/en/finance/jtv11ju831-users-of-credit-products-regularly-overp"
+  },
+  {
+    "id": 31,
+    "title": "Search for a controlled and stable channel for attracting clients to a banquet hall, as an alternative to unpredictable social media advertising",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Business,AI,Other",
+    "country": "Algeria",
+    "date": "2026-01-18",
+    "url": "https://problemhunt.pro/en/marketing-sales/g9lxp72ug1-search-for-a-controlled-and-stable-chann"
+  },
+  {
+    "id": 32,
+    "title": "Marketing directors and founders have nowhere to find verified contractors (targeting specialists, SMM managers) — the existing search process is a lottery that wastes time and budget",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Business,Freelance,HR & Career,Other",
+    "country": "Russia",
+    "date": "2026-01-17",
+    "url": "https://problemhunt.pro/en/marketing-sales/lk4uc1xvl1-marketing-directors-and-founders-have-no"
+  },
+  {
+    "id": 33,
+    "title": "It's impossible to donate to animal shelters due to complete distrust in charity fundraisers. There is no service with guaranteed transparency and audit",
     "category": "Other",
     "tags": "Other",
-    "country": "USA",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/other/zl5u6f1yq1-parents-cant-find-trusted-affordable-chil"
+    "country": "Russia",
+    "date": "2026-01-17",
+    "url": "https://problemhunt.pro/en/other/1adxzgi7b1-its-impossible-to-donate-to-animal-shelt"
   },
   {
-    "id": 58,
-    "title": "Freelancers and remote workers waste hours tracking time, sending invoices, and chasing payments. No single tool automates the full cycle from work → invoice → payment.",
-    "category": "Freelance",
-    "tags": "Freelance,Finance,Productivity,Other",
-    "country": "USA",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/freelance/0k2vgqrlg1-freelancers-and-remote-workers-waste-hou"
-  },
-  {
-    "id": 59,
-    "title": "Non-native English speakers waste time and mental energy manually proofreading professional communication. Existing AI tools don't adapt to personal style or professional context.",
+    "id": 34,
+    "title": "Aviation safety expert seeks a technical co-founder to develop an AI solution that prevents daily collisions between aircraft and birds/drones — a problem causing massive losses.",
     "category": "Ai",
-    "tags": "AI,Education,Other",
-    "country": "UK",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/ai/e6qhfpkxd1-non-native-english-speakers-waste-time-an"
+    "tags": "AI,Dev,Logistics & Delivery,Travel,Hardware,Other",
+    "country": "France",
+    "date": "2026-01-13",
+    "url": "https://problemhunt.pro/en/ai/9g9de9og51-aviation-safety-expert-seeks-a-technical"
   },
   {
-    "id": 60,
-    "title": "EV owners can't plan road trips confidently — charging apps show wrong availability, incompatible connectors, and unreliable stations. No single tool solves the full journey.",
-    "category": "Transportation",
-    "tags": "Transportation,AI,Other",
+    "id": 35,
+    "title": "No way for city residents to order delivery from local stores to their elderly relatives in remote villages",
+    "category": "Logistics Delivery",
+    "tags": "Logistics & Delivery,Retail,Other",
+    "country": "Russia",
+    "date": "2026-01-13",
+    "url": "https://problemhunt.pro/en/logistics-delivery/kos2aznku1-no-way-for-city-residents-to-order-deliv"
+  },
+  {
+    "id": 36,
+    "title": "Startups at the monetization validation stage have nowhere to quickly start accepting payments without company registration to test demand for their MVP.",
+    "category": "Vc Startups",
+    "tags": "VC & Startups,Legal,Finance,Business,Other",
+    "country": "Morocco",
+    "date": "2026-01-10",
+    "url": "https://problemhunt.pro/en/vc-startups/elj91ej9k1-startups-at-the-monetization-validation"
+  },
+  {
+    "id": 37,
+    "title": "Parents lack precise warnings about violent scenes in movies to safely watch films with their children",
+    "category": "Media",
+    "tags": "Media,Other",
+    "country": "India",
+    "date": "2026-01-10",
+    "url": "https://problemhunt.pro/en/media/ar3ebnm6c1-parents-lack-precise-warnings-about-viol"
+  },
+  {
+    "id": 38,
+    "title": "Solar installation companies lack a platform for end-to-end tracking of a customer's project — from sale to official approval, causing complaints and dissatisfaction",
+    "category": "Business",
+    "tags": "Business,Marketing & Sales,Other",
+    "country": "Brazil",
+    "date": "2026-01-10",
+    "url": "https://problemhunt.pro/en/business/ldt9cicmy1-solar-installation-companies-lack-a-plat"
+  },
+  {
+    "id": 39,
+    "title": "It's difficult for parents of newborns in India to organize vaccination: there is no service for easy doctor search and a «turnkey» process provision.",
+    "category": "Medicine Health",
+    "tags": "Medicine & Health,Other",
+    "country": "India",
+    "date": "2026-01-09",
+    "url": "https://problemhunt.pro/en/medicine-health/o94v8yjuj1-its-difficult-for-parents-of-newborns-in"
+  },
+  {
+    "id": 40,
+    "title": "Researchers have nowhere to get an exhaustive overview of what has been done in their field, leading to the risk of duplicating work",
+    "category": "Ai",
+    "tags": "AI,Other",
+    "country": "France",
+    "date": "2026-01-08",
+    "url": "https://problemhunt.pro/en/ai/t3i6ddxjb1-researchers-have-nowhere-to-get-an-exhau"
+  },
+  {
+    "id": 41,
+    "title": "The owner of a relaunched bar on the French coast cannot attract an audience in the evening due to the legacy of its past format (nightclub) and its isolated location",
+    "category": "Business",
+    "tags": "Business,Travel,Other",
+    "country": "France",
+    "date": "2026-01-07",
+    "url": "https://problemhunt.pro/en/business/tuolr4jo61-the-owner-of-a-relaunched-bar-on-the-fre"
+  },
+  {
+    "id": 42,
+    "title": "Problem Analysis: Owners of small B2B businesses cannot build a growth system. Do they need a fractional CMO, or can a SaaS be built?",
+    "category": "Business",
+    "tags": "Business,Marketing & Sales,AI,Other",
+    "country": "France",
+    "date": "2026-01-06",
+    "url": "https://problemhunt.pro/en/business/3pb7gtrku1-problem-analysis-owners-of-small-b2b-bus"
+  },
+  {
+    "id": 43,
+    "title": "Fans of paper planners lack an iPad app that would allow importing PDF layout templates and using them as a foundation for digital notes",
+    "category": "Productivity",
+    "tags": "Productivity,Other",
     "country": "USA",
-    "date": "2026-01-16",
-    "url": "https://problemhunt.pro/en/transportation/gg1xgnp1n1-ev-owners-cant-plan-road-trips-confident"
+    "date": "2026-01-06",
+    "url": "https://problemhunt.pro/en/productivity/l3grb6t2f1-fans-of-paper-planners-lack-an-ipad-app"
   },
   {
-    "id": 61,
+    "id": 44,
+    "title": "Startup founders get lost in legal, accounting, and administrative tasks after incorporation, leading to stress and risks due to the lack of a clear, step-by-step plan.",
+    "category": "Legal",
+    "tags": "Legal,Business,VC & Startups,AI,Other",
+    "country": "USA",
+    "date": "2026-01-06",
+    "url": "https://problemhunt.pro/en/legal/6rdbp6php1-startup-founders-get-lost-in-legal-accou"
+  },
+  {
+    "id": 45,
+    "title": "UK property investors have nowhere to quickly and reliably assess refurbishment costs and find verified contractors, leading to weeks of delays and financial risks.",
+    "category": "Business",
+    "tags": "Business,Other",
+    "country": "UK",
+    "date": "2026-01-03",
+    "url": "https://problemhunt.pro/en/business/pu341olhc1-uk-property-investors-have-nowhere-to-qu"
+  },
+  {
+    "id": 46,
+    "title": "Immigrants lack an AI service for finding familiar and verified places (pharmacies, doctors, banks) in a new country, causing daily stress and time loss",
+    "category": "Zlt9tnxv31 Immigrants Lack An Ai Service For Findin",
+    "tags": "Immigration,AI,Other",
+    "country": "Serbia",
+    "date": "2026-01-03",
+    "url": "https://problemhunt.pro/en/zlt9tnxv31-immigrants-lack-an-ai-service-for-findin"
+  },
+  {
+    "id": 47,
+    "title": "Regional media outlets lack news: there is no service for automatically finding local events and topics not yet covered by competitors",
+    "category": "Media",
+    "tags": "Media,AI,Other",
+    "country": "Russia",
+    "date": "2026-01-03",
+    "url": "https://problemhunt.pro/en/media/hap6bnpjo1-regional-media-outlets-lack-news-there-i"
+  },
+  {
+    "id": 48,
+    "title": "Startup founders have nowhere to order quality, in-depth research on specific projects or niches — existing services provide superficial and unreliable reports",
+    "category": "Vc Startups",
+    "tags": "VC & Startups,AI,Other",
+    "country": "USA",
+    "date": "2026-01-03",
+    "url": "https://problemhunt.pro/en/vc-startups/l74cvddaj1-startup-founders-have-nowhere-to-order-q"
+  },
+  {
+    "id": 49,
+    "title": "Clients struggle to verify the competence and pricing honesty of freelancers when creating websites — there is no AI tool for real-time proposal analysis.",
+    "category": "Freelance",
+    "tags": "Freelance,AI,Other",
+    "country": "USA",
+    "date": "2025-12-26",
+    "url": "https://problemhunt.pro/en/freelance/ousnmj63l1-clients-struggle-to-verify-the-competenc"
+  },
+  {
+    "id": 50,
+    "title": "Owners of niche Telegram channels lack a service for automatically finding and organizing cross-promotion with relevant channels without spending hours on manual selection and negotiations",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Other",
+    "country": "USA",
+    "date": "2025-12-22",
+    "url": "https://problemhunt.pro/en/marketing-sales/kfsnhgszj1-owners-of-niche-telegram-channels-lack-a"
+  },
+  {
+    "id": 51,
     "title": "Startup teams have nowhere to find relevant custdev participants (people for interviews) to test early ideas and prototypes without overpaying for biased feedback",
     "category": "Vc Startups",
     "tags": "VC & Startups,Other",
@@ -549,7 +459,7 @@
     "url": "https://problemhunt.pro/en/vc-startups/frug7pmx31-startup-teams-have-nowhere-to-find-relev"
   },
   {
-    "id": 62,
+    "id": 52,
     "title": "No device allows a 4-year-old child to independently stream music to a speaker over Wi-Fi without using a phone, tablet, or increasing screen time",
     "category": "Hardware",
     "tags": "Hardware,Other",
@@ -558,346 +468,436 @@
     "url": "https://problemhunt.pro/en/hardware/eopralbt51-no-device-allows-a-4-year-old-child-to-i"
   },
   {
-    "id": 63,
+    "id": 53,
     "title": "Indie developers have nowhere to cheaply and effectively find the first 50-100 active users to test new niche products.",
     "category": "Marketing Sales",
     "tags": "Marketing & Sales,VC & Startups,Other",
     "country": "Russia",
     "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/marketing-sales/tok505klc1-indie-developers-ha"
+    "url": "https://problemhunt.pro/en/marketing-sales/tok505klc1-indie-developers-have-nowhere-to-cheaply"
+  },
+  {
+    "id": 54,
+    "title": "People with a criminal past cannot reintegrate into society because their real skills are «invisible»",
+    "category": "Hr Career",
+    "tags": "HR & Career,Legal,AI,Other",
+    "country": "Norway",
+    "date": "2025-12-11",
+    "url": "https://problemhunt.pro/en/hr-career/krxg2n1ge1-people-with-a-criminal-past-cannot-reint"
+  },
+  {
+    "id": 55,
+    "title": "Startup founders lack a safe space for psychological support during moments of burnout and loneliness",
+    "category": "Psychology",
+    "tags": "Psychology,VC & Startups,Productivity,Other",
+    "country": "Serbia",
+    "date": "2025-12-11",
+    "url": "https://problemhunt.pro/en/psychology/r15v6zgeg1-startup-founders-lack-a-safe-space-for-p"
+  },
+  {
+    "id": 56,
+    "title": "First physical product problem on ProblemHunt: In Norway, you can't enter a building wearing shoes with spikes or roll in a bicycle with winter tires — no convenient protective pads exist",
+    "category": "Hardware",
+    "tags": "Hardware,Other",
+    "country": "Norway",
+    "date": "2025-12-10",
+    "url": "https://problemhunt.pro/en/hardware/0xut3v4y21-first-physical-product-problem-on-proble"
+  },
+  {
+    "id": 57,
+    "title": "Indian small-scale waste processors lack simple B2B tools for finding suppliers and controlling copper quality",
+    "category": "Business",
+    "tags": "Business,Other",
+    "country": "India",
+    "date": "2025-12-07",
+    "url": "https://problemhunt.pro/en/business/2ge6lbk8e1-indian-small-scale-waste-processors-lack"
+  },
+  {
+    "id": 58,
+    "title": "SaaS founders lack a platform for finding partners and organizing joint advertising campaigns with bloggers to reduce costs by 5 times while maintaining the same reach",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Other",
+    "country": "USA",
+    "date": "2025-12-07",
+    "url": "https://problemhunt.pro/en/marketing-sales/jeh9mn47u1-saas-founders-lack-a-platform-for-findin"
+  },
+  {
+    "id": 59,
+    "title": "Trust crisis in India's UPI payments: fear of stranger transfers hurts business",
+    "category": "Finance",
+    "tags": "Finance,Legal,Other",
+    "country": "India",
+    "date": "2025-12-07",
+    "url": "https://problemhunt.pro/en/finance/jrrxhgsoh1-trust-crisis-in-indias-upi-payments-fear"
+  },
+  {
+    "id": 60,
+    "title": "Traders lose money due to emotional decisions (fear, greed) and lack a tool for real-time control of their psychological state during trading",
+    "category": "Psychology",
+    "tags": "Psychology,AI,Finance,Other",
+    "country": "India",
+    "date": "2025-12-06",
+    "url": "https://problemhunt.pro/en/psychology/vhe68ui8b1-traders-lose-money-due-to-emotional-deci"
+  },
+  {
+    "id": 61,
+    "title": "Owners of modern Macs can't launch old games due to complex instructions involving emulators and file conversion",
+    "category": "Other",
+    "tags": "Other",
+    "country": "UK",
+    "date": "2025-12-04",
+    "url": "https://problemhunt.pro/en/other/ff5gcnrro1-owners-of-modern-macs-cant-launch-old-ga"
+  },
+  {
+    "id": 62,
+    "title": "LinkedIn content creators operate blindly: they see the results but don't understand the reasons behind their posts' success or failure",
+    "category": "Media",
+    "tags": "Media,Marketing & Sales,Other",
+    "country": "India",
+    "date": "2025-12-02",
+    "url": "https://problemhunt.pro/en/media/ja0oyjzdd1-linkedin-content-creators-operate-blindl"
+  },
+  {
+    "id": 63,
+    "title": "Impossible to find quality Web3 projects and communities due to information noise and fraud",
+    "category": "Finance",
+    "tags": "Finance,Other",
+    "country": "Netherlands",
+    "date": "2025-12-01",
+    "url": "https://problemhunt.pro/en/finance/1yr4ejpc51-impossible-to-find-quality-web3-projects"
   },
   {
     "id": 64,
-    "title": "An expat in Germany is lost in the health insurance system — doesn't know which type of insurance to choose, gets conflicting advice, and can't assess long-term risks.",
-    "category": "Immigration",
-    "tags": "Immigration,Finance,Medicine & Health,Legal,Other",
-    "country": "Germany",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/immigration/1npspv3uw1-an-expat-in-germany-is-lost-in-the-healt"
+    "title": "No access to mentors from real experts to start in the real estate field",
+    "category": "Education",
+    "tags": "Education,Other",
+    "country": "India",
+    "date": "2025-12-01",
+    "url": "https://problemhunt.pro/en/education/x9ojkb1fc1-no-access-to-mentors-from-real-experts-t"
   },
   {
     "id": 65,
-    "title": "Lack of a clear, structured plan for integrating into German society after relocating — language, documents, job search, and social connections are not combined in any one service.",
-    "category": "Immigration",
-    "tags": "Immigration,Education,Legal,Other",
-    "country": "Germany",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/immigration/0r5u6imzv1-lack-of-a-clear-structured-plan-for-inte"
+    "title": "The problem of discrimination, wage delays, and fear of firing/deportation among immigrant construction workers in the USA",
+    "category": "Ydplsur631 The Problem Of Discrimination Wage Delay",
+    "tags": "Immigration,HR & Career,Legal,Other",
+    "country": "USA",
+    "date": "2025-12-01",
+    "url": "https://problemhunt.pro/en/ydplsur631-the-problem-of-discrimination-wage-delay"
   },
   {
     "id": 66,
-    "title": "A designer wastes time by manually selecting and sorting references for mood boards — there's no AI tool that clusters images by visual style, color palette, or composition.",
-    "category": "Design Creative",
-    "tags": "Design & Creative,AI,Other",
-    "country": "USA",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/design-creative/4thd5lw351-a-designer-wastes-time-by-manually-selec"
+    "title": "A complex SaaS needs a tool for adaptive and visual explanation of the product to different audiences",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Other",
+    "country": "India",
+    "date": "2025-12-01",
+    "url": "https://problemhunt.pro/en/marketing-sales/kvgpxv6py1-a-complex-saas-needs-a-tool-for-adaptive"
   },
   {
     "id": 67,
-    "title": "European HR professionals spend 3–5 hours per hire navigating fragmented and contradictory labor law requirements across EU jurisdictions.",
-    "category": "Hr Career",
-    "tags": "HR & Career,Legal,AI,Other",
-    "country": "Germany",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/hr-career/t6kkkwvn61-european-hr-professionals-spend-35-hours"
+    "title": "No quick, cheap fix for leaky faucets: no clear DIY guide or affordable plumber",
+    "category": "Other",
+    "tags": "Other",
+    "country": "India",
+    "date": "2025-12-01",
+    "url": "https://problemhunt.pro/en/other/e59sb30221-no-quick-cheap-fix-for-leaky-faucets-no"
   },
   {
     "id": 68,
-    "title": "People can't split restaurant bills fairly when orders differ in cost — existing apps require everyone to download them and still don't handle shared items properly.",
-    "category": "Finance",
-    "tags": "Finance,Food & Nutrition,Other",
-    "country": "UK",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/finance/5z4z3bpel1-people-cant-split-restaurant-bills-fairl"
+    "title": "Regular loss of tax credits among immigrants in the US",
+    "category": "Unnnxi3m71 Regular Loss Of Tax Credits Among Immigr",
+    "tags": "Immigration,Legal,Finance,Other",
+    "country": "USA",
+    "date": "2025-11-26",
+    "url": "https://problemhunt.pro/en/unnnxi3m71-regular-loss-of-tax-credits-among-immigr"
   },
   {
     "id": 69,
-    "title": "Product teams waste weeks building features no one wants — there's no lightweight tool that validates user demand before writing a single line of code.",
-    "category": "Dev",
-    "tags": "Dev,VC & Startups,Other",
-    "country": "USA",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/dev/z8c5nfbxg1-product-teams-waste-weeks-building-featur"
+    "title": "The problem of multi-platform KYC/KYB processes in fintech leading to specialist burnout",
+    "category": "Ai",
+    "tags": "AI,Finance,Business,Other",
+    "country": "France",
+    "date": "2025-11-26",
+    "url": "https://problemhunt.pro/en/ai/u4jsvhe931-the-problem-of-multi-platform-kyckyb-pro"
   },
   {
     "id": 70,
-    "title": "Travellers have nowhere to rent tested and verified outdoor gear for trips — existing rental services have poor inventory, no quality guarantees, and complex logistics.",
-    "category": "Travel",
-    "tags": "Travel,Retail,Logistics & Delivery,Other",
-    "country": "UK",
-    "date": "2025-12-11",
-    "url": "https://problemhunt.pro/en/travel/wv8qjnqd21-travellers-have-nowhere-to-rent-tested-an"
+    "title": "Lack of a simple and convenient reminder system in WhatsApp",
+    "category": "Productivity",
+    "tags": "Productivity,Business,Marketing & Sales,Other",
+    "country": "UAE",
+    "date": "2025-11-26",
+    "url": "https://problemhunt.pro/en/productivity/3tct7tk731-lack-of-a-simple-and-convenient-reminder"
   },
   {
     "id": 71,
+    "title": "No convenient platform for finding and purchasing quality products from local farms in small wholesale quantities",
+    "category": "Food Nutrition",
+    "tags": "Food & Nutrition,AgTech,Logistics & Delivery,Retail,Other",
+    "country": "Russia",
+    "date": "2025-11-26",
+    "url": "https://problemhunt.pro/en/food-nutrition/2mrn1lzlp1-no-convenient-platform-for-finding-and-p"
+  },
+  {
+    "id": 72,
+    "title": "The problem of manual processing of logistics documentation and lack of unified databases in a Mexican company",
+    "category": "Logistics Delivery",
+    "tags": "Logistics & Delivery,Business,Other",
+    "country": "Mexico",
+    "date": "2025-11-20",
+    "url": "https://problemhunt.pro/en/logistics-delivery/phshnmzd51-the-problem-of-manual-processing-of-logi"
+  },
+  {
+    "id": 73,
+    "title": "A year of searching for an affordable solution for remote US business opening without citizenship",
+    "category": "Business",
+    "tags": "Business,Legal,Other",
+    "country": "USA",
+    "date": "2025-11-20",
+    "url": "https://problemhunt.pro/en/business/zosvs04rp1-a-year-of-searching-for-an-affordable-so"
+  },
+  {
+    "id": 74,
+    "title": "Difficulty of remote housing rental in the USA for foreigners without credit history and American guarantors",
+    "category": "Ngmhk91121 Difficulty Of Remote Housing Rental In T",
+    "tags": "Immigration,Other",
+    "country": "USA",
+    "date": "2025-11-18",
+    "url": "https://problemhunt.pro/en/ngmhk91121-difficulty-of-remote-housing-rental-in-t"
+  },
+  {
+    "id": 75,
     "title": "Automation of resume filling for recruiters — saving 40-60 minutes on each candidate",
     "category": "Hr Career",
     "tags": "HR & Career,AI,Other",
     "country": "Russia",
-    "date": "2025-11-27",
+    "date": "2025-11-18",
     "url": "https://problemhunt.pro/en/hr-career/0s98al0y01-automation-of-resume-filling-for-recruit"
   },
   {
-    "id": 72,
+    "id": 76,
     "title": "Protection against fraudulent schemes in trading and cryptocurrency investments",
     "category": "Finance",
-    "tags": "Finance,AI,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
+    "tags": "Finance,Legal,Other",
+    "country": "Madagascar",
+    "date": "2025-11-18",
     "url": "https://problemhunt.pro/en/finance/lux1195af1-protection-against-fraudulent-schemes-in"
   },
   {
-    "id": 73,
+    "id": 77,
     "title": "Search for an effective cleaning business management solution",
     "category": "Business",
     "tags": "Business,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
+    "country": "USA",
+    "date": "2025-11-14",
     "url": "https://problemhunt.pro/en/business/57nszufsz1-search-for-an-effective-cleaning-busines"
   },
   {
-    "id": 74,
+    "id": 78,
     "title": "Can't start a photography and videography business due to lack of clients and systematic approach",
     "category": "Business",
     "tags": "Business,Marketing & Sales,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
+    "country": "Kenya",
+    "date": "2025-11-14",
     "url": "https://problemhunt.pro/en/business/97fb1l9m21-cant-start-a-photography-and-videography"
   },
   {
-    "id": 75,
+    "id": 79,
     "title": "Finding buyers in the UK for Nigerian food products for export",
     "category": "Business",
-    "tags": "Business,Marketing & Sales,Logistics & Delivery,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/business/nj2h0b8kp1-find"
-  },
-  {
-    "id": 76,
-    "title": "High translation costs for educational courses force creators to stay in one language, losing 80%+ of potential global audience",
-    "category": "Education",
-    "tags": "Education,AI,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/education/uh2d4mhso1-high-translation-costs-for-educational-co"
-  },
-  {
-    "id": 77,
-    "title": "In Russia, working as a freelance designer is highly insecure: clients disappear without paying, and legal protection is nearly impossible",
-    "category": "Freelance",
-    "tags": "Freelance,Legal,Design & Creative,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/freelance/1owjnvl2d1-in-russia-working-as-a-freelance-design"
-  },
-  {
-    "id": 78,
-    "title": "Parents feel helpless when their children show signs of depression or anxiety — there's no tool that helps families navigate youth mental health together",
-    "category": "Psychology",
-    "tags": "Psychology,Medicine & Health,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/psychology/8rklcw78k1-parents-feel-helpless-when-their-childre"
-  },
-  {
-    "id": 79,
-    "title": "IT professionals are overwhelmed managing multiple AI subscriptions and tools — there's no unified platform to replace scattered AI services",
-    "category": "Ai",
-    "tags": "AI,Dev,Productivity,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/ai/c2vmfbq8c1-it-professionals-are-overwhelmed-managing"
+    "tags": "Business,Marketing & Sales,Other",
+    "country": "Nigeria",
+    "date": "2025-11-14",
+    "url": "https://problemhunt.pro/en/business/nj2h0b8kp1-finding-buyers-in-the-uk-for-nigerian-fo"
   },
   {
     "id": 80,
-    "title": "When children fall ill in Russia, parents can't find reliable emergency dental care — current services are unreachable, unvetted, or lack child-appropriate care",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Other",
-    "country": "Russia",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/medicine-health/yf5hy3sbs1-when-children-fall-ill-in-russia-parents"
+    "title": "High costs and complexity of API integration for launching a travel website",
+    "category": "Dev",
+    "tags": "Dev,Travel,Other",
+    "country": "India",
+    "date": "2025-11-14",
+    "url": "https://problemhunt.pro/en/dev/fyf4aet6g1-high-costs-and-complexity-of-api-integra"
   },
   {
     "id": 81,
-    "title": "Parents who value education can't find a reliable and curated list of the best schools in their area — existing reviews are biased, fragmented, and don't reflect real academic performance.",
-    "category": "Education",
-    "tags": "Education,Other",
-    "country": "India",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/education/4uvb9xvn81-parents-who-value-education-cant-find-a-r"
+    "title": "Inability to get a response to complaints from companies",
+    "category": "Legal",
+    "tags": "Legal,AI,Other",
+    "country": "Argentina",
+    "date": "2025-11-14",
+    "url": "https://problemhunt.pro/en/legal/7aa0fv3651-inability-to-get-a-response-to-complaint"
   },
   {
     "id": 82,
-    "title": "Developing a scalable solution for converting plastic waste into useful fuel in underserved communities",
-    "category": "Other",
-    "tags": "Other",
-    "country": "Ghana",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/other/gfm7a1e6p1-developing-a-scalable-solution-for-conver"
+    "title": "A teacher needs a specialized «ChatGPT for video editing»",
+    "category": "Education",
+    "tags": "Education,Media,AI,Other",
+    "country": "USA",
+    "date": "2025-11-14",
+    "url": "https://problemhunt.pro/en/education/15ig65exr1-a-teacher-needs-a-specialized-chatgpt-fo"
   },
   {
     "id": 83,
-    "title": "Recruiters have no way to truly verify a developer's skills — resumes are unreliable, interviews test the wrong things, and coding assessments are easily gamed.",
-    "category": "Hr Career",
-    "tags": "HR & Career,Dev,AI,Other",
-    "country": "USA",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/hr-career/0bkfn3y4p1-recruiters-have-no-way-to-truly-verify-"
+    "title": "Difficulties with content localization and dubbing for TV channel",
+    "category": "Media",
+    "tags": "Media,AI,Other",
+    "country": "Jordan",
+    "date": "2025-11-14",
+    "url": "https://problemhunt.pro/en/media/c1u4lh83p1-difficulties-with-content-localization-a"
   },
   {
     "id": 84,
-    "title": "A developer wastes hours debugging production issues across scattered logs, traces, and dashboards — there's no AI co-pilot that correlates signals and pinpoints root causes.",
-    "category": "Dev",
-    "tags": "Dev,AI,Other",
-    "country": "USA",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/dev/6qwjvj5qj1-a-developer-wastes-hours-debugging-produc"
+    "title": "Problem of product selection and production capacity planning",
+    "category": "Business",
+    "tags": "Business,Other",
+    "country": "India",
+    "date": "2025-11-13",
+    "url": "https://problemhunt.pro/en/business/cbc7zd9891-problem-of-product-selection-and-product"
   },
   {
     "id": 85,
-    "title": "Small restaurant owners in developing countries lose 15-25% of revenue to food waste because they can't predict daily demand, and existing tools are too complex and expensive for them.",
-    "category": "Food Nutrition",
-    "tags": "Food & Nutrition,AI,Business,Other",
-    "country": "Brazil",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/food-nutrition/cwfwknf8d1-small-restaurant-owners-in-developing-co"
+    "title": "Low trust level in Nigerian e-commerce due to lack of reliable logistics service",
+    "category": "Logistics Delivery",
+    "tags": "Logistics & Delivery,Business,Retail,Other",
+    "country": "Nigeria",
+    "date": "2025-11-13",
+    "url": "https://problemhunt.pro/en/logistics-delivery/8msk10fu31-low-trust-level-in-nigerian-e-commerce-d"
   },
   {
     "id": 86,
-    "title": "Landlords with 3-20 rental units waste 10+ hours/week on manual management — existing property management software is built for large portfolios and too complex for small operators.",
-    "category": "Realty",
-    "tags": "Realty,Business,AI,Other",
-    "country": "USA",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/realty/gxiof0m0q1-landlords-with-320-rental-units-waste-10"
+    "title": "Problem of market access for francophone African freelancers",
+    "category": "Freelance",
+    "tags": "Freelance,HR & Career,Other",
+    "country": "Cameroon",
+    "date": "2025-11-13",
+    "url": "https://problemhunt.pro/en/freelance/kh7v4kr3i1-problem-of-market-access-for-francophone"
   },
   {
     "id": 87,
-    "title": "Searching for a privacy-oriented personal AI assistant that can work with local data, schedule events, and manage tasks without sending data to third-party servers.",
-    "category": "Ai",
-    "tags": "AI,Productivity,Dev,Other",
-    "country": "USA",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/ai/yvrlygfx61-searching-for-a-privacy-oriented-personal"
+    "title": "There is no effective tool for researching high-margin and small e-commerce products",
+    "category": "Retail",
+    "tags": "Retail,Business,AI,Other",
+    "country": "Australia",
+    "date": "2025-11-13",
+    "url": "https://problemhunt.pro/en/retail/yjz80tm2z1-there-is-no-effective-tool-for-researchi"
   },
   {
     "id": 88,
-    "title": "Sports bettors in Africa waste time manually comparing odds — no local tool aggregates bookmakers, tracks line movements, or offers real-time value alerts.",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,AI,Other",
-    "country": "Nigeria",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/sport-fitness/f6v9djk9j1-sports-bettors-in-africa-waste-time-manu"
+    "title": "Need a AI-bot for analyzing car and real estate prices",
+    "category": "Ai",
+    "tags": "AI,Other",
+    "country": "Russia",
+    "date": "2025-11-13",
+    "url": "https://problemhunt.pro/en/ai/lbdzym5un1-need-a-ai-bot-for-analyzing-car-and-real"
   },
   {
     "id": 89,
-    "title": "A person with ADHD can't maintain consistent workout habits — fitness apps assume neurotypical motivation and fail to account for executive dysfunction and variable energy.",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,Psychology,AI,Other",
-    "country": "UK",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/sport-fitness/4c9e8gmm31-a-person-with-adhd-cant-maintain-consist"
+    "title": "AI assistants can't handle Feynman learning technique",
+    "category": "Education",
+    "tags": "Education,AI,Other",
+    "country": "China",
+    "date": "2025-11-12",
+    "url": "https://problemhunt.pro/en/education/tnjlstt8s1-ai-assistants-cant-handle-feynman-learni"
   },
   {
     "id": 90,
-    "title": "Seniors and their families can't find trustworthy in-home care — existing agencies are expensive, unvetted, and don't match caregivers to specific needs.",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Other",
-    "country": "USA",
-    "date": "2025-11-27",
-    "url": "https://problemhunt.pro/en/medicine-health/h3r80dkvf1-seniors-and-their-families-cant-find-tru"
+    "title": "GPS-based taxi and delivery solution for Zimbabwe",
+    "category": "Logistics Delivery",
+    "tags": "Logistics & Delivery,Other",
+    "country": "Zimbabwe",
+    "date": "2025-11-12",
+    "url": "https://problemhunt.pro/en/logistics-delivery/m71idr7761-gps-based-taxi-and-delivery-solution-for"
   },
   {
     "id": 91,
-    "title": "Searching for a simple tool that captures quick tasks and thoughts on the go without switching apps, and organizes them automatically.",
-    "category": "Productivity",
-    "tags": "Productivity,AI,Other",
-    "country": "Russia",
-    "date": "2025-11-24",
-    "url": "https://problemhunt.pro/en/productivity/8xlq51spu1-searching-for-a-simple-tool-that-capture"
+    "title": "Problem of marketing automation for SaaS products",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Media,Other",
+    "country": "USA",
+    "date": "2025-11-09",
+    "url": "https://problemhunt.pro/en/marketing-sales/mrcgth24s1-problem-of-marketing-automation-for-saas"
   },
   {
     "id": 92,
-    "title": "Searching for a legal review tool that explains important clauses and potential risks in contracts, using AI that works across different jurisdictions",
-    "category": "Legal",
-    "tags": "Legal,AI,Other",
-    "country": "USA",
-    "date": "2025-11-20",
-    "url": "https://problemhunt.pro/en/legal/bpqr1kfng1-searching-for-a-legal-review-tool-that-ex"
+    "title": "Problem of promoting on Reddit for beginners",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,AI,Other",
+    "country": "UK",
+    "date": "2025-11-09",
+    "url": "https://problemhunt.pro/en/marketing-sales/rs2248ze51-problem-of-promoting-on-reddit-for-begin"
   },
   {
     "id": 93,
-    "title": "Entrepreneurs and managers spend too much time in routine meetings instead of focusing on strategic work",
-    "category": "Productivity",
-    "tags": "Productivity,AI,Business,Other",
-    "country": "Russia",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/productivity/9v6h67jqf1-entrepreneurs-and-managers-spend-too-much"
+    "title": "Problem of finding a workout partner in a new gym",
+    "category": "Sport Fitness",
+    "tags": "Sport & Fitness,Other",
+    "country": "India",
+    "date": "2025-11-08",
+    "url": "https://problemhunt.pro/en/sport-fitness/59adku49n1-problem-of-finding-a-workout-partner-in"
   },
   {
     "id": 94,
-    "title": "Dog owners can't find reliable, available dog walkers for regular walks — existing platforms have inconsistent quality, no real-time availability, and lack proper pet handling verification.",
-    "category": "Other",
-    "tags": "Other",
-    "country": "USA",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/other/vkc1agz5u1-dog-owners-cant-find-reliable-available-d"
+    "title": "Export procedure solution for Pakistan to Europe trade",
+    "category": "Legal",
+    "tags": "Legal,Business,Marketing & Sales,Other",
+    "country": "Pakistan",
+    "date": "2025-11-07",
+    "url": "https://problemhunt.pro/en/legal/bua99xjl81-export-procedure-solution-for-pakistan-t"
   },
   {
     "id": 95,
-    "title": "Fashion brands can't produce custom clothing at scale — MOQs are too high, lead times too long, and small brands get ignored by manufacturers.",
-    "category": "Retail",
-    "tags": "Retail,Design & Creative,Business,Other",
-    "country": "UK",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/retail/sdqyq5hwj1-fashion-brands-cant-produce-custom-cloth"
+    "title": "Problem of access to loans for immigrants in the EU",
+    "category": "Lhvgiz7hs1 Problem Of Access To Loans For Immigrant",
+    "tags": "Immigration,Finance,Legal,Other",
+    "country": "Portugal",
+    "date": "2025-11-06",
+    "url": "https://problemhunt.pro/en/lhvgiz7hs1-problem-of-access-to-loans-for-immigrant"
   },
   {
     "id": 96,
-    "title": "Struggling to make a profit running an Airbnb cleaning business in NYC due to high costs, slow turnovers, and inconsistent standards across multiple properties.",
-    "category": "Business",
-    "tags": "Business,Realty,Other",
-    "country": "USA",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/business/lgv9nmqsn1-struggling-to-make-a-profit-running-an-a"
+    "title": "Problem of entering the AI automation market without technical experience",
+    "category": "Ai",
+    "tags": "AI,Business,Education,Other",
+    "country": "India",
+    "date": "2025-11-06",
+    "url": "https://problemhunt.pro/en/ai/gtd8o0taz1-problem-of-entering-the-ai-automation-ma"
   },
   {
     "id": 97,
-    "title": "Online learning platforms don't adapt to how you actually learn — everyone gets the same videos and quizzes regardless of skill level, learning pace, or comprehension style.",
-    "category": "Education",
-    "tags": "Education,AI,Other",
-    "country": "India",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/education/roh6apx6h1-online-learning-platforms-dont-adapt-to-"
+    "title": "Image-based furniture and materials search service for designers",
+    "category": "Design Creative",
+    "tags": "Design & Creative,AI,Other",
+    "country": "USA",
+    "date": "2025-11-06",
+    "url": "https://problemhunt.pro/en/design-creative/n8bf3rlru1-image-based-furniture-and-materials-sear"
   },
   {
     "id": 98,
-    "title": "Buying prescription glasses online is frustrating — virtual try-on is inaccurate, PD measurement is confusing, and there's no reliable way to know how frames will fit your face.",
-    "category": "Retail",
-    "tags": "Retail,AI,Medicine & Health,Other",
-    "country": "USA",
-    "date": "2025-11-19",
-    "url": "https://problemhunt.pro/en/retail/naxq6qe331-buying-prescription-glasses-online-is-fru"
+    "title": "Need simple application testing tool without programming",
+    "category": "Dev",
+    "tags": "Dev,AI,No-Code,Other",
+    "country": "Kenya",
+    "date": "2025-11-04",
+    "url": "https://problemhunt.pro/en/dev/ved547b251-need-simple-application-testing-tool-wit"
   },
   {
     "id": 99,
-    "title": "Job seekers spend weeks applying to dozens of jobs with no response — existing platforms don't match skills to realistic opportunities or help optimize applications.",
-    "category": "Hr Career",
-    "tags": "HR & Career,AI,Other",
-    "country": "UK",
-    "date": "2025-11-01",
-    "url": "https://problemhunt.pro/en/hr-career/5vx3wkcx01-job-seekers-spend-weeks-applying-to-doze"
+    "title": "Lack of a unified hub for tasks from different services",
+    "category": "Productivity",
+    "tags": "Productivity,Other",
+    "country": "Serbia",
+    "date": "2025-11-04",
+    "url": "https://problemhunt.pro/en/productivity/7pukf4c5a1-lack-of-a-unified-hub-for-tasks-from-dif"
   },
   {
     "id": 100,
-    "title": "Finding affordable accounting services for micro-businesses",
-    "category": "Finance",
-    "tags": "Finance,Business,Other",
-    "country": "Uzbekistan",
-    "date": "2025-11-01",
-    "url": "https://problemhunt.pro/en/finance/nkm33xlb71-finding-affordable-accounting-services-fo"
+    "title": "Automating B2B Marketing: database segmentation, client profiling, and contact parsing",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,AI,Other",
+    "country": "Russia",
+    "date": "2025-11-04",
+    "url": "https://problemhunt.pro/en/marketing-sales/8kr7mskh41-automating-b2b-marketing-database-segmen"
   },
   {
     "id": 101,
@@ -930,334 +930,334 @@
     "id": 104,
     "title": "Problem of automating culturally relevant content creation",
     "category": "Media",
-    "tags": "Media,AI,Design & Creative,Other",
+    "tags": "Media,Marketing & Sales,AI,Business,Other",
     "country": "Jamaica",
     "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/media/pxet2490m1-problem-of-automating-cultura"
+    "url": "https://problemhunt.pro/en/media/pxet2490m1-problem-of-automating-culturally-relevan"
   },
   {
     "id": 105,
-    "title": "Difficulty of adapting language learning to individual needs",
-    "category": "Education",
-    "tags": "Education,AI,Other",
-    "country": "Sri Lanka",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/education/74t5kn8hb1-difficulty-of-adapting-language-learning-"
+    "title": "Problem of finding clients for AI solution implementation in Europe and Eastern Europe",
+    "category": "Ai",
+    "tags": "AI,Marketing & Sales,Business,Other",
+    "country": "UK",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/ai/ab9rnnoja1-problem-of-finding-clients-for-ai-soluti"
   },
   {
     "id": 106,
-    "title": "Problem of navigating career transitions in a rapidly changing tech job market",
-    "category": "Hr Career",
-    "tags": "HR & Career,AI,Education,Other",
-    "country": "South Africa",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/hr-career/vv9bkcwdi1-problem-of-navigating-career-transition"
+    "title": "Problem of finding and obtaining grants for small businesses",
+    "category": "Finance",
+    "tags": "Finance,Business,Legal,Other",
+    "country": "Canada",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/finance/gkrcgpelx1-problem-of-finding-and-obtaining-grants"
   },
   {
     "id": 107,
-    "title": "Problem of creating personalized fitness plans that adapt in real-time",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,AI,Other",
-    "country": "Saudi Arabia",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/sport-fitness/ugg3r6py31-problem-of-creating-personalized-fitness"
+    "title": "Automating bureaucracy and funding search for a new business",
+    "category": "Legal",
+    "tags": "Legal,Finance,Business",
+    "country": "Canada",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/legal/9gly3h5lg1-automating-bureaucracy-and-funding-searc"
   },
   {
     "id": 108,
-    "title": "Problem of managing parking space availability in urban areas",
-    "category": "Transportation",
-    "tags": "Transportation,AI,Other",
-    "country": "Kenya",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/transportation/plqe0hm001-problem-of-managing-parking-space-avail"
+    "title": "The systemic crisis of athlete transition",
+    "category": "Sport Fitness",
+    "tags": "Sport & Fitness,Medicine & Health,HR & Career",
+    "country": "USA",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/sport-fitness/jovbc4bek1-the-systemic-crisis-of-athlete-transitio"
   },
   {
     "id": 109,
-    "title": "Problem of accessing quality mental health support in underserved areas",
-    "category": "Psychology",
-    "tags": "Psychology,AI,Medicine & Health,Other",
-    "country": "Nigeria",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/psychology/4ahh4kpzk1-problem-of-accessing-quality-mental-heal"
+    "title": "No effective service for finding target customers",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Other",
+    "country": "Russia",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/marketing-sales/voyb4a4nb1-no-effective-service-for-finding-target"
   },
   {
     "id": 110,
-    "title": "Problem of bridging the gap between legal advice and affordability",
-    "category": "Legal",
-    "tags": "Legal,AI,Other",
-    "country": "Pakistan",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/legal/1slz82dn81-problem-of-bridging-the-gap-between-legal"
+    "title": "Search for an AI tool to create high-quality and natural-looking animation",
+    "category": "Ai",
+    "tags": "AI,Media,Design & Creative",
+    "country": "India",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/ai/8p64cdskm1-search-for-an-ai-tool-to-create-high-qua"
   },
   {
     "id": 111,
-    "title": "Problem of efficiently managing and tracking home maintenance tasks",
-    "category": "Realty",
-    "tags": "Realty,AI,Other",
-    "country": "USA",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/realty/aqhtmpqxr1-problem-of-efficiently-managing-and-trac"
+    "title": "Problem of arabic language support in digital services",
+    "category": "Other",
+    "tags": "Other",
+    "country": "Morocco",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/other/taootfgpp1-problem-of-arabic-language-support-in-di"
   },
   {
     "id": 112,
-    "title": "Problem of reducing food waste at the household level",
-    "category": "Food Nutrition",
-    "tags": "Food & Nutrition,AI,Other",
-    "country": "Canada",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/food-nutrition/4t10fcgb81-problem-of-reducing-food-waste-at-the-ho"
+    "title": "Need a simple alternative to Meta Ads after Andromeda update",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales",
+    "country": "USA",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/marketing-sales/8xk7k4gx31-need-a-simple-alternative-to-meta-ads-af"
   },
   {
     "id": 113,
-    "title": "Problem of inefficient last-mile delivery in rural areas",
-    "category": "Logistics Delivery",
-    "tags": "Logistics & Delivery,AI,Other",
-    "country": "Nigeria",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/logistics-delivery/kv1p1tno41-problem-of-inefficient-last-mile-delive"
+    "title": "Problem with choosing a business niche in the local market",
+    "category": "Ai",
+    "tags": "AI,Business,Psychology,Education,Other",
+    "country": "India",
+    "date": "2025-10-29",
+    "url": "https://problemhunt.pro/en/ai/tl9r966991-problem-with-choosing-a-business-niche-i"
   },
   {
     "id": 114,
-    "title": "Problem of connecting local artisans with global markets",
-    "category": "Retail",
-    "tags": "Retail,Marketing & Sales,Other",
-    "country": "Ghana",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/retail/55cvlm7wl1-problem-of-connecting-local-artisans-with"
+    "title": "Student needs a reliable and affordable tool for exam preparation",
+    "category": "Education",
+    "tags": "Education,AI,Other",
+    "country": "India",
+    "date": "2025-10-28",
+    "url": "https://problemhunt.pro/en/education/mf1bmc02s1-student-needs-a-reliable-and-affordable"
   },
   {
     "id": 115,
-    "title": "Problem of optimizing crop yields with limited resources",
+    "title": "Problem of efficient resource use in agriculture",
     "category": "Agtech",
-    "tags": "AgTech,AI,Other",
-    "country": "Kenya",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/agtech/72dmh7al41-problem-of-optimizing-crop-yields-with-l"
+    "tags": "AgTech,Hardware,Other",
+    "country": "Bulgaria",
+    "date": "2025-10-28",
+    "url": "https://problemhunt.pro/en/agtech/5gr3p49mg1-problem-of-efficient-resource-use-in-agr"
   },
   {
     "id": 116,
-    "title": "Problem of managing and optimizing shared workspace utilization",
-    "category": "Realty",
-    "tags": "Realty,Business,AI,Other",
-    "country": "India",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/realty/jfaihxbdi1-problem-of-managing-and-optimizing-share"
+    "title": "Lack of convenient service for buying and selling used cars",
+    "category": "Retail",
+    "tags": "Retail,Other",
+    "country": "USA",
+    "date": "2025-10-28",
+    "url": "https://problemhunt.pro/en/retail/a40dcs4621-lack-of-convenient-service-for-buying-an"
   },
   {
     "id": 117,
-    "title": "Difficulty of personal financial planning without professional advisor access",
-    "category": "Finance",
-    "tags": "Finance,AI,Other",
-    "country": "Brazil",
-    "date": "2025-10-30",
-    "url": "https://problemhunt.pro/en/finance/3m8nfyqrr1-difficulty-of-personal-financial-planning"
+    "title": "AI agent for automatic SEO promotion of websites on Wordpress and Tilda",
+    "category": "Seo Geo",
+    "tags": "SEO & GEO,Marketing & Sales,AI,Other",
+    "country": "Serbia",
+    "date": "2025-10-28",
+    "url": "https://problemhunt.pro/en/seo-geo/6ajl0f17x1-ai-agent-for-automatic-seo-promotion-of"
   },
   {
     "id": 118,
-    "title": "Problem of high customer acquisition costs for small e-commerce businesses",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,AI,SEO & GEO,Other",
-    "country": "USA",
-    "date": "2025-10-29",
-    "url": "https://problemhunt.pro/en/marketing-sales/2pkzqd2gf1-problem-of-high-customer-acquisition-cos"
+    "title": "Farm vegetable delivery problem through mobile application",
+    "category": "Retail",
+    "tags": "Retail,Logistics & Delivery,Food & Nutrition,Other",
+    "country": "Japan",
+    "date": "2025-10-27",
+    "url": "https://problemhunt.pro/en/retail/mnvzelo5i1-farm-vegetable-delivery-problem-through"
   },
   {
     "id": 119,
-    "title": "Problem of accurate medical symptom assessment before visiting a doctor",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,AI,Other",
+    "title": "The problem of lacking effective rescue robots for disaster situations",
+    "category": "Other",
+    "tags": "Other",
     "country": "India",
-    "date": "2025-10-29",
-    "url": "https://problemhunt.pro/en/medicine-health/rvlf0gdh51-problem-of-accurate-medical-symptom-asse"
+    "date": "2025-10-27",
+    "url": "https://problemhunt.pro/en/other/m5ks0dxi31-the-problem-of-lacking-effective-rescue"
   },
   {
     "id": 120,
-    "title": "Looking for interested buyers for export of dehydrated products from India",
+    "title": "Search for an affordable way to get PR in Forbes and other top media outlets",
     "category": "Marketing Sales",
-    "tags": "Marketing & Sales,Business,Other",
-    "country": "India",
-    "date": "2025-10-29",
-    "url": "https://problemhunt.pro/en/marketing-sales/p158tshc81-looking-for-interested-buyers-for-export"
+    "tags": "Marketing & Sales,Media,Other",
+    "country": "Russia",
+    "date": "2025-10-26",
+    "url": "https://problemhunt.pro/en/marketing-sales/xi1ox0v161-search-for-an-affordable-way-to-get-pr-i"
   },
   {
     "id": 121,
-    "title": "An educator seeks a tool for automatically creating coherent video lessons from multiple fragments",
-    "category": "Design Creative",
-    "tags": "Design & Creative,Education,AI,Other",
-    "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/design-creative/oy3gtd71l1-an-educator-seeks-a-tool-for-automatical"
+    "title": "A ready-made platform for robotics prototyping cannot create an active user community",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Other",
+    "country": "Israel",
+    "date": "2025-10-26",
+    "url": "https://problemhunt.pro/en/marketing-sales/4jgemm3td1-a-ready-made-platform-for-robotics-proto"
   },
   {
     "id": 122,
-    "title": "Searching for an adaptive system for training and nutrition that helps overcome plateaus and is resilient to schedule disruptions",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,Food & Nutrition,AI,Other",
-    "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/sport-fitness/5x163so5m1-searching-for-an-adaptive-system-for-tra"
+    "title": "Live threat monitoring for SOC teams with incident visualization and prioritization",
+    "category": "Dev",
+    "tags": "Dev,Other",
+    "country": "India",
+    "date": "2025-10-26",
+    "url": "https://problemhunt.pro/en/dev/pijugc1v31-live-threat-monitoring-for-soc-teams-wit"
   },
   {
     "id": 123,
-    "title": "Searching for stable anime streaming service in Russia without VPN requirement",
-    "category": "Media",
-    "tags": "Media,Other",
+    "title": "Automated hosting comparison tool for developers",
+    "category": "Dev",
+    "tags": "Dev",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/media/ycnydla351-searching-for-stable-anime-streaming-ser"
+    "date": "2025-10-26",
+    "url": "https://problemhunt.pro/en/dev/djk3np9401-automated-hosting-comparison-tool-for-de"
   },
   {
     "id": 124,
-    "title": "Universal tracking service for all mobile devices",
-    "category": "Dev",
-    "tags": "Dev,Other",
-    "country": "Russia",
+    "title": "Nigerians can't access local movies due to expensive subscriptions and piracy",
+    "category": "Media",
+    "tags": "Media,Legal",
+    "country": "Nigeria",
     "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/dev/9bnc5asgb1-universal-tracking-service-for-all-mobile"
+    "url": "https://problemhunt.pro/en/media/pypg9yzgy1-nigerians-cant-access-local-movies-due-t"
   },
   {
     "id": 125,
-    "title": "Need a CRM that works for non-standard sales models (services, projects) — not just SaaS or e-commerce",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,Business,Other",
-    "country": "Russia",
+    "title": "Need a simple action tracker for busy people",
+    "category": "Productivity",
+    "tags": "Productivity",
+    "country": "UAE",
     "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/marketing-sales/dnyhj72s51-need-a-crm-that-works-for-non-standard-s"
+    "url": "https://problemhunt.pro/en/productivity/bngxaaugn1-need-a-simple-action-tracker-for-busy-pe"
   },
   {
     "id": 126,
-    "title": "Losing clients due to inefficient scheduling process for beauty salon",
-    "category": "Business",
-    "tags": "Business,Other",
-    "country": "Russia",
+    "title": "Looking for interested buyers for export of dehydrated products from India",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Business",
+    "country": "India",
     "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/business/9pcsfg2601-losing-clients-due-to-inefficient-schedu"
+    "url": "https://problemhunt.pro/en/marketing-sales/p158tshc81-looking-for-interested-buyers-for-export"
   },
   {
     "id": 127,
-    "title": "Searching for an automated system for tracking product expiration dates in retail",
-    "category": "Retail",
-    "tags": "Retail,Logistics & Delivery,Other",
+    "title": "An educator seeks a tool for automatically creating coherent video lessons from multiple fragments",
+    "category": "Design Creative",
+    "tags": "Design & Creative,Education,Media",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/retail/lftewwk2l1-searching-for-an-automated-system-for-tra"
+    "date": "2025-10-24",
+    "url": "https://problemhunt.pro/en/design-creative/oy3gtd71l1-an-educator-seeks-a-tool-for-automatical"
   },
   {
     "id": 128,
-    "title": "Need to automate repetitive legal document drafting for standard contracts",
-    "category": "Legal",
-    "tags": "Legal,AI,Other",
+    "title": "Searching for an adaptive system for training and nutrition that helps overcome plateaus and is resilient to schedule disruptions",
+    "category": "Sport Fitness",
+    "tags": "Sport & Fitness,Food & Nutrition",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/legal/cxxz7tcaq1-need-to-automate-repetitive-legal-documen"
+    "date": "2025-10-24",
+    "url": "https://problemhunt.pro/en/sport-fitness/5x163so5m1-searching-for-an-adaptive-system-for-tra"
   },
   {
     "id": 129,
-    "title": "Difficulty of managing content creation and scheduling across multiple social media platforms",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,AI,Media,Other",
+    "title": "Searching for stable anime streaming service in Russia without VPN requirement",
+    "category": "Media",
+    "tags": "Media,Legal",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/marketing-sales/fh5y0tqfe1-difficulty-of-managing-content-creation-"
+    "date": "2025-10-23",
+    "url": "https://problemhunt.pro/en/media/ycnydla351-searching-for-stable-anime-streaming-ser"
   },
   {
     "id": 130,
-    "title": "Need for a simple service to automate apartment search in Moscow",
-    "category": "Realty",
-    "tags": "Realty,Other",
-    "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/realty/z8dz94dv01-need-for-a-simple-service-to-automate-apa"
-  },
-  {
-    "id": 131,
-    "title": "Need for a proper matchmaking system in CS2",
+    "title": "Universal tracking service for all mobile devices",
     "category": "Other",
     "tags": "Other",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/other/gkdl8yz0v1-need-for-a-proper-matchmaking-system-in-c"
+    "date": "2025-10-22",
+    "url": "https://problemhunt.pro/en/other/kiv6i361e1-universal-tracking-service-for-all-mobil"
+  },
+  {
+    "id": 131,
+    "title": "Search for personal business niche considering psychological barriers",
+    "category": "Psychology",
+    "tags": "Psychology",
+    "country": "Russia",
+    "date": "2025-10-22",
+    "url": "https://problemhunt.pro/en/psychology/u4o11i24f1-search-for-personal-business-niche-consi"
   },
   {
     "id": 132,
-    "title": "Searching for an inexpensive solution for monitoring elderly parents remotely",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Other",
+    "title": "Need a service for generating names and instantly checking domain availability",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/medicine-health/4haxbj16m1-searching-for-an-inexpensive-solution-for"
+    "date": "2025-10-16",
+    "url": "https://problemhunt.pro/en/marketing-sales/s4e5ajoj91-need-a-service-for-generating-names-and"
   },
   {
     "id": 133,
-    "title": "Need for an aggregator of verified co-working spaces in Moscow with real-time availability",
-    "category": "Realty",
-    "tags": "Realty,Business,Other",
+    "title": "There is no stable access to global app stores for Russian developers",
+    "category": "Legal",
+    "tags": "Legal",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/realty/l7m1sfsyd1-need-for-an-aggregator-of-verified-co-wor"
+    "date": "2025-10-16",
+    "url": "https://problemhunt.pro/en/legal/jg3la3g2k1-there-is-no-stable-access-to-global-app"
   },
   {
     "id": 134,
-    "title": "Need for a platform connecting small cargo owners with available truck drivers for intercity freight",
-    "category": "Logistics Delivery",
-    "tags": "Logistics & Delivery,Business,Other",
+    "title": "The absence of a single trusted service for solving everyday tasks",
+    "category": "Freelance",
+    "tags": "Freelance",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/logistics-delivery/f75e2sjyl1-need-for-a-platform-connecting-small-car"
+    "date": "2025-10-16",
+    "url": "https://problemhunt.pro/en/freelance/c371yg3cu1-the-absence-of-a-single-trusted-service"
   },
   {
     "id": 135,
-    "title": "Need for a convenient platform for tracking and canceling unwanted subscriptions",
-    "category": "Finance",
-    "tags": "Finance,Other",
+    "title": "It's not possible to automatically create a diet plan from video recipes",
+    "category": "Food Nutrition",
+    "tags": "Food & Nutrition",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/finance/r4w2kxibb1-need-for-a-convenient-platform-for-track"
+    "date": "2025-10-16",
+    "url": "https://problemhunt.pro/en/food-nutrition/yby468h0g1-its-not-possible-to-automatically-create"
   },
   {
     "id": 136,
-    "title": "Searching for an affordable way to create high-quality product photos for online store without a professional photographer",
-    "category": "Design Creative",
-    "tags": "Design & Creative,AI,Retail,Other",
+    "title": "Automating HR and legal processes for companies, in compliance with the Russian Labor Code",
+    "category": "Hr Career",
+    "tags": "HR & Career,Finance,Legal",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/design-creative/43i0cq9v01-searching-for-an-affordable-way-to-creat"
+    "date": "2025-10-16",
+    "url": "https://problemhunt.pro/en/hr-career/cdysjhl381-automating-hr-and-legal-processes-for-co"
   },
   {
     "id": 137,
-    "title": "Need for an AI-powered assistant that helps non-technical founders write clear technical requirements for developers",
-    "category": "Ai",
-    "tags": "AI,Dev,VC & Startups,Other",
+    "title": "Difficulty finding relevant respondents for b2b research",
+    "category": "Other",
+    "tags": "Other",
     "country": "Russia",
-    "date": "2025-10-25",
-    "url": "https://problemhunt.pro/en/ai/6kwqq11v51-need-for-an-ai-powered-assistant-that-help"
+    "date": "2025-10-12",
+    "url": "https://problemhunt.pro/en/other/tphf0sjeg1-difficulty-finding-relevant-respondents"
   },
   {
     "id": 138,
-    "title": "Searching for an automated system for collecting and managing customer reviews across multiple platforms",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,AI,SEO & GEO,Other",
-    "country": "Russia",
-    "date": "2025-10-24",
-    "url": "https://problemhunt.pro/en/marketing-sales/xkcd3z8dl1-searching-for-an-automated-system-for-co"
+    "title": "The problem of AI agent instability and regression on the path from prototype to stable product",
+    "category": "Ai",
+    "tags": "AI,Dev",
+    "country": "USA",
+    "date": "2025-10-12",
+    "url": "https://problemhunt.pro/en/ai/bacfrvck91-the-problem-of-ai-agent-instability-and"
   },
   {
     "id": 139,
-    "title": "Need for a simple way to automate invoice creation and payment tracking for freelancers",
-    "category": "Freelance",
-    "tags": "Freelance,Finance,Other",
+    "title": "Unreliable market valuations in startup pitch decks",
+    "category": "Vc Startups",
+    "tags": "VC & Startups",
     "country": "Russia",
-    "date": "2025-10-24",
-    "url": "https://problemhunt.pro/en/freelance/7iugwuxh31-need-for-a-simple-way-to-automate-invoic"
+    "date": "2025-10-10",
+    "url": "https://problemhunt.pro/en/vc-startups/45pkeu8rb1-unreliable-market-valuations-in-startup"
   },
   {
     "id": 140,
-    "title": "Need for a platform for comparing and booking sports coaches based on verified reviews and qualifications",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,Other",
-    "country": "Russia",
-    "date": "2025-10-24",
-    "url": "https://problemhunt.pro/en/sport-fitness/22hlyqr5s1-need-for-a-platform-for-comparing-and-bo"
+    "title": "Peer-to-peer platform for verified generic drugs",
+    "category": "Medicine Health",
+    "tags": "Medicine & Health",
+    "country": "India",
+    "date": "2025-10-10",
+    "url": "https://problemhunt.pro/en/medicine-health/tp6dgyysf1-peer-to-peer-platform-for-verified-gener"
   },
   {
     "id": 141,
@@ -1290,252 +1290,252 @@
     "id": 144,
     "title": "Automating Tilda landing page creation for webinars",
     "category": "Education",
-    "tags": "Education,No-Code,Marketing & Sales",
+    "tags": "Education,No-Code,AI,Marketing & Sales",
     "country": "Russia",
     "date": "2025-10-06",
-    "url": "https://problemhunt.pro/en/education/8gtvllpc91-automating-tilda-landi"
+    "url": "https://problemhunt.pro/en/education/8gtvllpc91-automating-tilda-landing-page-creation-f"
   },
   {
     "id": 145,
-    "title": "The problem of selling complex products through messengers",
-    "category": "Marketing Sales",
-    "tags": "Marketing & Sales,AI",
+    "title": "Systemic problem of unenforceable contracts and slow dispute resolution",
+    "category": "Legal",
+    "tags": "Legal",
     "country": "Russia",
-    "date": "2025-10-06",
-    "url": "https://problemhunt.pro/en/marketing-sales/1fprhp2r91-the-problem-of-selling-complex-products-"
+    "date": "2025-10-04",
+    "url": "https://problemhunt.pro/en/legal/0i3lmdtm71-systemic-problem-of-unenforceable-contra"
   },
   {
     "id": 146,
-    "title": "Finding clients for design projects — the problem of stable client acquisition for a design agency",
-    "category": "Design Creative",
-    "tags": "Design & Creative,Marketing & Sales",
+    "title": "Automated tool for link checking and stylistic editing",
+    "category": "Media",
+    "tags": "Media",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/design-creative/m70o8ux321-finding-clients-for-design-projects-the-"
+    "date": "2025-09-28",
+    "url": "https://problemhunt.pro/en/media/gvks1brdf1-automated-tool-for-link-checking-and-sty"
   },
   {
     "id": 147,
-    "title": "Poor content engagement: high bounce rate and low lead generation despite traffic",
-    "category": "Seo Geo",
-    "tags": "SEO & GEO,Marketing & Sales",
+    "title": "Difficulty finding effective marketers for a construction business",
+    "category": "Freelance",
+    "tags": "Freelance,Marketing & Sales",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/seo-geo/2uf31xqhq1-poor-content-engagement-high-bounce-rat"
+    "date": "2025-09-23",
+    "url": "https://problemhunt.pro/en/freelance/hc75uckma1-difficulty-finding-effective-marketers-f"
   },
   {
     "id": 148,
-    "title": "Searching for a fitness tracking solution specifically for the 50+ demographic",
-    "category": "Sport Fitness",
-    "tags": "Sport & Fitness,Medicine & Health",
+    "title": "Lack of reusable components and centralized styling in Tilda",
+    "category": "Dev",
+    "tags": "Dev,No-Code,Design & Creative",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/sport-fitness/vq4j0xwn41-searching-for-a-fitness-tracking-solutio"
+    "date": "2025-09-22",
+    "url": "https://problemhunt.pro/en/dev/91cnbgco21-lack-of-reusable-components-and-centrali"
   },
   {
     "id": 149,
-    "title": "The problem of automating the selection of potential B2B partners for business networking",
-    "category": "Business",
-    "tags": "Business,AI,Marketing & Sales",
+    "title": "Daily content adaptation grind for marketing teams",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Media",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/business/5cqj8kfq21-the-problem-of-automating-the-selection-o"
+    "date": "2025-09-22",
+    "url": "https://problemhunt.pro/en/marketing-sales/s69dtmhcb1-daily-content-adaptation-grind-for-marke"
   },
   {
     "id": 150,
-    "title": "The problem of collecting and processing customer feedback in service companies",
-    "category": "Business",
-    "tags": "Business,AI,Marketing & Sales",
+    "title": "Need for a built-in audio player in tilda product catalog",
+    "category": "No Code",
+    "tags": "No-Code,Marketing & Sales,Retail,Dev",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/business/ntzc2svgy1-the-problem-of-collecting-and-processing"
+    "date": "2025-09-20",
+    "url": "https://problemhunt.pro/en/no-code/9gfljgt4l1-need-for-a-built-in-audio-player-in-tild"
   },
   {
     "id": 151,
-    "title": "Problem with finding and booking local services (plumber, electrician, etc.)",
-    "category": "Other",
-    "tags": "Other,Business",
+    "title": "Need for a service to package website deliveries professionally",
+    "category": "Freelance",
+    "tags": "Freelance,Marketing & Sales,Design & Creative",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/other/2n2qbj2i01-problem-with-finding-and-booking-local-se"
+    "date": "2025-09-19",
+    "url": "https://problemhunt.pro/en/freelance/kb6ioy7hb1-need-for-a-service-to-package-website-de"
   },
   {
     "id": 152,
-    "title": "The problem of an effective system for training employees in small businesses",
-    "category": "Hr Career",
-    "tags": "HR & Career,Education,Business",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/hr-career/0jxnpmcrz1-the-problem-of-an-effective-system-for-t"
+    "title": "Tilda's terrible support and the need for a premium help service",
+    "category": "Other",
+    "tags": "Other",
+    "country": "Belarus",
+    "date": "2025-09-19",
+    "url": "https://problemhunt.pro/en/other/t6oxa8m3d1-tildas-terrible-support-and-the-need-for"
   },
   {
     "id": 153,
-    "title": "The problem of automating routine customer support queries in SaaS companies",
-    "category": "Dev",
-    "tags": "Dev,AI,Business",
+    "title": "No solution for From Figma to TapTop in one click",
+    "category": "Design Creative",
+    "tags": "Design & Creative,No-Code,Dev",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/dev/9c12v9i4n1-the-problem-of-automating-routine-customer"
+    "date": "2025-09-19",
+    "url": "https://problemhunt.pro/en/design-creative/m1m3pi5e11-no-solution-for-from-figma-to-taptop-in"
   },
   {
     "id": 154,
-    "title": "The problem of time-consuming personal tax management for individuals with multiple income sources",
-    "category": "Finance",
-    "tags": "Finance,AI",
+    "title": "Need for affordable legal protection service for freelancers",
+    "category": "Legal",
+    "tags": "Legal,Freelance",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/finance/0zx9i9n6w1-the-problem-of-time-consuming-personal-ta"
+    "date": "2025-09-18",
+    "url": "https://problemhunt.pro/en/legal/mfxod8viz1-need-for-affordable-legal-protection-ser"
   },
   {
     "id": 155,
-    "title": "The problem of managing commercial real estate vacancies and lease negotiations",
-    "category": "Realty",
-    "tags": "Realty,Business",
+    "title": "There is a lack of a platform with proven and relevant marketing cases",
+    "category": "Freelance",
+    "tags": "Freelance,Marketing & Sales",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/realty/42l62i9621-the-problem-of-managing-commercial-real-e"
+    "date": "2025-09-18",
+    "url": "https://problemhunt.pro/en/freelance/3nb3237gu1-there-is-a-lack-of-a-platform-with-prove"
   },
   {
     "id": 156,
-    "title": "The problem of planning and tracking home renovation projects",
-    "category": "Other",
-    "tags": "Other,Realty",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/other/40i3lgv7q1-the-problem-of-planning-and-tracking-home"
+    "title": "Courier app navigation and grouping issues in «Vozy Ozon»",
+    "category": "Logistics Delivery",
+    "tags": "Logistics & Delivery",
+    "country": "Belarus",
+    "date": "2025-09-17",
+    "url": "https://problemhunt.pro/en/logistics-delivery/69hxkoys91-courier-app-navigation-and-grouping-issu"
   },
   {
     "id": 157,
-    "title": "The problem of monitoring and improving indoor air quality in urban apartments",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Hardware",
+    "title": "Problem importing Figma animation to Tilda",
+    "category": "No Code",
+    "tags": "No-Code,Design & Creative",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/medicine-health/6ebyejhax1-the-problem-of-monitoring-and-improving-i"
+    "date": "2025-09-17",
+    "url": "https://problemhunt.pro/en/no-code/o9hindv9z1-problem-importing-figma-animation-to-til"
   },
   {
     "id": 158,
-    "title": "The problem of organizing neighborhood community communication and resource sharing",
-    "category": "Dating Community",
-    "tags": "Dating & Community,Other",
+    "title": "Need for instant notifications about discounts at «Vkusvill» and «Perekrestok»",
+    "category": "Retail",
+    "tags": "Retail",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/dating-community/3y4p6b1y11-the-problem-of-organizing-neighborhood-c"
+    "date": "2025-09-16",
+    "url": "https://problemhunt.pro/en/retail/lfz3mtpit1-need-for-instant-notifications-about-dis"
   },
   {
     "id": 159,
-    "title": "The problem of accurate sleep tracking and personalized sleep improvement recommendations",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,AI,Hardware",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/medicine-health/aw2oy2fxc1-the-problem-of-accurate-sleep-tracking-a"
+    "title": "Frustration with news overload and need for a personalized telegram bot",
+    "category": "Media",
+    "tags": "Media",
+    "country": "Serbia",
+    "date": "2025-09-16",
+    "url": "https://problemhunt.pro/en/media/09eoroiy71-frustration-with-news-overload-and-need"
   },
   {
     "id": 160,
-    "title": "The problem of efficient route planning for multi-stop deliveries in urban areas",
-    "category": "Logistics Delivery",
-    "tags": "Logistics & Delivery,AI,Transportation",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/logistics-delivery/82hpdq8yd1-the-problem-of-efficient-route-planning"
+    "title": "Wasting time on unpaid client estimates and communication",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Freelance",
+    "country": "Serbia",
+    "date": "2025-09-12",
+    "url": "https://problemhunt.pro/en/marketing-sales/72kngh5xp1-wasting-time-on-unpaid-client-estimates"
   },
   {
     "id": 161,
-    "title": "The problem of managing and reducing household energy consumption",
-    "category": "Other",
-    "tags": "Other,Hardware",
+    "title": "Problem of chaotic requirements gathering in b2b outsourcing",
+    "category": "Dev",
+    "tags": "Dev",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/other/84s39mfn11-the-problem-of-managing-and-reducing-hous"
+    "date": "2025-09-12",
+    "url": "https://problemhunt.pro/en/dev/0yof53jk01-problem-of-chaotic-requirements-gatherin"
   },
   {
     "id": 162,
-    "title": "The problem of finding compatible travel companions for solo travelers",
-    "category": "Travel",
-    "tags": "Travel,Dating & Community",
+    "title": "Need for a niche marketplace for Tilda code blocks and solutions",
+    "category": "Dev",
+    "tags": "Dev,No-Code",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/travel/xnv4m2x0p1-the-problem-of-finding-compatible-travel-"
+    "date": "2025-09-11",
+    "url": "https://problemhunt.pro/en/dev/rsx7rzckd1-need-for-a-niche-marketplace-for-tilda-c"
   },
   {
     "id": 163,
-    "title": "The problem of building consistent healthy eating habits in families with children",
-    "category": "Food Nutrition",
-    "tags": "Food & Nutrition,Medicine & Health",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/food-nutrition/lgwz1oe3o1-the-problem-of-building-consistent-healt"
+    "title": "Need for an AI agent to auto-respond to suitable freelance orders",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Freelance",
+    "country": "Serbia",
+    "date": "2025-09-10",
+    "url": "https://problemhunt.pro/en/marketing-sales/8jzg4eu451-need-for-an-ai-agent-to-auto-respond-to"
   },
   {
     "id": 164,
-    "title": "The problem of finding and comparing quality daycare options for working parents",
-    "category": "Education",
-    "tags": "Education,Other",
+    "title": "Automating the referral program for teachers on Tilda",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/education/sdjl95yqf1-the-problem-of-finding-and-comparing-qua"
+    "date": "2025-09-10",
+    "url": "https://problemhunt.pro/en/marketing-sales/stn9lyfeo1-automating-the-referral-program-for-teac"
   },
   {
     "id": 165,
-    "title": "The problem of managing recurring bills and optimizing subscription spending",
-    "category": "Finance",
-    "tags": "Finance,AI",
+    "title": "A universal solution is required to convert voice to clear text",
+    "category": "Marketing Sales",
+    "tags": "Marketing & Sales,Freelance",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/finance/y2p7cdkrm1-the-problem-of-managing-recurring-bills-a"
+    "date": "2025-09-09",
+    "url": "https://problemhunt.pro/en/marketing-sales/uam90ckxn1-a-universal-solution-is-required-to-conv"
   },
   {
     "id": 166,
-    "title": "The problem of accessing reliable and affordable pet healthcare services",
-    "category": "Medicine Health",
-    "tags": "Medicine & Health,Other",
+    "title": "Need for a unified Tilda extension combining Nolim and Annexx features",
+    "category": "Dev",
+    "tags": "Dev,No-Code",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/medicine-health/cnsdygrfc1-the-problem-of-accessing-reliable-and-af"
+    "date": "2025-09-09",
+    "url": "https://problemhunt.pro/en/dev/82uz45nni1-need-for-a-unified-tilda-extension-combi"
   },
   {
     "id": 167,
-    "title": "The problem of effective inventory management for small retail businesses",
-    "category": "Retail",
-    "tags": "Retail,Business,AI",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/retail/d22nfwb511-the-problem-of-effective-inventory-manage"
+    "title": "Ineffective client acquisition and spam overload for a lawyer",
+    "category": "Freelance",
+    "tags": "Freelance,Marketing & Sales",
+    "country": "Armenia",
+    "date": "2025-09-08",
+    "url": "https://problemhunt.pro/en/freelance/7vyumtmek1-ineffective-client-acquisition-and-spam"
   },
   {
     "id": 168,
-    "title": "The problem of coordinating schedules among family members and shared households",
-    "category": "Productivity",
-    "tags": "Productivity,Other",
-    "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/productivity/6cq8tslj01-the-problem-of-coordinating-schedules-amo"
+    "title": "Need for try-on service in Telegram second-hand stores",
+    "category": "Retail",
+    "tags": "Retail",
+    "country": "Serbia",
+    "date": "2025-09-08",
+    "url": "https://problemhunt.pro/en/retail/dknrnh1581-need-for-try-on-service-in-telegram-seco"
   },
   {
     "id": 169,
-    "title": "The problem of finding trustworthy and skilled home cleaning services",
-    "category": "Other",
-    "tags": "Other,Business",
+    "title": "Automated Figma-to-Tilda Zero Block layout AI",
+    "category": "No Code",
+    "tags": "No-Code,Dev",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/other/yb4qn6xr91-the-problem-of-finding-trustworthy-and-ski"
+    "date": "2025-09-08",
+    "url": "https://problemhunt.pro/en/no-code/yf3xyo1d31-automated-figma-to-tilda-zero-block-layo"
   },
   {
     "id": 170,
-    "title": "The problem of creating a personalized news feed without algorithmic bias or filter bubbles",
-    "category": "Media",
-    "tags": "Media,AI",
+    "title": "No orders without a portfolio: a beginner freelancer's problem",
+    "category": "Freelance",
+    "tags": "Freelance",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/media/sqdb8xh8e1-the-problem-of-creating-a-personalized-ne"
+    "date": "2025-09-08",
+    "url": "https://problemhunt.pro/en/freelance/bhk2hd8zp1-no-orders-without-a-portfolio-a-beginner"
   },
   {
     "id": 171,
-    "title": "The problem of planning and sticking to a personal budget for young adults",
-    "category": "Finance",
-    "tags": "Finance,Education",
+    "title": "No auto-reply for orders in the photographers' chat",
+    "category": "Freelance",
+    "tags": "Freelance",
     "country": "Russia",
-    "date": "2025-10-05",
-    "url": "https://problemhunt.pro/en/finance/0kp1ks5xh1-the-problem-of-planning-and-sticking-to-"
+    "date": "2025-09-08",
+    "url": "https://problemhunt.pro/en/freelance/r3sxzzfh11-no-auto-reply-for-orders-in-the-photogra"
   }
 ]

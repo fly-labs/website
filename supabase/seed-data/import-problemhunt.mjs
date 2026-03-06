@@ -34,35 +34,23 @@ const rows = raw.map((item) => ({
   votes: 0,
 }));
 
-// Check which external_ids already exist
-const existingIds = new Set();
-const { data: existing } = await supabase
-  .from('ideas')
-  .select('external_id')
-  .not('external_id', 'is', null);
-if (existing) {
-  existing.forEach((r) => existingIds.add(r.external_id));
-}
-
-// Filter out duplicates
-const newRows = rows.filter((r) => !existingIds.has(r.external_id));
-console.log(`${rows.length} total, ${existingIds.size} already exist, ${newRows.length} to insert.`);
-
-// Insert in batches of 50
+// Upsert in batches of 50 (updates existing records by external_id, inserts new ones)
 const BATCH_SIZE = 50;
-let inserted = 0;
+let upserted = 0;
 let failed = 0;
 
-for (let i = 0; i < newRows.length; i += BATCH_SIZE) {
-  const batch = newRows.slice(i, i + BATCH_SIZE);
-  const { error } = await supabase.from('ideas').insert(batch);
+for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+  const batch = rows.slice(i, i + BATCH_SIZE);
+  const { error } = await supabase
+    .from('ideas')
+    .upsert(batch, { onConflict: 'external_id' });
 
   if (error) {
     console.error(`Batch ${Math.floor(i / BATCH_SIZE) + 1} error:`, error.message);
     failed += batch.length;
   } else {
-    inserted += batch.length;
+    upserted += batch.length;
   }
 }
 
-console.log(`Done. Inserted ${inserted}, failed ${failed}.`);
+console.log(`Done. Upserted ${upserted}, failed ${failed}.`);

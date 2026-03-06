@@ -8,7 +8,8 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 - **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category, with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro). Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 4-way sort (hot/newest/oldest/top voted), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro). Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use (4 templates):
@@ -115,7 +116,7 @@ apps/web/
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # 16 route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # 17 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js            # Port 3001, @ alias, vendor chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
@@ -134,6 +135,7 @@ apps/web/
 | `/about` | About (bio, GitHub heatmap) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
+| `/scoring` | Scoring Frameworks (Hormozi + Dan Koe) | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
 | `/templates` | Templates directory | Members only |

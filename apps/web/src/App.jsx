@@ -29,6 +29,7 @@ const LoginPage = lazy(() => import('@/pages/LoginPage.jsx'));
 const SignupPage = lazy(() => import('@/pages/SignupPage.jsx'));
 const MicroSaasPage = lazy(() => import('@/pages/MicroSaasPage.jsx'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage.jsx'));
+const ScoringFrameworksPage = lazy(() => import('@/pages/ScoringFrameworksPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
 const PageFallback = () => (
@@ -59,6 +60,7 @@ const AnimatedRoutes = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/scoring" element={<ScoringFrameworksPage />} />
 
         {/* Protected Routes */}
         <Route path="/prompts" element={<PromptsPage />} />

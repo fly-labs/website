@@ -79,6 +79,7 @@ apps/web/
 │       ├── LaunchChecklistPage.jsx  # Public - 4-phase Notion template (coming soon)
 │       ├── OnePageBusinessPlanPage.jsx # Public - 5-question Notion template (coming soon)
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
+│       ├── ScoringFrameworksPage.jsx # Public - Hormozi + Dan Koe scoring frameworks explained
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── public/
@@ -102,6 +103,7 @@ apps/web/
 | `/about` | AboutPage | Public |
 | `/login` | LoginPage | Public |
 | `/signup` | SignupPage | Public |
+| `/scoring` | ScoringFrameworksPage | Public |
 | `/prompts` | PromptsPage | Hybrid (5 public, full library for members) |
 | `/microsaas` | MicroSaasPage | Public (waitlist capture) |
 | `/templates` | TemplatesPage | Protected |
@@ -160,7 +162,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (8 items), `stacks` array (launch/productivity/community), `categories` array. Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
-- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top), sourceOptions (all/community/problemhunt), perPageOptions (10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
+- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt), perPageOptions (10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.

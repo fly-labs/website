@@ -49,6 +49,8 @@ export const sortOptions = [
   { value: 'new', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
   { value: 'top', label: 'Top Voted' },
+  { value: 'hormozi', label: 'Hormozi Score' },
+  { value: 'koe', label: 'Koe Score' },
 ];
 
 export const sourceOptions = [
