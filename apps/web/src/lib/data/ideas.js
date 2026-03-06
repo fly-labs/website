@@ -46,5 +46,23 @@ export const statusConfig = {
 
 export const sortOptions = [
   { value: 'hot', label: 'Hot' },
-  { value: 'new', label: 'New' },
+  { value: 'new', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'top', label: 'Top Voted' },
+];
+
+export const sourceOptions = [
+  { value: 'all', label: 'All Ideas' },
+  { value: 'community', label: 'Community' },
+  { value: 'problemhunt', label: 'Real-World Problems' },
+];
+
+export const perPageOptions = [10, 20, 50];
+
+export const frequencyOptions = ['Daily', 'Weekly', 'Sometimes', 'Once'];
+
+export const formSteps = [
+  { id: 'problem', label: 'The Problem' },
+  { id: 'context', label: 'Context' },
+  { id: 'you', label: 'About You' },
 ];

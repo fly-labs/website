@@ -8,7 +8,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 - **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category, with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Board** - Community submissions + 171 real-world problems from [ProblemHunt](https://problemhunt.pro). Two-dimension filtering (Type x Industry), time-decay hot sort, trending badges, and ProblemHunt attribution links
+- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro). Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 4-way sort (hot/newest/oldest/top voted), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use (4 templates):
@@ -77,6 +77,8 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint |
 | `npm run deploy` | Stage, commit, and push to `main` (triggers Vercel deploy) |
+| `npm run sync` | Scrape new problems from ProblemHunt and import to Supabase |
+| `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe) |
 
 ## Project Structure
 
@@ -107,7 +109,7 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + stacks + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
-│   │   │   └── ideas.js      # Idea categories, industries, status config, sort options
+│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions, perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
@@ -127,7 +129,7 @@ apps/web/
 |------|------|--------|
 | `/` | Home | Public |
 | `/explore` | Explore (curated stacks + category filter) | Public |
-| `/ideas` | Idea Board (ProblemHunt + community, two-dimension filter) | Public |
+| `/ideas` | Idea Board (AI-scored, paginated, multi-filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About (bio, GitHub heatmap) | Public |
 | `/login` | Login | Public |
@@ -149,7 +151,9 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + ProblemHunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community'), source_url, external_id, tags, country, votes, status, approved, created_at
+**ideas** - Community idea submissions + ProblemHunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, score_breakdown (JSONB), created_at
+
+**idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 
 **prompt_votes** - Upvotes on prompts (one per user per prompt)
 
@@ -163,6 +167,8 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 - `toggle_prompt_vote(p_prompt_id)` - Atomic vote toggle for prompts (insert or delete)
 - `get_prompt_vote_counts()` - Returns vote counts for all prompts (SECURITY DEFINER, works without auth)
 - `get_waitlist_count(p_source)` - Count waitlist entries by source
+- `check_idea_rate_limit(p_email)` - Returns count of submissions in last 24h
+- `log_idea_submission(p_email)` - Logs a submission for rate limiting
 
 ### Auth
 

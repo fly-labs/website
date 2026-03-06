@@ -39,14 +39,12 @@ export const AuthProvider = ({ children }) => {
       allowedFields.filter(k => k in updates).map(k => [k, updates[k]])
     );
     safeUpdates.updated_at = new Date().toISOString();
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('profiles')
       .update(safeUpdates)
-      .eq('id', currentUser.id)
-      .select()
-      .single();
+      .eq('id', currentUser.id);
     if (error) return { success: false, error: error.message };
-    setProfile(data);
+    setProfile(prev => ({ ...prev, ...safeUpdates }));
     return { success: true };
   };
 

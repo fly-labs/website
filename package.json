@@ -18,7 +18,13 @@
     "build": "npm run build --prefix apps/web",
     "preview": "npm run start --prefix apps/web",
     "lint": "npm run lint --prefix apps/web",
-    "deploy": "git push origin main"
+    "deploy": "git push origin main",
+    "sync": "node scripts/sync-problemhunt.mjs",
+    "score": "node scripts/score-ideas.mjs"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@supabase/supabase-js": "^2.49.1"
   },
   "workspaces": [
     "apps/*"
