@@ -298,8 +298,8 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Ideas",
-          description: "Got a real problem? Drop it here. Every idea scored by AI using Hormozi and Dan Koe frameworks. I vibe build the best ones.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score",
+          description: "Real problems from Reddit, ProblemHunt, and the community. Every idea scored by AI. Drop yours and watch it fly.",
+          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, reddit ideas, business opportunities",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-24"
@@ -318,15 +318,10 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Board</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed mb-4">
-                Got a real problem? Drop it here. I vibe build the best ones and we partner on what flies.
-              </p>
-              <p className="text-sm text-muted-foreground/70 font-medium mb-3">
-                Every idea scored by AI using{' '}
-                <span className="text-foreground font-semibold">Hormozi</span> and{' '}
-                <span className="text-foreground font-semibold">Dan Koe</span> frameworks.
+                We scan <span className="text-red-500 font-semibold">Reddit</span>, <span className="text-accent font-semibold">ProblemHunt</span>, and the community for real problems worth solving. AI scores them. You vote. I build the best ones.
               </p>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Community-voted{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}I build it
+                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}3 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -338,10 +333,10 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Share your problem. The community votes. I vibe build the top ideas into real tools.
-                      If your idea flies, we partner up - min. 1% equity stake, details to be discussed.
-                      Every idea gets scored for free by AI using the Hormozi and Dan Koe frameworks.
-                      {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">Learn more about Hormozi and Dan Koe</Link>
+                      Every day we scan Reddit and ProblemHunt for real problems people are struggling with.
+                      Community members submit their own too. AI scores every idea using Hormozi and Dan Koe frameworks.
+                      The best ones get built. If your idea flies, we partner up.
+                      {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>
                 </div>
@@ -684,7 +679,7 @@ const IdeaSubmissionPage = () => {
                                       href={idea.source_url}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="text-accent hover:underline font-medium"
+                                      className="text-red-500 hover:underline font-medium"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         trackEvent('outbound_click', {
@@ -1134,7 +1129,7 @@ const IdeaSubmissionPage = () => {
                 <div>
                   <h3 className="text-xl font-bold mb-2">{selectedIdea.idea_title}</h3>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap mb-3">
-                    <span>{selectedIdea.source === 'problemhunt' ? 'via ProblemHunt' : selectedIdea.source === 'reddit' ? 'via Reddit' : `by ${selectedIdea.name || 'Anonymous'}`}</span>
+                    <span>{selectedIdea.source === 'problemhunt' ? <span className="text-accent font-medium">via ProblemHunt</span> : selectedIdea.source === 'reddit' ? <span className="text-red-500 font-medium">via Reddit</span> : `by ${selectedIdea.name || 'Anonymous'}`}</span>
                     <span className="text-muted-foreground/40">&middot;</span>
                     <span>{timeAgo(selectedIdea.created_at)}</span>
                     {selectedIdea.industry && (
@@ -1319,7 +1314,7 @@ const IdeaSubmissionPage = () => {
                       href={selectedIdea.source_url || 'https://problemhunt.pro'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-accent/20 text-sm font-medium text-accent hover:bg-accent/10 transition-colors"
                       onClick={() => trackEvent('outbound_click', { link_url: selectedIdea.source_url || 'https://problemhunt.pro', link_label: 'ProblemHunt Detail', location: 'ideas_drawer' })}
                     >
                       via ProblemHunt <ArrowRight className="w-3.5 h-3.5" />
@@ -1330,7 +1325,7 @@ const IdeaSubmissionPage = () => {
                       href={selectedIdea.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/20 text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors"
                       onClick={() => trackEvent('outbound_click', { link_url: selectedIdea.source_url, link_label: 'Reddit Detail', location: 'ideas_drawer' })}
                     >
                       via Reddit <ArrowRight className="w-3.5 h-3.5" />

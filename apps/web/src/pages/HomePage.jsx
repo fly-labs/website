@@ -36,11 +36,11 @@ const pillars = [
   {
     title: 'Idea Board',
     icon: Users,
-    description: 'Got a problem? Drop it here. AI scores every idea with Hormozi and Dan Koe frameworks. If yours flies, we partner up.',
+    description: 'Real problems scraped from Reddit and ProblemHunt, scored by AI, voted by the community. Drop yours too.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
-    badge: 'AI-scored',
+    badge: '3 sources',
   },
 ];
 
@@ -241,7 +241,7 @@ const HomePage = () => {
           transition={{ duration: 0.8 }}
           className="text-2xl md:text-3xl font-black text-muted-foreground/70 tracking-tight text-center"
         >
-          What problem would you solve?
+          What would you build if you could?
         </motion.p>
       </section>
 
