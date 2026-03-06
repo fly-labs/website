@@ -10,11 +10,63 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-const PROBLEMHUNT_URL = 'https://problemhunt.pro/en';
+// Tilda feed API for ProblemHunt
+const FEED_URL = 'https://feeds.tildacdn.com/api/getfeed/';
+const FEED_UID = '108885097871';
+const FEED_RECID = '1651102281';
+const PAGE_SIZE = 200;
+
+// Map Tilda category labels to our industry values
+const CATEGORY_MAP = {
+  'Marketing &amp; Sales': 'Marketing Sales',
+  'Marketing & Sales': 'Marketing Sales',
+  'Finance': 'Finance',
+  'Medicine &amp; Health': 'Medicine Health',
+  'Medicine & Health': 'Medicine Health',
+  'Business': 'Business',
+  'Realty': 'Realty',
+  'Productivity': 'Productivity',
+  'Education': 'Education',
+  'HR &amp; Career': 'Hr Career',
+  'HR & Career': 'Hr Career',
+  'AI': 'Ai',
+  'Sport &amp; Fitness': 'Sport Fitness',
+  'Sport & Fitness': 'Sport Fitness',
+  'Retail': 'Retail',
+  'Freelance': 'Freelance',
+  'Dev': 'Dev',
+  'Transportation': 'Transportation',
+  'Media': 'Media',
+  'Food &amp; Nutrition': 'Food Nutrition',
+  'Food & Nutrition': 'Food Nutrition',
+  'Legal': 'Legal',
+  'VC &amp; Startups': 'Vc Startups',
+  'VC & Startups': 'Vc Startups',
+  'Travel': 'Travel',
+  'Logistics &amp; Delivery': 'Logistics Delivery',
+  'Logistics & Delivery': 'Logistics Delivery',
+  'Psychology': 'Psychology',
+  'Design &amp; Creative': 'Design Creative',
+  'Design & Creative': 'Design Creative',
+  'Immigration': 'Immigration',
+  'Hardware': 'Hardware',
+  'Dating &amp; Community': 'Dating Community',
+  'Dating & Community': 'Dating Community',
+  'SEO &amp; GEO': 'Seo Geo',
+  'SEO & GEO': 'Seo Geo',
+  'AgTech': 'Agtech',
+  'No-Code': 'No Code',
+  'Other': 'Other',
+};
+
+function decodeHtml(str) {
+  return str.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+}
 
 async function fetchProblems() {
-  console.log('Fetching problems from ProblemHunt...');
-  const res = await fetch(PROBLEMHUNT_URL, {
+  console.log('Fetching problems from Tilda feed API...');
+  const url = `${FEED_URL}?feeduid=${FEED_UID}&recid=${FEED_RECID}&size=${PAGE_SIZE}&slice=1`;
+  const res = await fetch(url, {
     headers: { 'User-Agent': 'FlyLabs-Sync/1.0 (https://flylabs.fun)' },
   });
 
@@ -22,88 +74,69 @@ async function fetchProblems() {
     throw new Error(`HTTP ${res.status}: ${res.statusText}`);
   }
 
-  const html = await res.text();
+  const data = await res.json();
 
-  // Parse problem cards from HTML
-  // ProblemHunt uses structured cards with title, category, country, tags, URL
-  const problems = [];
-  const cardRegex = /<a[^>]*href="(\/en\/problems\/[^"]+)"[^>]*>[\s\S]*?<h\d[^>]*>([\s\S]*?)<\/h\d>/g;
-  let match;
-
-  while ((match = cardRegex.exec(html)) !== null) {
-    const url = `https://problemhunt.pro${match[1]}`;
-    const title = match[2].replace(/<[^>]*>/g, '').trim();
-    const slug = match[1].split('/').pop();
-
-    if (title && slug) {
-      problems.push({
-        idea_title: title,
-        idea_description: null,
-        category: 'Tool',
-        source: 'problemhunt',
-        source_url: url,
-        external_id: `problemhunt-url-${slug}`,
-        approved: true,
-        name: 'ProblemHunt',
-        email: null,
-        votes: 0,
-      });
-    }
+  if (data.error) {
+    throw new Error(`API error: ${data.error}`);
   }
 
-  console.log(`Parsed ${problems.length} problems from page`);
-  return problems;
+  const posts = data.posts || [];
+  console.log(`Fetched ${posts.length} of ${data.total} problems`);
+
+  return posts.map((post) => {
+    // Extract primary category (first non-Other part, or first part)
+    const parts = (post.postparts || []).map((p) => p.parttitle);
+    const primaryPart = parts.find((p) => CATEGORY_MAP[p] && CATEGORY_MAP[p] !== 'Other') || parts[0] || '';
+    const industry = CATEGORY_MAP[primaryPart] || 'Other';
+    const tags = parts.map((p) => decodeHtml(p)).join(',');
+
+    return {
+      idea_title: decodeHtml(post.title || ''),
+      idea_description: null,
+      category: 'Tool',
+      industry,
+      source: 'problemhunt',
+      source_url: post.url || null,
+      external_id: `problemhunt-${post.uid}`,
+      tags,
+      country: decodeHtml(post.descr || ''),
+      created_at: post.date ? post.date.split(' ')[0] : null,
+      approved: true,
+      name: 'ProblemHunt',
+      email: null,
+    };
+  });
 }
 
 async function syncToSupabase(problems) {
-  // Get existing external_ids
-  const { data: existing } = await supabase
-    .from('ideas')
-    .select('external_id')
-    .not('external_id', 'is', null);
-
-  const existingIds = new Set((existing || []).map((r) => r.external_id));
-
-  // Filter out duplicates (also check old-format IDs)
-  const newProblems = problems.filter((p) => {
-    if (existingIds.has(p.external_id)) return false;
-    // Also check legacy format without "url-" prefix
-    const legacyId = p.external_id.replace('problemhunt-url-', 'problemhunt-');
-    if (existingIds.has(legacyId)) return false;
-    return true;
-  });
-
-  console.log(`${problems.length} total, ${existingIds.size} already exist, ${newProblems.length} new`);
-
-  if (newProblems.length === 0) {
-    console.log('Nothing to insert.');
-    return 0;
-  }
-
-  // Insert in batches of 50
+  // Upsert in batches of 50 (updates existing, inserts new)
   const BATCH_SIZE = 50;
-  let inserted = 0;
+  let upserted = 0;
+  let failed = 0;
 
-  for (let i = 0; i < newProblems.length; i += BATCH_SIZE) {
-    const batch = newProblems.slice(i, i + BATCH_SIZE);
-    const { error } = await supabase.from('ideas').insert(batch);
+  for (let i = 0; i < problems.length; i += BATCH_SIZE) {
+    const batch = problems.slice(i, i + BATCH_SIZE);
+    const { error } = await supabase
+      .from('ideas')
+      .upsert(batch, { onConflict: 'external_id' });
 
     if (error) {
       console.error(`Batch error:`, error.message);
+      failed += batch.length;
     } else {
-      inserted += batch.length;
+      upserted += batch.length;
     }
   }
 
-  console.log(`Inserted ${inserted} new problems`);
-  return inserted;
+  console.log(`Upserted ${upserted}, failed ${failed}`);
+  return upserted;
 }
 
 async function main() {
   try {
     const problems = await fetchProblems();
     if (problems.length === 0) {
-      console.log('No problems found on page. HTML structure may have changed.');
+      console.log('No problems returned from API.');
       return;
     }
     await syncToSupabase(problems);
