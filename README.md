@@ -1,5 +1,10 @@
 # FlyLabs Website
 
+![Vercel](https://img.shields.io/badge/Vercel-deployed-black?logo=vercel)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 The playground for creators. Tools, templates, and AI prompts built in public.
 
 **Live:** [flylabs.fun](https://flylabs.fun)
@@ -10,6 +15,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
 - **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro) and Reddit. Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
+- **Library** - Free ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use (4 templates):
@@ -113,13 +119,14 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + stacks + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
+│   │   │   ├── library.js    # Books array, topics, topic colors
 │   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions, perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # 17 route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # 18 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js            # Port 3001, @ alias, vendor chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
@@ -139,6 +146,7 @@ apps/web/
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
 | `/scoring` | Scoring Frameworks (Hormozi + Dan Koe) | Public |
+| `/library` | Library (free ebooks, topic filter, waitlist) | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
 | `/templates` | Templates directory | Members only |
