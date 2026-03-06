@@ -58,7 +58,7 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, stack, colors) + stacks + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
-│   │   │   └── ideas.js          # Idea categories, status config, sort options
+│   │   │   └── ideas.js          # Idea categories, industries, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp: scroll-triggered fade + slide)
@@ -67,7 +67,7 @@ apps/web/
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (pillars, bio, GitHub heatmap, newsletter CTA)
 │       ├── ExplorePage.jsx       # Project catalog (stack-grouped or flat grid by category filter)
-│       ├── IdeaSubmissionPage.jsx # Idea board (time-decay hot sort, trending badge, vote, submit modal)
+│       ├── IdeaSubmissionPage.jsx # Idea board (ProblemHunt integration, two-dimension filter, trending badge, vote, submit modal)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Bio, story, GitHub heatmap, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
@@ -114,7 +114,10 @@ apps/web/
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
 - **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist
+- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community'), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, created_at
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`
+- **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
+- **Edge Functions:** `supabase/functions/sync-problemhunt/` (future auto-sync from problemhunt.pro)
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
@@ -155,7 +158,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (8 items), `stacks` array (launch/productivity/community), `categories` array. Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
-- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), statusConfig (open/building/shipped), sortOptions (hot/new)
+- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/new). Two-dimension filtering: Type (category) x Industry
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.
@@ -172,7 +175,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `waitlist_joined` | MicroSaasPage | `source` |
 | `newsletter_click` | NewsletterPage, AboutPage, HomePage | `location` |
 | `article_click` | NewsletterPage | `article_title`, `location` |
-| `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage, NewsletterPage | `link_url`, `link_label`, `location` |
+| `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage, NewsletterPage, IdeaSubmissionPage | `link_url`, `link_label`, `location` |
 | `cta_click` | HomePage, PromptsPage | `cta`, `location` |
 | `project_click` | ExplorePage | `project`, `category` |
 | `profile_updated` | ProfilePage | `fields_filled` |

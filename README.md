@@ -8,7 +8,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 - **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category, with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Board** - Public submissions with community voting, time-decay hot sort, and trending badges (5+ votes). Shipped ideas link to their live pages
+- **Idea Board** - Community submissions + 171 real-world problems from [ProblemHunt](https://problemhunt.pro). Two-dimension filtering (Type x Industry), time-decay hot sort, trending badges, and ProblemHunt attribution links
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use (4 templates):
@@ -107,7 +107,7 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + stacks + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
-│   │   │   └── ideas.js      # Idea categories, status config, sort options
+│   │   │   └── ideas.js      # Idea categories, industries, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
@@ -127,7 +127,7 @@ apps/web/
 |------|------|--------|
 | `/` | Home | Public |
 | `/explore` | Explore (curated stacks + category filter) | Public |
-| `/ideas` | Idea Board (vote, submit, trending) | Public |
+| `/ideas` | Idea Board (ProblemHunt + community, two-dimension filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About (bio, GitHub heatmap) | Public |
 | `/login` | Login | Public |
@@ -149,7 +149,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions (public read when approved, anyone can insert). Fields: id, name, email, idea_title, idea_description, category, votes, status, approved, created_at
+**ideas** - Community idea submissions + ProblemHunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community'), source_url, external_id, tags, country, votes, status, approved, created_at
 
 **prompt_votes** - Upvotes on prompts (one per user per prompt)
 

@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
-import { categories, statusConfig, sortOptions } from '@/lib/data/ideas.js';
+import { categories, industries, statusConfig, sortOptions } from '@/lib/data/ideas.js';
 import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
@@ -28,12 +28,15 @@ const IdeaSubmissionPage = () => {
       return [];
     }
   });
+  const [activeType, setActiveType] = useState('All');
+  const [activeIndustry, setActiveIndustry] = useState('All');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     idea_title: '',
     idea_description: '',
     category: 'Tool',
+    industry: '',
   });
 
   // Pre-fill form for logged-in users
@@ -75,10 +78,18 @@ const IdeaSubmissionPage = () => {
 
   const TRENDING_THRESHOLD = 5;
 
-  // Sort logic
+  // Filter + Sort logic
+  const filtered = ideas
+    .filter(i => activeType === 'All' || i.category === activeType)
+    .filter(i => activeIndustry === 'All' || i.industry === activeIndustry);
   const sorted = sortBy === 'hot'
-    ? [...ideas].sort((a, b) => getHotScore(b) - getHotScore(a))
-    : [...ideas].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    ? [...filtered].sort((a, b) => getHotScore(b) - getHotScore(a))
+    : [...filtered].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  // Industries that have at least one idea (for dynamic filter)
+  const activeIndustries = industries.filter(ind =>
+    ideas.some(i => i.industry === ind.value)
+  );
 
   // Vote handler
   const handleVote = async (id) => {
@@ -163,6 +174,7 @@ const IdeaSubmissionPage = () => {
         idea_title: formData.idea_title.trim(),
         idea_description: formData.idea_description.trim(),
         category: formData.category,
+        ...(formData.industry && { industry: formData.industry }),
       };
       const { error } = await supabase.from('ideas').insert(sanitized);
       if (error) throw error;
@@ -180,6 +192,7 @@ const IdeaSubmissionPage = () => {
         idea_title: '',
         idea_description: '',
         category: 'Tool',
+        industry: '',
       });
       setShowModal(false);
     } catch (error) {
@@ -246,6 +259,9 @@ const IdeaSubmissionPage = () => {
                       <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                         <CheckCircle2 className="w-3 h-3" /> Shipped
                       </span>
+                      <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                        Sport & Fitness
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-2">
                       Automatically sync your Garmin health data to Notion. Born from a community request, now live and open source.
@@ -271,6 +287,9 @@ const IdeaSubmissionPage = () => {
                       <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
                         <CheckCircle2 className="w-3 h-3" /> Shipped
                       </span>
+                      <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                        Dev
+                      </span>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed mb-2">
                       Full stack breakdown of how this site was built. Open source and free to fork.
@@ -288,36 +307,106 @@ const IdeaSubmissionPage = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="flex items-center justify-between mb-4"
+              className="space-y-3 mb-4"
             >
-              <div className="flex gap-1.5">
-                {sortOptions.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setSortBy(opt.value)}
-                    className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors"
-                  >
-                    {sortBy === opt.value && (
-                      <motion.span
-                        layoutId="activeSort"
-                        className="absolute inset-0 bg-primary/10 border border-primary/30 rounded-full"
-                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    <span className={`relative z-10 ${sortBy === opt.value ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                      {opt.label}
-                    </span>
-                  </button>
-                ))}
+              <div className="flex items-center justify-between">
+                <div className="flex gap-1.5">
+                  {sortOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSortBy(opt.value)}
+                      className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors"
+                    >
+                      {sortBy === opt.value && (
+                        <motion.span
+                          layoutId="activeSort"
+                          className="absolute inset-0 bg-primary/10 border border-primary/30 rounded-full"
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span className={`relative z-10 ${sortBy === opt.value ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
+                        {opt.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                >
+                  Submit an idea <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
 
-              <button
-                onClick={() => setShowModal(true)}
-                className="inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
-              >
-                Submit an idea <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Type filter */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-muted-foreground/60 shrink-0">Type:</span>
+                <div className="flex gap-1.5 flex-wrap">
+                  {['All', ...categories.map(c => c.value)].map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setActiveType(type)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                        activeType === type
+                          ? 'bg-primary/10 text-primary border border-primary/30'
+                          : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Industry filter */}
+              {activeIndustries.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-muted-foreground/60 shrink-0">Industry:</span>
+                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                    <button
+                      onClick={() => setActiveIndustry('All')}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
+                        activeIndustry === 'All'
+                          ? 'bg-primary/10 text-primary border border-primary/30'
+                          : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
+                      }`}
+                    >
+                      All
+                    </button>
+                    {activeIndustries.map((ind) => (
+                      <button
+                        key={ind.value}
+                        onClick={() => setActiveIndustry(ind.value)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
+                          activeIndustry === ind.value
+                            ? 'bg-primary/10 text-primary border border-primary/30'
+                            : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
+                        }`}
+                      >
+                        {ind.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </motion.div>
+
+            {/* ProblemHunt credit */}
+            <div className="flex items-center gap-2 mb-3 px-1">
+              <span className="text-xs text-muted-foreground/60 font-medium">
+                Real-world problems sourced from{' '}
+                <a
+                  href="https://problemhunt.pro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline font-semibold"
+                  onClick={() => trackEvent('outbound_click', { link_url: 'https://problemhunt.pro', link_label: 'ProblemHunt', location: 'ideas' })}
+                >
+                  ProblemHunt
+                </a>
+              </span>
+            </div>
 
             {/* Ideas board */}
             {loading ? (
@@ -402,15 +491,50 @@ const IdeaSubmissionPage = () => {
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2">
-                              {idea.idea_description}
-                            </p>
+                            {idea.idea_description && idea.idea_description !== idea.idea_title && (
+                              <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2">
+                                {idea.idea_description}
+                              </p>
+                            )}
                             <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap">
-                              <span>by {idea.name || 'Anonymous'}</span>
+                              <span>
+                                {idea.source === 'problemhunt' ? (
+                                  <a
+                                    href={idea.source_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-accent hover:underline font-medium"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      trackEvent('outbound_click', {
+                                        link_url: idea.source_url,
+                                        link_label: 'ProblemHunt',
+                                        location: 'ideas',
+                                      });
+                                    }}
+                                  >
+                                    via ProblemHunt
+                                  </a>
+                                ) : (
+                                  `by ${idea.name || 'Anonymous'}`
+                                )}
+                              </span>
                               <span className="text-muted-foreground/40">&middot;</span>
                               <span>{timeAgo(idea.created_at)}</span>
                               <span className="text-muted-foreground/40">&middot;</span>
                               <span>{idea.category || 'Other'}</span>
+                              {idea.industry && (
+                                <>
+                                  <span className="text-muted-foreground/40">&middot;</span>
+                                  <span>{industries.find(i => i.value === idea.industry)?.label || idea.industry}</span>
+                                </>
+                              )}
+                              {idea.country && (
+                                <>
+                                  <span className="text-muted-foreground/40">&middot;</span>
+                                  <span>{idea.country}</span>
+                                </>
+                              )}
                               <span className="text-muted-foreground/40">&middot;</span>
                               <span className="inline-flex items-center gap-1">
                                 <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
@@ -505,21 +629,22 @@ const IdeaSubmissionPage = () => {
                       </div>
                     </div>
 
+                    <div className="space-y-2">
+                      <label htmlFor="idea_title" className="text-sm font-medium text-muted-foreground">What's the idea?</label>
+                      <input
+                        id="idea_title"
+                        name="idea_title"
+                        type="text"
+                        required
+                        maxLength={100}
+                        placeholder="Give it a name"
+                        value={formData.idea_title}
+                        onChange={handleChange}
+                        className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                      />
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label htmlFor="idea_title" className="text-sm font-medium text-muted-foreground">What's the idea?</label>
-                        <input
-                          id="idea_title"
-                          name="idea_title"
-                          type="text"
-                          required
-                          maxLength={100}
-                          placeholder="Give it a name"
-                          value={formData.idea_title}
-                          onChange={handleChange}
-                          className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
-                        />
-                      </div>
                       <div className="space-y-2">
                         <label htmlFor="category" className="text-sm font-medium text-muted-foreground">Type</label>
                         <div className="relative">
@@ -532,6 +657,30 @@ const IdeaSubmissionPage = () => {
                           >
                             {categories.map((c) => (
                               <option key={c.value} value={c.value}>{c.label}</option>
+                            ))}
+                          </select>
+                          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="industry" className="text-sm font-medium text-muted-foreground">
+                          Industry <span className="text-muted-foreground/50">(optional)</span>
+                        </label>
+                        <div className="relative">
+                          <select
+                            id="industry"
+                            name="industry"
+                            value={formData.industry}
+                            onChange={handleChange}
+                            className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors appearance-none cursor-pointer"
+                          >
+                            <option value="">Select industry</option>
+                            {industries.map((ind) => (
+                              <option key={ind.value} value={ind.value}>{ind.label}</option>
                             ))}
                           </select>
                           <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
