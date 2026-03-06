@@ -134,10 +134,7 @@ const ScoringFrameworksPage = () => {
             className="text-center mb-16"
           >
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-              How We{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                Score Ideas
-              </span>
+              How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
               Every idea on the board gets AI-scored using two complementary business frameworks.

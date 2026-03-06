@@ -79,10 +79,7 @@ const WebsiteBlueprintPage = () => {
                 <Globe className="w-4 h-4" /> Open Source
               </div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
-                Website{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                  Blueprint
-                </span>
+                Website <span className="text-primary">Blueprint</span>
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
                 This is exactly how I built flylabs.fun. Every tool, every decision, every line of thinking. Think of it as me walking you through my project over coffee.

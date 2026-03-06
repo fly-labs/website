@@ -37,7 +37,7 @@ const GarminToNotionPage = () => {
                 <Activity className="w-4 h-4" /> Health & Fitness
               </div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight">
-                Garmin to <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Notion</span> Sync
+                Garmin to <span className="text-primary">Notion</span> Sync
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
                 Stop manually logging your workouts. Automatically sync your Garmin health data, activities, and sleep metrics directly into your Notion workspace.

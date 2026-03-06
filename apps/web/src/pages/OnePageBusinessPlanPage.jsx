@@ -65,10 +65,7 @@ const OnePageBusinessPlanPage = () => {
               <FileText className="w-4 h-4" /> Notion Template
             </div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-              One-Page{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-500">
-                Business Plan
-              </span>
+              One-Page <span className="text-primary">Business Plan</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
               You don't need a 30-page document. You need clarity. Answer five questions and you'll know more about your business than most founders do after months of planning.

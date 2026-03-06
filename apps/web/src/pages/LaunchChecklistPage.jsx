@@ -60,10 +60,7 @@ const LaunchChecklistPage = () => {
               <ListChecks className="w-4 h-4" /> Notion Template
             </div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
-              Launch{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
-                Checklist
-              </span>
+              Launch <span className="text-primary">Checklist</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
               Stop overthinking your launch. This Notion template breaks it down into four phases so you know exactly what to do, when to do it, and what to track.

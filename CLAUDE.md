@@ -145,7 +145,7 @@ apps/web/
 - **Path alias:** `@/` maps to `src/` (e.g., `import Header from '@/components/Header.jsx'`)
 - **Always include `.jsx` extension** in imports
 - **Component naming:** PascalCase files, default exports for pages, named exports for utilities
-- **Styling:** Tailwind utility classes. Use `cn()` from `@/lib/utils.js` for conditional classes
+- **Styling:** Tailwind utility classes. Use `cn()` from `@/lib/utils.js` for conditional classes. Never use gradient text effects (`text-transparent bg-clip-text bg-gradient-to-*`) - use solid `text-primary` instead for emphasis
 - **Animation:** Framer Motion `motion.div` with `initial/animate`. Use `AnimatePresence` only for local UI elements (modals, toasts, expand/collapse). Never wrap `<Routes>` with `AnimatePresence` - it blocks lazy-loaded route transitions
 - **Icons:** Import individually from `lucide-react` (tree-shakeable)
 - **Pages:** Wrap in `<PageLayout>` (provides SEO, Header, Footer, and background). Pass `seo={{ title, description, ... }}` prop
