@@ -7,7 +7,7 @@ import ScrollToTop from '@/components/ScrollToTop.jsx';
 import GridBackground from '@/components/GridBackground.jsx';
 import { ProtectedRoute } from '@/components/ProtectedRoute.jsx';
 import { HelmetProvider } from 'react-helmet-async';
-import { AnimatePresence } from 'framer-motion';
+
 import { Loader2 } from 'lucide-react';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary.jsx';
@@ -49,11 +49,8 @@ const PageTracker = () => {
 };
 
 const AnimatedRoutes = () => {
-  const location = useLocation();
-
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+    <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/explore" element={<ExplorePage />} />
@@ -76,7 +73,6 @@ const AnimatedRoutes = () => {
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </AnimatePresence>
   );
 };
 

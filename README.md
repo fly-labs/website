@@ -6,16 +6,17 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 ## What's Inside
 
-- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 public, full library for members. Includes a suggestion form for community contributions
-- **Explore** - Catalog of projects and tools with type and status badges, filterable by category
-- **Idea Submissions** - Public form where anyone can submit tool ideas with community voting
+- **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category, with type and status badges
+- **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
+- **Idea Board** - Public submissions with community voting, time-decay hot sort, and trending badges (5+ votes). Shipped ideas link to their live pages
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
-- **Templates** - Systems, tools, and blueprints built for real use
-- **Website Blueprint** - Full stack breakdown of how this site was built (open source)
-- **Notion Templates** - Book-framework templates (Launch Checklist, One-Page Business Plan) inspired by The $100 Startup
-- **Curated Stacks** - Explore page organized by Launch Stack, Productivity Stack, and Community
-- **Member Profiles** - Auth-gated profiles with account management
+- **Templates** - Systems, tools, and blueprints built for real use (4 templates):
+  - Garmin to Notion Sync - auto-sync Garmin health data to Notion (live, open source)
+  - Website Blueprint - full stack breakdown of how this site was built (live, open source)
+  - Launch Checklist - 4-phase Notion template based on The $100 Startup (coming soon)
+  - One-Page Business Plan - 5-question Notion template based on The $100 Startup (coming soon)
+- **Member Profiles** - Auth-gated profiles with name, location, bio, and avatar
 
 ## Tech Stack
 
@@ -29,7 +30,8 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 | Icons | Lucide React |
 | Backend | Supabase (PostgreSQL + Auth + Storage) |
 | Auth | Email/password + Google OAuth |
-| Analytics | Google Analytics 4 |
+| SEO | react-helmet-async + JSON-LD |
+| Analytics | Google Analytics 4 (14 custom events) |
 | Deploy | Vercel (auto-deploy on push to `main`) |
 
 ## Getting Started
@@ -82,28 +84,41 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 apps/web/
 ├── src/
 │   ├── main.jsx              # Entry point
-│   ├── App.jsx               # Router + providers
-│   ├── index.css             # Tailwind + design tokens (CSS vars)
+│   ├── App.jsx               # Router + providers (Auth, Theme, Helmet)
+│   ├── index.css             # Tailwind + design tokens (CSS vars, custom classes)
 │   ├── components/
-│   │   ├── ui/               # shadcn/ui primitives (button, avatar, tabs, toast...)
+│   │   ├── ui/               # shadcn/ui primitives (button, avatar, input, tabs, toast, toaster)
 │   │   ├── Header.jsx        # Sticky nav with blur backdrop
 │   │   ├── Footer.jsx        # Footer with social links
 │   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, background)
-│   │   ├── AuthModal.jsx     # Login/signup modal
+│   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD)
+│   │   ├── AuthModal.jsx     # Login/signup modal (Google OAuth, password strength)
+│   │   ├── ProtectedRoute.jsx # Redirects guests to AuthModal
 │   │   ├── GitHubHeatmap.jsx # GitHub contribution heatmap (compact + full)
-│   │   └── ...
-│   ├── contexts/             # AuthContext, ThemeContext
-│   ├── hooks/                # use-toast
+│   │   ├── GridBackground.jsx # Subtle graph-paper grid
+│   │   ├── GeometricBackground.jsx # Hand-drawn doodle background
+│   │   └── ...               # ThemeToggle, SmileLogo, ScrollToTop, icons
+│   ├── contexts/
+│   │   ├── AuthContext.jsx   # Supabase auth state, profile CRUD, GA4 user props
+│   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
+│   ├── hooks/
+│   │   └── use-toast.js
 │   ├── lib/
-│   │   ├── data/             # Static data (projects, prompts, ideas)
+│   │   ├── data/
+│   │   │   ├── projects.js   # Projects array + stacks + categories
+│   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
+│   │   │   └── ideas.js      # Idea categories, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init
-│   │   ├── analytics.js      # GA4 helpers
+│   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
+│   │   ├── animations.js     # Shared animation variants (fadeUp)
+│   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # Route pages
+│   └── pages/                # 16 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
-├── vite.config.js
-├── tailwind.config.js
-└── vercel.json               # SPA rewrites + security headers
+├── vite.config.js            # Port 3001, @ alias, vendor chunking
+├── tailwind.config.js        # Design tokens, dark mode: 'class'
+├── components.json           # shadcn/ui config
+└── vercel.json               # SPA rewrites + security headers (CSP, HSTS, COOP)
 ```
 
 ## Routes
@@ -111,16 +126,19 @@ apps/web/
 | Path | Page | Access |
 |------|------|--------|
 | `/` | Home | Public |
-| `/explore` | Explore (project catalog) | Public |
-| `/ideas` | Idea submissions | Public |
+| `/explore` | Explore (curated stacks + category filter) | Public |
+| `/ideas` | Idea Board (vote, submit, trending) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
-| `/about` | About | Public |
+| `/about` | About (bio, GitHub heatmap) | Public |
+| `/login` | Login | Public |
+| `/signup` | Signup | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
-| `/templates` | Templates | Members only |
+| `/templates` | Templates directory | Members only |
+| `/templates/garmin-to-notion` | Garmin to Notion Sync | Members only |
 | `/templates/website-blueprint` | Website Blueprint | Public |
-| `/templates/launch-checklist` | Launch Checklist (Notion) | Public |
-| `/templates/one-page-business-plan` | One-Page Business Plan (Notion) | Public |
+| `/templates/launch-checklist` | Launch Checklist (Notion) | Public (coming soon) |
+| `/templates/one-page-business-plan` | One-Page Business Plan (Notion) | Public (coming soon) |
 | `/profile` | User Profile | Members only |
 
 ## Supabase Setup
@@ -129,20 +147,28 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 ### Tables
 
-**profiles** - User profiles (synced with Supabase Auth, auto-created on signup)
+**profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions (public read when approved, anyone can insert)
+**ideas** - Community idea submissions (public read when approved, anyone can insert). Fields: id, name, email, idea_title, idea_description, category, votes, status, approved, created_at
 
-**prompt_votes** - Upvotes on prompts (RPC: `toggle_prompt_vote`)
+**prompt_votes** - Upvotes on prompts (one per user per prompt)
 
-**prompt_comments** - Comments on prompts
+**prompt_comments** - Comments on prompts (authenticated users only)
 
-**waitlist** - Email capture (anyone can insert; use RPC `get_waitlist_count` for counts)
+**waitlist** - Email capture (anyone can insert, unique constraint on email + source)
+
+### RPCs
+
+- `increment_vote(idea_id)` - Atomic vote increment for ideas
+- `toggle_prompt_vote(p_prompt_id)` - Atomic vote toggle for prompts (insert or delete)
+- `get_prompt_vote_counts()` - Returns vote counts for all prompts (SECURITY DEFINER, works without auth)
+- `get_waitlist_count(p_source)` - Count waitlist entries by source
 
 ### Auth
 
 - Email/password authentication
 - Google OAuth (requires Google Cloud Console credentials in Supabase dashboard)
+- Row Level Security on every table
 
 ## Deployment
 

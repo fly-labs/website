@@ -1,13 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ListChecks, ExternalLink, MessageSquare, Eye, Megaphone, Rocket, BarChart3 } from 'lucide-react';
+import { ArrowLeft, ListChecks, Clock, MessageSquare, Eye, Megaphone, Rocket, BarChart3 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
-import { trackEvent } from '@/lib/analytics.js';
+
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
-
-const NOTION_URL = 'https://flylabs.notion.site/Launch-Checklist-Template';
 
 const phases = [
   {
@@ -33,14 +31,6 @@ const phases = [
 ];
 
 const LaunchChecklistPage = () => {
-  const handleNotionClick = (location) => {
-    trackEvent('outbound_click', {
-      link_url: NOTION_URL,
-      link_label: 'Duplicate in Notion',
-      location,
-    });
-  };
-
   return (
     <PageLayout
       seo={{
@@ -131,19 +121,13 @@ const LaunchChecklistPage = () => {
             {...fadeUp}
             className="bg-amber-500/5 border border-amber-500/20 rounded-3xl p-8 md:p-12 text-center mb-12"
           >
-            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">Ready to launch?</h2>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">This template is being built</h2>
             <p className="text-muted-foreground font-medium mb-8 max-w-lg mx-auto">
-              Duplicate this template into your Notion workspace and start checking things off.
+              I'm still crafting this Notion template to make sure it's actually useful. Subscribe to the newsletter to get notified when it drops.
             </p>
-            <a
-              href={NOTION_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2"
-              onClick={() => handleNotionClick('launch_checklist_cta')}
-            >
-              Duplicate in Notion <ExternalLink className="w-5 h-5" />
-            </a>
+            <span className="inline-flex items-center gap-2 h-12 px-6 md:h-14 md:px-8 rounded-xl bg-muted text-muted-foreground text-base md:text-lg font-semibold border border-border cursor-default">
+              <Clock className="w-5 h-5" /> Coming Soon
+            </span>
           </motion.div>
 
           {/* Attribution */}

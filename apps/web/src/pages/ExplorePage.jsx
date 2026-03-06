@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Lock, ArrowRight } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { projects, categories, stacks } from '@/lib/data/projects.js';
 import { trackEvent } from '@/lib/analytics.js';
 
@@ -74,13 +74,10 @@ const ExplorePage = () => {
           </motion.div>
 
           {/* Project Grid */}
-          <AnimatePresence>
-            {filteredProjects.length === 0 ? (
+          {filteredProjects.length === 0 ? (
               <motion.p
-                key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
                 className="text-center text-muted-foreground py-20"
               >
                 Nothing here yet. But stay tuned.
@@ -207,7 +204,6 @@ const ExplorePage = () => {
                 })}
               </motion.div>
             )}
-          </AnimatePresence>
 
         </div>
       </div>
