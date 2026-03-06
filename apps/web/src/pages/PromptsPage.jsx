@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Sparkles, Copy, Check, Search, ShieldCheck, X,
   ChevronUp, ChevronDown, MessageCircle, Flame, Send, Trash2,
-  Lock, ArrowRight, LayoutTemplate, Code,
+  Lock, ArrowRight, LayoutTemplate, Code, Lightbulb, Loader2,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { useToast } from '@/hooks/use-toast.js';
@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { prompts } from '@/lib/data/prompts.js';
 import supabase from '@/lib/supabaseClient.js';
-import { timeAgo } from '@/lib/utils.js';
+import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Thinking'];
@@ -58,6 +58,16 @@ const PromptsPage = () => {
       return {};
     }
   });
+
+  // Suggest a prompt form state
+  const [suggestForm, setSuggestForm] = useState({
+    email: '',
+    idea_title: '',
+    idea_description: '',
+    category: 'Coding',
+  });
+  const [isSuggesting, setIsSuggesting] = useState(false);
+  const [suggestSuccess, setSuggestSuccess] = useState(false);
 
   // Which prompts to show
   const visiblePrompts = isAuthenticated ? prompts : prompts.filter(p => p.featured);
@@ -134,6 +144,59 @@ const PromptsPage = () => {
 
     fetchAuthData();
   }, [currentUser]);
+
+  // Pre-fill suggest form for logged-in users
+  useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      setSuggestForm(prev => ({
+        ...prev,
+        email: prev.email || currentUser.email || '',
+      }));
+    }
+  }, [isAuthenticated, currentUser]);
+
+  // Suggest prompt handler
+  const handleSuggestSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!suggestForm.email || !suggestForm.idea_title || !suggestForm.idea_description) {
+      toast({ title: 'Missing fields', description: 'Please fill in all required fields.', variant: 'destructive' });
+      return;
+    }
+    if (!isValidEmail(suggestForm.email.trim())) {
+      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      return;
+    }
+    if (suggestForm.idea_title.length > 100) {
+      toast({ title: 'Title too long', description: 'Max 100 characters.', variant: 'destructive' });
+      return;
+    }
+    if (suggestForm.idea_description.length > 1000) {
+      toast({ title: 'Description too long', description: 'Max 1000 characters.', variant: 'destructive' });
+      return;
+    }
+
+    setIsSuggesting(true);
+    try {
+      const { error } = await supabase.from('ideas').insert({
+        email: suggestForm.email.trim().toLowerCase(),
+        idea_title: `[Prompt - ${suggestForm.category}] ${suggestForm.idea_title.trim()}`,
+        idea_description: suggestForm.idea_description.trim(),
+        category: 'Prompt',
+      });
+      if (error) throw error;
+
+      trackEvent('idea_submitted', { category: 'Prompt', prompt_category: suggestForm.category });
+
+      setSuggestSuccess(true);
+      setSuggestForm({ email: '', idea_title: '', idea_description: '', category: 'Coding' });
+      setTimeout(() => setSuggestSuccess(false), 5000);
+    } catch {
+      toast({ title: 'Something went wrong', description: "Couldn't send your suggestion. Please try again.", variant: 'destructive' });
+    } finally {
+      setIsSuggesting(false);
+    }
+  };
 
   // Copy handler
   const handleCopy = async (id, content) => {
@@ -813,6 +876,112 @@ const PromptsPage = () => {
               </div>
             </motion.div>
           )}
+          {/* Suggest a Prompt */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-16"
+          >
+            <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                  <Lightbulb className="w-5 h-5" />
+                </div>
+                <h2 className="text-xl md:text-2xl font-black tracking-tight">Suggest a Prompt</h2>
+              </div>
+              <p className="text-sm text-muted-foreground font-medium mb-6">
+                Got a prompt that works great? Or an idea for one? Share it and help the library grow.
+              </p>
+
+              {suggestSuccess ? (
+                <div className="text-center py-8">
+                  <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
+                  <p className="font-semibold text-foreground mb-1">Suggestion received!</p>
+                  <p className="text-sm text-muted-foreground">I'll review it and add it to the library if it's a good fit.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSuggestSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label htmlFor="suggest-email" className="text-sm font-medium text-muted-foreground">Email</label>
+                      <input
+                        id="suggest-email"
+                        type="email"
+                        required
+                        placeholder="So I can follow up"
+                        value={suggestForm.email}
+                        onChange={(e) => setSuggestForm(prev => ({ ...prev, email: e.target.value }))}
+                        className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label htmlFor="suggest-category" className="text-sm font-medium text-muted-foreground">Category</label>
+                      <div className="relative">
+                        <select
+                          id="suggest-category"
+                          value={suggestForm.category}
+                          onChange={(e) => setSuggestForm(prev => ({ ...prev, category: e.target.value }))}
+                          className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors appearance-none cursor-pointer"
+                        >
+                          {CATEGORIES.filter(c => c !== 'All').map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                          <option value="Other">Other</option>
+                        </select>
+                        <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label htmlFor="suggest-title" className="text-sm font-medium text-muted-foreground">Prompt name</label>
+                    <input
+                      id="suggest-title"
+                      type="text"
+                      required
+                      maxLength={100}
+                      placeholder="e.g. The Email Rewriter"
+                      value={suggestForm.idea_title}
+                      onChange={(e) => setSuggestForm(prev => ({ ...prev, idea_title: e.target.value }))}
+                      className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label htmlFor="suggest-description" className="text-sm font-medium text-muted-foreground">The prompt or describe the idea</label>
+                    <textarea
+                      id="suggest-description"
+                      required
+                      rows={4}
+                      maxLength={1000}
+                      placeholder="Paste the full prompt text, or describe what it should do and when to use it."
+                      value={suggestForm.idea_description}
+                      onChange={(e) => setSuggestForm(prev => ({ ...prev, idea_description: e.target.value }))}
+                      className="w-full p-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSuggesting}
+                    className="inline-flex items-center gap-2 h-11 px-6 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSuggesting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>Send suggestion <Send className="w-3.5 h-3.5" /></>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          </motion.div>
+
         </div>
       </motion.div>
     </PageLayout>

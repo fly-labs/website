@@ -6,8 +6,8 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 ## What's Inside
 
-- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 public, full library for members
-- **Explore** - Catalog of projects and tools built by the team
+- **AI Prompt Library** - 24 curated prompts for coding, writing, and thinking. 5 public, full library for members. Includes a suggestion form for community contributions
+- **Explore** - Catalog of projects and tools with type and status badges, filterable by category
 - **Idea Submissions** - Public form where anyone can submit tool ideas with community voting
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools

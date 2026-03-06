@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Send, ChevronUp, Zap, ArrowRight, X, Loader2, CheckCircle2, Activity } from 'lucide-react';
+import { Send, ChevronUp, Zap, ArrowRight, X, Loader2, CheckCircle2, Activity, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -221,30 +221,57 @@ const IdeaSubmissionPage = () => {
               <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
                 Shipped from the board
               </p>
-              <Link
-                to="/templates/garmin-to-notion"
-                className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
-              >
-                <div className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      Garmin to Notion Sync
-                    </h3>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                      <CheckCircle2 className="w-3 h-3" /> Shipped
+              <div className="flex flex-col gap-3">
+                <Link
+                  to="/templates/garmin-to-notion"
+                  className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
+                    <Activity className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        Garmin to Notion Sync
+                      </h3>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                        <CheckCircle2 className="w-3 h-3" /> Shipped
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+                      Automatically sync your Garmin health data to Notion. Born from a community request, now live and open source.
+                    </p>
+                    <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
+                      Check it out <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-                    Automatically sync your Garmin health data to Notion. Born from a community request, now live and open source.
-                  </p>
-                  <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                    Check it out <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
-                  </span>
-                </div>
-              </Link>
+                </Link>
+
+                <Link
+                  to="/templates/website-blueprint"
+                  className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
+                    <Globe className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        Website Blueprint
+                      </h3>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                        <CheckCircle2 className="w-3 h-3" /> Shipped
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+                      Full stack breakdown of how this site was built. Open source and free to fork.
+                    </p>
+                    <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
+                      Check it out <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
+                    </span>
+                  </div>
+                </Link>
+              </div>
             </motion.div>
 
             {/* Toolbar: Sort + Submit */}

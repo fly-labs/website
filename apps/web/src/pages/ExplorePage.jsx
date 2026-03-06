@@ -74,7 +74,7 @@ const ExplorePage = () => {
           </motion.div>
 
           {/* Project Grid */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             {filteredProjects.length === 0 ? (
               <motion.p
                 key="empty"
@@ -97,7 +97,6 @@ const ExplorePage = () => {
                       key={project.title}
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.97 }}
                       transition={{ duration: 0.3, delay: i * 0.04 }}
                     >
                       <Link
@@ -113,6 +112,9 @@ const ExplorePage = () => {
                             {isLocked && (
                               <Lock className="w-3.5 h-3.5 text-muted-foreground" />
                             )}
+                            <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${project.bgColor} ${project.color}`}>
+                              {project.type}
+                            </span>
                             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
                               project.status === 'Live' ? 'bg-primary/10 text-primary' :
                               project.status === 'Beta' ? 'bg-blue-500/10 text-blue-500' :

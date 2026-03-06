@@ -56,7 +56,7 @@ apps/web/
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
-│   │   │   ├── projects.js       # Shared projects array
+│   │   │   ├── projects.js       # Shared projects array (title, type, status, category, colors)
 │   │   │   ├── prompts.js        # Prompts data (featured flag for lead magnet)
 │   │   │   └── ideas.js          # Idea categories, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init
@@ -158,7 +158,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `prompt_copied` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
 | `prompt_voted` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
 | `prompt_commented` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
-| `idea_submitted` | IdeaSubmissionPage | `category` |
+| `idea_submitted` | IdeaSubmissionPage, PromptsPage | `category`, `prompt_category` (PromptsPage only) |
 | `idea_voted` | IdeaSubmissionPage | `idea_id`, `idea_title`, `category` |
 | `waitlist_joined` | MicroSaasPage | `source` |
 | `newsletter_click` | NewsletterPage, AboutPage | `location` |
