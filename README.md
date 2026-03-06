@@ -13,6 +13,8 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use
 - **Website Blueprint** - Full stack breakdown of how this site was built (open source)
+- **Notion Templates** - Book-framework templates (Launch Checklist, One-Page Business Plan) inspired by The $100 Startup
+- **Curated Stacks** - Explore page organized by Launch Stack, Productivity Stack, and Community
 - **Member Profiles** - Auth-gated profiles with account management
 
 ## Tech Stack
@@ -117,6 +119,8 @@ apps/web/
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
 | `/templates` | Templates | Members only |
 | `/templates/website-blueprint` | Website Blueprint | Public |
+| `/templates/launch-checklist` | Launch Checklist (Notion) | Public |
+| `/templates/one-page-business-plan` | One-Page Business Plan (Notion) | Public |
 | `/profile` | User Profile | Members only |
 
 ## Supabase Setup

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Sparkles, Copy, Check, Search, ShieldCheck, X,
   ChevronUp, ChevronDown, MessageCircle, Flame, Send, Trash2,
-  Lock, ArrowRight, LayoutTemplate, Code, Lightbulb, Loader2,
+  Lock, ArrowRight, LayoutTemplate, Code, Lightbulb, Loader2, CheckCircle2,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { useToast } from '@/hooks/use-toast.js';
@@ -615,6 +615,13 @@ const PromptsPage = () => {
                             <span className="hidden sm:inline-flex items-center gap-1 text-xs font-medium text-muted-foreground/60 w-16 justify-center shrink-0">
                               <MessageCircle className="w-3.5 h-3.5" /> {promptComments.length}
                             </span>
+
+                            {/* Copy count */}
+                            {copyCount > 0 && (
+                              <span className="hidden sm:inline-flex items-center gap-1 text-xs text-muted-foreground/60 tabular-nums shrink-0">
+                                <Copy className="w-3 h-3" /> {copyCount}
+                              </span>
+                            )}
 
                             {/* Copy button */}
                             <button

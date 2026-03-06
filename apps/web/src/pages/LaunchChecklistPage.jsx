@@ -1,0 +1,160 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ListChecks, ExternalLink, MessageSquare, Eye, Megaphone, Rocket, BarChart3 } from 'lucide-react';
+import { PageLayout } from '@/components/PageLayout.jsx';
+import { trackEvent } from '@/lib/analytics.js';
+import { motion } from 'framer-motion';
+import { fadeUp } from '@/lib/animations.js';
+
+const NOTION_URL = 'https://flylabs.notion.site/Launch-Checklist-Template';
+
+const phases = [
+  {
+    icon: Eye,
+    title: 'The Big Picture',
+    items: ['Define your vision and what success looks like', 'Identify your target audience and their biggest pain', 'Set 1-3 measurable goals for launch'],
+  },
+  {
+    icon: Megaphone,
+    title: 'Before Launch',
+    items: ['Prepare your landing page and messaging', 'Build your launch asset list (screenshots, copy, links)', 'Line up your distribution channels'],
+  },
+  {
+    icon: Rocket,
+    title: 'Launch Day',
+    items: ['Execute your launch sequence step by step', 'Engage with early users and respond to feedback', 'Track your key metrics in real time'],
+  },
+  {
+    icon: BarChart3,
+    title: 'Post-Launch',
+    items: ['Send follow-up messages and thank-you notes', 'Review what worked and what didn\'t', 'Plan your next iteration based on real data'],
+  },
+];
+
+const LaunchChecklistPage = () => {
+  const handleNotionClick = (location) => {
+    trackEvent('outbound_click', {
+      link_url: NOTION_URL,
+      link_label: 'Duplicate in Notion',
+      location,
+    });
+  };
+
+  return (
+    <PageLayout
+      seo={{
+        title: "Launch Checklist | Fly Labs",
+        description: "A step-by-step Notion template to take your idea from zero to launched. Based on The $100 Startup framework.",
+        keywords: "launch checklist, Notion template, startup launch, product launch, The $100 Startup",
+        url: "https://flylabs.fun/templates/launch-checklist",
+      }}
+      className="pt-32 pb-24"
+    >
+      <div className="container mx-auto px-6">
+        <div className="max-w-4xl mx-auto">
+
+          {/* Back link */}
+          <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold mb-8 transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
+          </Link>
+
+          {/* Hero */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 font-bold text-sm border border-amber-500/20 mb-6">
+              <ListChecks className="w-4 h-4" /> Notion Template
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
+              Launch{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
+                Checklist
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
+              Stop overthinking your launch. This Notion template breaks it down into four phases so you know exactly what to do, when to do it, and what to track.
+            </p>
+          </motion.div>
+
+          {/* Builder's Note */}
+          <motion.div
+            {...fadeUp}
+            className="bg-primary/5 border border-primary/20 rounded-2xl p-6 md:p-8 mb-16 flex gap-4 items-start"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+              <MessageSquare className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
+              <p className="text-muted-foreground leading-relaxed">
+                Most people don't fail at launching. They fail at knowing what to do next. This checklist exists because I needed it myself. It turns the chaos of "I have an idea" into a clear sequence of steps. Nothing fancy, just the stuff that actually matters.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* What's Inside */}
+          <motion.div {...fadeUp} className="mb-16">
+            <h2 className="text-3xl font-black tracking-tight mb-8">What's Inside</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {phases.map((phase, i) => (
+                <motion.div
+                  key={phase.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  className="card-playful p-6 bg-card"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                      <phase.icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-black">{phase.title}</h3>
+                  </div>
+                  <ul className="space-y-2">
+                    {phase.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500/50 mt-1.5 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div
+            {...fadeUp}
+            className="bg-amber-500/5 border border-amber-500/20 rounded-3xl p-8 md:p-12 text-center mb-12"
+          >
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">Ready to launch?</h2>
+            <p className="text-muted-foreground font-medium mb-8 max-w-lg mx-auto">
+              Duplicate this template into your Notion workspace and start checking things off.
+            </p>
+            <a
+              href={NOTION_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2"
+              onClick={() => handleNotionClick('launch_checklist_cta')}
+            >
+              Duplicate in Notion <ExternalLink className="w-5 h-5" />
+            </a>
+          </motion.div>
+
+          {/* Attribution */}
+          <p className="text-center text-sm text-muted-foreground/60 font-medium">
+            Inspired by <em>The $100 Startup</em> by Chris Guillebeau
+          </p>
+
+        </div>
+      </div>
+    </PageLayout>
+  );
+};
+
+export default LaunchChecklistPage;

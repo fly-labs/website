@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Globe, Code, Zap, Palette, Layers, Navigation, Sparkles,
   Smile, Database, BarChart3, Layout, AtSign, ShieldCheck, CheckCircle2,
-  Scissors, GitBranch, Rocket, Moon, Sun, ArrowRight,
+  Scissors, GitBranch, Rocket, Moon, Sun, ArrowRight, MessageSquare,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -117,6 +117,22 @@ const WebsiteBlueprintPage = () => {
               <div className="absolute w-48 h-32 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center rotate-12 translate-x-10 translate-y-8 shadow-lg">
                 <span className="text-accent font-black text-lg">Supabase</span>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Builder's Note */}
+          <motion.div
+            {...fadeUp}
+            className="bg-primary/5 border border-primary/20 rounded-2xl p-6 md:p-8 mb-20 flex gap-4 items-start"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+              <MessageSquare className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
+              <p className="text-muted-foreground leading-relaxed">
+                I open-sourced this because I wish someone had shown me how a real site is built when I was starting out. Not a tutorial. Not a course. Just the actual code, the actual decisions, and the actual trade-offs. Fork it, break it, make it yours.
+              </p>
             </div>
           </motion.div>
 

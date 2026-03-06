@@ -56,7 +56,7 @@ apps/web/
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
-│   │   │   ├── projects.js       # Shared projects array (title, type, status, category, colors)
+│   │   │   ├── projects.js       # Shared projects array (title, type, status, category, stack, colors) + stacks export
 │   │   │   ├── prompts.js        # Prompts data (featured flag for lead magnet)
 │   │   │   └── ideas.js          # Idea categories, status config, sort options
 │   │   ├── supabaseClient.js # Supabase init
@@ -76,6 +76,8 @@ apps/web/
 │       ├── TemplatesPage.jsx        # Protected
 │       ├── GarminToNotionPage.jsx  # Protected
 │       ├── WebsiteBlueprintPage.jsx # Public
+│       ├── LaunchChecklistPage.jsx  # Public
+│       ├── OnePageBusinessPlanPage.jsx # Public
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ProfilePage.jsx         # Protected
 │       └── NotFoundPage.jsx
@@ -105,6 +107,8 @@ apps/web/
 | `/templates` | TemplatesPage | Protected |
 | `/templates/garmin-to-notion` | GarminToNotionPage | Protected |
 | `/templates/website-blueprint` | WebsiteBlueprintPage | Public |
+| `/templates/launch-checklist` | LaunchChecklistPage | Public |
+| `/templates/one-page-business-plan` | OnePageBusinessPlanPage | Public |
 | `/profile` | ProfilePage | Protected |
 
 ## Supabase

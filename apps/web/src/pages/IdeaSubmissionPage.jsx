@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Send, ChevronUp, Zap, ArrowRight, X, Loader2, CheckCircle2, Activity, Globe } from 'lucide-react';
+import { Send, ChevronUp, Zap, ArrowRight, X, Loader2, CheckCircle2, Activity, Globe, Flame } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -66,9 +66,18 @@ const IdeaSubmissionPage = () => {
     fetchIdeas();
   }, []);
 
+  // Time-decay hot score: votes / (hoursAge + 2)^1.5
+  const getHotScore = (idea) => {
+    const votes = idea.votes || 0;
+    const hoursAge = (Date.now() - new Date(idea.created_at).getTime()) / (1000 * 60 * 60);
+    return votes / Math.pow(hoursAge + 2, 1.5);
+  };
+
+  const TRENDING_THRESHOLD = 5;
+
   // Sort logic
   const sorted = sortBy === 'hot'
-    ? [...ideas].sort((a, b) => (b.votes || 0) - (a.votes || 0))
+    ? [...ideas].sort((a, b) => getHotScore(b) - getHotScore(a))
     : [...ideas].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   // Vote handler
@@ -383,9 +392,16 @@ const IdeaSubmissionPage = () => {
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-foreground leading-snug mb-1 group-hover:text-primary transition-colors">
-                              {idea.idea_title}
-                            </h3>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
+                                {idea.idea_title}
+                              </h3>
+                              {(idea.votes || 0) >= TRENDING_THRESHOLD && (
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20 shrink-0">
+                                  <Flame className="w-3 h-3" /> Trending
+                                </span>
+                              )}
+                            </div>
                             <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2">
                               {idea.idea_description}
                             </p>

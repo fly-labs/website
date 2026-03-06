@@ -1,10 +1,11 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Github, ExternalLink, CheckCircle2, Activity, Database, Zap, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Github, ExternalLink, CheckCircle2, Activity, Database, Zap, ArrowRight, MessageSquare } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { trackEvent } from '@/lib/analytics.js';
 import { motion } from 'framer-motion';
+import { fadeUp } from '@/lib/animations.js';
 
 const GarminToNotionPage = () => {
   return (
@@ -83,6 +84,22 @@ const GarminToNotionPage = () => {
                   </p>
                 </div>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Builder's Note */}
+          <motion.div
+            {...fadeUp}
+            className="bg-primary/5 border border-primary/20 rounded-2xl p-6 md:p-8 mb-20 flex gap-4 items-start"
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+              <MessageSquare className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
+              <p className="text-muted-foreground leading-relaxed">
+                I built this because I was tired of manually copying workout data into Notion every morning. What started as a quick script turned into something other people wanted too. It runs silently every day and I never think about it. That's the whole point.
+              </p>
             </div>
           </motion.div>
 

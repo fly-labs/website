@@ -20,6 +20,8 @@ const PromptsPage = lazy(() => import('@/pages/PromptsPage.jsx'));
 const TemplatesPage = lazy(() => import('@/pages/TemplatesPage.jsx'));
 const GarminToNotionPage = lazy(() => import('@/pages/GarminToNotionPage.jsx'));
 const WebsiteBlueprintPage = lazy(() => import('@/pages/WebsiteBlueprintPage.jsx'));
+const LaunchChecklistPage = lazy(() => import('@/pages/LaunchChecklistPage.jsx'));
+const OnePageBusinessPlanPage = lazy(() => import('@/pages/OnePageBusinessPlanPage.jsx'));
 const NewsletterPage = lazy(() => import('@/pages/NewsletterPage.jsx'));
 const IdeaSubmissionPage = lazy(() => import('@/pages/IdeaSubmissionPage.jsx'));
 const AboutPage = lazy(() => import('@/pages/AboutPage.jsx'));
@@ -66,6 +68,8 @@ const AnimatedRoutes = () => {
         <Route path="/templates" element={<ProtectedRoute><TemplatesPage /></ProtectedRoute>} />
         <Route path="/templates/garmin-to-notion" element={<ProtectedRoute><GarminToNotionPage /></ProtectedRoute>} />
         <Route path="/templates/website-blueprint" element={<WebsiteBlueprintPage />} />
+        <Route path="/templates/launch-checklist" element={<LaunchChecklistPage />} />
+        <Route path="/templates/one-page-business-plan" element={<OnePageBusinessPlanPage />} />
         <Route path="/microsaas" element={<MicroSaasPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 

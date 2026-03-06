@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, LayoutTemplate, ArrowRight, Activity, Globe } from 'lucide-react';
+import { ArrowLeft, LayoutTemplate, ArrowRight, Activity, Globe, ListChecks, FileText } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 
@@ -27,7 +27,29 @@ const templates = [
     color: 'text-primary',
     bg: 'bg-primary/10',
     border: 'border-primary/20',
-  }
+  },
+  {
+    id: 'launch-checklist',
+    title: 'Launch Checklist',
+    description: 'A step-by-step Notion template to take your idea from zero to launched. Based on The $100 Startup.',
+    type: 'Notion',
+    icon: ListChecks,
+    path: '/templates/launch-checklist',
+    color: 'text-amber-500',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+  },
+  {
+    id: 'one-page-business-plan',
+    title: 'One-Page Business Plan',
+    description: 'Answer five questions. Get clarity on your entire business. Inspired by The $100 Startup.',
+    type: 'Notion',
+    icon: FileText,
+    path: '/templates/one-page-business-plan',
+    color: 'text-violet-500',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+  },
 ];
 
 const TemplatesPage = () => {

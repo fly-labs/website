@@ -1,19 +1,14 @@
-import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe } from 'lucide-react';
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText } from 'lucide-react';
 
 export const categories = ['All', 'Templates', 'Prompts', 'Micro Tools', 'Community'];
 
+export const stacks = [
+  { id: 'launch', label: 'Launch Stack', description: 'Everything you need to go from idea to live product.' },
+  { id: 'productivity', label: 'Productivity Stack', description: 'Automate your life with Notion templates and integrations.' },
+  { id: 'community', label: 'Community', description: 'Shape what gets built. Vote, suggest, and stay in the loop.' },
+];
+
 export const projects = [
-  {
-    title: 'Garmin to Notion',
-    description: 'Never manually log a workout again. Your Garmin data flows into Notion every day: steps, sleep, heart rate, workouts.',
-    icon: LayoutTemplate,
-    link: '/templates/garmin-to-notion',
-    color: 'text-secondary',
-    bgColor: 'bg-secondary/10',
-    type: 'Notion',
-    status: 'Live',
-    category: 'Templates',
-  },
   {
     title: 'Website Blueprint',
     description: 'See exactly how I built this site. Full stack breakdown, open source, and free to fork.',
@@ -24,6 +19,7 @@ export const projects = [
     type: 'Development',
     status: 'Live',
     category: 'Templates',
+    stack: 'launch',
   },
   {
     title: 'Prompt Library',
@@ -36,6 +32,7 @@ export const projects = [
     status: 'Live',
     category: 'Prompts',
     isGated: true,
+    stack: 'launch',
   },
   {
     title: 'Micro Tools',
@@ -47,6 +44,43 @@ export const projects = [
     type: 'Tools',
     status: 'Beta',
     category: 'Micro Tools',
+    stack: 'launch',
+  },
+  {
+    title: 'Launch Checklist',
+    description: 'A step-by-step Notion template to take your idea from zero to launched. Based on The $100 Startup framework.',
+    icon: ListChecks,
+    link: '/templates/launch-checklist',
+    color: 'text-amber-500',
+    bgColor: 'bg-amber-500/10',
+    type: 'Notion',
+    status: 'Live',
+    category: 'Templates',
+    stack: 'launch',
+  },
+  {
+    title: 'One-Page Business Plan',
+    description: 'Answer five questions. Get clarity on your entire business. A Notion template inspired by The $100 Startup.',
+    icon: FileText,
+    link: '/templates/one-page-business-plan',
+    color: 'text-violet-500',
+    bgColor: 'bg-violet-500/10',
+    type: 'Notion',
+    status: 'Live',
+    category: 'Templates',
+    stack: 'launch',
+  },
+  {
+    title: 'Garmin to Notion',
+    description: 'Never manually log a workout again. Your Garmin data flows into Notion every day: steps, sleep, heart rate, workouts.',
+    icon: LayoutTemplate,
+    link: '/templates/garmin-to-notion',
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/10',
+    type: 'Notion',
+    status: 'Live',
+    category: 'Templates',
+    stack: 'productivity',
   },
   {
     title: 'The Newsletter',
@@ -58,6 +92,7 @@ export const projects = [
     type: 'Newsletter',
     status: 'Live',
     category: 'Community',
+    stack: 'community',
   },
   {
     title: 'Got an idea?',
@@ -69,5 +104,6 @@ export const projects = [
     type: 'Ideas',
     status: 'Open',
     category: 'Community',
+    stack: 'community',
   },
 ];
