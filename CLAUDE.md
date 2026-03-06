@@ -22,7 +22,7 @@ npm run lint     # ESLint (quiet mode)
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
 - **Auth:** Email/password + Google OAuth via Supabase
 - **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root)
-- **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, setUserProperties, setUserId)
+- **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, setUserProperties, setUserId). Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
 - **Deploy:** Vercel (auto-deploy on push to `main`)
 
 ## Project Structure
@@ -48,7 +48,11 @@ apps/web/
 │   │   ├── GridBackground.jsx       # Subtle 32px graph-paper grid
 │   │   ├── GitHubHeatmap.jsx        # GitHub contribution heatmap (compact + full)
 │   │   ├── SmileLogo.jsx     # Animated brand logo
-│   │   └── ScrollToTop.jsx   # Resets scroll on route change
+│   │   ├── ScrollToTop.jsx   # Resets scroll on route change
+│   │   └── ideas/            # Extracted Ideas page components
+│   │       ├── IdeaCard.jsx      # Idea card (vote, scores, subreddit display, status logic)
+│   │       ├── IdeaDrawer.jsx    # Detail drawer (ScoreBar, score tiers, scoring explainer)
+│   │       └── IdeaSubmitModal.jsx # 3-step submit form modal
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
@@ -183,6 +187,12 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `cta_click` | HomePage, PromptsPage | `cta`, `location` |
 | `project_click` | ExplorePage | `project`, `category` |
 | `profile_updated` | ProfilePage | `fields_filled` |
+| `ideas_sort_change` | IdeaSubmissionPage | `sort_by` |
+| `ideas_filter_change` | IdeaSubmissionPage | `filter_type` (source/type/industry/per_page), `filter_value` |
+| `idea_drawer_opened` | IdeaSubmissionPage | `idea_id`, `idea_title`, `source` |
+| `idea_form_step` | IdeaSubmissionPage | `step` (0/1/2), `step_name` (problem/context/about_you) |
+| `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
+| `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
 
 ## Environment Variables
 ```
