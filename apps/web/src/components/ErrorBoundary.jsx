@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { trackError } from '@/lib/analytics.js';
 
 export class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -13,6 +14,7 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
+    trackError(error?.message || 'Unknown error', true);
   }
 
   render() {

@@ -387,9 +387,9 @@ const PromptsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Prompts",
-        description: "Curated AI prompts for coding, writing, and thinking. Copy them, tweak them, make them yours.",
-        keywords: "AI prompts, coding prompts, writing prompts, ChatGPT prompts, Claude prompts",
+        title: "AI Prompt Library - Coding, Writing & Strategy",
+        description: "Curated collection of AI prompts for coding, writing, strategy, and thinking. Copy-paste ready for ChatGPT and Claude. Vote on favorites and suggest new ones.",
+        keywords: "AI prompts, coding prompts, writing prompts, strategy prompts, ChatGPT prompts, Claude prompts, prompt library",
         url: "https://flylabs.fun/prompts",
       }}
       className="pt-32 pb-24"

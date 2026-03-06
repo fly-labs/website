@@ -111,8 +111,8 @@ const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Scoring Frameworks | Fly Labs",
-        description: "How we score every idea from Reddit, ProblemHunt, and the community. Two AI frameworks: Hormozi's $100M evaluation and Dan Koe's one-person business lens.",
+        title: "AI Scoring Frameworks - Hormozi & Dan Koe Methods",
+        description: "How we score every idea with AI. Two frameworks: Hormozi's $100M evaluation for market potential, and Dan Koe's one-person business lens for solo builders.",
         keywords: "idea scoring, Hormozi framework, Dan Koe, business evaluation, AI scoring, startup ideas",
         url: "https://flylabs.fun/scoring",
       }}

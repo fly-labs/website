@@ -89,8 +89,9 @@ const LoginPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Log In | Fly Labs",
-        description: "Log in to access your Fly Labs tools and templates.",
+        title: "Log In to Your Account",
+        description: "Log in to access your Fly Labs prompt library, Notion templates, and member-only tools. Email or Google sign-in supported.",
+        keywords: "login, sign in, fly labs account, member access",
         url: "https://flylabs.fun/login",
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"

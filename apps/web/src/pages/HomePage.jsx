@@ -48,9 +48,9 @@ const HomePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Fly Labs | Vibe building things I wish existed",
-        description: "Free tools, templates, and AI prompts built from scratch by one maker. Open source.",
-        keywords: "vibe building, vibe coding, vibe marketing, AI tools, no-code, automation, open source, free tools, templates, prompts, indie maker",
+        title: "Fly Labs | Free AI Tools, Templates & Prompts for Builders",
+        description: "Free AI tools, Notion templates, and curated prompts built by one indie maker. Open source, community-driven, and updated daily. Start building today.",
+        keywords: "vibe building, vibe coding, AI tools, no-code, automation, open source, free tools, Notion templates, AI prompts, indie maker",
         url: "https://flylabs.fun",
       }}
     >

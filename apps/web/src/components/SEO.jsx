@@ -13,19 +13,32 @@ export const SEO = ({
 }) => {
   const siteTitle = title.toLowerCase().includes('fly labs') ? title : `${title} | Fly Labs`;
 
-  const baseSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Fly Labs",
-    "description": "Free tools, templates, and AI prompts for builders. Vibe building with AI, no-code, and automation.",
-    "url": "https://flylabs.fun",
-    "logo": "https://flylabs.fun/images/og-logo.png",
-    "sameAs": [
-      "https://www.youtube.com/@falacomigoyt",
-      "https://substack.com/@falacomigo",
-      "https://github.com/fly-labs/"
-    ]
-  };
+  const baseSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Fly Labs",
+      "description": "Free tools, templates, and AI prompts for builders. Vibe building with AI, no-code, and automation.",
+      "url": "https://flylabs.fun",
+      "logo": "https://flylabs.fun/images/og-logo.png",
+      "sameAs": [
+        "https://www.youtube.com/@falacomigoyt",
+        "https://substack.com/@falacomigo",
+        "https://github.com/fly-labs/"
+      ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Fly Labs",
+      "url": "https://flylabs.fun",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://flylabs.fun/ideas?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ];
 
   return (
     <Helmet>
@@ -40,6 +53,8 @@ export const SEO = ({
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:site_name" content="Fly Labs" />
+      <meta property="og:locale" content="en_US" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

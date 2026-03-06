@@ -1,15 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowLeft, Ghost } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
+import { trackEvent } from '@/lib/analytics.js';
 
 const NotFoundPage = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    trackEvent('page_not_found', {
+      page_path: location.pathname,
+      page_referrer: document.referrer,
+    });
+  }, [location.pathname]);
+
   return (
     <PageLayout
       seo={{
-        title: "Page Not Found",
-        description: "The page you're looking for doesn't exist.",
+        title: "Page Not Found - 404",
+        description: "The page you are looking for does not exist or may have been moved. Head back to Fly Labs to explore tools, templates, and AI prompts.",
+        keywords: "404, page not found, fly labs",
         url: "https://flylabs.fun/404",
       }}
       className="flex items-center justify-center pt-24 pb-24 px-6"

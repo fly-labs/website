@@ -52,9 +52,9 @@ const WebsiteBlueprintPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Website Blueprint | Fly Labs",
-        description: "See exactly how flylabs.fun was built. Full stack breakdown, architecture, and design decisions. Open source and free to fork.",
-        keywords: "website blueprint, React SPA, open source, Supabase, Tailwind CSS, Vite, web development, full stack",
+        title: "Website Blueprint - React SPA Architecture Guide",
+        description: "See exactly how flylabs.fun was built. Full stack breakdown with React, Supabase, Tailwind, and Vite. Open source architecture decisions and design system.",
+        keywords: "website blueprint, React SPA, open source, Supabase, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",
       }}
       className="pt-32 pb-24"

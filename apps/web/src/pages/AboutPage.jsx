@@ -22,10 +22,25 @@ const AboutPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Luiz Alves | Builder, Portfolio Manager & Creator",
-        description: "Meet Luiz Alves, CFA, CAIA. The story behind Fly Labs, vibe building, and building real products with AI and no-code tools.",
-        keywords: "Luiz Alves, CFA, CAIA, vibe building, vibe coding, indie maker, no-code, AI builder, portfolio manager",
+        title: "About Luiz Alves - Builder, CFA & Creator",
+        description: "Meet Luiz Alves, CFA, CAIA. The story behind Fly Labs and building real products with AI and no-code tools. Portfolio manager by day, vibe builder by night.",
+        keywords: "Luiz Alves, CFA, CAIA, indie maker, AI builder, no-code, portfolio manager, vibe building",
         url: "https://flylabs.fun/about",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Luiz Alves",
+          "url": "https://flylabs.fun/about",
+          "image": "https://flylabs.fun/images/luiz-alves.png",
+          "jobTitle": "Builder & Portfolio Manager",
+          "sameAs": [
+            "https://github.com/fly-labs",
+            "https://x.com/alvesluizc",
+            "https://youtube.com/@falacomigoyt",
+            "https://br.linkedin.com/in/alvesluizc",
+            "https://falacomigo.substack.com"
+          ]
+        },
       }}
       className="pt-32 pb-24"
     >
