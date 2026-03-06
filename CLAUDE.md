@@ -67,7 +67,7 @@ apps/web/
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (pillars, bio, GitHub heatmap, newsletter CTA)
 │       ├── ExplorePage.jsx       # Project catalog (stack-grouped or flat grid by category filter)
-│       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 4-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
+│       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 6-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Bio, story, GitHub heatmap, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
@@ -120,8 +120,8 @@ apps/web/
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe scoring), `scripts/sync-problemhunt.mjs` (daily scraper). Run via `npm run score` / `npm run sync`
-- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` - daily cron (2 AM UTC) to scrape ProblemHunt + score new ideas with Claude
+- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe scoring), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API). Run via `npm run score` / `npm run sync`
+- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` - daily cron (2 AM UTC) to sync ProblemHunt via Tilda API + score new ideas with Claude
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**

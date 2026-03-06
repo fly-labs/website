@@ -1,3 +1,5 @@
+// Legacy seed import from static JSON snapshot.
+// For daily sync, use: npm run sync (scripts/sync-problemhunt.mjs)
 import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -31,7 +33,6 @@ const rows = raw.map((item) => ({
   approved: true,
   name: 'ProblemHunt',
   email: null,
-  votes: 0,
 }));
 
 // Upsert in batches of 50 (updates existing records by external_id, inserts new ones)

@@ -78,7 +78,7 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run preview` | Preview the production build locally |
 | `npm run lint` | Run ESLint |
 | `npm run deploy` | Stage, commit, and push to `main` (triggers Vercel deploy) |
-| `npm run sync` | Scrape new problems from ProblemHunt and import to Supabase |
+| `npm run sync` | Sync new problems from ProblemHunt (via Tilda feed API) and upsert to Supabase |
 | `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe) |
 
 ## Project Structure

@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
+Allow: /templates/website-blueprint
+Allow: /templates/launch-checklist
+Allow: /templates/one-page-business-plan
 Disallow: /templates
+Disallow: /templates/garmin-to-notion
 Disallow: /profile
 Disallow: /login
 Disallow: /signup
