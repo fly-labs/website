@@ -43,6 +43,17 @@ const OnePageBusinessPlanPage = () => {
         description: "Answer five questions and get clarity on your entire business. A free Notion template inspired by The $100 Startup. No fluff, just the essentials that matter.",
         keywords: "business plan, one page business plan, Notion template, startup planning, The $100 Startup, free template",
         url: "https://flylabs.fun/templates/one-page-business-plan",
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Templates", "item": "https://flylabs.fun/templates" },
+              { "@type": "ListItem", "position": 3, "name": "One-Page Business Plan" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >

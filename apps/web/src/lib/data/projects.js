@@ -1,4 +1,4 @@
-import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText } from 'lucide-react';
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
 
 export const categories = ['All', 'Templates', 'Prompts', 'Micro Tools', 'Community'];
 
@@ -90,6 +90,18 @@ export const projects = [
     color: 'text-purple-500',
     bgColor: 'bg-purple-500/10',
     type: 'Newsletter',
+    status: 'Live',
+    category: 'Community',
+    stack: 'community',
+  },
+  {
+    title: 'Library',
+    description: 'Free ebooks from study notes. AI, business, mindset, and everything in between. Written for builders.',
+    icon: BookOpen,
+    link: '/library',
+    color: 'text-purple-500',
+    bgColor: 'bg-purple-500/10',
+    type: 'Resources',
     status: 'Live',
     category: 'Community',
     stack: 'community',

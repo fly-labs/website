@@ -36,7 +36,7 @@ apps/web/
 │   │   ├── ui/               # shadcn/ui components (button, avatar, input, tabs, toast, toaster)
 │   │   ├── Header.jsx        # Nav bar (sticky, blur backdrop)
 │   │   ├── Footer.jsx        # Footer with social links
-│   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD)
+│   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD, noindex, array schema support)
 │   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, ScrollProgress, background)
 │   │   ├── ScrollProgress.jsx # 2px scroll progress bar (Framer Motion useScroll)
 │   │   ├── ErrorBoundary.jsx # Error boundary fallback
@@ -63,6 +63,7 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, stack, colors) + stacks + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
+│   │   │   ├── library.js        # Books array, topics, topicColors for Library page
 │   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (6-way), sourceOptions, perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
@@ -70,11 +71,11 @@ apps/web/
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
-│       ├── HomePage.jsx          # Brand landing (hero with bio, live-stat pillars, narrative closing)
+│       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (stack-grouped or flat grid by category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 6-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
-│       ├── AboutPage.jsx         # Visual journey timeline, pull quote, GitHub heatmap, social links
+│       ├── AboutPage.jsx         # Pull quote, journey timeline, GitHub heatmap, current focus, the approach, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
 │       ├── PromptsPage.jsx       # Hybrid: 5 public / full library for members (vote, comment, copy, suggest)
@@ -85,6 +86,7 @@ apps/web/
 │       ├── OnePageBusinessPlanPage.jsx # Public - 5-question Notion template (coming soon)
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ScoringFrameworksPage.jsx # Public - Hormozi + Dan Koe scoring frameworks explained
+│       ├── LibraryPage.jsx         # Public - free ebooks with topic filter and waitlist
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── public/
@@ -109,6 +111,7 @@ apps/web/
 | `/login` | LoginPage | Public |
 | `/signup` | SignupPage | Public |
 | `/scoring` | ScoringFrameworksPage | Public |
+| `/library` | LibraryPage | Public |
 | `/prompts` | PromptsPage | Hybrid (5 public, full library for members) |
 | `/microsaas` | MicroSaasPage | Public (waitlist capture) |
 | `/templates` | TemplatesPage | Protected |
@@ -167,6 +170,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (8 items), `stacks` array (launch/productivity/community), `categories` array. Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
+- **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt/reddit), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
 
 ## Analytics Events (GA4)
@@ -192,6 +196,10 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `ideas_filter_change` | IdeaSubmissionPage | `filter_type` (source/type/industry/per_page), `filter_value` |
 | `idea_drawer_opened` | IdeaSubmissionPage | `idea_id`, `idea_title`, `source` |
 | `idea_form_step` | IdeaSubmissionPage | `step` (0/1/2), `step_name` (problem/context/about_you) |
+| `ebook_clicked` | LibraryPage | `book_id`, `book_title`, `topic`, `status` |
+| `ebook_downloaded` | LibraryPage | `book_id`, `book_title`, `topic` |
+| `ebook_notify` | LibraryPage | `book_id`, `book_title`, `topic` |
+| `library_filter_change` | LibraryPage | `topic` |
 | `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
 | `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
 

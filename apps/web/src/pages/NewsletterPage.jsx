@@ -38,6 +38,14 @@ const NewsletterPage = () => {
         description: "A free newsletter about money, business, career, and productivity. Written by Luiz Alves, CFA, for people who build things and want to get better at it.",
         keywords: "newsletter, money, career, productivity, tech, Luiz Alves, CFA, falacomigo, Substack",
         url: "https://flylabs.fun/newsletter",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "Fala Comigo",
+          "description": "A free newsletter about money, business, career, and productivity.",
+          "url": "https://falacomigo.substack.com",
+          "author": { "@type": "Person", "name": "Luiz Alves" },
+        },
       }}
       className="pt-32 pb-24 flex flex-col items-center"
     >
@@ -119,6 +127,7 @@ const NewsletterPage = () => {
                       <img
                         src={article.thumbnail}
                         alt={article.title}
+                        loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>

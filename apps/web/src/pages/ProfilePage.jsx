@@ -122,6 +122,7 @@ const ProfilePage = () => {
         description: "Manage your Fly Labs profile. Update your name, photo, bio, and account settings. Customize your builder identity.",
         keywords: "profile, account settings, fly labs account, builder profile",
         url: "https://flylabs.fun/profile",
+        noindex: true,
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"
     >

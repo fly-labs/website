@@ -7,6 +7,7 @@ import { trackEvent } from '@/lib/analytics.js';
 const footerLinks = [
   { name: 'Explore', path: '/explore' },
   { name: 'Newsletter', path: '/newsletter' },
+  { name: 'Library', path: '/library' },
   { name: 'Ideas', path: '/ideas' },
   { name: 'About', path: '/about' },
 ];

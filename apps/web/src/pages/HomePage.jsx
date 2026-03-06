@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, LayoutTemplate, Code, Users } from 'lucide-react';
+import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
+import { books } from '@/lib/data/library.js';
 import { supabase } from '@/lib/supabaseClient.js';
 import { cn } from '@/lib/utils.js';
+
+const availableBookCount = books.filter((b) => b.status === 'available').length;
 
 const pillars = [
   {
@@ -50,9 +53,20 @@ const pillars = [
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
-    stat: null, // dynamic
+    stat: null,
     statColor: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
     accentBorder: 'hover:border-orange-500/40',
+  },
+  {
+    title: 'Library',
+    icon: BookOpen,
+    description: "Free ebooks from my study notes. AI, business, mindset, and the random stuff I can't stop learning about.",
+    color: 'text-purple-500',
+    bgColor: 'bg-purple-500/10',
+    link: '/library',
+    stat: availableBookCount > 0 ? `${availableBookCount} ebook${availableBookCount > 1 ? 's' : ''}` : 'Coming soon',
+    statColor: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+    accentBorder: 'hover:border-purple-500/40',
   },
 ];
 
@@ -91,6 +105,7 @@ const HomePage = () => {
             <img
               src="/images/luiz-alves.png"
               alt="Luiz Alves"
+              loading="lazy"
               className="w-8 h-8 rounded-full object-cover border border-border"
             />
             <span className="text-sm font-semibold text-muted-foreground">Built by Luiz Alves</span>
@@ -99,7 +114,7 @@ const HomePage = () => {
             I build things I wish existed.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            Free tools, templates, and AI prompts. Built from scratch by one person with AI and no-code. All open source.
+            One person. AI + no-code. Real problems turned into free tools. Everything is open source.
           </p>
           <div className="flex flex-col items-center gap-3">
             <Link
@@ -134,7 +149,7 @@ const HomePage = () => {
               Everything started as a real need. Built from scratch, shared with everyone.
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
             {pillars.map((pillar, i) => {
               const stat = pillar.title === 'Idea Board' && ideaCount != null
                 ? `${ideaCount} ideas`
@@ -179,7 +194,24 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Section 3: Closing */}
+      {/* Section 3: Social proof strip */}
+      <section className="py-6 px-6">
+        <motion.div
+          {...fadeUp}
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <p className="text-sm text-muted-foreground/70 font-medium">
+            {ideaCount != null ? `${ideaCount} ideas scored` : '...'}
+            <span className="mx-2">·</span>
+            {prompts.length} prompts
+            <span className="mx-2">·</span>
+            Open source
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Section 4: Closing */}
       <section className="py-12 md:py-16 px-6">
         <motion.div
           {...fadeUp}
@@ -187,10 +219,10 @@ const HomePage = () => {
           className="max-w-3xl mx-auto text-center"
         >
           <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-4">
-            What would you build if you could?
+            Every project started as a real problem.
           </h2>
           <p className="text-muted-foreground font-medium leading-relaxed mb-8 max-w-xl mx-auto">
-            I write about building, shipping, and the maker journey. In English and Portuguese. Always free.
+            I write about what I learn along the way. Building, shipping, and the lessons in between.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
@@ -204,7 +236,7 @@ const HomePage = () => {
               to="/about"
               className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
-              Read my story
+              See how it started
             </Link>
           </div>
         </motion.div>

@@ -61,6 +61,7 @@ const TemplatesPage = () => {
         description: "Systems, tools, and blueprints built for real use. Notion templates for launches, business plans, fitness tracking, and full website architecture breakdowns.",
         keywords: "Notion templates, developer resources, launch checklist, business plan template, website blueprint, Garmin Notion",
         url: "https://flylabs.fun/templates",
+        noindex: true,
       }}
       className="pt-32 pb-24"
     >

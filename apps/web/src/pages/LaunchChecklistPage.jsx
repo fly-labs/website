@@ -38,6 +38,17 @@ const LaunchChecklistPage = () => {
         description: "A step-by-step Notion template to take your idea from zero to shipped. Four phases based on The $100 Startup framework. Plan, build, launch, and iterate.",
         keywords: "launch checklist, Notion template, startup launch, product launch, The $100 Startup, ship product",
         url: "https://flylabs.fun/templates/launch-checklist",
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Templates", "item": "https://flylabs.fun/templates" },
+              { "@type": "ListItem", "position": 3, "name": "Launch Checklist" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >

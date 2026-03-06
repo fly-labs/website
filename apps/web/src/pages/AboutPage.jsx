@@ -85,7 +85,8 @@ const AboutPage = () => {
               <img
                 src="/images/luiz-alves.png"
                 alt="Luiz Alves"
-                className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 object-cover rounded-2xl border border-border shadow-xl grayscale hover:grayscale-0 transition-all duration-700"
+                loading="lazy"
+                className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 object-cover rounded-2xl border border-border shadow-xl grayscale hover:grayscale-0 transition-[filter] duration-700"
               />
             </div>
           </div>
@@ -120,6 +121,15 @@ const AboutPage = () => {
             </motion.div>
           </div>
         </motion.section>
+
+        {/* Pull quote */}
+        <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-5xl mx-auto mb-20">
+          <blockquote className="border-l-4 border-primary pl-6">
+            <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
+              You start with a real problem, usually your own. You build something small. You share it with the world.
+            </p>
+          </blockquote>
+        </motion.div>
 
         {/* Story blocks */}
         <div className="max-w-5xl mx-auto space-y-20">
@@ -164,20 +174,33 @@ const AboutPage = () => {
             <GitHubHeatmap variant="full" />
           </motion.section>
 
-          {/* Vibe building */}
+          {/* What I'm working on now */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">What is vibe building</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">What I'm working on now</h2>
+            <ul className="space-y-3">
+              {[
+                { text: 'Library - writing the first ebooks', link: '/library' },
+                { text: 'Micro Tools - building the first batch', link: '/microsaas' },
+                { text: 'Ideas - 3x/day auto-sync from Reddit + ProblemHunt', link: '/ideas' },
+              ].map((item) => (
+                <li key={item.text}>
+                  <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
+                    <span className="w-2 h-2 rounded-full bg-primary mr-3 shrink-0" />
+                    {item.text}
+                    <ArrowRight className="w-3.5 h-3.5 ml-2 opacity-0 group-hover:opacity-100" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
+
+          {/* The approach */}
+          <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">The approach</h2>
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
               <p>
                 AI and no-code changed everything. What used to take a team and months of work, one person can now ship in a weekend. You've probably heard of <span className="text-primary font-bold">vibe coding</span> - Andrej Karpathy's concept of fully giving in to AI-assisted development. There's also vibe marketing, vibe design, entire workflows being reimagined.
               </p>
-
-              <blockquote className="border-l-4 border-primary pl-6 my-8">
-                <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
-                  You start with a real problem, usually your own. You build something small. You share it with the world.
-                </p>
-              </blockquote>
-
               <p>
                 <span className="text-primary font-bold">Vibe building</span> is the natural extension of all of that. It's the whole picture. No investors, no pitch decks, no growth-at-all-costs pressure. Just you, your curiosity, and the joy of making something useful.
               </p>

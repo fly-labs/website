@@ -56,6 +56,17 @@ const WebsiteBlueprintPage = () => {
         description: "See exactly how flylabs.fun was built. Full stack breakdown with React, Supabase, Tailwind, and Vite. Open source architecture decisions and design system.",
         keywords: "website blueprint, React SPA, open source, Supabase, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Templates", "item": "https://flylabs.fun/templates" },
+              { "@type": "ListItem", "position": 3, "name": "Website Blueprint" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >

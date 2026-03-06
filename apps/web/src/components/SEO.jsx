@@ -9,7 +9,8 @@ export const SEO = ({
   url = "https://flylabs.fun",
   image = "https://flylabs.fun/images/og-image.png",
   type = "website",
-  schema = null
+  schema = null,
+  noindex = false
 }) => {
   const siteTitle = title.toLowerCase().includes('fly labs') ? title : `${title} | Fly Labs`;
 
@@ -40,12 +41,17 @@ export const SEO = ({
     }
   ];
 
+  const allSchemas = schema
+    ? Array.isArray(schema) ? schema : [schema]
+    : baseSchema;
+
   return (
     <Helmet>
       <title>{siteTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={url} />
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
@@ -65,7 +71,7 @@ export const SEO = ({
 
       {/* JSON-LD Schema */}
       <script type="application/ld+json">
-        {JSON.stringify(schema || baseSchema)}
+        {JSON.stringify(allSchemas)}
       </script>
     </Helmet>
   );
