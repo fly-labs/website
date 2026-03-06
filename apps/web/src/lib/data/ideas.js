@@ -54,9 +54,10 @@ export const sortOptions = [
 ];
 
 export const sourceOptions = [
-  { value: 'all', label: 'All Ideas' },
+  { value: 'all', label: 'All' },
   { value: 'community', label: 'Community' },
-  { value: 'problemhunt', label: 'Real-World Problems' },
+  { value: 'problemhunt', label: 'ProblemHunt' },
+  { value: 'reddit', label: 'Reddit' },
 ];
 
 export const perPageOptions = [10, 20, 50];

@@ -109,7 +109,9 @@ const IdeaSubmissionPage = () => {
   // Filter + Sort + Pagination pipeline
   const sourceFiltered = activeSource === 'all'
     ? ideas
-    : ideas.filter(i => activeSource === 'community' ? i.source !== 'problemhunt' : i.source === 'problemhunt');
+    : activeSource === 'community'
+      ? ideas.filter(i => !i.source || i.source === 'community')
+      : ideas.filter(i => i.source === activeSource);
 
   const typeFiltered = activeType === 'All'
     ? sourceFiltered
@@ -521,24 +523,6 @@ const IdeaSubmissionPage = () => {
               )}
             </motion.div>
 
-            {/* ProblemHunt credit - conditional */}
-            {activeSource !== 'community' && (
-              <div className="flex items-center gap-2 mb-3 px-1">
-                <span className="text-xs text-muted-foreground/60 font-medium">
-                  Real-world problems sourced from{' '}
-                  <a
-                    href="https://problemhunt.pro"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent hover:underline font-semibold"
-                    onClick={() => trackEvent('outbound_click', { link_url: 'https://problemhunt.pro', link_label: 'ProblemHunt', location: 'ideas' })}
-                  >
-                    ProblemHunt
-                  </a>
-                </span>
-              </div>
-            )}
-
             {/* Ideas board */}
             {loading ? (
               <div className="flex justify-center py-20">
@@ -621,15 +605,15 @@ const IdeaSubmissionPage = () => {
                               <div className="flex items-start justify-between gap-2 mb-1">
                                 <div className="flex items-center gap-2 min-w-0">
                                   <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                                    {idea.source === 'problemhunt' ? (
+                                    {(idea.source === 'problemhunt' || idea.source === 'reddit') && idea.source_url ? (
                                       <a
-                                        href={idea.source_url || 'https://problemhunt.pro'}
+                                        href={idea.source_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           trackEvent('outbound_click', {
-                                            link_url: idea.source_url || 'https://problemhunt.pro',
+                                            link_url: idea.source_url,
                                             link_label: idea.idea_title,
                                             location: 'ideas',
                                           });
@@ -694,6 +678,23 @@ const IdeaSubmissionPage = () => {
                                       }}
                                     >
                                       via ProblemHunt
+                                    </a>
+                                  ) : idea.source === 'reddit' && idea.source_url ? (
+                                    <a
+                                      href={idea.source_url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-accent hover:underline font-medium"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        trackEvent('outbound_click', {
+                                          link_url: idea.source_url,
+                                          link_label: 'Reddit',
+                                          location: 'ideas',
+                                        });
+                                      }}
+                                    >
+                                      via Reddit
                                     </a>
                                   ) : (
                                     `by ${idea.name || 'Anonymous'}`
@@ -1133,7 +1134,7 @@ const IdeaSubmissionPage = () => {
                 <div>
                   <h3 className="text-xl font-bold mb-2">{selectedIdea.idea_title}</h3>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap mb-3">
-                    <span>{selectedIdea.source === 'problemhunt' ? 'via ProblemHunt' : `by ${selectedIdea.name || 'Anonymous'}`}</span>
+                    <span>{selectedIdea.source === 'problemhunt' ? 'via ProblemHunt' : selectedIdea.source === 'reddit' ? 'via Reddit' : `by ${selectedIdea.name || 'Anonymous'}`}</span>
                     <span className="text-muted-foreground/40">&middot;</span>
                     <span>{timeAgo(selectedIdea.created_at)}</span>
                     {selectedIdea.industry && (
@@ -1322,6 +1323,17 @@ const IdeaSubmissionPage = () => {
                       onClick={() => trackEvent('outbound_click', { link_url: selectedIdea.source_url || 'https://problemhunt.pro', link_label: 'ProblemHunt Detail', location: 'ideas_drawer' })}
                     >
                       via ProblemHunt <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                  {selectedIdea.source === 'reddit' && selectedIdea.source_url && (
+                    <a
+                      href={selectedIdea.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                      onClick={() => trackEvent('outbound_click', { link_url: selectedIdea.source_url, link_label: 'Reddit Detail', location: 'ideas_drawer' })}
+                    >
+                      via Reddit <ArrowRight className="w-3.5 h-3.5" />
                     </a>
                   )}
                 </div>

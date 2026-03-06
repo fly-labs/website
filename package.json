@@ -20,11 +20,13 @@
     "lint": "npm run lint --prefix apps/web",
     "deploy": "git push origin main",
     "sync": "node scripts/sync-problemhunt.mjs",
+    "sync:reddit": "node scripts/sync-reddit.mjs",
     "score": "node scripts/score-ideas.mjs"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
-    "@supabase/supabase-js": "^2.49.1"
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^17.3.1"
   },
   "workspaces": [
     "apps/*"

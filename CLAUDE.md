@@ -120,8 +120,8 @@ apps/web/
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe scoring), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API). Run via `npm run score` / `npm run sync`
-- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` - daily cron (2 AM UTC) to sync ProblemHunt via Tilda API + score new ideas with Claude
+- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe scoring), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from targeted subreddits). Run via `npm run score` / `npm run sync` / `npm run sync:reddit`
+- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs 3x/day (2 AM, 10 AM, 6 PM UTC) to sync ProblemHunt + Reddit + score new ideas with Claude
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
@@ -162,7 +162,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (8 items), `stacks` array (launch/productivity/community), `categories` array. Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
-- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt), perPageOptions (10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
+- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt/reddit), perPageOptions (10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.

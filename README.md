@@ -8,7 +8,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 - **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category, with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro). Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro) and Reddit. Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
@@ -79,6 +79,7 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run lint` | Run ESLint |
 | `npm run deploy` | Stage, commit, and push to `main` (triggers Vercel deploy) |
 | `npm run sync` | Sync new problems from ProblemHunt (via Tilda feed API) and upsert to Supabase |
+| `npm run sync:reddit` | Sync business opportunities from targeted Reddit subreddits to Supabase |
 | `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe) |
 
 ## Project Structure
@@ -153,7 +154,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + ProblemHunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, score_breakdown (JSONB), created_at
+**ideas** - Community idea submissions + ProblemHunt + Reddit imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt' or 'reddit'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, score_breakdown (JSONB), created_at
 
 **idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 
