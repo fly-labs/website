@@ -60,7 +60,7 @@ export const sourceOptions = [
   { value: 'reddit', label: 'Reddit' },
 ];
 
-export const perPageOptions = [10, 20, 50];
+export const perPageOptions = [5, 10, 20, 50];
 
 export const frequencyOptions = ['Daily', 'Weekly', 'Sometimes', 'Once'];
 

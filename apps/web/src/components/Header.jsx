@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut, User } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle.jsx';
+import { ThemeToggle } from '@/components/ThemeToggle.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { SmileLogo } from '@/components/SmileLogo.jsx';

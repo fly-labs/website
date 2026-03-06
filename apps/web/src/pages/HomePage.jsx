@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, Mail } from 'lucide-react';
-import { GitHubHeatmap } from '@/components/GitHubHeatmap.jsx';
+import { ArrowRight, Sparkles, LayoutTemplate, Code, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
+import { prompts } from '@/lib/data/prompts.js';
+import { supabase } from '@/lib/supabaseClient.js';
+import { cn } from '@/lib/utils.js';
 
 const pillars = [
   {
@@ -15,7 +17,9 @@ const pillars = [
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     link: '/prompts',
-    badge: 'Sample prompts',
+    stat: `${prompts.length} prompts`,
+    statColor: 'text-primary bg-primary/10 border-primary/20',
+    accentBorder: 'hover:border-primary/40',
   },
   {
     title: 'Templates',
@@ -24,6 +28,9 @@ const pillars = [
     color: 'text-secondary',
     bgColor: 'bg-secondary/10',
     link: '/templates',
+    stat: 'Notion + GitHub',
+    statColor: 'text-secondary bg-secondary/10 border-secondary/20',
+    accentBorder: 'hover:border-secondary/40',
   },
   {
     title: 'Micro Tools',
@@ -32,6 +39,9 @@ const pillars = [
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10',
     link: '/microsaas',
+    stat: 'Coming soon',
+    statColor: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+    accentBorder: 'hover:border-blue-500/40',
   },
   {
     title: 'Idea Board',
@@ -40,11 +50,25 @@ const pillars = [
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
-    badge: '3 sources',
+    stat: null, // dynamic
+    statColor: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    accentBorder: 'hover:border-orange-500/40',
   },
 ];
 
 const HomePage = () => {
+  const [ideaCount, setIdeaCount] = useState(null);
+
+  useEffect(() => {
+    supabase
+      .from('ideas')
+      .select('id', { count: 'exact', head: true })
+      .eq('approved', true)
+      .then(({ count }) => {
+        if (count != null) setIdeaCount(count);
+      });
+  }, []);
+
   return (
     <PageLayout
       seo={{
@@ -63,9 +87,14 @@ const HomePage = () => {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto text-center"
         >
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">
-            The vibe builder's lab
-          </p>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <img
+              src="/images/luiz-alves.png"
+              alt="Luiz Alves"
+              className="w-8 h-8 rounded-full object-cover border border-border"
+            />
+            <span className="text-sm font-semibold text-muted-foreground">Built by Luiz Alves</span>
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
             I build things I wish existed.
           </h1>
@@ -106,143 +135,79 @@ const HomePage = () => {
             </p>
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-6">
-            {pillars.map((pillar, i) => (
-              <motion.div
-                key={pillar.title}
-                {...fadeUp}
-                transition={{ duration: 0.3, delay: i * 0.04 }}
-              >
-                <Link
-                  to={pillar.link}
-                  className="group flex flex-col h-full p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
-                  onClick={() => trackEvent('cta_click', { cta: pillar.title.toLowerCase(), location: 'home_pillars' })}
+            {pillars.map((pillar, i) => {
+              const stat = pillar.title === 'Idea Board' && ideaCount != null
+                ? `${ideaCount} ideas`
+                : pillar.stat;
+              return (
+                <motion.div
+                  key={pillar.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
                 >
-                  <div className={`w-10 h-10 rounded-lg ${pillar.bgColor} ${pillar.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200 mb-4`}>
-                    <pillar.icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4">
-                    {pillar.description}
-                  </p>
-                  {pillar.badge && (
-                    <span className="inline-block text-xs font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 mb-3">
-                      {pillar.badge}
+                  <Link
+                    to={pillar.link}
+                    className={cn(
+                      "group flex flex-col h-full p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card transition-colors duration-200",
+                      pillar.accentBorder
+                    )}
+                    onClick={() => trackEvent('cta_click', { cta: pillar.title.toLowerCase(), location: 'home_pillars' })}
+                  >
+                    <div className={`w-10 h-10 rounded-lg ${pillar.bgColor} ${pillar.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200 mb-4`}>
+                      <pillar.icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4">
+                      {pillar.description}
+                    </p>
+                    {stat && (
+                      <span className={cn("inline-block text-xs font-bold px-2.5 py-1 rounded-full border mb-3", pillar.statColor)}>
+                        {stat}
+                      </span>
+                    )}
+                    <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors mt-auto">
+                      Browse {pillar.title.toLowerCase()}
+                      <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                     </span>
-                  )}
-                  <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors mt-auto">
-                    Browse {pillar.title.toLowerCase()}
-                    <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
-                  </span>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Section 3: About the Maker + GitHub Activity */}
+      {/* Section 3: Closing */}
       <section className="py-12 md:py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Who's behind this
-            </h2>
-          </motion.div>
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-2xl border border-border/60 bg-gradient-to-l from-primary/5 to-transparent p-6 md:p-12"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-8 items-start">
-              <div className="flex justify-center md:justify-start">
-                <img
-                  src="/images/luiz-alves.png"
-                  alt="Luiz Alves"
-                  className="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-60 lg:h-60 rounded-2xl object-cover border border-border grayscale hover:grayscale-0 transition-all duration-700"
-                />
-              </div>
-              <div className="text-center md:text-left">
-                <h3 className="text-2xl md:text-3xl font-black text-foreground mb-1">
-                  Luiz Alves
-                </h3>
-                <p className="text-sm font-semibold text-muted-foreground mb-4">
-                  CFA, CAIA. Portfolio manager by day. Builder for fun.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  I ship tools, templates, and small products with AI and no-code. Everything here started as something I needed myself.
-                </p>
-                <Link
-                  to="/about"
-                  className="inline-flex items-center text-sm font-semibold text-primary hover:underline"
-                >
-                  Read the full story <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* GitHub activity - nested under the same section */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-6 rounded-2xl border border-border/60 bg-card/50 p-6 md:p-8"
-          >
-            <GitHubHeatmap variant="compact" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 4: Newsletter CTA */}
-      <section className="py-12 md:py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Stay in the loop
-            </h2>
-          </motion.div>
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-center bg-primary/10 border border-primary/30 rounded-2xl p-8 md:p-12 lg:p-16"
-          >
-            <Mail className="w-8 h-8 text-primary mx-auto mb-4" />
-            <h3 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-4">
-              The Fala Comigo Newsletter
-            </h3>
-            <p className="text-muted-foreground font-medium leading-relaxed mb-8 max-w-xl mx-auto">
-              A newsletter about building, shipping, and the maker journey. In English and Portuguese. Always free.
-            </p>
+        <motion.div
+          {...fadeUp}
+          transition={{ duration: 0.5 }}
+          className="max-w-3xl mx-auto text-center"
+        >
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-4">
+            What would you build if you could?
+          </h2>
+          <p className="text-muted-foreground font-medium leading-relaxed mb-8 max-w-xl mx-auto">
+            I write about building, shipping, and the maker journey. In English and Portuguese. Always free.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/newsletter"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+              onClick={() => trackEvent('newsletter_click', { location: 'home_closing' })}
             >
-              Start reading <ArrowRight className="w-4 h-4 ml-2" />
+              Read the newsletter <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Section 5: Tagline Closer */}
-      <section className="py-10 md:py-12 px-6">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8 }}
-          className="text-2xl md:text-3xl font-black text-muted-foreground/70 tracking-tight text-center"
-        >
-          What would you build if you could?
-        </motion.p>
+            <Link
+              to="/about"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              Read my story
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
     </PageLayout>

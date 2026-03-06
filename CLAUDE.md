@@ -37,7 +37,8 @@ apps/web/
 │   │   ├── Header.jsx        # Nav bar (sticky, blur backdrop)
 │   │   ├── Footer.jsx        # Footer with social links
 │   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD)
-│   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, background)
+│   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, ScrollProgress, background)
+│   │   ├── ScrollProgress.jsx # 2px scroll progress bar (Framer Motion useScroll)
 │   │   ├── ErrorBoundary.jsx # Error boundary fallback
 │   │   ├── AuthModal.jsx     # Login/signup modal (tabs, Google OAuth, password strength)
 │   │   ├── ProtectedRoute.jsx # Redirects guests to AuthModal
@@ -62,18 +63,18 @@ apps/web/
 │   │   ├── data/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, stack, colors) + stacks + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
-│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (4-way), sourceOptions, perPageOptions, frequencyOptions, formSteps
+│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (6-way), sourceOptions, perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp: scroll-triggered fade + slide)
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
-│       ├── HomePage.jsx          # Brand landing (pillars, bio, GitHub heatmap, newsletter CTA)
+│       ├── HomePage.jsx          # Brand landing (hero with bio, live-stat pillars, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (stack-grouped or flat grid by category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 6-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
-│       ├── AboutPage.jsx         # Bio, story, GitHub heatmap, social links
+│       ├── AboutPage.jsx         # Visual journey timeline, pull quote, GitHub heatmap, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
 │       ├── PromptsPage.jsx       # Hybrid: 5 public / full library for members (vote, comment, copy, suggest)
@@ -166,7 +167,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (8 items), `stacks` array (launch/productivity/community), `categories` array. Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
-- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt/reddit), perPageOptions (10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
+- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt/reddit), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.

@@ -57,7 +57,7 @@ const IdeaSubmissionPage = () => {
   const [activeIndustry, setActiveIndustry] = useState('All');
   const [activeSource, setActiveSource] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(20);
+  const [perPage, setPerPage] = useState(5);
   const [formStep, setFormStep] = useState(0);
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [showMoreSort, setShowMoreSort] = useState(false);

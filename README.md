@@ -98,9 +98,11 @@ apps/web/
 │   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD)
 │   │   ├── AuthModal.jsx     # Login/signup modal (Google OAuth, password strength)
 │   │   ├── ProtectedRoute.jsx # Redirects guests to AuthModal
+│   │   ├── ScrollProgress.jsx # 2px scroll progress bar (Framer Motion)
 │   │   ├── GitHubHeatmap.jsx # GitHub contribution heatmap (compact + full)
 │   │   ├── GridBackground.jsx # Subtle graph-paper grid
 │   │   ├── GeometricBackground.jsx # Hand-drawn doodle background
+│   │   ├── ideas/            # Extracted Ideas page components (IdeaCard, IdeaDrawer, IdeaSubmitModal)
 │   │   └── ...               # ThemeToggle, SmileLogo, ScrollToTop, icons
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, profile CRUD, GA4 user props
@@ -129,11 +131,11 @@ apps/web/
 
 | Path | Page | Access |
 |------|------|--------|
-| `/` | Home | Public |
+| `/` | Home (hero with bio, live-stat pillars, narrative closing) | Public |
 | `/explore` | Explore (curated stacks + category filter) | Public |
 | `/ideas` | Idea Board (AI-scored, paginated, multi-filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
-| `/about` | About (bio, GitHub heatmap) | Public |
+| `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
 | `/scoring` | Scoring Frameworks (Hormozi + Dan Koe) | Public |
