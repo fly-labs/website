@@ -111,13 +111,14 @@ const HomePage = () => {
             <span className="text-sm font-semibold text-muted-foreground">Built by Luiz Alves</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
-            Find a real problem.<br />
-            Build the solution.<br />
-            Share everything.
+            Find a real problem.<br className="hidden sm:block" />
+            {" "}Build the solution.<br className="hidden sm:block" />
+            {" "}Share everything.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            Tools, templates, and ideas for business and learning.<br />
-            Built by one person with AI. Open source.
+            Tools, templates, and ideas for business and learning.
+            <br className="hidden sm:block" />
+            {" "}Built by one person with AI. Open source.
           </p>
           <div className="flex flex-col items-center gap-3">
             <Link
