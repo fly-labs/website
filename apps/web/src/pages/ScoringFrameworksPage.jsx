@@ -285,8 +285,6 @@ const ScoringFrameworksPage = () => {
                 3x Founder, TEDx Speaker, Creator & Investor in Micro-SaaS. Creator of Comunidade MicroSaaS, Brazil's largest MicroSaaS community with 20,000+ founders. His 4 Pillars of a Scalable MVP and Validation Copilot methodology help founders validate ideas before writing a single line of code.
               </p>
               <div className="flex items-center gap-3 flex-wrap">
-                <a href="https://x.com/brunomicrosaas" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">@brunomicrosaas</a>
-                <span className="text-muted-foreground/30">|</span>
                 <a href="https://www.linkedin.com/in/brunomicrosaas" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">LinkedIn</a>
                 <span className="text-muted-foreground/30">|</span>
                 <a href="https://microsaas.substack.com" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">Substack</a>
