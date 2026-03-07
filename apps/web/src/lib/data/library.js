@@ -9,6 +9,16 @@ export const books = [
     downloadUrl: null,
     pageCount: null,
   },
+  {
+    id: 'validate-microsaas-ideas',
+    title: 'How to Find and Validate Micro-SaaS Ideas with AI',
+    description: 'The complete playbook for discovering, scoring, and validating business ideas. 4 sources, 3 frameworks, Reddit validation, competitive analysis.',
+    topic: 'Business',
+    status: 'coming_soon',
+    coverColor: 'accent',
+    downloadUrl: null,
+    pageCount: null,
+  },
 ];
 
 export const topics = ['All', 'AI', 'Business', 'Mindset', 'Mindfulness', 'Random'];

@@ -14,8 +14,8 @@ Built by one person with AI. Open source.
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro) and Reddit. Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
-- **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
+- **Idea Lab** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro), Reddit, and Product Hunt. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas validated against Reddit communities and competitive landscape. Pagination, 8-way sort, source/type/industry filtering, multi-step submit form, H/K/B/V score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Scoring Frameworks** - Full breakdown of AI scoring frameworks (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
@@ -87,7 +87,9 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run deploy` | Stage, commit, and push to `main` (triggers Vercel deploy) |
 | `npm run sync` | Sync new problems from ProblemHunt (via Tilda feed API) and upsert to Supabase |
 | `npm run sync:reddit` | Sync business opportunities from targeted Reddit subreddits to Supabase |
-| `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe) |
+| `npm run sync:producthunt` | Sync top posts from Product Hunt (GraphQL API) to Supabase |
+| `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe + Okamoto) |
+| `npm run enrich` | Validate top-scoring ideas with Reddit cross-validation + competitive analysis |
 
 ## Project Structure
 
@@ -141,12 +143,12 @@ apps/web/
 |------|------|--------|
 | `/` | Home (hero, value pillars, narrative closing) | Public |
 | `/explore` | Explore (category filter: Business, Tools, Learn) | Public |
-| `/ideas` | Idea Board (AI-scored, paginated, multi-filter) | Public |
+| `/ideas` | Idea Lab (AI-scored, validated, paginated, multi-filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
-| `/scoring` | Scoring Frameworks (Hormozi + Dan Koe) | Public |
+| `/scoring` | Scoring Frameworks (Hormozi + Dan Koe + Okamoto + Validation) | Public |
 | `/library` | Library (ebooks, topic filter, waitlist) | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
@@ -165,7 +167,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + ProblemHunt + Reddit imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt' or 'reddit'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, score_breakdown (JSONB), created_at
+**ideas** - Community idea submissions + ProblemHunt + Reddit + Product Hunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', or 'producthunt'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, created_at
 
 **idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 

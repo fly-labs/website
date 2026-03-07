@@ -18,10 +18,15 @@ Or apply manually in the [Supabase SQL Editor](https://supabase.com/dashboard/pr
 | Table | Purpose |
 |-------|---------|
 | `profiles` | User profiles (synced with auth.users) |
-| `ideas` | Community idea submissions with voting |
+| `ideas` | Community idea submissions + ProblemHunt/Reddit/Product Hunt imports with voting, AI scoring, and enrichment |
+| `idea_rate_limits` | Rate limiting for idea submissions (max 3 per email per 24h) |
 | `prompt_votes` | Upvotes on prompts |
 | `prompt_comments` | Comments on prompts |
-| `waitlist` | Email capture for micro tools |
+| `waitlist` | Email capture for micro tools and library |
+
+### Ideas Table Columns
+
+id, idea_title, idea_description (nullable), category, industry (nullable), source (default 'community'), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score (integer), created_at
 
 ## RPCs
 
@@ -29,7 +34,10 @@ Or apply manually in the [Supabase SQL Editor](https://supabase.com/dashboard/pr
 |----------|---------|
 | `increment_vote(idea_id)` | Atomic vote increment for ideas |
 | `toggle_prompt_vote(p_prompt_id)` | Toggle vote on prompt, returns `{ count }` |
+| `get_prompt_vote_counts()` | Returns vote counts for all prompts (SECURITY DEFINER) |
 | `get_waitlist_count(p_source)` | Returns waitlist count (no email exposure) |
+| `check_idea_rate_limit(p_email)` | Returns count of submissions in last 24h |
+| `log_idea_submission(p_email)` | Logs a submission for rate limiting |
 
 ## RLS Policies
 

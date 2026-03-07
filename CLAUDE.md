@@ -51,8 +51,8 @@ apps/web/
 │   │   ├── SmileLogo.jsx     # Animated brand logo
 │   │   ├── ScrollToTop.jsx   # Resets scroll on route change
 │   │   └── ideas/            # Extracted Ideas page components
-│   │       ├── IdeaCard.jsx      # Idea card (vote, scores, subreddit display, status logic)
-│   │       ├── IdeaDrawer.jsx    # Detail drawer (ScoreBar, score tiers, scoring explainer)
+│   │       ├── IdeaCard.jsx      # Idea card (vote, H/K/B/V score badges, subreddit display, status logic)
+│   │       ├── IdeaDrawer.jsx    # Detail drawer (ScoreBar, score tiers, validation + competitors sections, scoring explainer)
 │   │       └── IdeaSubmitModal.jsx # 3-step submit form modal
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
@@ -64,7 +64,7 @@ apps/web/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
-│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (7-way), sourceOptions, perPageOptions, frequencyOptions, formSteps
+│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (8-way), sourceOptions (5 options), perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp: scroll-triggered fade + slide)
@@ -73,7 +73,7 @@ apps/web/
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
-│       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 6-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
+│       ├── IdeaSubmissionPage.jsx # Idea Lab (pagination, 8-way sort, source/type/industry filter, multi-step submit form, H/K/B/V score badges, validation drawer)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Pull quote, journey timeline, GitHub heatmap, current focus, the approach, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
@@ -85,7 +85,7 @@ apps/web/
 │       ├── LaunchChecklistPage.jsx  # Public - 4-phase Notion template (coming soon)
 │       ├── OnePageBusinessPlanPage.jsx # Public - 5-question Notion template (coming soon)
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
-│       ├── ScoringFrameworksPage.jsx # Public - Hormozi + Dan Koe + Okamoto scoring frameworks explained
+│       ├── ScoringFrameworksPage.jsx # Public - Hormozi + Dan Koe + Okamoto scoring + Validation Layer explained
 │       ├── LibraryPage.jsx         # Public - free ebooks with topic filter and waitlist
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
@@ -124,12 +124,12 @@ apps/web/
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
 - **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist
-- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community'), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with hormozi/koe/okamoto keys), created_at
+- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community'), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with hormozi/koe/okamoto keys), enrichment (JSONB with validation/competitors/summary), validation_score (integer 0-100), created_at
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe + Okamoto scoring), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (3x/day sync from 16 subreddits). Run via `npm run score` / `npm run sync` / `npm run sync:reddit`
-- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs 3x/day (2 AM, 10 AM, 6 PM UTC) to sync ProblemHunt + Reddit + score new ideas with Claude
+- **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Hormozi + Dan Koe + Okamoto scoring), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (3x/day sync from 16 subreddits), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync), `scripts/enrich-ideas.mjs` (Reddit cross-validation + competitive analysis). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run enrich`
+- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs 3x/day (2 AM, 10 AM, 6 PM UTC) to sync ProblemHunt + Reddit + Product Hunt + score new ideas with Claude. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
@@ -171,7 +171,7 @@ apps/web/
 - **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
-- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe/okamoto), sourceOptions (all/community/problemhunt/reddit), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
+- **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (8-way: hot/newest/oldest/top/hormozi/koe/okamoto/validation), sourceOptions (all/community/problemhunt/reddit/producthunt), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
 
 ## Analytics Events (GA4)
 All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.
@@ -208,6 +208,8 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_GA_ID=G-XXXXXXXXXX
+PRODUCTHUNT_API_KEY=your-producthunt-api-key
+PRODUCTHUNT_API_SECRET=your-producthunt-api-secret
 ```
 
 ## Git
