@@ -131,6 +131,15 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   B {idea.okamoto_score}
                 </button>
               )}
+              {idea.validation_score != null && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-yellow-500/10 text-yellow-600 text-[11px] font-bold tabular-nums hover:bg-yellow-500/20 transition-colors"
+                  title="Validation Score"
+                >
+                  V {idea.validation_score}
+                </button>
+              )}
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (

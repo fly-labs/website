@@ -22,7 +22,8 @@
     "sync": "node scripts/sync-problemhunt.mjs",
     "sync:reddit": "node scripts/sync-reddit.mjs",
     "sync:producthunt": "node scripts/sync-producthunt.mjs",
-    "score": "node scripts/score-ideas.mjs"
+    "score": "node scripts/score-ideas.mjs",
+    "enrich": "node scripts/enrich-ideas.mjs"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

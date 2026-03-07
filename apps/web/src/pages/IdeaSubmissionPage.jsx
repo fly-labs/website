@@ -148,6 +148,7 @@ const IdeaSubmissionPage = () => {
       case 'hormozi': return arr.sort((a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0));
       case 'koe': return arr.sort((a, b) => (b.koe_score || 0) - (a.koe_score || 0));
       case 'okamoto': return arr.sort((a, b) => (b.okamoto_score || 0) - (a.okamoto_score || 0));
+      case 'validation': return arr.sort((a, b) => (b.validation_score || 0) - (a.validation_score || 0));
       default: return arr;
     }
   })();

@@ -274,6 +274,135 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             );
           })()}
 
+          {/* Reddit Validation */}
+          {idea.enrichment?.validation && (() => {
+            const v = idea.enrichment.validation;
+            const tier = getScoreTier(v.strength);
+            const relevanceDot = { high: 'bg-primary', medium: 'bg-yellow-500', low: 'bg-muted-foreground/40' };
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold">Reddit Validation</h4>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-2xl font-black tabular-nums ${tier.color}`}>{v.strength}</span>
+                    <span className="text-xs text-muted-foreground/60">/100</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${tier.bg} ${tier.color}`}>{tier.label}</span>
+                  </div>
+                </div>
+
+                {v.evidence_summary && (
+                  <p className="text-sm text-muted-foreground italic">"{v.evidence_summary}"</p>
+                )}
+
+                {v.frustration_language?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-2">Frustration Language</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {v.frustration_language.map((phrase, i) => (
+                        <span key={i} className="bg-yellow-500/10 text-yellow-600 text-xs rounded-full px-2 py-0.5">{phrase}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {v.communities?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-2">Active Communities</p>
+                    <div className="space-y-1.5">
+                      {v.communities.map((c, i) => (
+                        <div key={i} className="flex items-center gap-2 text-sm">
+                          <span className={`w-2 h-2 rounded-full ${relevanceDot[c.relevance] || relevanceDot.low}`} />
+                          <span className="font-medium">{c.subreddit}</span>
+                          <span className="text-muted-foreground/60 text-xs">{c.post_count} posts</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {v.recurring_themes?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-2">Recurring Themes</p>
+                    <ul className="space-y-1">
+                      {v.recurring_themes.map((t, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {v.unmet_needs?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-2">Unmet Needs</p>
+                    <ul className="space-y-1">
+                      {v.unmet_needs.map((n, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
+                          <span className="w-1 h-1 rounded-full bg-yellow-500 shrink-0" />
+                          {n}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Competitive Landscape */}
+          {idea.enrichment?.competitors && (() => {
+            const c = idea.enrichment.competitors;
+            return (
+              <div className="space-y-4">
+                <h4 className="font-bold">Competitive Landscape</h4>
+
+                {c.products?.length > 0 && (
+                  <div className="space-y-3">
+                    {c.products.map((p, i) => (
+                      <div key={i} className="border-l-2 border-yellow-500 pl-3 space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold">{p.name}</span>
+                          {p.pricing && <span className="text-xs text-muted-foreground">{p.pricing}</span>}
+                        </div>
+                        {p.positioning && <p className="text-xs text-muted-foreground">{p.positioning}</p>}
+                        {p.top_complaints?.length > 0 && (
+                          <ul className="space-y-0.5">
+                            {p.top_complaints.map((complaint, j) => (
+                              <li key={j} className="text-xs text-muted-foreground flex items-center gap-1.5">
+                                <span className="w-1 h-1 rounded-full bg-red-500 shrink-0" />
+                                {complaint}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {p.gap && <p className="text-xs text-yellow-600 font-medium">Gap: {p.gap}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {c.market_gap && (
+                  <p className="text-sm font-bold text-foreground">{c.market_gap}</p>
+                )}
+                {c.pricing_opportunity && (
+                  <p className="text-sm text-muted-foreground">{c.pricing_opportunity}</p>
+                )}
+                {c.differentiation_angle && (
+                  <p className="text-sm text-muted-foreground">{c.differentiation_angle}</p>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Validation summary */}
+          {idea.enrichment?.summary && (
+            <p className="text-sm text-muted-foreground italic border-l-2 border-yellow-500 pl-3">
+              {idea.enrichment.summary}
+            </p>
+          )}
+
           {/* No scores yet */}
           {!idea.score_breakdown && (
             <div className="text-center py-8">
@@ -306,8 +435,13 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 business model viability, assumption risk, and validation readiness. Includes a
                 FOLLOW/ADJUST/PIVOT decision. Great for knowing if you can validate before building.
               </p>
+              <p>
+                <strong className="text-foreground">Validation Score</strong> cross-validates ideas
+                against real Reddit discussions: finding communities where the problem is discussed,
+                extracting frustration language, and mapping the competitive landscape.
+              </p>
               <p className="text-muted-foreground/60">
-                All three scores are generated by Claude AI analyzing the problem description,
+                All scores are generated by Claude AI analyzing the problem description,
                 industry context, and market signals.
               </p>
               <Link to="/scoring" className="inline-flex items-center gap-1 text-accent hover:underline font-medium" onClick={onClose}>
