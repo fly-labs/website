@@ -22,6 +22,7 @@ const NotFoundPage = () => {
         description: "The page you are looking for does not exist or may have been moved. Head back to Fly Labs to explore tools, templates, and AI prompts.",
         keywords: "404, page not found, fly labs",
         url: "https://flylabs.fun/404",
+        noindex: true,
       }}
       className="flex items-center justify-center pt-24 pb-24 px-6"
     >

@@ -179,7 +179,7 @@ const MicroSaasPage = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
                       aria-label="Email address"
-                      className="w-full h-12 pl-10 pr-4 rounded-xl border border-border bg-background text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
+                      className="w-full h-12 pl-10 pr-4 rounded-xl border border-border bg-background text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
                     />
                   </div>
                   <button

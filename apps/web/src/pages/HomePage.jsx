@@ -86,9 +86,9 @@ const HomePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Fly Labs | Free AI Tools, Templates & Prompts for Builders",
-        description: "Free AI tools, Notion templates, and curated prompts built by one indie maker. Open source, community-driven, and updated daily. Start building today.",
-        keywords: "vibe building, vibe coding, AI tools, no-code, automation, open source, free tools, Notion templates, AI prompts, indie maker",
+        title: "Fly Labs | Digital Assets for Business, Building & Learning",
+        description: "Digital assets built with AI and no-code. Business tools, open source products, and everything learned along the way.",
+        keywords: "vibe building, digital assets, AI tools, no-code, open source, business templates, build in public, indie maker",
         url: "https://flylabs.fun",
       }}
     >
@@ -111,10 +111,10 @@ const HomePage = () => {
             <span className="text-sm font-semibold text-muted-foreground">Built by Luiz Alves</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.1] mb-6">
-            I build things I wish existed.
+            Find a real problem. Build the solution. Share everything.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            One person. AI + no-code. Real problems turned into free tools. Everything is open source.
+            Digital assets for business, building, and learning. Made with AI and no-code. Open source.
           </p>
           <div className="flex flex-col items-center gap-3">
             <Link

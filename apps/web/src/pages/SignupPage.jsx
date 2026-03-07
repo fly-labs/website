@@ -120,7 +120,7 @@ const SignupPage = () => {
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                   placeholder="you@example.com" />
               </div>
             </div>
@@ -130,7 +130,7 @@ const SignupPage = () => {
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-password" type="password" required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                   placeholder="Min. 8 characters" />
               </div>
               <p className="text-xs text-muted-foreground/70 pl-1">Must be at least 8 characters</p>
@@ -141,7 +141,7 @@ const SignupPage = () => {
               <div className="relative">
                 <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-confirm" type="password" required autoComplete="new-password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                   placeholder="Repeat password" />
               </div>
             </div>

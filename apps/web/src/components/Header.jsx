@@ -18,6 +18,7 @@ const Header = () => {
   const navLinks = [
     { name: 'Explore', path: '/explore' },
     { name: 'Ideas', path: '/ideas' },
+    { name: 'Prompts', path: '/prompts' },
     { name: 'Newsletter', path: '/newsletter' },
     { name: 'Library', path: '/library' },
     { name: 'About', path: '/about' },
@@ -56,7 +57,7 @@ const Header = () => {
                 to={link.path}
                 className={`text-sm font-bold px-3 py-2 rounded-xl transition-colors duration-200 ${
                   isActive(link.path) 
-                    ? 'bg-primary/10 text-primary shadow-[0_0_10px_rgba(0,255,0,0.2)]' 
+                    ? 'bg-primary/10 text-primary shadow-[0_0_10px_rgba(var(--glow-primary),0.2)]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -72,7 +73,7 @@ const Header = () => {
               <div className="flex items-center gap-3 ml-2 pl-2 border-l border-border">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full border border-border hover:bg-muted transition-colors"
+                  className="flex items-center gap-2 bg-muted/50 px-3 py-2 rounded-full border border-border hover:bg-muted transition-colors"
                 >
                   <Avatar className="w-6 h-6">
                     <AvatarImage src={profile?.avatar_url || currentUser?.user_metadata?.avatar_url || ''} />

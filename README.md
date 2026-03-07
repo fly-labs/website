@@ -5,7 +5,7 @@
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-The playground for creators. Tools, templates, and AI prompts built in public.
+Digital assets for business, building, and learning. Made with AI and no-code. Open source.
 
 **Live:** [flylabs.fun](https://flylabs.fun)
 
@@ -15,7 +15,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
 - **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro) and Reddit. Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
-- **Library** - Free ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
+- **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
 - **Templates** - Systems, tools, and blueprints built for real use (4 templates):
@@ -38,7 +38,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 | Backend | Supabase (PostgreSQL + Auth + Storage) |
 | Auth | Email/password + Google OAuth |
 | SEO | react-helmet-async + JSON-LD |
-| Analytics | Google Analytics 4 (14 custom events) |
+| Analytics | Google Analytics 4 (24 custom events) |
 | Deploy | Vercel (auto-deploy on push to `main`) |
 
 ## Getting Started
@@ -138,7 +138,7 @@ apps/web/
 
 | Path | Page | Access |
 |------|------|--------|
-| `/` | Home (hero with bio, live-stat pillars, narrative closing) | Public |
+| `/` | Home (hero, value pillars, narrative closing) | Public |
 | `/explore` | Explore (category filter: Business, Tools, Learn) | Public |
 | `/ideas` | Idea Board (AI-scored, paginated, multi-filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
@@ -146,7 +146,7 @@ apps/web/
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
 | `/scoring` | Scoring Frameworks (Hormozi + Dan Koe) | Public |
-| `/library` | Library (free ebooks, topic filter, waitlist) | Public |
+| `/library` | Library (ebooks, topic filter, waitlist) | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
 | `/templates` | Templates directory | Members only |

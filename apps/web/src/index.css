@@ -89,7 +89,7 @@
 
 @layer utilities {
   .btn-playful {
-    @apply relative inline-flex items-center justify-center font-bold rounded-xl transition-all duration-150 active:translate-y-1 active:border-b-0 border-2 border-transparent;
+    @apply relative inline-flex items-center justify-center font-bold rounded-xl transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:translate-y-1 active:border-b-0 border-2 border-transparent;
   }
   .btn-playful-primary {
     @apply bg-primary text-primary-foreground border-b-4 border-primary/50 hover:bg-primary/90;

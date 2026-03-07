@@ -40,7 +40,7 @@ const ExplorePage = () => {
           >
             <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">The Playground</h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
-              AI prompts, templates, and micro tools. All free, all open source.
+              AI prompts, templates, and micro tools. All open source.
             </p>
           </motion.div>
 

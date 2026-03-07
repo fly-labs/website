@@ -84,7 +84,7 @@ const TemplatesPage = () => {
             </div>
             <div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight">Templates</h1>
-              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Systems, tools, and blueprints I built for real use. Yours for free.</p>
+              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Systems, tools, and blueprints I built for real use. Yours to keep.</p>
             </div>
           </div>
 

@@ -12,6 +12,10 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
+  const [userChose, setUserChose] = useState(() => {
+    try { return !!localStorage.getItem('theme'); } catch { return false; }
+  });
+
   const [theme, setTheme] = useState(() => {
     try {
       const savedTheme = localStorage.getItem('theme');
@@ -25,10 +29,22 @@ export const ThemeProvider = ({ children }) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    if (userChose) localStorage.setItem('theme', theme);
+  }, [theme, userChose]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => {
+      if (!userChose) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [userChose]);
 
   const toggleTheme = () => {
+    setUserChose(true);
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 

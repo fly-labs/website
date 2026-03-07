@@ -1,7 +1,7 @@
 # FlyLabs Website - Development Guide
 
 ## Project Overview
-**FlyLabs** (flylabs.fun) - "The playground for creators. Tools, templates, and experiments."
+**FlyLabs** (flylabs.fun) - "Digital assets for business, building, and learning."
 A React SPA built by Luiz Alves. Community-facing site with public pages (explore, ideas, newsletter, about), hybrid public/gated pages (prompts, micro tools), and member-only areas (templates, profile). Explore page organizes projects by category (Business, Tools, Learn).
 
 ## Quick Start

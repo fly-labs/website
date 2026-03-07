@@ -139,7 +139,7 @@ const LoginPage = () => {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                   placeholder="you@example.com"
                 />
               </div>
@@ -156,7 +156,7 @@ const LoginPage = () => {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                   placeholder="Your password"
                 />
               </div>

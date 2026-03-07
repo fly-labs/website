@@ -298,10 +298,14 @@ export function GitHubHeatmap({ variant = 'full' }) {
   const compact = variant === 'compact';
 
   useEffect(() => {
+    let cancelled = false;
     fetchContributions().then((result) => {
-      setData(result);
-      setLoading(false);
+      if (!cancelled) {
+        setData(result);
+        setLoading(false);
+      }
     });
+    return () => { cancelled = true; };
   }, []);
 
   if (!loading && !data) return null;

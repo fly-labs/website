@@ -49,8 +49,8 @@ const AboutPage = () => {
     <PageLayout
       seo={{
         title: "About Luiz Alves - Builder, CFA & Creator",
-        description: "Meet Luiz Alves, CFA, CAIA. The story behind Fly Labs and building real products with AI and no-code tools. Portfolio manager by day, vibe builder by night.",
-        keywords: "Luiz Alves, CFA, CAIA, indie maker, AI builder, no-code, portfolio manager, vibe building",
+        description: "Meet Luiz Alves - CFA, CAIA, and vibe builder. AI tools, templates, and open source experiments at Fly Labs.",
+        keywords: "Luiz Alves, CFA, CAIA, indie maker, AI builder, open source, tools, templates",
         url: "https://flylabs.fun/about",
         schema: {
           "@context": "https://schema.org",
@@ -58,7 +58,7 @@ const AboutPage = () => {
           "name": "Luiz Alves",
           "url": "https://flylabs.fun/about",
           "image": "https://flylabs.fun/images/luiz-alves.png",
-          "jobTitle": "Builder & Portfolio Manager",
+          "jobTitle": "Vibe Builder & CFA Charterholder",
           "sameAs": [
             "https://github.com/fly-labs",
             "https://x.com/alvesluizc",
@@ -95,7 +95,7 @@ const AboutPage = () => {
               Nobody asked me to build any of this. I did it anyway, for fun.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-6">
-              I'm Luiz Alves. CFA, CAIA - that's the day job. By night I ship tools, templates, and tiny products with AI and no-code.
+              I'm Luiz Alves. CFA, CAIA, vibe builder. I ship tools and templates with AI and no-code. All open source.
             </p>
             <div className="flex flex-wrap gap-2 mb-6">
               {socials.map((s) => (

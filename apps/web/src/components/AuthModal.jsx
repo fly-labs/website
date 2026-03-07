@@ -175,7 +175,7 @@ export const AuthModal = () => {
                 {password && (
                   <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                     <div
-                      className={`h-full transition-all ${getPasswordStrength(password) > 50 ? 'bg-green-500' : 'bg-yellow-500'}`}
+                      className={`h-full transition-[width,background-color] ${getPasswordStrength(password) > 50 ? 'bg-green-500' : 'bg-yellow-500'}`}
                       style={{ width: `${getPasswordStrength(password)}%` }}
                     />
                   </div>

@@ -438,7 +438,7 @@ const PromptsPage = () => {
                 placeholder="Search by title, category, or description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-11 pr-10 rounded-2xl border border-border bg-card text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
+                className="w-full h-12 pl-11 pr-10 rounded-2xl border border-border bg-card text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
               />
               {searchQuery && (
                 <button
@@ -643,7 +643,7 @@ const PromptsPage = () => {
 
                           {/* Hover tooltip - only when collapsed */}
                           {!isExpanded && (
-                            <div className="pointer-events-none absolute left-14 right-14 top-full z-30 opacity-0 translate-y-1 group-hover/row:opacity-100 group-hover/row:translate-y-0 transition-all duration-200 delay-300">
+                            <div className="pointer-events-none absolute left-14 right-14 top-full z-30 opacity-0 translate-y-1 group-hover/row:opacity-100 group-hover/row:translate-y-0 transition-[opacity,transform] duration-200 delay-300">
                               <div className="mt-1 px-4 py-3 rounded-xl bg-popover border border-border shadow-lg text-sm text-muted-foreground font-medium leading-relaxed">
                                 {prompt.description}
                               </div>
@@ -748,7 +748,7 @@ const PromptsPage = () => {
                                                 {currentUser && comment.user_id === currentUser.id && (
                                                   <button
                                                     onClick={() => handleDeleteComment(comment.id, prompt.id)}
-                                                    className="opacity-60 sm:opacity-0 sm:group-hover/comment:opacity-100 shrink-0 p-2 text-muted-foreground/50 hover:text-destructive transition-all"
+                                                    className="opacity-60 sm:opacity-0 sm:group-hover/comment:opacity-100 shrink-0 p-2 text-muted-foreground/50 hover:text-destructive transition-colors"
                                                     aria-label="Delete comment"
                                                   >
                                                     <Trash2 className="w-3.5 h-3.5" />
@@ -773,7 +773,7 @@ const PromptsPage = () => {
                                                 handleSubmitComment(prompt.id);
                                               }
                                             }}
-                                            className="flex-1 h-9 px-3 rounded-lg border border-border bg-background text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
+                                            className="flex-1 h-9 px-3 rounded-lg border border-border bg-background text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
                                           />
                                           <button
                                             onClick={() => handleSubmitComment(prompt.id)}

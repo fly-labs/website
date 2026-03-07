@@ -193,7 +193,7 @@ const ProfilePage = () => {
                 placeholder="What should we call you?"
                 value={form.name}
                 onChange={handleChange}
-                className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
               />
             </div>
 
@@ -209,7 +209,7 @@ const ProfilePage = () => {
                   placeholder="+1 234 567 890"
                   value={form.phone}
                   onChange={handleChange}
-                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
               <div className="space-y-1.5">
@@ -222,7 +222,7 @@ const ProfilePage = () => {
                   placeholder="e.g. Brazil"
                   value={form.country}
                   onChange={handleChange}
-                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ const ProfilePage = () => {
                   placeholder="e.g. Lisbon"
                   value={form.city}
                   onChange={handleChange}
-                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
               <div className="space-y-1.5">
@@ -253,7 +253,7 @@ const ProfilePage = () => {
                   placeholder="25"
                   value={form.age}
                   onChange={handleChange}
-                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
             </div>
@@ -267,7 +267,7 @@ const ProfilePage = () => {
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all appearance-none cursor-pointer"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none cursor-pointer"
                 >
                   <option value="">Prefer not to say</option>
                   <option value="Male">Male</option>
@@ -296,7 +296,7 @@ const ProfilePage = () => {
                 placeholder="A few words about yourself..."
                 value={form.bio}
                 onChange={handleChange}
-                className="w-full p-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-y leading-relaxed"
+                className="w-full p-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
               />
               <p className="text-xs text-muted-foreground/60 text-right">{form.bio.length}/200</p>
             </div>
