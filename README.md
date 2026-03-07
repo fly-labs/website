@@ -5,8 +5,8 @@
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-Digital assets for business, tools, and learning.
-Made with AI and no-code. Open source.
+Tools, templates, and ideas for business and learning.
+Built by one person with AI. Open source.
 
 **Live:** [flylabs.fun](https://flylabs.fun)
 

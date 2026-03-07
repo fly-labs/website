@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 export const SEO = ({
   title,
   description,
-  keywords = "vibe building, digital assets, AI tools, no-code, open source, indie maker, business templates, build in public",
+  keywords = "vibe building, digital assets, AI tools, one person, open source, indie maker, business templates, build in public",
   url = "https://flylabs.fun",
   image = "https://flylabs.fun/images/og-image.png",
   type = "website",
@@ -19,7 +19,7 @@ export const SEO = ({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Fly Labs",
-      "description": "Digital assets for business, tools, and learning. Made with AI and no-code. Open source.",
+      "description": "Tools, templates, and ideas for business and learning. Built by one person with AI. Open source.",
       "url": "https://flylabs.fun",
       "logo": "https://flylabs.fun/images/og-logo.png",
       "sameAs": [
