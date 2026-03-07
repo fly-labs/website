@@ -15,7 +15,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 const USER_AGENT = 'FlyLabs-Sync/1.0 (https://flylabs.fun) Node.js';
-const REQUEST_DELAY = 1200; // 1.2s between requests
+const REQUEST_DELAY = 2000; // 2s between requests (16 subreddits × 5 queries)
 
 // Target subreddits with default industry mapping
 const SUBREDDITS = {
@@ -25,6 +25,16 @@ const SUBREDDITS = {
   SaaS: 'Business',
   indiehackers: 'Vc Startups',
   SideProject: 'Dev',
+  Entrepreneur: 'Business',
+  smallbusiness: 'Business',
+  startups: 'Vc Startups',
+  freelance: 'Hr Career',
+  ecommerce: 'Ecommerce',
+  marketing: 'Marketing Sales',
+  productivity: 'Productivity',
+  webdev: 'Dev',
+  digital_marketing: 'Marketing Sales',
+  Bookkeeping: 'Finance',
 };
 
 // Flair text -> industry override
@@ -41,6 +51,16 @@ const FLAIR_MAP = {
   'Dev': 'Dev',
   'Legal': 'Legal',
   'HR': 'Hr Career',
+  'Ecommerce': 'Ecommerce',
+  'E-Commerce': 'Ecommerce',
+  'Shopify': 'Ecommerce',
+  'SEO': 'Marketing Sales',
+  'Freelancing': 'Hr Career',
+  'Accounting': 'Finance',
+  'Bookkeeping': 'Finance',
+  'Sales': 'Marketing Sales',
+  'Startup': 'Vc Startups',
+  'SaaS': 'Business',
 };
 
 // Search queries that target problem descriptions (not "I built" showcases)
@@ -89,10 +109,10 @@ function isBusinessOpportunity(post) {
     if (text.includes(signal)) score += 1;
   }
   for (const signal of NEGATIVE_SIGNALS) {
-    if (text.includes(signal)) score -= 3;
+    if (text.includes(signal)) score -= 2;
   }
 
-  return score >= 3;
+  return score >= 2;
 }
 
 function sleep(ms) {
@@ -122,7 +142,7 @@ async function fetchSubreddit(subreddit) {
   const posts = new Map(); // Dedup by post ID across queries
 
   for (const query of SEARCH_QUERIES) {
-    const url = `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=on&sort=relevance&t=day&limit=25`;
+    const url = `https://www.reddit.com/r/${subreddit}/search.json?q=${encodeURIComponent(query)}&restrict_sr=on&sort=relevance&t=week&limit=25`;
 
     try {
       const res = await fetchWithRetry(url);
@@ -135,7 +155,7 @@ async function fetchSubreddit(subreddit) {
 
         // Layer 1: Hard filters
         if (!post.is_self) continue;
-        if (!post.selftext || post.selftext.length < 50) continue;
+        if (!post.selftext || post.selftext.length < 30) continue;
         if (post.selftext === '[deleted]' || post.selftext === '[removed]') continue;
         if ((post.score || 0) < 5) continue;
         if (post.over_18) continue;
@@ -204,12 +224,16 @@ async function main() {
   try {
     const allIdeas = [];
 
-    for (const subreddit of Object.keys(SUBREDDITS)) {
+    const subredditKeys = Object.keys(SUBREDDITS);
+    for (let i = 0; i < subredditKeys.length; i++) {
+      const subreddit = subredditKeys[i];
       console.log(`Fetching r/${subreddit}...`);
       const posts = await fetchSubreddit(subreddit);
       const ideas = posts.map((p) => transformPost(p, subreddit));
       console.log(`  r/${subreddit}: ${posts.length} posts passed filters`);
       allIdeas.push(...ideas);
+      // Pause between subreddits to avoid rate limits
+      if (i < subredditKeys.length - 1) await sleep(3000);
     }
 
     // Dedup across subreddits (same post could appear in multiple)

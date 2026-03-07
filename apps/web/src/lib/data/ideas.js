@@ -17,6 +17,7 @@ export const industries = [
   { value: 'Hr Career', label: 'HR & Career' },
   { value: 'Ai', label: 'AI' },
   { value: 'Sport Fitness', label: 'Sport & Fitness' },
+  { value: 'Ecommerce', label: 'E-Commerce' },
   { value: 'Retail', label: 'Retail' },
   { value: 'Freelance', label: 'Freelance' },
   { value: 'Dev', label: 'Dev' },
