@@ -47,9 +47,9 @@ const pillars = [
     accentBorder: 'hover:border-blue-500/40',
   },
   {
-    title: 'Idea Board',
+    title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems scraped from Reddit and ProblemHunt, scored by AI, voted by the community. Drop yours too.',
+    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, and the community. AI-scored, validated, voted. Drop yours too.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
@@ -155,7 +155,7 @@ const HomePage = () => {
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
             {pillars.map((pillar, i) => {
-              const stat = pillar.title === 'Idea Board' && ideaCount != null
+              const stat = pillar.title === 'Idea Lab' && ideaCount != null
                 ? `${ideaCount} ideas`
                 : pillar.stat;
               return (

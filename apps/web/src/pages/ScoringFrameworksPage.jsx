@@ -169,7 +169,7 @@ const ScoringFrameworksPage = () => {
 
           {/* Back link */}
           <Link to="/ideas" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold mb-8 transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Idea Board
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Idea Lab
           </Link>
 
           {/* Hero */}
@@ -388,7 +388,7 @@ const ScoringFrameworksPage = () => {
               to="/ideas"
               className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2"
             >
-              Explore the Idea Board <ArrowRight className="w-5 h-5" />
+              Explore the Idea Lab <ArrowRight className="w-5 h-5" />
             </Link>
             <p className="text-muted-foreground font-bold mt-4">
               Every idea scored. Every framework explained. Go find the signal.

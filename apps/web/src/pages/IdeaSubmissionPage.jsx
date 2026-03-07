@@ -370,9 +370,9 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Idea Board - AI-Scored Problems from Reddit & Community",
-          description: "Real problems from Reddit, ProblemHunt, and the community, scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Submit yours, vote, and find what to build.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, business opportunities",
+          title: "Idea Lab - AI-Scored Problems from Reddit, Product Hunt & Community",
+          description: "Real problems from Reddit, ProblemHunt, Product Hunt, and the community, scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas validated against real market data.",
+          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, validation, competitive analysis, business opportunities",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-28 sm:pb-24"
@@ -388,7 +388,7 @@ const IdeaSubmissionPage = () => {
               className="text-center mb-6"
             >
               <h1 className="text-4xl md:text-7xl font-black mb-3 tracking-tight">
-                The <span className="text-primary">Idea Board</span>
+                The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
                 {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}4 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily

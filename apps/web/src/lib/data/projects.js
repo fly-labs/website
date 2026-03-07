@@ -102,8 +102,8 @@ export const projects = [
 
   },
   {
-    title: 'Idea Board',
-    description: 'Real problems scraped daily from Reddit and ProblemHunt, plus community submissions. AI-scored. The best ones get built.',
+    title: 'Idea Lab',
+    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, and the community. AI-scored and validated. The best ones get built.',
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',
