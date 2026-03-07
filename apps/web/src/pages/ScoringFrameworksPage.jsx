@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, Target, Lightbulb, BarChart3, Sparkles, MessageSquare,
   TrendingUp, User, Zap, DollarSign, Eye, Layers, Rocket, Shield, Clock, Users,
-  Search, Megaphone, CircleDollarSign, HelpCircle, FlaskConical,
+  Search, Megaphone, CircleDollarSign, HelpCircle, FlaskConical, Globe,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -157,9 +157,9 @@ const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Scoring Frameworks - Hormozi, Dan Koe & Okamoto Methods",
-        description: "How we score every idea with AI. Three frameworks: Hormozi's $100M evaluation, Dan Koe's one-person business lens, and Bruno Okamoto's MicroSaaS validation methodology.",
-        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation",
+        title: "AI Scoring & Validation - Hormozi, Dan Koe, Okamoto + Market Validation",
+        description: "How we score and validate every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) plus a validation layer with Reddit cross-validation and competitive analysis.",
+        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, Reddit validation, market research",
         url: "https://flylabs.fun/scoring",
       }}
       className="pt-32 pb-24"
@@ -183,7 +183,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea on the board gets AI-scored using three complementary business frameworks.
+              Every idea gets AI-scored using three scoring frameworks and a validation layer.
             </p>
           </motion.div>
 
@@ -198,7 +198,7 @@ const ScoringFrameworksPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                I picked these three frameworks because they answer different questions. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" Together they filter signal from noise.
+                I built this system because every framework answers a different question. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" And the validation layer asks "Is the pain real and the market accessible?" Together they filter signal from noise.
               </p>
             </div>
           </motion.div>
@@ -342,6 +342,51 @@ const ScoringFrameworksPage = () => {
             </motion.div>
           </div>
 
+          {/* Validation Layer */}
+          <div className="mb-24">
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-600 font-bold text-sm border border-yellow-500/20 mb-4">
+                <Search className="w-4 h-4" /> Validation Layer
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Idea Validation</h2>
+              <p className="text-muted-foreground leading-relaxed max-w-3xl">
+                After scoring, top ideas go through FlyLabs' own validation process: cross-referencing against Reddit communities, extracting frustration language from real users, and mapping the competitive landscape. This layer answers whether the pain is real and the market is accessible.
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                {
+                  icon: MessageSquare,
+                  title: 'Reddit Cross-Validation',
+                  desc: 'Find communities discussing the pain, pull upvoted complaints, capture frustration language from real users.',
+                },
+                {
+                  icon: Globe,
+                  title: 'Competitive Analysis',
+                  desc: 'Map existing solutions, analyze pricing, mine complaints from users, identify market gaps.',
+                },
+                {
+                  icon: TrendingUp,
+                  title: 'Opportunity Signal',
+                  desc: 'Recurring themes, unmet needs, differentiation angles. What the market wants but nobody is building.',
+                },
+              ].map((phase, i) => (
+                <motion.div
+                  key={phase.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  className="card-playful p-5 bg-card border-l-4 border-yellow-500"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <phase.icon className="w-5 h-5 text-foreground" />
+                    <h3 className="font-bold text-sm">{phase.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground font-medium">{phase.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
           {/* Score Interpretation */}
           <div className="mb-24">
             <motion.h2
@@ -374,7 +419,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Claude AI analyzes problem description, industry context, and market signals independently through all three frameworks. Scores update daily as new ideas come in.
+              Claude AI analyzes problem description, industry context, and market signals through all three scoring frameworks. Top-scoring ideas then go through validation: cross-referenced against Reddit communities and competitive landscape analysis. Scores update daily.
             </p>
           </motion.div>
 
