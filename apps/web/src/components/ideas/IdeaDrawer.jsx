@@ -73,6 +73,8 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                   <span className="text-accent font-medium">via ProblemHunt</span>
                 ) : idea.source === 'reddit' ? (
                   <span className="text-red-500 font-medium">{subreddit ? `r/${subreddit}` : 'via Reddit'}</span>
+                ) : idea.source === 'producthunt' ? (
+                  <span className="text-orange-600 font-medium">via Product Hunt</span>
                 ) : (
                   `by ${idea.name || 'Anonymous'}`
                 )}
@@ -349,6 +351,17 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: subreddit ? `r/${subreddit}` : 'Reddit Detail', location: 'ideas_drawer' })}
               >
                 {subreddit ? `r/${subreddit}` : 'via Reddit'} <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {idea.source === 'producthunt' && idea.source_url && (
+              <a
+                href={idea.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-600/20 text-sm font-medium text-orange-600 hover:bg-orange-600/10 transition-colors"
+                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'Product Hunt Detail', location: 'ideas_drawer' })}
+              >
+                via Product Hunt <ArrowRight className="w-3.5 h-3.5" />
               </a>
             )}
           </div>

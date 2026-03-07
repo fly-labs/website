@@ -24,6 +24,13 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/sync-reddit.mjs
+      - name: Sync Product Hunt
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PRODUCTHUNT_API_KEY: ${{ secrets.PRODUCTHUNT_API_KEY }}
+          PRODUCTHUNT_API_SECRET: ${{ secrets.PRODUCTHUNT_API_SECRET }}
+        run: node scripts/sync-producthunt.mjs
       - name: Score unscored ideas with Claude
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

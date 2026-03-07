@@ -60,6 +60,7 @@ export const sourceOptions = [
   { value: 'community', label: 'Community' },
   { value: 'problemhunt', label: 'ProblemHunt' },
   { value: 'reddit', label: 'Reddit' },
+  { value: 'producthunt', label: 'Product Hunt' },
 ];
 
 export const perPageOptions = [5, 10, 20, 50];

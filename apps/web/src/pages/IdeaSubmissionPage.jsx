@@ -390,7 +390,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Board</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}3 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}4 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -742,9 +742,11 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Every day we scan Reddit and ProblemHunt for real problems people are struggling with.
-                      Community members submit their own too. AI scores every idea using Hormozi, Dan Koe, and Okamoto frameworks.
-                      The best ones get built. If your idea flies, we partner up.
+                      Every day we scan Reddit, ProblemHunt, and Product Hunt for real problems people
+                      are struggling with. Community members submit their own too. AI scores every idea
+                      using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas get validated against
+                      Reddit communities and competitive landscape. The best ones get built. If your
+                      idea flies, we partner up.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

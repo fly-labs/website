@@ -21,6 +21,7 @@
     "deploy": "git push origin main",
     "sync": "node scripts/sync-problemhunt.mjs",
     "sync:reddit": "node scripts/sync-reddit.mjs",
+    "sync:producthunt": "node scripts/sync-producthunt.mjs",
     "score": "node scripts/score-ideas.mjs"
   },
   "devDependencies": {
