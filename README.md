@@ -11,7 +11,7 @@ The playground for creators. Tools, templates, and AI prompts built in public.
 
 ## What's Inside
 
-- **Explore** - Project catalog organized by curated stacks (Launch, Productivity, Community), filterable by category (Business, Tools, Learn), with type and status badges
+- **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
 - **Idea Board** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro) and Reddit. Every idea scored by AI using Hormozi and Dan Koe frameworks. Pagination, 6-way sort (hot/newest/oldest/top voted/Hormozi score/Koe score), source/type/industry filtering, multi-step submit form, score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of both AI scoring frameworks (Hormozi's $100M evaluation + Dan Koe's one-person business lens) with pillar details, score tiers, and methodology
@@ -117,7 +117,7 @@ apps/web/
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
-│   │   │   ├── projects.js   # Projects array + stacks + categories
+│   │   │   ├── projects.js   # Projects array + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
 │   │   │   ├── library.js    # Books array, topics, topic colors
 │   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions, perPageOptions, frequencyOptions, formSteps
@@ -139,7 +139,7 @@ apps/web/
 | Path | Page | Access |
 |------|------|--------|
 | `/` | Home (hero with bio, live-stat pillars, narrative closing) | Public |
-| `/explore` | Explore (curated stacks + category filter) | Public |
+| `/explore` | Explore (category filter: Business, Tools, Learn) | Public |
 | `/ideas` | Idea Board (AI-scored, paginated, multi-filter) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |

@@ -5,7 +5,7 @@ import { Lock, ArrowRight } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { motion } from 'framer-motion';
-import { projects, categories, stacks } from '@/lib/data/projects.js';
+import { projects, categories } from '@/lib/data/projects.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 const ExplorePage = () => {
@@ -22,7 +22,7 @@ const ExplorePage = () => {
     <PageLayout
       seo={{
         title: "Explore AI Tools, Templates & Open Source Projects",
-        description: "Browse curated stacks of AI tools, Notion templates, automation workflows, and open source experiments. Organized by Launch, Productivity, and Community.",
+        description: "Browse AI tools, Notion templates, automation workflows, and open source experiments. Organized by Business, Tools, and Learn.",
         keywords: "AI tools, Notion templates, automation, open source projects, indie maker tools, productivity tools, launch tools",
         url: "https://flylabs.fun/explore",
       }}
@@ -83,72 +83,7 @@ const ExplorePage = () => {
               >
                 Nothing here yet. But stay tuned.
               </motion.p>
-            ) : activeCategory === 'All' ? (
-              /* Stack-grouped view */
-              <div className="space-y-14">
-                {stacks.map((stack) => {
-                  const stackProjects = projects.filter(p => p.stack === stack.id);
-                  if (stackProjects.length === 0) return null;
-                  return (
-                    <div key={stack.id}>
-                      <h2 className="text-xl md:text-2xl font-black tracking-tight mb-1">{stack.label}</h2>
-                      <p className="text-sm text-muted-foreground mb-6">{stack.description}</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4">
-                        {stackProjects.map((project, i) => {
-                          const isLocked = project.isGated && !isAuthenticated;
-                          return (
-                            <motion.div
-                              key={project.title}
-                              initial={{ opacity: 0, y: 16 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.3, delay: i * 0.04 }}
-                            >
-                              <Link
-                                to={project.link}
-                                className="group flex flex-col h-full p-5 md:p-6 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
-                                onClick={() => trackEvent('project_click', { project: project.title, category: project.category })}
-                              >
-                                <div className="flex items-start justify-between mb-3">
-                                  <div className={`w-10 h-10 rounded-lg ${project.bgColor} ${project.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-                                    <project.icon className="w-5 h-5" />
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    {isLocked && (
-                                      <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                                    )}
-                                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${project.bgColor} ${project.color}`}>
-                                      {project.type}
-                                    </span>
-                                    <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                                      project.status === 'Live' ? 'bg-primary/10 text-primary' :
-                                      project.status === 'Beta' ? 'bg-blue-500/10 text-blue-500' :
-                                      'bg-orange-500/10 text-orange-500'
-                                    }`}>
-                                      {project.status}
-                                    </span>
-                                  </div>
-                                </div>
-                                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-1.5">
-                                  {project.title}
-                                </h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed flex-grow mb-4">
-                                  {project.description}
-                                </p>
-                                <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors mt-auto">
-                                  {isLocked ? 'Free account required' : 'Check it out'}
-                                  <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
-                                </span>
-                              </Link>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             ) : (
-              /* Flat grid for category filter */
               <motion.div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4"
               >

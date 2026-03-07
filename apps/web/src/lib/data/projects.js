@@ -2,11 +2,6 @@ import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, Fil
 
 export const categories = ['All', 'Business', 'Tools', 'Learn'];
 
-export const stacks = [
-  { id: 'launch', label: 'Launch Stack', description: 'Everything you need to go from idea to live product.' },
-  { id: 'productivity', label: 'Productivity Stack', description: 'Automate your life with Notion templates and integrations.' },
-  { id: 'community', label: 'Community', description: 'Shape what gets built. Vote, suggest, and stay in the loop.' },
-];
 
 export const projects = [
   {
@@ -19,7 +14,7 @@ export const projects = [
     type: 'Development',
     status: 'Live',
     category: 'Tools',
-    stack: 'launch',
+
   },
   {
     title: 'Prompt Library',
@@ -32,7 +27,7 @@ export const projects = [
     status: 'Live',
     category: 'Tools',
     isGated: true,
-    stack: 'productivity',
+
   },
   {
     title: 'Micro Tools',
@@ -44,7 +39,7 @@ export const projects = [
     type: 'Tools',
     status: 'Beta',
     category: 'Tools',
-    stack: 'launch',
+
   },
   {
     title: 'Launch Checklist',
@@ -56,7 +51,7 @@ export const projects = [
     type: 'Notion',
     status: 'Soon',
     category: 'Business',
-    stack: 'launch',
+
   },
   {
     title: 'One-Page Business Plan',
@@ -68,7 +63,7 @@ export const projects = [
     type: 'Notion',
     status: 'Soon',
     category: 'Business',
-    stack: 'launch',
+
   },
   {
     title: 'Garmin to Notion',
@@ -80,7 +75,7 @@ export const projects = [
     type: 'Notion',
     status: 'Live',
     category: 'Tools',
-    stack: 'productivity',
+
   },
   {
     title: 'The Newsletter',
@@ -92,7 +87,7 @@ export const projects = [
     type: 'Newsletter',
     status: 'Live',
     category: 'Learn',
-    stack: 'community',
+
   },
   {
     title: 'Library',
@@ -104,7 +99,7 @@ export const projects = [
     type: 'Ebooks',
     status: 'Live',
     category: 'Learn',
-    stack: 'community',
+
   },
   {
     title: 'Idea Board',
@@ -116,6 +111,6 @@ export const projects = [
     type: 'Ideas',
     status: 'Live',
     category: 'Business',
-    stack: 'community',
+
   },
 ];

@@ -2,7 +2,7 @@
 
 ## Project Overview
 **FlyLabs** (flylabs.fun) - "The playground for creators. Tools, templates, and experiments."
-A React SPA built by Luiz Alves. Community-facing site with public pages (explore, ideas, newsletter, about), hybrid public/gated pages (prompts, micro tools), and member-only areas (templates, profile). Explore page groups projects into curated stacks (Launch, Productivity, Community).
+A React SPA built by Luiz Alves. Community-facing site with public pages (explore, ideas, newsletter, about), hybrid public/gated pages (prompts, micro tools), and member-only areas (templates, profile). Explore page organizes projects by category (Business, Tools, Learn).
 
 ## Quick Start
 ```bash
@@ -61,7 +61,7 @@ apps/web/
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
-│   │   │   ├── projects.js       # projects array (title, type, status, category, stack, colors) + stacks + categories exports
+│   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
 │   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (6-way), sourceOptions, perPageOptions, frequencyOptions, formSteps
@@ -72,7 +72,7 @@ apps/web/
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
-│       ├── ExplorePage.jsx       # Project catalog (stack-grouped or flat grid by category filter)
+│       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea board (pagination, 6-way sort, source/type/industry filter, multi-step submit form, Hormozi + Dan Koe score badges, detail drawer)
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Pull quote, journey timeline, GitHub heatmap, current focus, the approach, social links
@@ -168,7 +168,7 @@ apps/web/
 - **Validation:** Use `isValidEmail()` from `@/lib/utils.js` for email fields (waitlist, ideas)
 
 ## Data Layer
-- **projects.js:** `projects` array (9 items), `stacks` array (launch/productivity/community), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, stack, isGated (optional)
+- **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
 - **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (29 domain verticals from ProblemHunt + Other), statusConfig (open/building/shipped), sortOptions (hot/newest/oldest/top/hormozi/koe), sourceOptions (all/community/problemhunt/reddit), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Three-dimension filtering: Source x Type x Industry
