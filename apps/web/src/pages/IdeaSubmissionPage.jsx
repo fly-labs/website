@@ -250,7 +250,7 @@ const IdeaSubmissionPage = () => {
       }
 
       const sanitized = {
-        name: formData.name.trim(),
+        name: formData.name.trim() || null,
         email: formData.email.trim().toLowerCase(),
         idea_title: formData.idea_title.trim(),
         idea_description: formData.idea_description?.trim() || null,

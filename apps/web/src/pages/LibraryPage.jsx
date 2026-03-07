@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { books, topics, topicColors } from '@/lib/data/library.js';
-import { supabase } from '@/lib/supabaseClient.js';
+import supabase from '@/lib/supabaseClient.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import { isValidEmail } from '@/lib/utils.js';

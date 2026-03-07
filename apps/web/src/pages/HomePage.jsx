@@ -7,7 +7,7 @@ import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
 import { books } from '@/lib/data/library.js';
-import { supabase } from '@/lib/supabaseClient.js';
+import supabase from '@/lib/supabaseClient.js';
 import { cn } from '@/lib/utils.js';
 
 const availableBookCount = books.filter((b) => b.status === 'available').length;

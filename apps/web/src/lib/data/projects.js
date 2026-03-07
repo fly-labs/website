@@ -1,6 +1,6 @@
 import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
 
-export const categories = ['All', 'Templates', 'Prompts', 'Micro Tools', 'Community'];
+export const categories = ['All', 'Business', 'Tools', 'Learn'];
 
 export const stacks = [
   { id: 'launch', label: 'Launch Stack', description: 'Everything you need to go from idea to live product.' },
@@ -18,7 +18,7 @@ export const projects = [
     bgColor: 'bg-primary/10',
     type: 'Development',
     status: 'Live',
-    category: 'Templates',
+    category: 'Tools',
     stack: 'launch',
   },
   {
@@ -30,7 +30,7 @@ export const projects = [
     bgColor: 'bg-primary/10',
     type: 'AI',
     status: 'Live',
-    category: 'Prompts',
+    category: 'Tools',
     isGated: true,
     stack: 'productivity',
   },
@@ -43,7 +43,7 @@ export const projects = [
     bgColor: 'bg-blue-500/10',
     type: 'Tools',
     status: 'Beta',
-    category: 'Micro Tools',
+    category: 'Tools',
     stack: 'launch',
   },
   {
@@ -55,7 +55,7 @@ export const projects = [
     bgColor: 'bg-amber-500/10',
     type: 'Notion',
     status: 'Soon',
-    category: 'Templates',
+    category: 'Business',
     stack: 'launch',
   },
   {
@@ -67,7 +67,7 @@ export const projects = [
     bgColor: 'bg-violet-500/10',
     type: 'Notion',
     status: 'Soon',
-    category: 'Templates',
+    category: 'Business',
     stack: 'launch',
   },
   {
@@ -79,7 +79,7 @@ export const projects = [
     bgColor: 'bg-secondary/10',
     type: 'Notion',
     status: 'Live',
-    category: 'Templates',
+    category: 'Tools',
     stack: 'productivity',
   },
   {
@@ -91,7 +91,7 @@ export const projects = [
     bgColor: 'bg-purple-500/10',
     type: 'Newsletter',
     status: 'Live',
-    category: 'Community',
+    category: 'Learn',
     stack: 'community',
   },
   {
@@ -101,9 +101,9 @@ export const projects = [
     link: '/library',
     color: 'text-purple-500',
     bgColor: 'bg-purple-500/10',
-    type: 'Resources',
+    type: 'Ebooks',
     status: 'Live',
-    category: 'Community',
+    category: 'Learn',
     stack: 'community',
   },
   {
@@ -115,7 +115,7 @@ export const projects = [
     bgColor: 'bg-orange-500/10',
     type: 'Ideas',
     status: 'Live',
-    category: 'Community',
+    category: 'Business',
     stack: 'community',
   },
 ];

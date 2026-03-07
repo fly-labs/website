@@ -7,5 +7,5 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('[Supabase] Missing environment variables. Auth and database features will not work.');
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 export default supabase;

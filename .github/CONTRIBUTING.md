@@ -18,8 +18,8 @@ Thanks for your interest in contributing! This guide will help you get started.
 
 3. **Set up environment variables:**
    ```bash
-   cp .env.example .env
-   # Fill in your Supabase and GA4 keys
+   cp apps/web/.env.example apps/web/.env
+   # Fill in your Supabase and GA4 keys (see README for details)
    ```
 
 4. **Start the dev server:**

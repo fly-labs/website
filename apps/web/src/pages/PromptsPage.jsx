@@ -179,6 +179,7 @@ const PromptsPage = () => {
     setIsSuggesting(true);
     try {
       const { error } = await supabase.from('ideas').insert({
+        name: profile?.name || currentUser?.email?.split('@')[0] || null,
         email: suggestForm.email.trim().toLowerCase(),
         idea_title: `[Prompt - ${suggestForm.category}] ${suggestForm.idea_title.trim()}`,
         idea_description: suggestForm.idea_description.trim(),
