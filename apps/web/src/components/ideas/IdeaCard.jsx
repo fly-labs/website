@@ -122,6 +122,15 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   K {idea.koe_score}
                 </button>
               )}
+              {idea.okamoto_score != null && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent/10 text-accent text-[11px] font-bold tabular-nums hover:bg-accent/20 transition-colors"
+                  title="Okamoto Score"
+                >
+                  B {idea.okamoto_score}
+                </button>
+              )}
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (

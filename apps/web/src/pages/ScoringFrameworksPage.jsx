@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, Target, Lightbulb, BarChart3, Sparkles, MessageSquare,
   TrendingUp, User, Zap, DollarSign, Eye, Layers, Rocket, Shield, Clock, Users,
+  Search, Megaphone, CircleDollarSign, HelpCircle, FlaskConical,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -99,6 +100,51 @@ const koeDimensions = [
   },
 ];
 
+const okamotoPillars = [
+  {
+    title: 'Target Audience',
+    points: 20,
+    icon: Search,
+    items: ['Specificity', 'Identifiability', 'Reachability'],
+    color: 'border-accent',
+  },
+  {
+    title: 'Value Proposition',
+    points: 25,
+    icon: Lightbulb,
+    items: ['Clarity', 'Specificity', 'Measurability'],
+    color: 'border-accent',
+  },
+  {
+    title: 'Distribution Channel',
+    points: 20,
+    icon: Megaphone,
+    items: ['Accessibility', 'Viral Coefficient', 'CAC Efficiency'],
+    color: 'border-accent',
+  },
+  {
+    title: 'Business Model',
+    points: 15,
+    icon: CircleDollarSign,
+    items: ['Monetization Clarity', 'Willingness to Pay', 'Pricing Power'],
+    color: 'border-accent',
+  },
+  {
+    title: 'Assumption Risk',
+    points: 10,
+    icon: HelpCircle,
+    items: ['Testability', 'Critical Assumptions'],
+    color: 'border-accent',
+  },
+  {
+    title: 'Validation Readiness',
+    points: 10,
+    icon: FlaskConical,
+    items: ['Experiment Feasibility', 'Evidence Availability'],
+    color: 'border-accent',
+  },
+];
+
 const scoreTiers = [
   { range: '75-100', label: 'Exceptional', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
   { range: '60-74', label: 'Strong', color: 'text-secondary', bg: 'bg-secondary/10', border: 'border-secondary/20' },
@@ -111,9 +157,9 @@ const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Scoring Frameworks - Hormozi & Dan Koe Methods",
-        description: "How we score every idea with AI. Two frameworks: Hormozi's $100M evaluation for market potential, and Dan Koe's one-person business lens for solo builders.",
-        keywords: "idea scoring, Hormozi framework, Dan Koe, business evaluation, AI scoring, startup ideas",
+        title: "AI Scoring Frameworks - Hormozi, Dan Koe & Okamoto Methods",
+        description: "How we score every idea with AI. Three frameworks: Hormozi's $100M evaluation, Dan Koe's one-person business lens, and Bruno Okamoto's MicroSaaS validation methodology.",
+        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation",
         url: "https://flylabs.fun/scoring",
       }}
       className="pt-32 pb-24"
@@ -137,7 +183,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea on the board gets AI-scored using two complementary business frameworks.
+              Every idea on the board gets AI-scored using three complementary business frameworks.
             </p>
           </motion.div>
 
@@ -152,7 +198,7 @@ const ScoringFrameworksPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                I picked these two frameworks because they answer different questions. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Together they filter signal from noise.
+                I picked these three frameworks because they answer different questions. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" Together they filter signal from noise.
               </p>
             </div>
           </motion.div>
@@ -228,6 +274,76 @@ const ScoringFrameworksPage = () => {
             </div>
           </div>
 
+          {/* Bruno Okamoto Section */}
+          <div className="mb-24">
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-bold text-sm border border-accent/20 mb-4">
+                <FlaskConical className="w-4 h-4" /> Framework 3
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Bruno Okamoto</h2>
+              <p className="text-muted-foreground leading-relaxed max-w-3xl mb-4">
+                3x Founder, TEDx Speaker, Creator & Investor in Micro-SaaS. Creator of Comunidade MicroSaaS, Brazil's largest MicroSaaS community with 20,000+ founders. His 4 Pillars of a Scalable MVP and Validation Copilot methodology help founders validate ideas before writing a single line of code.
+              </p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <a href="https://x.com/brunomicrosaas" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">@brunomicrosaas</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://www.linkedin.com/in/brunomicrosaas" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">LinkedIn</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://microsaas.substack.com" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">Substack</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://microsaas.com.br" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">microsaas.com.br</a>
+              </div>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {okamotoPillars.map((pillar, i) => (
+                <motion.div
+                  key={pillar.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  className={`card-playful p-5 bg-card border-l-4 ${pillar.color}`}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <pillar.icon className="w-5 h-5 text-foreground" />
+                      <h3 className="font-bold text-sm">{pillar.title}</h3>
+                    </div>
+                    <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">{pillar.points} pts</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {pillar.items.map((item) => (
+                      <li key={item} className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+                        <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Decision Governance */}
+            <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.3 }} className="mt-8">
+              <h3 className="font-bold text-sm mb-4 text-center">Decision Governance</h3>
+              <div className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
+                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-primary/20 bg-primary/10">
+                  <span className="text-sm font-bold text-primary tabular-nums">70-100</span>
+                  <span className="text-sm font-bold text-primary">FOLLOW</span>
+                  <span className="text-xs text-muted-foreground ml-auto">Proceed to build</span>
+                </div>
+                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-amber-500/20 bg-amber-500/10">
+                  <span className="text-sm font-bold text-amber-500 tabular-nums">40-69</span>
+                  <span className="text-sm font-bold text-amber-500">ADJUST</span>
+                  <span className="text-xs text-muted-foreground ml-auto">Pivot some assumptions</span>
+                </div>
+                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-red-500/20 bg-red-500/10">
+                  <span className="text-sm font-bold text-red-500 tabular-nums">0-39</span>
+                  <span className="text-sm font-bold text-red-500">PIVOT</span>
+                  <span className="text-xs text-muted-foreground ml-auto">Rethink fundamentals</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
           {/* Score Interpretation */}
           <div className="mb-24">
             <motion.h2
@@ -260,7 +376,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Claude AI analyzes problem description, industry context, and market signals independently through both frameworks. Scores update daily as new ideas come in.
+              Claude AI analyzes problem description, industry context, and market signals independently through all three frameworks. Scores update daily as new ideas come in.
             </p>
           </motion.div>
 

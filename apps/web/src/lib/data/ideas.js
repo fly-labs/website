@@ -52,6 +52,7 @@ export const sortOptions = [
   { value: 'top', label: 'Top Voted' },
   { value: 'hormozi', label: 'Hormozi Score' },
   { value: 'koe', label: 'Koe Score' },
+  { value: 'okamoto', label: 'Okamoto Score' },
 ];
 
 export const sourceOptions = [

@@ -41,6 +41,15 @@ const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. Yo
 - Anti-Niche POV (5pts): Unique angle that's hard to replicate?
 - Leverage Potential (5pts): Can it scale without founder bottleneck?
 
+**Bruno Okamoto Evaluation (0-100)** based on MicroSaaS validation methodology (4 Pillars of a Scalable MVP + Validation Copilot):
+- Target Audience (20pts): Specificity (0-7), Identifiability (0-7), Reachability (0-6). How well-defined and reachable is the target audience?
+- Value Proposition (25pts): Clarity (0-8), Specificity (0-9), Measurability (0-8). Is the value proposition clear, specific, and measurable?
+- Distribution Channel (20pts): Accessibility (0-7), Viral Coefficient (0-7), CAC Efficiency (0-6). Can you reach customers efficiently?
+- Business Model (15pts): Monetization Clarity (0-5), Willingness to Pay (0-5), Pricing Power (0-5). Is there a clear path to revenue?
+- Assumption Risk (10pts): Testability (0-5), Critical Assumptions (0-5). How testable are the core assumptions?
+- Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
+Decision: FOLLOW (>=70), ADJUST (40-69), or PIVOT (<40) based on total score.
+
 Return ONLY this JSON structure (no markdown, no code fences):
 {
   "hormozi": {
@@ -62,6 +71,17 @@ Return ONLY this JSON structure (no markdown, no code fences):
     "anti_niche": { "score": <0-5>, "max": 5 },
     "leverage": { "score": <0-5>, "max": 5 },
     "summary": "<one-line Koe-style assessment>"
+  },
+  "okamoto": {
+    "total": <number 0-100>,
+    "target_audience": { "score": <0-20>, "max": 20, "specificity": <0-7>, "identifiability": <0-7>, "reachability": <0-6> },
+    "value_proposition": { "score": <0-25>, "max": 25, "clarity": <0-8>, "specificity": <0-9>, "measurability": <0-8> },
+    "distribution_channel": { "score": <0-20>, "max": 20, "accessibility": <0-7>, "viral_coefficient": <0-7>, "cac_efficiency": <0-6> },
+    "business_model": { "score": <0-15>, "max": 15, "monetization_clarity": <0-5>, "willingness_to_pay": <0-5>, "pricing_power": <0-5> },
+    "assumption_risk": { "score": <0-10>, "max": 10, "testability": <0-5>, "critical_assumptions": <0-5> },
+    "validation_readiness": { "score": <0-10>, "max": 10, "experiment_feasibility": <0-5>, "evidence_availability": <0-5> },
+    "decision": "<FOLLOW|ADJUST|PIVOT>",
+    "summary": "<one-line validation-focused assessment>"
   }
 }`;
 
@@ -78,7 +98,7 @@ async function scoreIdea(idea) {
     try {
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
+        max_tokens: 1500,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       });
@@ -86,7 +106,7 @@ async function scoreIdea(idea) {
       const text = response.content[0].text.trim();
       const parsed = JSON.parse(text);
 
-      if (typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number') {
+      if (typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {
         throw new Error('Invalid score structure');
       }
 
@@ -141,6 +161,7 @@ async function main() {
           .update({
             hormozi_score: result.hormozi.total,
             koe_score: result.koe.total,
+            okamoto_score: result.okamoto.total,
             score_breakdown: result,
           })
           .eq('id', idea.id);
@@ -149,7 +170,7 @@ async function main() {
           console.log('DB error:', updateErr.message);
           failed++;
         } else {
-          console.log(`H:${result.hormozi.total} K:${result.koe.total}`);
+          console.log(`H:${result.hormozi.total} K:${result.koe.total} B:${result.okamoto.total}`);
           scored++;
         }
       } else {

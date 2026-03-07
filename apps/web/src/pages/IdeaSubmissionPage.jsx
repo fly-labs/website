@@ -147,6 +147,7 @@ const IdeaSubmissionPage = () => {
       case 'top': return arr.sort((a, b) => (b.votes || 0) - (a.votes || 0));
       case 'hormozi': return arr.sort((a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0));
       case 'koe': return arr.sort((a, b) => (b.koe_score || 0) - (a.koe_score || 0));
+      case 'okamoto': return arr.sort((a, b) => (b.okamoto_score || 0) - (a.okamoto_score || 0));
       default: return arr;
     }
   })();
@@ -369,8 +370,8 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Idea Board - AI-Scored Problems from Reddit & Community",
-          description: "Real problems from Reddit, ProblemHunt, and the community, scored by AI using Hormozi and Dan Koe frameworks. Submit yours, vote, and find what to build.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, reddit ideas, business opportunities",
+          description: "Real problems from Reddit, ProblemHunt, and the community, scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Submit yours, vote, and find what to build.",
+          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, business opportunities",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-28 sm:pb-24"
@@ -742,7 +743,7 @@ const IdeaSubmissionPage = () => {
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       Every day we scan Reddit and ProblemHunt for real problems people are struggling with.
-                      Community members submit their own too. AI scores every idea using Hormozi and Dan Koe frameworks.
+                      Community members submit their own too. AI scores every idea using Hormozi, Dan Koe, and Okamoto frameworks.
                       The best ones get built. If your idea flies, we partner up.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
