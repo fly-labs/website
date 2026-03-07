@@ -1,3 +1,4 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -8,6 +9,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const PRODUCTHUNT_API_KEY = process.env.PRODUCTHUNT_API_KEY;
 const PRODUCTHUNT_API_SECRET = process.env.PRODUCTHUNT_API_SECRET;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
@@ -17,8 +19,13 @@ if (!PRODUCTHUNT_API_KEY || !PRODUCTHUNT_API_SECRET) {
   console.error('Missing env vars: PRODUCTHUNT_API_KEY, PRODUCTHUNT_API_SECRET');
   process.exit(1);
 }
+if (!ANTHROPIC_API_KEY) {
+  console.error('Missing env var: ANTHROPIC_API_KEY (needed for problem extraction)');
+  process.exit(1);
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
 const TOPIC_MAP = {
   'artificial-intelligence': 'Ai',
@@ -40,6 +47,12 @@ const TOPIC_MAP = {
   'legal': 'Legal',
   'hiring': 'Hr Career',
 };
+
+const BATCH_DELAY = 500;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 async function getAccessToken() {
   const res = await fetch('https://api.producthunt.com/v2/oauth/token', {
@@ -114,35 +127,54 @@ async function fetchPosts(accessToken) {
   return data.data.posts.edges.map((e) => e.node);
 }
 
-function transformPost(post) {
+// Use Claude to extract the underlying problem from a product
+async function extractProblem(post) {
+  const input = [
+    `Product: ${post.name}`,
+    `Tagline: ${post.tagline}`,
+    post.description ? `Description: ${post.description.slice(0, 500)}` : null,
+  ].filter(Boolean).join('\n');
+
+  try {
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 300,
+      system: `You extract the underlying user PROBLEM that a product solves. You are helping populate an idea board that collects real problems worth solving.
+
+Given a Product Hunt product, return ONLY this JSON (no markdown, no code fences):
+{
+  "problem_title": "A clear, specific problem statement from the user's perspective (max 150 chars). Start with the pain, not the solution. Example: 'Teams waste hours manually formatting meeting notes into action items'",
+  "problem_description": "2-3 sentences expanding on the problem. Who experiences it? How often? What do they currently do? What's the cost of not solving it?",
+  "is_real_problem": true/false
+}
+
+Set is_real_problem to false if:
+- The product is just a new AI model, framework, or platform without a clear user pain
+- The product is entertainment, social, or a game
+- The problem is too vague or generic to be actionable
+- It's a vitamin (nice-to-have) not a painkiller (must-have)`,
+      messages: [{ role: 'user', content: input }],
+    });
+
+    const text = response.content[0].text.trim();
+    return JSON.parse(text);
+  } catch (err) {
+    console.warn(`  Failed to extract problem from "${post.name}": ${err.message}`);
+    return null;
+  }
+}
+
+function getIndustry(post) {
   const topics = post.topics?.edges?.map((e) => e.node) || [];
   const topicSlugs = topics.map((t) => t.slug);
-  const topicNames = topics.map((t) => t.name);
-
-  // Find first matching industry from topic slugs
-  let industry = 'Other';
   for (const slug of topicSlugs) {
-    if (TOPIC_MAP[slug]) {
-      industry = TOPIC_MAP[slug];
-      break;
-    }
+    if (TOPIC_MAP[slug]) return TOPIC_MAP[slug];
   }
+  return 'Other';
+}
 
-  return {
-    idea_title: `${post.name} - ${post.tagline}`.slice(0, 200),
-    idea_description: post.description?.slice(0, 2000) || null,
-    category: 'Tool',
-    industry,
-    source: 'producthunt',
-    source_url: post.url,
-    external_id: `producthunt-${post.id}`,
-    tags: topicNames.join(','),
-    country: null,
-    created_at: post.createdAt,
-    approved: true,
-    name: 'Product Hunt',
-    email: null,
-  };
+function getTopicNames(post) {
+  return (post.topics?.edges?.map((e) => e.node.name) || []).join(',');
 }
 
 async function syncToSupabase(ideas) {
@@ -182,8 +214,45 @@ async function main() {
       return;
     }
 
-    const ideas = posts.map(transformPost);
-    console.log(`Transformed ${ideas.length} ideas`);
+    // Extract problems from products using Claude
+    console.log('Extracting problems from products...');
+    const ideas = [];
+
+    for (const post of posts) {
+      process.stdout.write(`  ${post.name}... `);
+      const problem = await extractProblem(post);
+
+      if (!problem || !problem.is_real_problem) {
+        console.log('skipped (not a real problem)');
+        await sleep(BATCH_DELAY);
+        continue;
+      }
+
+      ideas.push({
+        idea_title: problem.problem_title.slice(0, 200),
+        idea_description: problem.problem_description?.slice(0, 2000) || null,
+        category: 'Tool',
+        industry: getIndustry(post),
+        source: 'producthunt',
+        source_url: post.url,
+        external_id: `producthunt-${post.id}`,
+        tags: getTopicNames(post),
+        country: null,
+        created_at: post.createdAt,
+        approved: true,
+        name: 'Product Hunt',
+        email: null,
+      });
+      console.log('ok');
+      await sleep(BATCH_DELAY);
+    }
+
+    console.log(`\n${ideas.length} problems extracted from ${posts.length} products`);
+
+    if (ideas.length === 0) {
+      console.log('No problems found. Done.');
+      return;
+    }
 
     await syncToSupabase(ideas);
     console.log('Sync complete.');

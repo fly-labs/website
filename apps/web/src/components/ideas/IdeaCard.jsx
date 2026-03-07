@@ -143,7 +143,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (
-            <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2 whitespace-pre-wrap">
               {idea.idea_description}
             </p>
           )}
@@ -218,12 +218,6 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               <>
                 <span className="text-muted-foreground/40">&middot;</span>
                 <span>{idea.country}</span>
-              </>
-            )}
-            {subreddit && (
-              <>
-                <span className="text-muted-foreground/40">&middot;</span>
-                <span className="text-red-500 font-medium">r/{subreddit}</span>
               </>
             )}
             {showStatus && (

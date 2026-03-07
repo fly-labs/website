@@ -101,7 +101,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
               )}
             </div>
             {idea.idea_description && idea.idea_description !== idea.idea_title && (
-              <p className="text-sm text-muted-foreground leading-relaxed">{idea.idea_description}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{idea.idea_description}</p>
             )}
           </div>
 
@@ -139,19 +139,19 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">Market Growth</span>
+                      <span className="text-sm font-medium">Market Growth & Timing</span>
                     </div>
                     <ScoreBar score={h.market_growth?.score || 0} max={h.market_growth?.max || 15} color={tier.bar} />
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">Differentiation</span>
+                      <span className="text-sm font-medium">Offer Differentiation</span>
                     </div>
                     <ScoreBar score={h.differentiation?.score || 0} max={h.differentiation?.max || 20} color={tier.bar} />
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">Feasibility</span>
+                      <span className="text-sm font-medium">Execution Feasibility</span>
                     </div>
                     <ScoreBar score={h.feasibility?.score || 0} max={h.feasibility?.max || 20} color={tier.bar} />
                   </div>
@@ -205,7 +205,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                     <ScoreBar score={k.anti_niche?.score || 0} max={k.anti_niche?.max || 5} color={tier.bar} />
                   </div>
                   <div>
-                    <span className="text-sm font-medium">Leverage</span>
+                    <span className="text-sm font-medium">Leverage Potential</span>
                     <ScoreBar score={k.leverage?.score || 0} max={k.leverage?.max || 5} color={tier.bar} />
                   </div>
                 </div>

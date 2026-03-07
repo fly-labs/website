@@ -271,7 +271,7 @@ const IdeaSubmissionPage = () => {
 
       toast({
         title: 'Idea received!',
-        description: "I'll review it and score it with AI. It'll show up on the board soon.",
+        description: "I'll review it and score it with AI. It'll show up on the Idea Lab soon.",
       });
 
       setFormData({
@@ -667,10 +667,10 @@ const IdeaSubmissionPage = () => {
               </>
             )}
 
-            {/* Below the fold: Shipped from the board */}
+            {/* Below the fold: Shipped from the lab */}
             <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mt-16 mb-10">
               <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
-                Shipped from the board
+                Shipped from the lab
               </p>
               <div className="flex flex-col gap-3">
                 {shippedItems ? (

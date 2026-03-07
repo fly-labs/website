@@ -208,12 +208,12 @@ async function main() {
     process.exit(1);
   }
 
-  // Filter: average of available scores >= 50
+  // Filter: average of available scores >= 40 (catch promising ideas, not just top tier)
   const eligible = ideas.filter((idea) => {
     const scores = [idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
     if (scores.length === 0) return false;
     const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    return avg >= 50;
+    return avg >= 40;
   });
 
   console.log(`Found ${ideas.length} ideas, ${eligible.length} eligible for enrichment${enrichAll ? ' (--all mode)' : ''}`);
