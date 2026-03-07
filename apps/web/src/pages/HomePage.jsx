@@ -87,7 +87,7 @@ const HomePage = () => {
     <PageLayout
       seo={{
         title: "Fly Labs | Digital Assets for Business, Building & Learning",
-        description: "Digital assets built with AI and no-code. Business tools, open source products, and everything learned along the way.",
+        description: "Digital assets for business, tools, and learning. Made with AI and no-code. Open source.",
         keywords: "vibe building, digital assets, AI tools, no-code, open source, business templates, build in public, indie maker",
         url: "https://flylabs.fun",
       }}
@@ -114,7 +114,8 @@ const HomePage = () => {
             Find a real problem. Build the solution. Share everything.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            Digital assets for business, building, and learning. Made with AI and no-code. Open source.
+            Digital assets for business, tools, and learning.<br />
+            Made with AI and no-code. Open source.
           </p>
           <div className="flex flex-col items-center gap-3">
             <Link

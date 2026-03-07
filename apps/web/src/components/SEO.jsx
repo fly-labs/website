@@ -19,7 +19,7 @@ export const SEO = ({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Fly Labs",
-      "description": "Digital assets for business, building, and learning. Made with AI and no-code. Open source.",
+      "description": "Digital assets for business, tools, and learning. Made with AI and no-code. Open source.",
       "url": "https://flylabs.fun",
       "logo": "https://flylabs.fun/images/og-logo.png",
       "sameAs": [
