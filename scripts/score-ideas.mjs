@@ -23,7 +23,7 @@ const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
 const scoreAll = process.argv.includes('--all');
 
-const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using two frameworks and return ONLY valid JSON.
+const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using three frameworks, provide per-pillar reasoning, and synthesize a final verdict. Return ONLY valid JSON.
 
 **Hormozi Evaluation (0-100)** based on Alex Hormozi's $100M framework:
 - Market Viability (20pts): Massive Pain (0-7), Purchasing Power (0-7), Easy to Target (0-6)
@@ -50,38 +50,59 @@ const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. Yo
 - Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
 Decision: FOLLOW (>=70), ADJUST (40-69), or PIVOT (<40) based on total score.
 
+**Synthesis** - After scoring all three frameworks, cross-reference them and produce a final verdict:
+- composite_score: weighted average (35% hormozi + 30% koe + 35% okamoto)
+- verdict rules:
+  - BUILD: composite >= 70 AND no single framework below 40. Strong signal across all lenses.
+  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but one framework below 40. Promising but has gaps.
+  - SKIP: composite < 45. Not viable for a solo builder right now.
+
+IMPORTANT: For each pillar, include a "reasoning" string (one sentence explaining the score). For each framework, include a "reasoning" string (2-3 sentences on what drives the score up and what holds it back).
+
 Return ONLY this JSON structure (no markdown, no code fences):
 {
   "hormozi": {
     "total": <number 0-100>,
-    "market_viability": { "score": <0-20>, "max": 20, "pain": <0-7>, "purchasing_power": <0-7>, "targeting": <0-6> },
-    "value_equation": { "score": <0-25>, "max": 25, "dream_outcome": <0-8>, "likelihood": <0-9>, "speed": <0-4>, "effort": <0-4> },
-    "market_growth": { "score": <0-15>, "max": 15, "trajectory": <0-8>, "timing": <0-7> },
-    "differentiation": { "score": <0-20>, "max": 20, "moat": <0-7>, "stacking": <0-6>, "pricing": <0-7> },
-    "feasibility": { "score": <0-20>, "max": 20, "build": <0-7>, "gtm": <0-7>, "resources": <0-6> },
-    "summary": "<one-line Hormozi-style assessment>"
+    "market_viability": { "score": <0-20>, "max": 20, "pain": <0-7>, "purchasing_power": <0-7>, "targeting": <0-6>, "reasoning": "..." },
+    "value_equation": { "score": <0-25>, "max": 25, "dream_outcome": <0-8>, "likelihood": <0-9>, "speed": <0-4>, "effort": <0-4>, "reasoning": "..." },
+    "market_growth": { "score": <0-15>, "max": 15, "trajectory": <0-8>, "timing": <0-7>, "reasoning": "..." },
+    "differentiation": { "score": <0-20>, "max": 20, "moat": <0-7>, "stacking": <0-6>, "pricing": <0-7>, "reasoning": "..." },
+    "feasibility": { "score": <0-20>, "max": 20, "build": <0-7>, "gtm": <0-7>, "resources": <0-6>, "reasoning": "..." },
+    "summary": "<one-line Hormozi-style assessment>",
+    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
   },
   "koe": {
     "total": <number 0-100>,
-    "problem_clarity": { "score": <0-25>, "max": 25 },
-    "creator_fit": { "score": <0-20>, "max": 20 },
-    "audience_reach": { "score": <0-15>, "max": 15 },
-    "simplicity": { "score": <0-15>, "max": 15 },
-    "monetization": { "score": <0-15>, "max": 15 },
-    "anti_niche": { "score": <0-5>, "max": 5 },
-    "leverage": { "score": <0-5>, "max": 5 },
-    "summary": "<one-line Koe-style assessment>"
+    "problem_clarity": { "score": <0-25>, "max": 25, "reasoning": "..." },
+    "creator_fit": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "audience_reach": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "simplicity": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "monetization": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "anti_niche": { "score": <0-5>, "max": 5, "reasoning": "..." },
+    "leverage": { "score": <0-5>, "max": 5, "reasoning": "..." },
+    "summary": "<one-line Koe-style assessment>",
+    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
   },
   "okamoto": {
     "total": <number 0-100>,
-    "target_audience": { "score": <0-20>, "max": 20, "specificity": <0-7>, "identifiability": <0-7>, "reachability": <0-6> },
-    "value_proposition": { "score": <0-25>, "max": 25, "clarity": <0-8>, "specificity": <0-9>, "measurability": <0-8> },
-    "distribution_channel": { "score": <0-20>, "max": 20, "accessibility": <0-7>, "viral_coefficient": <0-7>, "cac_efficiency": <0-6> },
-    "business_model": { "score": <0-15>, "max": 15, "monetization_clarity": <0-5>, "willingness_to_pay": <0-5>, "pricing_power": <0-5> },
-    "assumption_risk": { "score": <0-10>, "max": 10, "testability": <0-5>, "critical_assumptions": <0-5> },
-    "validation_readiness": { "score": <0-10>, "max": 10, "experiment_feasibility": <0-5>, "evidence_availability": <0-5> },
+    "target_audience": { "score": <0-20>, "max": 20, "specificity": <0-7>, "identifiability": <0-7>, "reachability": <0-6>, "reasoning": "..." },
+    "value_proposition": { "score": <0-25>, "max": 25, "clarity": <0-8>, "specificity": <0-9>, "measurability": <0-8>, "reasoning": "..." },
+    "distribution_channel": { "score": <0-20>, "max": 20, "accessibility": <0-7>, "viral_coefficient": <0-7>, "cac_efficiency": <0-6>, "reasoning": "..." },
+    "business_model": { "score": <0-15>, "max": 15, "monetization_clarity": <0-5>, "willingness_to_pay": <0-5>, "pricing_power": <0-5>, "reasoning": "..." },
+    "assumption_risk": { "score": <0-10>, "max": 10, "testability": <0-5>, "critical_assumptions": <0-5>, "reasoning": "..." },
+    "validation_readiness": { "score": <0-10>, "max": 10, "experiment_feasibility": <0-5>, "evidence_availability": <0-5>, "reasoning": "..." },
     "decision": "<FOLLOW|ADJUST|PIVOT>",
-    "summary": "<one-line validation-focused assessment>"
+    "summary": "<one-line validation-focused assessment>",
+    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
+  },
+  "synthesis": {
+    "verdict": "<BUILD|VALIDATE_FIRST|SKIP>",
+    "composite_score": <number 0-100>,
+    "one_liner": "<One sentence: what this idea is and whether a solo builder should pursue it>",
+    "strengths": ["strength 1", "strength 2"],
+    "risks": ["risk 1", "risk 2"],
+    "next_steps": ["step 1", "step 2", "step 3"],
+    "reasoning": "<2-3 sentences explaining the verdict by cross-referencing all three frameworks>"
   }
 }`;
 
@@ -98,7 +119,7 @@ async function scoreIdea(idea) {
     try {
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
+        max_tokens: 3000,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       });

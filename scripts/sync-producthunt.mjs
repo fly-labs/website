@@ -238,7 +238,7 @@ async function main() {
         external_id: `producthunt-${post.id}`,
         tags: getTopicNames(post),
         country: null,
-        created_at: post.createdAt,
+        published_at: post.createdAt,
         approved: true,
         name: 'Product Hunt',
         email: null,

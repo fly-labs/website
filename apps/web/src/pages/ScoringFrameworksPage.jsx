@@ -157,8 +157,8 @@ const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Scoring & Validation - Hormozi, Dan Koe, Okamoto + Market Validation",
-        description: "How we score and validate every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) plus a validation layer with X and Reddit cross-validation and competitive analysis.",
+        title: "AI Scoring, Verdicts & Validation - Hormozi, Dan Koe, Okamoto + Market Evidence",
+        description: "How we score, reason, and verdict every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, a BUILD/VALIDATE/SKIP synthesis verdict, plus market validation with evidence confidence from X and Reddit.",
         keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, X validation, Reddit validation, market research",
         url: "https://flylabs.fun/scoring",
       }}
@@ -183,7 +183,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea gets AI-scored using three scoring frameworks and a validation layer.
+              Every idea gets AI-scored using three frameworks with per-pillar reasoning, synthesized into a verdict, and validated against real market evidence.
             </p>
           </motion.div>
 
@@ -368,7 +368,7 @@ const ScoringFrameworksPage = () => {
                 {
                   icon: TrendingUp,
                   title: 'Opportunity Synthesis',
-                  desc: 'AI synthesizes evidence from X and Reddit into recurring themes, unmet needs, and differentiation angles. Every validation score is backed by real conversations.',
+                  desc: 'AI synthesizes evidence from X and Reddit with confidence scoring (high/medium/low based on evidence volume), recurring themes, unmet needs, and a final verdict that cross-references framework scores with market evidence.',
                 },
               ].map((phase, i) => (
                 <motion.div
@@ -384,6 +384,42 @@ const ScoringFrameworksPage = () => {
                   <p className="text-xs text-muted-foreground font-medium">{phase.desc}</p>
                 </motion.div>
               ))}
+            </div>
+          </div>
+
+          {/* Synthesis Verdict */}
+          <div className="mb-24">
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-foreground/10 text-foreground font-bold text-sm border border-foreground/20 mb-4">
+                <BarChart3 className="w-4 h-4" /> Final Verdict
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Synthesis</h2>
+              <p className="text-muted-foreground leading-relaxed max-w-3xl">
+                After all three frameworks score an idea, AI cross-references the results and produces a single verdict. The composite score is a weighted average (35% Hormozi + 30% Koe + 35% Okamoto). Each pillar includes reasoning explaining the score. When market validation data exists, the enrichment verdict supersedes the scoring verdict because it has real evidence.
+              </p>
+            </motion.div>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
+              <div className="flex-1 p-5 rounded-xl border border-primary/20 bg-primary/10 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-black text-primary">BUILD</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">70+</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Composite {">="} 70 AND no framework below 40. Strong signal across all lenses. This is worth building.</p>
+              </div>
+              <div className="flex-1 p-5 rounded-xl border border-amber-500/20 bg-amber-500/10 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-black text-amber-600">VALIDATE FIRST</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">45-69</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Composite 45-69, or 70+ but one framework below 40. Promising but has gaps. Validate before investing time.</p>
+              </div>
+              <div className="flex-1 p-5 rounded-xl border border-red-500/20 bg-red-500/10 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-black text-red-500">SKIP</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">{"<"}45</span>
+                </div>
+                <p className="text-xs text-muted-foreground">Composite below 45. Not viable for a solo builder right now. Move on to the next idea.</p>
+              </div>
             </div>
           </div>
 
@@ -419,7 +455,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Claude AI analyzes each problem through three scoring frameworks. Top-scoring ideas then go through validation: cross-referenced against real conversations on X and Reddit, with competitive intelligence gathered from actual user discussions. Scores update daily.
+              Claude AI analyzes each problem through three scoring frameworks with per-pillar reasoning, then synthesizes a BUILD / VALIDATE / SKIP verdict. Top ideas go through market validation: cross-referenced against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. All scores, reasoning, and verdicts update daily.
             </p>
           </motion.div>
 
@@ -436,7 +472,7 @@ const ScoringFrameworksPage = () => {
               Explore the Idea Lab <ArrowRight className="w-5 h-5" />
             </Link>
             <p className="text-muted-foreground font-bold mt-4">
-              Every idea scored. Every framework explained. Go find the signal.
+              Every idea scored, reasoned, and given a verdict. Go find the signal.
             </p>
           </motion.div>
 

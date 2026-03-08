@@ -104,7 +104,7 @@ async function fetchProblems() {
       external_id: `problemhunt-${post.uid}`,
       tags,
       country: decodeHtml(post.descr || ''),
-      created_at: post.date ? post.date.split(' ')[0] : null,
+      published_at: post.date ? new Date(post.date.split(' ')[0]).toISOString() : null,
       approved: true,
       name: 'ProblemHunt',
       email: null,

@@ -1,3 +1,4 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -6,6 +7,7 @@ config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../apps/web/.en
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('Missing env vars: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
@@ -13,6 +15,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+const anthropic = ANTHROPIC_API_KEY ? new Anthropic({ apiKey: ANTHROPIC_API_KEY }) : null;
 
 const USER_AGENT = 'FlyLabs-Sync/1.0 (https://flylabs.fun) Node.js';
 const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID;
@@ -142,7 +145,7 @@ function isBusinessOpportunity(post) {
     if (text.includes(signal)) score -= 2;
   }
 
-  return score >= 2;
+  return score >= 3;
 }
 
 function sleep(ms) {
@@ -191,9 +194,10 @@ async function fetchSubreddit(subreddit) {
 
         // Layer 1: Hard filters
         if (!post.is_self) continue;
-        if (!post.selftext || post.selftext.length < 30) continue;
+        if (!post.selftext || post.selftext.length < 80) continue;
         if (post.selftext === '[deleted]' || post.selftext === '[removed]') continue;
-        if ((post.score || 0) < 5) continue;
+        if ((post.score || 0) < 10) continue;
+        if ((post.num_comments || 0) < 3) continue;
         if (post.over_18) continue;
 
         // Layer 2: Business opportunity scoring
@@ -211,22 +215,76 @@ async function fetchSubreddit(subreddit) {
   return Array.from(posts.values());
 }
 
+// AI batch filter: evaluate posts for real business problems
+async function aiBatchFilter(posts) {
+  if (!anthropic || posts.length === 0) return posts.map((p) => ({ ...p, _ai: { is_real_problem: true, category: 'Tool', reason: 'AI filter skipped' } }));
+
+  const AI_BATCH_SIZE = 15;
+  const results = [];
+
+  for (let i = 0; i < posts.length; i += AI_BATCH_SIZE) {
+    const batch = posts.slice(i, i + AI_BATCH_SIZE);
+    const postsText = batch.map((p, idx) => `[${idx}] Title: ${p.title}\nBody: ${p.selftext.slice(0, 300)}`).join('\n\n---\n\n');
+
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: `You evaluate Reddit posts for genuine business-relevant pain points. For each post, determine:
+- is_real_problem (boolean): Is this a genuine, solvable pain point? NOT: shopping threads, self-promotion, general discussion, homework, venting without a solvable problem, "I built X" posts, generic questions, advice requests
+- category (Tool/Template/Prompt/Article/Other): What type of solution would address this?
+- reason (string): One sentence explaining your decision
+
+Return ONLY valid JSON (no markdown, no code fences):
+{"results": [{"index": 0, "is_real_problem": true, "category": "Tool", "reason": "..."}, ...]}`,
+        messages: [{ role: 'user', content: `Evaluate these ${batch.length} Reddit posts:\n\n${postsText}` }],
+      });
+
+      let text = response.content[0].text.trim();
+      if (text.startsWith('```')) {
+        text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
+      const parsed = JSON.parse(text);
+
+      for (const r of parsed.results || []) {
+        if (r.index >= 0 && r.index < batch.length) {
+          batch[r.index]._ai = { is_real_problem: r.is_real_problem, category: r.category, reason: r.reason };
+        }
+      }
+    } catch (err) {
+      console.warn(`  AI batch filter failed: ${err.message}. Passing batch through.`);
+      for (const p of batch) {
+        if (!p._ai) p._ai = { is_real_problem: true, category: 'Tool', reason: 'AI filter error' };
+      }
+    }
+
+    results.push(...batch);
+    if (i + AI_BATCH_SIZE < posts.length) await sleep(1000);
+  }
+
+  return results;
+}
+
 function transformPost(post, subreddit) {
   const flair = post.link_flair_text || '';
   const industry = FLAIR_MAP[flair] || SUBREDDITS[subreddit] || 'Other';
   const tags = [subreddit, flair].filter(Boolean).join(',');
 
+  const category = post._ai?.category && ['Tool', 'Template', 'Prompt', 'Article', 'Other'].includes(post._ai.category)
+    ? post._ai.category
+    : 'Tool';
+
   return {
     idea_title: post.title.slice(0, 200),
     idea_description: post.selftext.slice(0, 2000),
-    category: 'Tool',
+    category,
     industry,
     source: 'reddit',
     source_url: `https://reddit.com${post.permalink}`,
     external_id: `reddit-${post.id}`,
     tags,
     country: null,
-    created_at: new Date(post.created_utc * 1000).toISOString().split('T')[0],
+    published_at: new Date(post.created_utc * 1000).toISOString(),
     approved: true,
     name: `u/${post.author}`,
     email: null,
@@ -261,21 +319,40 @@ async function main() {
     // Attempt OAuth authentication (auto-upgrade when credentials available)
     redditToken = await getRedditToken();
 
-    const allIdeas = [];
+    const allPosts = [];
 
     const subredditKeys = Object.keys(SUBREDDITS);
     for (let i = 0; i < subredditKeys.length; i++) {
       const subreddit = subredditKeys[i];
       console.log(`Fetching r/${subreddit}...`);
       const posts = await fetchSubreddit(subreddit);
-      const ideas = posts.map((p) => transformPost(p, subreddit));
-      console.log(`  r/${subreddit}: ${posts.length} posts passed filters`);
-      allIdeas.push(...ideas);
+      console.log(`  r/${subreddit}: ${posts.length} posts passed keyword filters`);
+      for (const p of posts) p._subreddit = subreddit;
+      allPosts.push(...posts);
       // Pause between subreddits to avoid rate limits
       if (i < subredditKeys.length - 1) await sleep(3000);
     }
 
-    // Dedup across subreddits (same post could appear in multiple)
+    // Dedup posts across subreddits
+    const uniquePosts = new Map();
+    for (const post of allPosts) {
+      if (!uniquePosts.has(post.id)) uniquePosts.set(post.id, post);
+    }
+    const dedupedPosts = Array.from(uniquePosts.values());
+    console.log(`\n${dedupedPosts.length} unique posts passed keyword filters`);
+
+    // AI batch filter
+    if (anthropic) {
+      console.log('Running AI quality filter...');
+    }
+    const aiFiltered = await aiBatchFilter(dedupedPosts);
+    const qualityPosts = aiFiltered.filter((p) => p._ai?.is_real_problem !== false);
+    const rejected = aiFiltered.length - qualityPosts.length;
+    if (rejected > 0) console.log(`AI filter: ${rejected} posts rejected, ${qualityPosts.length} passed`);
+
+    const allIdeas = qualityPosts.map((p) => transformPost(p, p._subreddit));
+
+    // Dedup ideas by external_id
     const unique = new Map();
     for (const idea of allIdeas) {
       unique.set(idea.external_id, idea);

@@ -54,6 +54,7 @@ export const sortOptions = [
   { value: 'koe', label: 'Koe Score' },
   { value: 'okamoto', label: 'Okamoto Score' },
   { value: 'validation', label: 'Validation' },
+  { value: 'verdict', label: 'Verdict' },
 ];
 
 export const sourceOptions = [

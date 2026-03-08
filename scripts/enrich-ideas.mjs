@@ -369,8 +369,11 @@ async function synthesizeEvidence(idea, xEvidence, xCompetitors, redditPosts) {
     sections.push('', '=== Reddit Evidence ===', '(No relevant posts found - Reddit rate limited or no matches)');
   }
 
-  const hasXEvidence = (xEvidence?.evidence?.length || 0) > 0;
-  const hasReddit = (redditPosts?.length || 0) > 0;
+  const xCount = xEvidence?.evidence?.length || 0;
+  const redditCount = redditPosts?.length || 0;
+  const totalEvidence = xCount + redditCount;
+  const hasXEvidence = xCount > 0;
+  const hasReddit = redditCount > 0;
   const sourceNote = hasXEvidence && hasReddit
     ? 'Evidence comes from both X and Reddit - weight both sources.'
     : hasXEvidence
@@ -379,21 +382,38 @@ async function synthesizeEvidence(idea, xEvidence, xCompetitors, redditPosts) {
         ? 'Evidence comes primarily from Reddit. X search was unavailable.'
         : 'Limited evidence available from both sources. Be conservative with scoring.';
 
+  // Pass score_breakdown if available for cross-referencing
+  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}` : '';
+
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 1500,
+    max_tokens: 2000,
     system: `You are a market researcher validating a business idea against real evidence from X/Twitter and Reddit.
 
 ${sourceNote}
+
+Evidence volume: ${xCount} tweets from X, ${redditCount} posts from Reddit (${totalEvidence} total)
 
 IMPORTANT: Base your analysis on ACTUAL evidence provided. If evidence is limited, reflect that in lower validation strength scores. Do not fabricate evidence or inflate scores.
 
 When both X and Reddit have strong evidence, give a confidence boost to the validation strength (up to +10 points).
 
+Confidence rules:
+- high: 10+ pieces of evidence from 2+ sources, consistent frustration signals
+- medium: 5-9 pieces of evidence, or single-source only
+- low: < 5 pieces of evidence total
+
+For the verdict, cross-reference the framework scores (if provided) with the market evidence to give the most informed recommendation possible. This verdict supersedes the scoring-only verdict because it has real market evidence.
+- BUILD: Strong market evidence confirms framework scores. Real people are experiencing this pain and willing to pay.
+- VALIDATE_FIRST: Some evidence exists but gaps remain. Need more data before committing.
+- SKIP: Weak or contradicting evidence. The market signal does not support the idea.
+
 Return ONLY this JSON (no markdown, no code fences):
 {
   "validation": {
     "strength": <0-100>,
+    "confidence": "<high|medium|low>",
+    "evidence_count": { "x_tweets": ${xCount}, "reddit_posts": ${redditCount}, "total": ${totalEvidence} },
     "evidence_summary": "2-3 sentence summary referencing real evidence from X and/or Reddit",
     "frustration_language": ["actual phrases from tweets/posts"],
     "communities": [
@@ -416,9 +436,14 @@ Return ONLY this JSON (no markdown, no code fences):
     "pricing_opportunity": "where to price competitively",
     "differentiation_angle": "how a new entrant wins"
   },
+  "verdict": {
+    "recommendation": "<BUILD|VALIDATE_FIRST|SKIP>",
+    "reasoning": "2-3 sentences combining scoring frameworks + real market evidence",
+    "confidence": "<high|medium|low>"
+  },
   "summary": "one-paragraph validation verdict for a solo builder"
 }`,
-    messages: [{ role: 'user', content: sections.join('\n') }],
+    messages: [{ role: 'user', content: sections.join('\n') + scoreContext }],
   });
 
   let text = response.content[0].text.trim();

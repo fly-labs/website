@@ -140,6 +140,21 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   V {idea.validation_score}
                 </button>
               )}
+              {(() => {
+                const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
+                if (!verdict) return null;
+                const colors = {
+                  BUILD: 'bg-primary/10 text-primary',
+                  VALIDATE_FIRST: 'bg-amber-500/10 text-amber-600',
+                  SKIP: 'bg-red-500/10 text-red-500',
+                };
+                const labels = { BUILD: 'BUILD', VALIDATE_FIRST: 'VALIDATE', SKIP: 'SKIP' };
+                return (
+                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${colors[verdict] || colors.VALIDATE_FIRST}`}>
+                    {labels[verdict] || verdict}
+                  </span>
+                );
+              })()}
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (
@@ -222,7 +237,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               )}
             </span>
             <span className="text-muted-foreground/40">&middot;</span>
-            <span>{timeAgo(idea.created_at)}</span>
+            <span>{timeAgo(idea.published_at || idea.created_at)}</span>
             <span className="text-muted-foreground/40">&middot;</span>
             <span>{idea.category || 'Other'}</span>
             {idea.industry && (

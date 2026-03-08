@@ -64,8 +64,10 @@ Map each to a category: Tool, Template, Prompt, Article, or Other
 
 CRITICAL: For each problem you MUST include the real tweet URL (https://x.com/username/status/ID). Skip any problem where you cannot provide the actual tweet URL.
 
+For each problem, also include the tweet's publication date in ISO format (YYYY-MM-DD).
+
 Return ONLY valid JSON in this exact format:
-{"problems": [{"problem_title": "...", "problem_description": "...", "industry": "...", "category": "Tool", "tweet_url": "https://x.com/user/status/123", "author_handle": "user", "engagement_signal": "..."}]}`;
+{"problems": [{"problem_title": "...", "problem_description": "...", "industry": "...", "category": "Tool", "tweet_url": "https://x.com/user/status/123", "author_handle": "user", "engagement_signal": "...", "tweet_date": "2025-03-08"}]}`;
 
 function getRotatedPrompts() {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
@@ -157,6 +159,7 @@ function transformProblem(problem) {
     tags: problem.engagement_signal || null,
     country: null,
     approved: true,
+    published_at: problem.tweet_date ? new Date(problem.tweet_date).toISOString() : new Date().toISOString(),
     name: `@${handle}`,
     email: null,
   };

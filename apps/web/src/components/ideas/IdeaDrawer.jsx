@@ -82,7 +82,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 )}
               </span>
               <span className="text-muted-foreground/40">&middot;</span>
-              <span>{timeAgo(idea.created_at)}</span>
+              <span>{timeAgo(idea.published_at || idea.created_at)}</span>
               {idea.industry && (
                 <>
                   <span className="text-muted-foreground/40">&middot;</span>
@@ -107,6 +107,80 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             )}
           </div>
 
+          {/* Verdict Hero */}
+          {(() => {
+            const enrichVerdict = idea.enrichment?.verdict;
+            const scoreVerdict = idea.score_breakdown?.synthesis;
+            const verdict = enrichVerdict || scoreVerdict;
+            if (!verdict) return null;
+
+            const rec = enrichVerdict?.recommendation || scoreVerdict?.verdict;
+            const oneLiner = scoreVerdict?.one_liner;
+            const compositeScore = scoreVerdict?.composite_score;
+            const strengths = scoreVerdict?.strengths;
+            const risks = scoreVerdict?.risks;
+            const nextSteps = scoreVerdict?.next_steps;
+            const reasoning = enrichVerdict?.reasoning || scoreVerdict?.reasoning;
+            const confidence = enrichVerdict?.confidence;
+
+            const verdictStyles = {
+              BUILD: { bg: 'bg-primary/10', border: 'border-primary/30', text: 'text-primary', label: 'BUILD' },
+              VALIDATE_FIRST: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-600', label: 'VALIDATE FIRST' },
+              SKIP: { bg: 'bg-red-500/10', border: 'border-red-500/30', text: 'text-red-500', label: 'SKIP' },
+            };
+            const vs = verdictStyles[rec] || verdictStyles.VALIDATE_FIRST;
+            const confidenceColors = { high: 'text-primary', medium: 'text-amber-500', low: 'text-muted-foreground' };
+
+            return (
+              <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
+                <div className="flex items-center justify-between">
+                  <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
+                  {compositeScore != null && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground/60">Composite</span>
+                      <span className={`text-lg font-black tabular-nums ${vs.text}`}>{compositeScore}</span>
+                      <span className="text-xs text-muted-foreground/60">/100</span>
+                    </div>
+                  )}
+                </div>
+                {oneLiner && <p className="text-sm text-foreground font-medium">{oneLiner}</p>}
+                {reasoning && <p className="text-sm text-muted-foreground italic">{reasoning}</p>}
+                {confidence && (
+                  <span className={`text-xs font-medium ${confidenceColors[confidence] || confidenceColors.medium}`}>
+                    {confidence} confidence{enrichVerdict ? ' (market-validated)' : ''}
+                  </span>
+                )}
+                {strengths?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {strengths.map((s, i) => (
+                      <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>
+                    ))}
+                  </div>
+                )}
+                {risks?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {risks.map((r, i) => (
+                      <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">{r}</span>
+                    ))}
+                  </div>
+                )}
+                {nextSteps?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-1.5">Next Steps</p>
+                    <ol className="space-y-1">
+                      {nextSteps.map((step, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-xs font-bold text-foreground/50 mt-0.5 shrink-0">{i + 1}.</span>
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           {/* Hormozi Score */}
           {idea.score_breakdown?.hormozi && (() => {
             const h = idea.score_breakdown.hormozi;
@@ -125,6 +199,9 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 {h.summary && (
                   <p className="text-sm text-muted-foreground italic">"{h.summary}"</p>
                 )}
+                {h.reasoning && (
+                  <p className="text-xs text-muted-foreground">{h.reasoning}</p>
+                )}
 
                 <div className="space-y-3">
                   <div>
@@ -132,30 +209,35 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                       <span className="text-sm font-medium">Market Viability</span>
                     </div>
                     <ScoreBar score={h.market_viability?.score || 0} max={h.market_viability?.max || 20} color={tier.bar} />
+                    {h.market_viability?.reasoning && <p className="text-xs text-muted-foreground mt-1">{h.market_viability.reasoning}</p>}
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">Value Equation</span>
                     </div>
                     <ScoreBar score={h.value_equation?.score || 0} max={h.value_equation?.max || 25} color={tier.bar} />
+                    {h.value_equation?.reasoning && <p className="text-xs text-muted-foreground mt-1">{h.value_equation.reasoning}</p>}
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">Market Growth & Timing</span>
                     </div>
                     <ScoreBar score={h.market_growth?.score || 0} max={h.market_growth?.max || 15} color={tier.bar} />
+                    {h.market_growth?.reasoning && <p className="text-xs text-muted-foreground mt-1">{h.market_growth.reasoning}</p>}
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">Offer Differentiation</span>
                     </div>
                     <ScoreBar score={h.differentiation?.score || 0} max={h.differentiation?.max || 20} color={tier.bar} />
+                    {h.differentiation?.reasoning && <p className="text-xs text-muted-foreground mt-1">{h.differentiation.reasoning}</p>}
                   </div>
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-sm font-medium">Execution Feasibility</span>
                     </div>
                     <ScoreBar score={h.feasibility?.score || 0} max={h.feasibility?.max || 20} color={tier.bar} />
+                    {h.feasibility?.reasoning && <p className="text-xs text-muted-foreground mt-1">{h.feasibility.reasoning}</p>}
                   </div>
                 </div>
               </div>
@@ -180,35 +262,45 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 {k.summary && (
                   <p className="text-sm text-muted-foreground italic">"{k.summary}"</p>
                 )}
+                {k.reasoning && (
+                  <p className="text-xs text-muted-foreground">{k.reasoning}</p>
+                )}
 
                 <div className="space-y-3">
                   <div>
                     <span className="text-sm font-medium">Problem Clarity</span>
                     <ScoreBar score={k.problem_clarity?.score || 0} max={k.problem_clarity?.max || 25} color={tier.bar} />
+                    {k.problem_clarity?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.problem_clarity.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Creator Fit</span>
                     <ScoreBar score={k.creator_fit?.score || 0} max={k.creator_fit?.max || 20} color={tier.bar} />
+                    {k.creator_fit?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.creator_fit.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Audience Reach</span>
                     <ScoreBar score={k.audience_reach?.score || 0} max={k.audience_reach?.max || 15} color={tier.bar} />
+                    {k.audience_reach?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.audience_reach.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Simplicity</span>
                     <ScoreBar score={k.simplicity?.score || 0} max={k.simplicity?.max || 15} color={tier.bar} />
+                    {k.simplicity?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.simplicity.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Monetization</span>
                     <ScoreBar score={k.monetization?.score || 0} max={k.monetization?.max || 15} color={tier.bar} />
+                    {k.monetization?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.monetization.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Anti-Niche POV</span>
                     <ScoreBar score={k.anti_niche?.score || 0} max={k.anti_niche?.max || 5} color={tier.bar} />
+                    {k.anti_niche?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.anti_niche.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Leverage Potential</span>
                     <ScoreBar score={k.leverage?.score || 0} max={k.leverage?.max || 5} color={tier.bar} />
+                    {k.leverage?.reasoning && <p className="text-xs text-muted-foreground mt-1">{k.leverage.reasoning}</p>}
                   </div>
                 </div>
               </div>
@@ -239,6 +331,9 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 {o.summary && (
                   <p className="text-sm text-muted-foreground italic">"{o.summary}"</p>
                 )}
+                {o.reasoning && (
+                  <p className="text-xs text-muted-foreground">{o.reasoning}</p>
+                )}
 
                 {o.decision && (
                   <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${dc.bg} ${dc.text}`}>
@@ -250,26 +345,32 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                   <div>
                     <span className="text-sm font-medium">Target Audience</span>
                     <ScoreBar score={o.target_audience?.score || 0} max={o.target_audience?.max || 20} color={tier.bar} />
+                    {o.target_audience?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.target_audience.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Value Proposition</span>
                     <ScoreBar score={o.value_proposition?.score || 0} max={o.value_proposition?.max || 25} color={tier.bar} />
+                    {o.value_proposition?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.value_proposition.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Distribution Channel</span>
                     <ScoreBar score={o.distribution_channel?.score || 0} max={o.distribution_channel?.max || 20} color={tier.bar} />
+                    {o.distribution_channel?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.distribution_channel.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Business Model</span>
                     <ScoreBar score={o.business_model?.score || 0} max={o.business_model?.max || 15} color={tier.bar} />
+                    {o.business_model?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.business_model.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Assumption Risk</span>
                     <ScoreBar score={o.assumption_risk?.score || 0} max={o.assumption_risk?.max || 10} color={tier.bar} />
+                    {o.assumption_risk?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.assumption_risk.reasoning}</p>}
                   </div>
                   <div>
                     <span className="text-sm font-medium">Validation Readiness</span>
                     <ScoreBar score={o.validation_readiness?.score || 0} max={o.validation_readiness?.max || 10} color={tier.bar} />
+                    {o.validation_readiness?.reasoning && <p className="text-xs text-muted-foreground mt-1">{o.validation_readiness.reasoning}</p>}
                   </div>
                 </div>
               </div>
@@ -290,6 +391,24 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                     <span className="text-xs text-muted-foreground/60">/100</span>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${tier.bg} ${tier.color}`}>{tier.label}</span>
                   </div>
+                </div>
+
+                {/* Confidence + Evidence Count */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {v.confidence && (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      v.confidence === 'high' ? 'bg-primary/10 text-primary' :
+                      v.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {v.confidence} confidence
+                    </span>
+                  )}
+                  {v.evidence_count && (
+                    <span className="text-xs text-muted-foreground/60">
+                      ({v.evidence_count.total} sources: {v.evidence_count.x_tweets} tweets, {v.evidence_count.reddit_posts} posts)
+                    </span>
+                  )}
                 </div>
 
                 {v.evidence_summary && (
@@ -409,7 +528,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
           {!idea.score_breakdown && (
             <div className="text-center py-8">
               <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground font-medium">Scores pending. New ideas are scored daily.</p>
+              <p className="text-sm text-muted-foreground font-medium">Scores and verdict pending. New ideas are scored daily.</p>
             </div>
           )}
 
@@ -421,29 +540,33 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             </summary>
             <div className="mt-3 space-y-3 text-sm text-muted-foreground leading-relaxed">
               <p>
-                <strong className="text-foreground">Hormozi Score</strong> evaluates ideas through Alex Hormozi's $100M framework:
-                market pain, value equation (dream outcome vs. effort), growth timing,
-                differentiation, and execution feasibility. Great for assessing commercial viability.
+                <strong className="text-foreground">Verdict</strong> synthesizes all three framework scores
+                into a single BUILD / VALIDATE FIRST / SKIP recommendation with a composite score,
+                strengths, risks, and concrete next steps. When market validation data exists,
+                the verdict incorporates real evidence for the most informed recommendation.
+              </p>
+              <p>
+                <strong className="text-foreground">Hormozi Score</strong> evaluates through Alex Hormozi's $100M framework:
+                market pain, value equation, growth timing, differentiation, and execution feasibility.
+                Each pillar includes reasoning explaining the score.
               </p>
               <p>
                 <strong className="text-foreground">Dan Koe Score</strong> evaluates through the one-person business lens:
                 problem clarity, solo creator fit, audience reach, simplicity,
-                monetization path, unique angle, and leverage potential. Great for
-                assessing if a solo builder should tackle this.
+                monetization path, unique angle, and leverage potential.
               </p>
               <p>
                 <strong className="text-foreground">Okamoto Score</strong> evaluates through Bruno Okamoto's MicroSaaS validation lens:
-                target audience clarity, value proposition strength, distribution channel efficiency,
-                business model viability, assumption risk, and validation readiness. Includes a
-                FOLLOW/ADJUST/PIVOT decision. Great for knowing if you can validate before building.
+                target audience, value proposition, distribution, business model,
+                assumption risk, and validation readiness. Includes a FOLLOW/ADJUST/PIVOT decision.
               </p>
               <p>
-                <strong className="text-foreground">Validation Score</strong> cross-validates ideas
-                against real conversations on X and Reddit: finding communities where the problem is discussed,
-                extracting frustration language, and mapping the competitive landscape from actual user discussions.
+                <strong className="text-foreground">Market Validation</strong> cross-validates ideas
+                against real conversations on X and Reddit with evidence confidence scoring (high/medium/low),
+                source counts, frustration language, and competitive landscape mapping.
               </p>
               <p className="text-muted-foreground/60">
-                All scores are generated by Claude AI analyzing the problem description,
+                All scores and reasoning are generated by Claude AI analyzing the problem description,
                 industry context, and market signals.
               </p>
               <Link to="/scoring" className="inline-flex items-center gap-1 text-accent hover:underline font-medium" onClick={onClose}>

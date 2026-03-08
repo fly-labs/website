@@ -119,7 +119,7 @@ const IdeaSubmissionPage = () => {
   // Time-decay hot score: votes / (hoursAge + 2)^1.5
   const getHotScore = (idea) => {
     const votes = idea.votes || 0;
-    const hoursAge = (Date.now() - new Date(idea.created_at).getTime()) / (1000 * 60 * 60);
+    const hoursAge = (Date.now() - new Date(idea.published_at || idea.created_at).getTime()) / (1000 * 60 * 60);
     return votes / Math.pow(hoursAge + 2, 1.5);
   };
 
@@ -142,13 +142,24 @@ const IdeaSubmissionPage = () => {
     const arr = [...filtered];
     switch (sortBy) {
       case 'hot': return arr.sort((a, b) => getHotScore(b) - getHotScore(a));
-      case 'new': return arr.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      case 'oldest': return arr.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      case 'new': return arr.sort((a, b) => new Date(b.published_at || b.created_at) - new Date(a.published_at || a.created_at));
+      case 'oldest': return arr.sort((a, b) => new Date(a.published_at || a.created_at) - new Date(b.published_at || b.created_at));
       case 'top': return arr.sort((a, b) => (b.votes || 0) - (a.votes || 0));
       case 'hormozi': return arr.sort((a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0));
       case 'koe': return arr.sort((a, b) => (b.koe_score || 0) - (a.koe_score || 0));
       case 'okamoto': return arr.sort((a, b) => (b.okamoto_score || 0) - (a.okamoto_score || 0));
       case 'validation': return arr.sort((a, b) => (b.validation_score || 0) - (a.validation_score || 0));
+      case 'verdict': return arr.sort((a, b) => {
+        const priority = { BUILD: 3, VALIDATE_FIRST: 2, SKIP: 1 };
+        const va = a.enrichment?.verdict?.recommendation || a.score_breakdown?.synthesis?.verdict;
+        const vb = b.enrichment?.verdict?.recommendation || b.score_breakdown?.synthesis?.verdict;
+        const pa = priority[va] || 0;
+        const pb = priority[vb] || 0;
+        if (pa !== pb) return pb - pa;
+        const ca = a.score_breakdown?.synthesis?.composite_score || 0;
+        const cb = b.score_breakdown?.synthesis?.composite_score || 0;
+        return cb - ca;
+      });
       default: return arr;
     }
   })();
@@ -271,7 +282,7 @@ const IdeaSubmissionPage = () => {
 
       toast({
         title: 'Idea received!',
-        description: "I'll review it and score it with AI. It'll show up on the Idea Lab soon.",
+        description: "It'll be AI-scored with 3 frameworks and given a verdict. Top ideas get validated against real conversations.",
       });
 
       setFormData({
@@ -370,9 +381,9 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Idea Lab - AI-Scored Problems from Reddit, Product Hunt, X & Community",
-          description: "Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community, scored by 3 AI frameworks and validated against real market conversations.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, validation, competitive analysis, business opportunities",
+          title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
+          description: "Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community. Scored by 3 AI frameworks with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations.",
+          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-28 sm:pb-24"
@@ -391,7 +402,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}5 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}5 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + verdict{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -745,9 +756,10 @@ const IdeaSubmissionPage = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       Every day we scan Reddit, ProblemHunt, Product Hunt, and X for real
                       problems people are struggling with. Community members submit their own too. AI scores every idea
-                      using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas get validated against
-                      real conversations on X and Reddit, with competitive intelligence from actual user discussions.
-                      The best ones get built. If your idea flies, we partner up.
+                      using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning, then synthesizes a
+                      BUILD / VALIDATE / SKIP verdict. Top ideas get validated against
+                      real conversations on X and Reddit, with evidence confidence and competitive intelligence.
+                      The best ones get built.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>
