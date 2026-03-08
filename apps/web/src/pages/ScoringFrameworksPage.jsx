@@ -158,8 +158,8 @@ const ScoringFrameworksPage = () => {
     <PageLayout
       seo={{
         title: "AI Scoring & Validation - Hormozi, Dan Koe, Okamoto + Market Validation",
-        description: "How we score and validate every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) plus a validation layer with Reddit cross-validation and competitive analysis.",
-        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, Reddit validation, market research",
+        description: "How we score and validate every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) plus a validation layer with X and Reddit cross-validation and competitive analysis.",
+        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, X validation, Reddit validation, market research",
         url: "https://flylabs.fun/scoring",
       }}
       className="pt-32 pb-24"
@@ -198,7 +198,7 @@ const ScoringFrameworksPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                I built this system because every framework answers a different question. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" And the validation layer asks "Is the pain real and the market accessible?" Together they filter signal from noise.
+                I built this system because every framework answers a different question. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" And the validation layer asks "Is the pain real?" - not by guessing, but by searching real conversations on X and Reddit, finding actual evidence from real users. Together they filter signal from noise.
               </p>
             </div>
           </motion.div>
@@ -350,25 +350,25 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Idea Validation</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                After scoring, top ideas go through FlyLabs' own validation process: cross-referencing against Reddit communities, extracting frustration language from real users, and mapping the competitive landscape. This layer answers whether the pain is real and the market is accessible.
+                After scoring, top ideas go through FlyLabs' own validation process: searching real conversations on X and Reddit, extracting frustration language from actual users, and mapping the competitive landscape from real product discussions. This layer answers whether the pain is real and the market is accessible.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 {
                   icon: MessageSquare,
-                  title: 'Reddit Cross-Validation',
-                  desc: 'Find communities discussing the pain, pull upvoted complaints, capture frustration language from real users.',
+                  title: 'Cross-Platform Evidence Search',
+                  desc: 'Search X and Reddit for real people experiencing this pain. Pull tweets with engagement, find Reddit threads with upvotes and comments, capture frustration language from actual users.',
                 },
                 {
                   icon: Globe,
-                  title: 'Competitive Analysis',
-                  desc: 'Map existing solutions, analyze pricing, mine complaints from users, identify market gaps.',
+                  title: 'Competitive Intelligence',
+                  desc: 'Search X and Reddit for discussions about existing solutions. Map complaints, pricing sentiment, feature gaps from real user conversations across both platforms.',
                 },
                 {
                   icon: TrendingUp,
-                  title: 'Opportunity Signal',
-                  desc: 'Recurring themes, unmet needs, differentiation angles. What the market wants but nobody is building.',
+                  title: 'Opportunity Synthesis',
+                  desc: 'AI synthesizes evidence from X and Reddit into recurring themes, unmet needs, and differentiation angles. Every validation score is backed by real conversations.',
                 },
               ].map((phase, i) => (
                 <motion.div
@@ -419,7 +419,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Claude AI analyzes problem description, industry context, and market signals through all three scoring frameworks. Top-scoring ideas then go through validation: cross-referenced against Reddit communities and competitive landscape analysis. Scores update daily.
+              Claude AI analyzes each problem through three scoring frameworks. Top-scoring ideas then go through validation: cross-referenced against real conversations on X and Reddit, with competitive intelligence gathered from actual user discussions. Scores update daily.
             </p>
           </motion.div>
 

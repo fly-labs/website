@@ -49,7 +49,7 @@ const pillars = [
   {
     title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, and the community. AI-scored, validated, voted. Drop yours too.',
+    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community. AI-scored, validated against real conversations on X and Reddit. Drop yours too.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',

@@ -103,7 +103,10 @@ async function scoreIdea(idea) {
         messages: [{ role: 'user', content: userPrompt }],
       });
 
-      const text = response.content[0].text.trim();
+      let text = response.content[0].text.trim();
+      if (text.startsWith('```')) {
+        text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+      }
       const parsed = JSON.parse(text);
 
       if (typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {

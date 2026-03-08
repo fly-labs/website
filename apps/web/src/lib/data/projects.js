@@ -103,7 +103,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, and the community. AI-scored and validated. The best ones get built.',
+    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community. AI-scored and validated against real market data. The best ones get built.',
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

@@ -74,7 +74,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
           <div className="flex items-start justify-between gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt') && idea.source_url ? (
+                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x') && idea.source_url ? (
                   <a
                     href={idea.source_url}
                     target="_blank"
@@ -199,6 +199,23 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   }}
                 >
                   via Product Hunt
+                </a>
+              ) : idea.source === 'x' && idea.source_url ? (
+                <a
+                  href={idea.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground hover:underline font-medium"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackEvent('outbound_click', {
+                      link_url: idea.source_url,
+                      link_label: 'X',
+                      location: 'ideas',
+                    });
+                  }}
+                >
+                  via X
                 </a>
               ) : (
                 `by ${idea.name || 'Anonymous'}`

@@ -23,6 +23,8 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: node scripts/sync-reddit.mjs
       - name: Sync Product Hunt
         env:
@@ -32,6 +34,12 @@ jobs:
           PRODUCTHUNT_API_SECRET: ${{ secrets.PRODUCTHUNT_API_SECRET }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/sync-producthunt.mjs
+      - name: Sync X
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: node scripts/sync-x.mjs
       - name: Score unscored ideas with Claude
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

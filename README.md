@@ -14,7 +14,7 @@ Built by one person with AI. Open source.
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Lab** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro), Reddit, and Product Hunt. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas validated against Reddit communities and competitive landscape. Pagination, 8-way sort, source/type/industry filtering, multi-step submit form, H/K/B/V score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Idea Lab** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, and X. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas validated against real conversations on X and Reddit, with competitive intelligence from actual user discussions. Pagination, 8-way sort, source/type/industry filtering, multi-step submit form, H/K/B/V score badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of AI scoring frameworks (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
@@ -76,6 +76,19 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `VITE_SUPABASE_ANON_KEY` | Yes | Supabase anon/public key |
 | `VITE_GA_ID` | No | Google Analytics 4 Measurement ID (`G-XXXXXXXXXX`) |
 
+**Server-side** (for sync, scoring, and enrichment scripts):
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SUPABASE_URL` | Yes | Same as `VITE_SUPABASE_URL` (scripts read both) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Supabase service role key (Settings > API) |
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key (for Claude scoring + PH problem extraction) |
+| `PRODUCTHUNT_API_KEY` | Yes | Product Hunt API key |
+| `PRODUCTHUNT_API_SECRET` | Yes | Product Hunt API secret |
+| `XAI_API_KEY` | Yes | xAI API key (for Grok x_search in sync:x and enrichment) |
+| `REDDIT_CLIENT_ID` | No | Reddit OAuth client ID (higher rate limits) |
+| `REDDIT_CLIENT_SECRET` | No | Reddit OAuth client secret |
+
 ## Scripts
 
 | Command | Description |
@@ -88,8 +101,9 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run sync` | Sync new problems from ProblemHunt (via Tilda feed API) and upsert to Supabase |
 | `npm run sync:reddit` | Sync business opportunities from targeted Reddit subreddits to Supabase |
 | `npm run sync:producthunt` | Sync top posts from Product Hunt (GraphQL API) to Supabase |
+| `npm run sync:x` | Sync problems from X/Twitter via Grok xAI API with x_search tool |
 | `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe + Okamoto) |
-| `npm run enrich` | Validate top-scoring ideas with Reddit cross-validation + competitive analysis |
+| `npm run enrich` | Validate top-scoring ideas with Grok x_search (primary) + Reddit (secondary) |
 
 ## Project Structure
 

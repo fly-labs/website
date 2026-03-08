@@ -39,7 +39,7 @@ const milestones = [
   {
     phase: 'Right now',
     title: 'AI scores ideas, the community votes, the best get built',
-    description: 'New ideas come from Reddit, ProblemHunt, Product Hunt, and the community. AI scores and validates them. The best ones get built. The cycle continues.',
+    description: 'New ideas come from Reddit, ProblemHunt, Product Hunt, X, and the community. AI scores and validates them. The best ones get built. The cycle continues.',
     link: { label: 'Browse the idea lab', to: '/ideas' },
   },
 ];
@@ -181,7 +181,7 @@ const AboutPage = () => {
               {[
                 { text: 'Library - writing the first ebooks', link: '/library' },
                 { text: 'Micro Tools - building the first batch', link: '/microsaas' },
-                { text: 'Idea Lab - 3x/day auto-sync from Reddit, ProblemHunt & Product Hunt', link: '/ideas' },
+                { text: 'Idea Lab - 5 sources, AI-scored, validated against real conversations', link: '/ideas' },
               ].map((item) => (
                 <li key={item.text}>
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">

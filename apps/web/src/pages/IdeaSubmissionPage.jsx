@@ -370,8 +370,8 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Idea Lab - AI-Scored Problems from Reddit, Product Hunt & Community",
-          description: "Real problems from Reddit, ProblemHunt, Product Hunt, and the community, scored by AI using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas validated against real market data.",
+          title: "Idea Lab - AI-Scored Problems from Reddit, Product Hunt, X & Community",
+          description: "Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community, scored by 3 AI frameworks and validated against real market conversations.",
           keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, validation, competitive analysis, business opportunities",
           url: "https://flylabs.fun/ideas",
         }}
@@ -391,7 +391,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}4 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}5 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -743,11 +743,11 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Every day we scan Reddit, ProblemHunt, and Product Hunt for real problems people
-                      are struggling with. Community members submit their own too. AI scores every idea
+                      Every day we scan Reddit, ProblemHunt, Product Hunt, and X for real
+                      problems people are struggling with. Community members submit their own too. AI scores every idea
                       using Hormozi, Dan Koe, and Okamoto frameworks. Top ideas get validated against
-                      Reddit communities and competitive landscape. The best ones get built. If your
-                      idea flies, we partner up.
+                      real conversations on X and Reddit, with competitive intelligence from actual user discussions.
+                      The best ones get built. If your idea flies, we partner up.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

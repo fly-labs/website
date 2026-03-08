@@ -15,7 +15,37 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 const USER_AGENT = 'FlyLabs-Sync/1.0 (https://flylabs.fun) Node.js';
-const REQUEST_DELAY = 2000; // 2s between requests (16 subreddits × 5 queries)
+const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID;
+const REDDIT_CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
+let redditToken = null;
+
+// OAuth: auto-upgrade to 100 QPM when credentials are available
+async function getRedditToken() {
+  if (!REDDIT_CLIENT_ID || !REDDIT_CLIENT_SECRET) return null;
+  try {
+    const res = await fetch('https://www.reddit.com/api/v1/access_token', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(`${REDDIT_CLIENT_ID}:${REDDIT_CLIENT_SECRET}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': USER_AGENT,
+      },
+      body: 'grant_type=client_credentials',
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      console.log('Reddit OAuth: authenticated (100 QPM)');
+      return data.access_token;
+    }
+    console.warn('Reddit OAuth: token exchange failed, falling back to unauthenticated');
+    return null;
+  } catch (err) {
+    console.warn(`Reddit OAuth: ${err.message}, falling back to unauthenticated`);
+    return null;
+  }
+}
+
+const REQUEST_DELAY = 2000; // 2s between requests (16 subreddits x 5 queries)
 
 // Target subreddits with default industry mapping
 const SUBREDDITS = {
@@ -120,10 +150,16 @@ function sleep(ms) {
 }
 
 async function fetchWithRetry(url, retries = 3) {
+  // Use OAuth endpoint when authenticated
+  const baseUrl = redditToken
+    ? url.replace('https://www.reddit.com', 'https://oauth.reddit.com')
+    : url;
+  const headers = redditToken
+    ? { 'Authorization': `Bearer ${redditToken}`, 'User-Agent': USER_AGENT }
+    : { 'User-Agent': USER_AGENT };
+
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': USER_AGENT },
-    });
+    const res = await fetch(baseUrl, { headers });
 
     if (res.ok) return res;
 
@@ -222,6 +258,9 @@ async function syncToSupabase(ideas) {
 
 async function main() {
   try {
+    // Attempt OAuth authentication (auto-upgrade when credentials available)
+    redditToken = await getRedditToken();
+
     const allIdeas = [];
 
     const subredditKeys = Object.keys(SUBREDDITS);
