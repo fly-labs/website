@@ -9,9 +9,9 @@ const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-const MAX_IDEAS_PER_RUN = 10;
+const MAX_IDEAS_PER_RUN = 30;
 const MAX_RETRIES = 2;
-const REDDIT_DELAY = 2000;
+const REDDIT_DELAY = 3000;
 const USER_AGENT = 'FlyLabs-Sync/1.0 (https://flylabs.fun) Node.js';
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !ANTHROPIC_API_KEY) {
@@ -39,10 +39,10 @@ async function generateSearchQueries(idea) {
     max_tokens: 500,
     system: `You are a market researcher. Generate Reddit search queries to find real users experiencing this problem. Focus on frustration and unmet needs.
 
-Return ONLY this JSON (no markdown, no code fences):
+Return ONLY this JSON (no markdown, no code fences). Keep it focused - max 3 queries and 3 subreddits:
 {
   "queries": ["query 1", "query 2", "query 3"],
-  "subreddits": ["sub1", "sub2", "sub3", "sub4", "sub5"]
+  "subreddits": ["sub1", "sub2", "sub3"]
 }`,
     messages: [{ role: 'user', content: userPrompt }],
   });
@@ -167,6 +167,9 @@ async function enrichIdea(idea) {
       // Step 1: Generate search queries
       process.stdout.write('  Generating search queries... ');
       const searchPlan = await generateSearchQueries(idea);
+      // Cap to limit Reddit API calls (3 queries x 3 subs = 9 requests max per idea)
+      searchPlan.queries = searchPlan.queries.slice(0, 3);
+      searchPlan.subreddits = searchPlan.subreddits.slice(0, 3);
       console.log(`${searchPlan.queries.length} queries, ${searchPlan.subreddits.length} subreddits`);
 
       // Step 2: Search Reddit
@@ -200,7 +203,7 @@ async function main() {
   if (!enrichAll) {
     query = query.is('enrichment', null);
   }
-  query = query.limit(MAX_IDEAS_PER_RUN);
+  query = query.limit(200);
 
   const { data: ideas, error } = await query;
   if (error) {
@@ -216,13 +219,21 @@ async function main() {
     return avg >= 40;
   });
 
-  console.log(`Found ${ideas.length} ideas, ${eligible.length} eligible for enrichment${enrichAll ? ' (--all mode)' : ''}`);
-  if (eligible.length === 0) return;
+  // Sort by highest average score first (best ideas get validated first)
+  eligible.sort((a, b) => {
+    const avgA = [a.hormozi_score, a.koe_score, a.okamoto_score].filter((s) => s != null).reduce((x, y) => x + y, 0) / [a.hormozi_score, a.koe_score, a.okamoto_score].filter((s) => s != null).length;
+    const avgB = [b.hormozi_score, b.koe_score, b.okamoto_score].filter((s) => s != null).reduce((x, y) => x + y, 0) / [b.hormozi_score, b.koe_score, b.okamoto_score].filter((s) => s != null).length;
+    return avgB - avgA;
+  });
+
+  const batch = eligible.slice(0, MAX_IDEAS_PER_RUN);
+  console.log(`Found ${ideas.length} ideas, ${eligible.length} eligible, processing top ${batch.length}${enrichAll ? ' (--all mode)' : ''}`);
+  if (batch.length === 0) return;
 
   let enriched = 0;
   let failed = 0;
 
-  for (const idea of eligible) {
+  for (const idea of batch) {
     console.log(`\nEnriching: "${idea.idea_title}"`);
     const result = await enrichIdea(idea);
 

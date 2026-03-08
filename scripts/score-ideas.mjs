@@ -128,17 +128,19 @@ function sleep(ms) {
 }
 
 async function main() {
-  // Fetch ideas to score
-  let query = supabase.from('ideas').select('*').eq('approved', true);
-  if (!scoreAll) {
-    query = query.is('hormozi_score', null);
-  }
-  query = query.limit(MAX_IDEAS_PER_RUN);
-
-  const { data: ideas, error } = await query;
-  if (error) {
-    console.error('Failed to fetch ideas:', error.message);
-    process.exit(1);
+  // Fetch ideas to score: missing ANY of the 3 scores, or --all to re-score everything
+  let ideas = [];
+  if (scoreAll) {
+    const { data, error } = await supabase.from('ideas').select('*').eq('approved', true).limit(MAX_IDEAS_PER_RUN);
+    if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
+    ideas = data;
+  } else {
+    // Fetch ideas missing any score (hormozi, koe, or okamoto)
+    const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
+      .or('hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null')
+      .limit(MAX_IDEAS_PER_RUN);
+    if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
+    ideas = data;
   }
 
   console.log(`Found ${ideas.length} ideas to score${scoreAll ? ' (--all mode)' : ''}`);
