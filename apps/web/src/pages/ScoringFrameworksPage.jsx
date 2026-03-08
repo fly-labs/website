@@ -158,7 +158,7 @@ const ScoringFrameworksPage = () => {
     <PageLayout
       seo={{
         title: "AI Scoring, Verdicts & Validation - Hormozi, Dan Koe, Okamoto + Market Evidence",
-        description: "How we score, reason, and verdict every idea with AI. Three frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, a BUILD/VALIDATE/SKIP synthesis verdict, plus market validation with evidence confidence from X and Reddit.",
+        description: "How we score, reason, and verdict every idea with AI. 7 sources, three frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, a BUILD/VALIDATE/SKIP synthesis verdict, plus market validation with evidence confidence from X and Reddit, and competitive intelligence.",
         keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, X validation, Reddit validation, market research",
         url: "https://flylabs.fun/scoring",
       }}
@@ -183,7 +183,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea gets AI-scored using three frameworks with per-pillar reasoning, synthesized into a verdict, and validated against real market evidence.
+              Ideas from 7 sources get AI-scored using three frameworks with per-pillar reasoning, synthesized into a verdict, validated against real market evidence, and mapped against the competitive landscape.
             </p>
           </motion.div>
 
@@ -350,7 +350,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Idea Validation</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                After scoring, top ideas go through FlyLabs' own validation process: searching real conversations on X and Reddit, extracting frustration language from actual users, and mapping the competitive landscape from real product discussions. This layer answers whether the pain is real and the market is accessible.
+                After scoring, top ideas go through FlyLabs' own validation process: searching real conversations on X and Reddit, extracting frustration language from actual users, mapping the competitive landscape (who the players are, what they charge, where they fall short), and synthesizing evidence with confidence scoring. This layer answers whether the pain is real and the market is accessible.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -455,7 +455,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Claude AI analyzes each problem through three scoring frameworks with per-pillar reasoning, then synthesizes a BUILD / VALIDATE / SKIP verdict. Top ideas go through market validation: cross-referenced against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. All scores, reasoning, and verdicts update daily.
+              Problems from 7 sources (Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community) get analyzed by Claude AI through three scoring frameworks with per-pillar reasoning, then synthesized into a BUILD / VALIDATE / SKIP verdict. Top ideas go through market validation: cross-referenced against real conversations on X and Reddit, with evidence confidence scoring, competitive intelligence, and pricing analysis. All scores, reasoning, and verdicts update daily.
             </p>
           </motion.div>
 
@@ -469,7 +469,7 @@ const ScoringFrameworksPage = () => {
               to="/ideas"
               className="btn-playful btn-playful-primary text-base h-12 px-6 md:text-lg md:h-14 md:px-8 inline-flex items-center gap-2"
             >
-              Explore the Idea Lab <ArrowRight className="w-5 h-5" />
+              Browse the lab <ArrowRight className="w-5 h-5" />
             </Link>
             <p className="text-muted-foreground font-bold mt-4">
               Every idea scored, reasoned, and given a verdict. Go find the signal.

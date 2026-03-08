@@ -77,6 +77,10 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                   <span className="text-orange-600 font-medium">via Product Hunt</span>
                 ) : idea.source === 'x' ? (
                   <span className="text-foreground font-medium">via X</span>
+                ) : idea.source === 'hackernews' ? (
+                  <span className="text-orange-500 font-medium">via Hacker News</span>
+                ) : idea.source === 'github' ? (
+                  <span className="text-muted-foreground font-medium">{idea.tags || 'via GitHub'}</span>
                 ) : (
                   `by ${idea.name || 'Anonymous'}`
                 )}
@@ -133,6 +137,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
 
             return (
               <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
+                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on 3 AI frameworks + real market evidence</p>
                 <div className="flex items-center justify-between">
                   <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
                   {compositeScore != null && (
@@ -478,6 +483,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             return (
               <div className="space-y-4">
                 <h4 className="font-bold">Competitive Landscape</h4>
+                <p className="text-xs text-muted-foreground">Competitors identified from real conversations on X and Reddit.</p>
 
                 {c.products?.length > 0 && (
                   <div className="space-y-3">
@@ -632,6 +638,28 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'X Detail', location: 'ideas_drawer' })}
               >
                 via X <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {idea.source === 'hackernews' && idea.source_url && (
+              <a
+                href={idea.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-500/20 text-sm font-medium text-orange-500 hover:bg-orange-500/10 transition-colors"
+                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'Hacker News Detail', location: 'ideas_drawer' })}
+              >
+                via Hacker News <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {idea.source === 'github' && idea.source_url && (
+              <a
+                href={idea.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: idea.tags || 'GitHub Detail', location: 'ideas_drawer' })}
+              >
+                {idea.tags || 'via GitHub'} <ArrowRight className="w-3.5 h-3.5" />
               </a>
             )}
           </div>

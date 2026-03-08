@@ -14,7 +14,7 @@ Built by one person with AI. Open source.
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Lab** - Community submissions + real-world problems from [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, and X. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Reddit sync uses Claude AI filtering for quality. Pagination, 9-way sort (including verdict), source/type/industry filtering, multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Idea Lab** - Community submissions + real-world problems from 7 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the community. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of AI scoring frameworks (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
@@ -88,6 +88,7 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `XAI_API_KEY` | Yes | xAI API key (for Grok x_search in sync:x and enrichment) |
 | `REDDIT_CLIENT_ID` | No | Reddit OAuth client ID (higher rate limits) |
 | `REDDIT_CLIENT_SECRET` | No | Reddit OAuth client secret |
+| `GITHUB_TOKEN` | No | GitHub personal access token (5K req/hr vs 60 unauthenticated) |
 
 ## Scripts
 
@@ -102,6 +103,8 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run sync:reddit` | Sync business opportunities from targeted Reddit subreddits to Supabase |
 | `npm run sync:producthunt` | Sync top posts from Product Hunt (GraphQL API) to Supabase |
 | `npm run sync:x` | Sync problems from X/Twitter via Grok xAI API with x_search tool |
+| `npm run sync:hackernews` | Sync problems from Hacker News (Firebase API + Claude AI filter) |
+| `npm run sync:github` | Sync feature requests from GitHub Issues (Search API + Claude AI filter) |
 | `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe + Okamoto + synthesis verdict) |
 | `npm run enrich` | Validate top-scoring ideas with Grok x_search (primary) + Reddit (secondary) |
 
@@ -125,19 +128,20 @@ apps/web/
 │   │   ├── GitHubHeatmap.jsx # GitHub contribution heatmap (compact + full)
 │   │   ├── GridBackground.jsx # Subtle graph-paper grid
 │   │   ├── GeometricBackground.jsx # Hand-drawn doodle background
-│   │   ├── ideas/            # Extracted Ideas page components (IdeaCard, IdeaDrawer, IdeaSubmitModal)
+│   │   ├── ideas/            # Extracted Ideas page components (IdeaCard, IdeaDrawer, IdeaSubmitModal, IdeaFilterSheet)
 │   │   └── ...               # ThemeToggle, SmileLogo, ScrollToTop, icons
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, profile CRUD, GA4 user props
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
+│   │   ├── useIdeaFilters.js # URL state filter hook (search, sort, filter, paginate with useSearchParams)
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
 │   │   │   ├── library.js    # Books array, topics, topic colors
-│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions, perPageOptions, frequencyOptions, formSteps
+│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (8), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)

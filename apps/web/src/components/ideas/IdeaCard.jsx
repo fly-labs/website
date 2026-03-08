@@ -74,7 +74,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
           <div className="flex items-start justify-between gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x') && idea.source_url ? (
+                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x' || idea.source === 'hackernews' || idea.source === 'github') && idea.source_url ? (
                   <a
                     href={idea.source_url}
                     target="_blank"
@@ -155,6 +155,11 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   </span>
                 );
               })()}
+              {idea.enrichment?.competitors?.products?.length > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px] font-medium">
+                  {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}
+                </span>
+              )}
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (
@@ -231,6 +236,40 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   }}
                 >
                   via X
+                </a>
+              ) : idea.source === 'hackernews' ? (
+                <a
+                  href={idea.source_url || 'https://news.ycombinator.com'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-orange-500 hover:underline font-medium"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackEvent('outbound_click', {
+                      link_url: idea.source_url || 'https://news.ycombinator.com',
+                      link_label: 'Hacker News',
+                      location: 'ideas',
+                    });
+                  }}
+                >
+                  via Hacker News
+                </a>
+              ) : idea.source === 'github' && idea.source_url ? (
+                <a
+                  href={idea.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:underline font-medium"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackEvent('outbound_click', {
+                      link_url: idea.source_url,
+                      link_label: idea.tags || 'GitHub',
+                      location: 'ideas',
+                    });
+                  }}
+                >
+                  {idea.tags ? idea.tags : 'via GitHub'}
                 </a>
               ) : (
                 `by ${idea.name || 'Anonymous'}`

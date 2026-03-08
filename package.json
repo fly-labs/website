@@ -23,6 +23,8 @@
     "sync:reddit": "node scripts/sync-reddit.mjs",
     "sync:producthunt": "node scripts/sync-producthunt.mjs",
     "sync:x": "node scripts/sync-x.mjs",
+    "sync:hackernews": "node scripts/sync-hackernews.mjs",
+    "sync:github": "node scripts/sync-github.mjs",
     "score": "node scripts/score-ideas.mjs",
     "enrich": "node scripts/enrich-ideas.mjs"
   },

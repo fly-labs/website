@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -9,13 +9,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
-import { categories, industries, statusConfig, sortOptions, sourceOptions, perPageOptions, frequencyOptions } from '@/lib/data/ideas.js';
-import { timeAgo, isValidEmail } from '@/lib/utils.js';
+import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions } from '@/lib/data/ideas.js';
+import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
+import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
 
 import IdeaCard from '@/components/ideas/IdeaCard.jsx';
 import IdeaDrawer from '@/components/ideas/IdeaDrawer.jsx';
 import IdeaSubmitModal from '@/components/ideas/IdeaSubmitModal.jsx';
+import IdeaFilterSheet from '@/components/ideas/IdeaFilterSheet.jsx';
 
 // Shipped fallback - shown if no shipped ideas in DB
 const SHIPPED_FALLBACK = [
@@ -38,12 +40,17 @@ const SHIPPED_FALLBACK = [
 // Primary sort pills shown inline
 const PRIMARY_SORTS = ['hot', 'new', 'top'];
 
+const VERDICT_COLORS = {
+  BUILD: 'bg-primary/10 text-primary border-primary/30',
+  VALIDATE_FIRST: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
+  SKIP: 'bg-red-500/10 text-red-500 border-red-500/30',
+};
+
 const IdeaSubmissionPage = () => {
   const { toast } = useToast();
   const { currentUser, profile, isAuthenticated } = useAuth();
   const [ideas, setIdeas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState('hot');
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votedIds, setVotedIds] = useState(() => {
@@ -53,16 +60,13 @@ const IdeaSubmissionPage = () => {
       return [];
     }
   });
-  const [activeType, setActiveType] = useState('All');
-  const [activeIndustry, setActiveIndustry] = useState('All');
-  const [activeSource, setActiveSource] = useState('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
   const [formStep, setFormStep] = useState(0);
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [showMoreSort, setShowMoreSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
   const moreSortRef = useRef(null);
+  const searchTimerRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -73,6 +77,23 @@ const IdeaSubmissionPage = () => {
     frequency: '',
     existing_solutions: '',
   });
+
+  // Hook: all filter/sort/pagination logic
+  const filters = useIdeaFilters(ideas);
+  const {
+    sortBy, setSortBy,
+    activeSource, setActiveSource,
+    verdict, setVerdict,
+    searchQuery, setSearchQuery,
+    perPage,
+    currentPage, setCurrentPage,
+    sorted, paginated, totalPages,
+    sourceCounts, verdictCounts,
+    activeFilterCount,
+    activeFilters,
+    clearAllFilters,
+    getPageNumbers,
+  } = filters;
 
   // Pre-fill form for logged-in users
   useEffect(() => {
@@ -116,69 +137,25 @@ const IdeaSubmissionPage = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showMoreSort]);
 
-  // Time-decay hot score: votes / (hoursAge + 2)^1.5
-  const getHotScore = (idea) => {
-    const votes = idea.votes || 0;
-    const hoursAge = (Date.now() - new Date(idea.published_at || idea.created_at).getTime()) / (1000 * 60 * 60);
-    return votes / Math.pow(hoursAge + 2, 1.5);
-  };
+  // Sync searchInput with URL state (on mount)
+  useEffect(() => {
+    setSearchInput(searchQuery);
+  }, []);
 
-  // Filter + Sort + Pagination pipeline
-  const sourceFiltered = activeSource === 'all'
-    ? ideas
-    : activeSource === 'community'
-      ? ideas.filter(i => !i.source || i.source === 'community')
-      : ideas.filter(i => i.source === activeSource);
+  // Debounced search
+  const handleSearchInput = useCallback((e) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => {
+      setSearchQuery(value);
+    }, 300);
+  }, [setSearchQuery]);
 
-  const typeFiltered = activeType === 'All'
-    ? sourceFiltered
-    : sourceFiltered.filter(i => i.category === activeType);
-
-  const filtered = activeIndustry === 'All'
-    ? typeFiltered
-    : typeFiltered.filter(i => i.industry === activeIndustry);
-
-  const sorted = (() => {
-    const arr = [...filtered];
-    switch (sortBy) {
-      case 'hot': return arr.sort((a, b) => getHotScore(b) - getHotScore(a));
-      case 'new': return arr.sort((a, b) => new Date(b.published_at || b.created_at) - new Date(a.published_at || a.created_at));
-      case 'oldest': return arr.sort((a, b) => new Date(a.published_at || a.created_at) - new Date(b.published_at || b.created_at));
-      case 'top': return arr.sort((a, b) => (b.votes || 0) - (a.votes || 0));
-      case 'hormozi': return arr.sort((a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0));
-      case 'koe': return arr.sort((a, b) => (b.koe_score || 0) - (a.koe_score || 0));
-      case 'okamoto': return arr.sort((a, b) => (b.okamoto_score || 0) - (a.okamoto_score || 0));
-      case 'validation': return arr.sort((a, b) => (b.validation_score || 0) - (a.validation_score || 0));
-      case 'verdict': return arr.sort((a, b) => {
-        const priority = { BUILD: 3, VALIDATE_FIRST: 2, SKIP: 1 };
-        const va = a.enrichment?.verdict?.recommendation || a.score_breakdown?.synthesis?.verdict;
-        const vb = b.enrichment?.verdict?.recommendation || b.score_breakdown?.synthesis?.verdict;
-        const pa = priority[va] || 0;
-        const pb = priority[vb] || 0;
-        if (pa !== pb) return pb - pa;
-        const ca = a.score_breakdown?.synthesis?.composite_score || 0;
-        const cb = b.score_breakdown?.synthesis?.composite_score || 0;
-        return cb - ca;
-      });
-      default: return arr;
-    }
-  })();
-
-  const totalPages = Math.max(1, Math.ceil(sorted.length / perPage));
-  const paginated = sorted.slice((currentPage - 1) * perPage, currentPage * perPage);
-
-  // Reset page on filter/sort/perPage change
-  useEffect(() => { setCurrentPage(1); }, [activeSource, activeType, activeIndustry, sortBy, perPage]);
-
-  // Dynamic industries based on source + type filtered results
-  const activeIndustries = industries.filter(ind =>
-    typeFiltered.some(i => i.industry === ind.value)
-  );
-
-  // Active filter count for badge
-  const activeFilterCount =
-    (activeType !== 'All' ? 1 : 0) +
-    (activeIndustry !== 'All' ? 1 : 0);
+  const clearSearch = useCallback(() => {
+    setSearchInput('');
+    setSearchQuery('');
+  }, [setSearchQuery]);
 
   // Shipped ideas from DB, fall back to static
   const shippedFromDB = ideas.filter(i => i.status === 'shipped');
@@ -308,37 +285,9 @@ const IdeaSubmissionPage = () => {
     }
   };
 
-  const clearAllFilters = () => {
-    setActiveSource('all');
-    setActiveType('All');
-    setActiveIndustry('All');
-    setSortBy('hot');
-  };
-
   const handleSortChange = (v) => {
     setSortBy(v);
     setShowMoreSort(false);
-    trackEvent('ideas_sort_change', { sort_by: v });
-  };
-
-  const handleSourceChange = (v) => {
-    setActiveSource(v);
-    trackEvent('ideas_filter_change', { filter_type: 'source', filter_value: v });
-  };
-
-  const handleTypeChange = (v) => {
-    setActiveType(v);
-    trackEvent('ideas_filter_change', { filter_type: 'type', filter_value: v });
-  };
-
-  const handleIndustryChange = (v) => {
-    setActiveIndustry(v);
-    trackEvent('ideas_filter_change', { filter_type: 'industry', filter_value: v });
-  };
-
-  const handlePerPageChange = (v) => {
-    setPerPage(v);
-    trackEvent('ideas_filter_change', { filter_type: 'per_page', filter_value: v });
   };
 
   const handleOpenDrawer = (idea) => {
@@ -355,26 +304,21 @@ const IdeaSubmissionPage = () => {
   // "More" sort label - shows active label when a secondary sort is active
   const moreSortActive = sortOptions.find(o => !PRIMARY_SORTS.includes(o.value) && o.value === sortBy);
 
-  // Pagination helpers
-  const getPageNumbers = () => {
-    const pages = [];
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i);
-    } else {
-      pages.push(1);
-      if (currentPage > 3) pages.push('...');
-      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-        pages.push(i);
-      }
-      if (currentPage < totalPages - 2) pages.push('...');
-      pages.push(totalPages);
-    }
-    return pages;
-  };
-
   const ShippedIcon = ({ icon }) => {
     if (icon === 'activity') return <Activity className="w-5 h-5" />;
     return <Globe className="w-5 h-5" />;
+  };
+
+  // Most restrictive filter for smart empty state
+  const getMostRestrictiveFilter = () => {
+    if (activeFilters.length === 0) return null;
+    // Priority: search > confidence > min_score > verdict > industry > type > source
+    const priority = ['q', 'confidence', 'min_score', 'verdict', 'industry', 'type', 'source'];
+    for (const key of priority) {
+      const f = activeFilters.find(af => af.key === key);
+      if (f) return f;
+    }
+    return activeFilters[0];
   };
 
   return (
@@ -382,8 +326,8 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community. Scored by 3 AI frameworks with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, validation, competitive analysis, business opportunities, build verdict",
+          description: "Real problems from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community. Scored by 3 AI frameworks with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations with competitive intelligence.",
+          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-28 sm:pb-24"
@@ -402,18 +346,46 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}5 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + verdict{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}7 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
-            {/* Toolbar: 2 rows */}
+            {/* Toolbar */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.4 }}
               className="space-y-3 mb-4"
             >
-              {/* Row 1: Sort pills + More dropdown + Submit button */}
+              {/* Row 1: Search + Submit */}
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                  <input
+                    type="text"
+                    placeholder="Search ideas..."
+                    value={searchInput}
+                    onChange={handleSearchInput}
+                    className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                  />
+                  {searchInput && (
+                    <button
+                      onClick={clearSearch}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={openSubmitModal}
+                  className="hidden sm:inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0"
+                >
+                  Submit an idea <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Row 2: Sort pills + More dropdown + Filters toggle */}
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                   {sortOptions.filter(o => PRIMARY_SORTS.includes(o.value)).map((opt) => (
@@ -472,32 +444,6 @@ const IdeaSubmissionPage = () => {
                 </div>
 
                 <button
-                  onClick={openSubmitModal}
-                  className="hidden sm:inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0"
-                >
-                  Submit an idea <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Row 2: Source pills + Filters toggle */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                  {sourceOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleSourceChange(opt.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
-                        activeSource === opt.value
-                          ? 'bg-primary/10 text-primary border border-primary/30'
-                          : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-
-                <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
                     showFilters || activeFilterCount > 0
@@ -515,71 +461,100 @@ const IdeaSubmissionPage = () => {
                 </button>
               </div>
 
-              {/* Expandable filters: Type + Industry */}
-              <AnimatePresence>
-                {showFilters && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden space-y-3"
-                  >
-                    {/* Type filter */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-muted-foreground/60 shrink-0">Type:</span>
-                      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                        {['All', ...categories.map(c => c.value)].map((type) => (
-                          <button
-                            key={type}
-                            onClick={() => handleTypeChange(type)}
-                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
-                              activeType === type
-                                ? 'bg-primary/10 text-primary border border-primary/30'
-                                : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+              {/* Row 3: Source pills with counts */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                {sourceOptions.map((opt) => {
+                  const count = opt.value === 'all'
+                    ? sourceCounts.all
+                    : opt.value === 'community'
+                      ? sourceCounts.community
+                      : sourceCounts[opt.value];
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => setActiveSource(opt.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
+                        activeSource === opt.value
+                          ? 'bg-primary/10 text-primary border border-primary/30'
+                          : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
+                      }`}
+                    >
+                      {opt.label}
+                      {count > 0 && (
+                        <span className="ml-1 text-muted-foreground/40">{count}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
-                    {/* Industry filter */}
-                    {activeIndustries.length > 0 && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-muted-foreground/60 shrink-0">Industry:</span>
-                        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                          <button
-                            onClick={() => handleIndustryChange('All')}
-                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
-                              activeIndustry === 'All'
-                                ? 'bg-primary/10 text-primary border border-primary/30'
-                                : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
-                            }`}
-                          >
-                            All
-                          </button>
-                          {activeIndustries.map((ind) => (
-                            <button
-                              key={ind.value}
-                              onClick={() => handleIndustryChange(ind.value)}
-                              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
-                                activeIndustry === ind.value
-                                  ? 'bg-primary/10 text-primary border border-primary/30'
-                                  : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
-                              }`}
-                            >
-                              {ind.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Row 4: Verdict tabs with counts */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                {verdictOptions.map((opt) => {
+                  const count = verdictCounts[opt.value] || 0;
+                  const isActive = verdict === opt.value;
+                  const colorClass = opt.value === 'all'
+                    ? isActive
+                      ? 'bg-primary/10 text-primary border-primary/30'
+                      : 'text-muted-foreground hover:text-foreground bg-muted/50 border-transparent'
+                    : isActive
+                      ? VERDICT_COLORS[opt.value]
+                      : 'text-muted-foreground hover:text-foreground bg-muted/50 border-transparent';
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => setVerdict(opt.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors shrink-0 border ${colorClass}`}
+                    >
+                      {opt.label}
+                      {count > 0 && opt.value !== 'all' && (
+                        <span className="ml-1 opacity-60">{count}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Row 5: Active filter chips */}
+              {activeFilters.length > 0 && (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {activeFilters.map((chip) => (
+                    <span
+                      key={chip.key}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/30"
+                    >
+                      {chip.label}: {chip.value}
+                      <button
+                        onClick={chip.onRemove}
+                        className="ml-0.5 p-0.5 rounded-full hover:bg-primary/20 transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <button
+                    onClick={clearAllFilters}
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
+
+              {/* Expandable filter sheet (desktop inline) */}
+              <IdeaFilterSheet
+                show={showFilters}
+                onClose={() => setShowFilters(false)}
+                filters={filters}
+              />
             </motion.div>
+
+            {/* Result counter */}
+            {!loading && sorted.length > 0 && (
+              <div className="text-xs text-muted-foreground/60 font-medium mb-3 tabular-nums">
+                Showing {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, sorted.length)} of {sorted.length} ideas
+              </div>
+            )}
 
             {/* Ideas feed */}
             {loading ? (
@@ -593,7 +568,18 @@ const IdeaSubmissionPage = () => {
                 className="text-center py-20"
               >
                 <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium mb-3">No ideas match these filters.</p>
+                <p className="text-muted-foreground font-medium mb-3">No ideas match your filters.</p>
+                {(() => {
+                  const restrictive = getMostRestrictiveFilter();
+                  if (restrictive) {
+                    return (
+                      <p className="text-sm text-muted-foreground/60 mb-3">
+                        Try removing <button onClick={restrictive.onRemove} className="text-primary font-medium hover:underline">{restrictive.label}: {restrictive.value}</button> to see more ideas.
+                      </p>
+                    );
+                  }
+                  return null;
+                })()}
                 <button
                   onClick={clearAllFilters}
                   className="text-sm text-primary font-medium hover:underline"
@@ -619,24 +605,7 @@ const IdeaSubmissionPage = () => {
                 </motion.div>
 
                 {/* Pagination Bar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 px-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground/60 font-medium">Show:</span>
-                    {perPageOptions.map((n) => (
-                      <button
-                        key={n}
-                        onClick={() => handlePerPageChange(n)}
-                        className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
-                          perPage === n
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        {n}
-                      </button>
-                    ))}
-                  </div>
-
+                <div className="flex items-center justify-between gap-4 mt-6 px-1">
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
@@ -754,12 +723,12 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Every day we scan Reddit, ProblemHunt, Product Hunt, and X for real
-                      problems people are struggling with. Community members submit their own too. AI scores every idea
-                      using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning, then synthesizes a
-                      BUILD / VALIDATE / SKIP verdict. Top ideas get validated against
-                      real conversations on X and Reddit, with evidence confidence and competitive intelligence.
-                      The best ones get built.
+                      Every day we scan Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt,
+                      and X for real problems people are struggling with. Community members submit their own too.
+                      Every idea gets scored by AI using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning.
+                      The scores synthesize into a BUILD / VALIDATE / SKIP verdict with strengths, risks, and next steps.
+                      Top ideas then get validated against real conversations on X and Reddit. We map the competitive landscape:
+                      who the players are, what they charge, where they fall short. The best ones get built.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

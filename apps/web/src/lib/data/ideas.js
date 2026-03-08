@@ -64,6 +64,29 @@ export const sourceOptions = [
   { value: 'reddit', label: 'Reddit' },
   { value: 'producthunt', label: 'Product Hunt' },
   { value: 'x', label: 'X' },
+  { value: 'hackernews', label: 'Hacker News' },
+  { value: 'github', label: 'GitHub' },
+];
+
+export const verdictOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'BUILD', label: 'BUILD' },
+  { value: 'VALIDATE_FIRST', label: 'VALIDATE' },
+  { value: 'SKIP', label: 'SKIP' },
+];
+
+export const scoreThresholds = [
+  { value: 0, label: 'All' },
+  { value: 40, label: '\u226540' },
+  { value: 60, label: '\u226560' },
+  { value: 75, label: '\u226575' },
+];
+
+export const confidenceOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
 ];
 
 export const perPageOptions = [5, 10, 20, 50];
