@@ -47,7 +47,10 @@ Return ONLY this JSON (no markdown, no code fences). Keep it focused - max 3 que
     messages: [{ role: 'user', content: userPrompt }],
   });
 
-  const text = response.content[0].text.trim();
+  let text = response.content[0].text.trim();
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+  }
   return JSON.parse(text);
 }
 
@@ -157,7 +160,11 @@ Return ONLY this JSON (no markdown, no code fences):
     messages: [{ role: 'user', content: userPrompt }],
   });
 
-  const text = response.content[0].text.trim();
+  let text = response.content[0].text.trim();
+  // Strip markdown code fences if present
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+  }
   return JSON.parse(text);
 }
 
