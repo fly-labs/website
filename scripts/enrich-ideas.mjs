@@ -126,7 +126,7 @@ Return a JSON object with these fields:
 
     const data = await response.json();
     const messageItem = data.output?.find((item) => item.type === 'message');
-    const textContent = messageItem?.content?.find((c) => c.type === 'text');
+    const textContent = messageItem?.content?.find((c) => c.type === 'output_text' || c.type === 'text');
     if (!textContent?.text) return null;
 
     let text = textContent.text.trim();
@@ -207,7 +207,7 @@ Return a JSON object with these fields:
 
     const data = await response.json();
     const messageItem = data.output?.find((item) => item.type === 'message');
-    const textContent = messageItem?.content?.find((c) => c.type === 'text');
+    const textContent = messageItem?.content?.find((c) => c.type === 'output_text' || c.type === 'text');
     if (!textContent?.text) return null;
 
     let text = textContent.text.trim();

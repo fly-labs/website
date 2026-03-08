@@ -60,39 +60,12 @@ For each real problem found, extract the underlying pain point as a clear proble
 
 Map each problem to one of these industries: ${INDUSTRIES.join(', ')}
 
-Map each to a category: Tool, Template, Prompt, Article, or Other`;
+Map each to a category: Tool, Template, Prompt, Article, or Other
 
-const RESPONSE_SCHEMA = {
-  type: 'json_schema',
-  json_schema: {
-    name: 'x_problems',
-    strict: true,
-    schema: {
-      type: 'object',
-      properties: {
-        problems: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              problem_title: { type: 'string', description: 'Clear problem statement, max 150 chars, from user perspective' },
-              problem_description: { type: 'string', description: '2-3 sentences expanding on the problem' },
-              industry: { type: 'string', description: 'Industry from the provided list' },
-              category: { type: 'string', enum: ['Tool', 'Template', 'Prompt', 'Article', 'Other'] },
-              tweet_url: { type: 'string', description: 'URL of the tweet expressing this problem' },
-              author_handle: { type: 'string', description: 'Twitter handle without @' },
-              engagement_signal: { type: 'string', description: 'Brief note on likes/reposts/engagement' },
-            },
-            required: ['problem_title', 'problem_description', 'industry', 'category', 'tweet_url', 'author_handle', 'engagement_signal'],
-            additionalProperties: false,
-          },
-        },
-      },
-      required: ['problems'],
-      additionalProperties: false,
-    },
-  },
-};
+CRITICAL: For each problem you MUST include the real tweet URL (https://x.com/username/status/ID). Skip any problem where you cannot provide the actual tweet URL.
+
+Return ONLY valid JSON in this exact format:
+{"problems": [{"problem_title": "...", "problem_description": "...", "industry": "...", "category": "Tool", "tweet_url": "https://x.com/user/status/123", "author_handle": "user", "engagement_signal": "..."}]}`;
 
 function getRotatedPrompts() {
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
@@ -104,12 +77,19 @@ function getRotatedPrompts() {
 }
 
 function extractTweetId(url) {
+  if (!url) return null;
   // Match twitter.com or x.com status URLs
   const match = url.match(/(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/);
   return match ? match[1] : null;
 }
 
 async function searchX(prompt) {
+  const inputPrompt = `${SYSTEM_PROMPT}
+
+Search X/Twitter for: ${prompt}
+
+Find 5-10 real problems from recent tweets.`;
+
   const response = await fetch('https://api.x.ai/v1/responses', {
     method: 'POST',
     headers: {
@@ -119,8 +99,7 @@ async function searchX(prompt) {
     body: JSON.stringify({
       model: 'grok-4-1-fast',
       tools: [{ type: 'x_search' }],
-      input: `${SYSTEM_PROMPT}\n\nSearch for: ${prompt}\n\nFind 5-10 real problems from recent tweets. Return structured JSON.`,
-      response_format: RESPONSE_SCHEMA,
+      input: inputPrompt,
     }),
   });
 
@@ -137,7 +116,7 @@ async function searchX(prompt) {
     throw new Error('No message content in Grok response');
   }
 
-  const textContent = messageItem.content.find((c) => c.type === 'text');
+  const textContent = messageItem.content.find((c) => c.type === 'output_text' || c.type === 'text');
   if (!textContent?.text) {
     throw new Error('No text content in Grok response');
   }
@@ -148,20 +127,29 @@ async function searchX(prompt) {
     text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
   }
 
+  // Extract JSON object if there's extra text around it
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start > 0 || end < text.length - 1) {
+    text = text.slice(start, end + 1);
+  }
+
   return JSON.parse(text);
 }
 
 function transformProblem(problem) {
+  if (!problem?.problem_title || !problem?.tweet_url) return null;
   const tweetId = extractTweetId(problem.tweet_url);
   if (!tweetId) return null;
 
   // Validate industry is in our list
   const industry = INDUSTRIES.includes(problem.industry) ? problem.industry : 'Other';
+  const handle = problem.author_handle?.replace(/^@/, '') || 'unknown';
 
   return {
     idea_title: problem.problem_title.slice(0, 200),
     idea_description: problem.problem_description?.slice(0, 2000) || null,
-    category: problem.category || 'Tool',
+    category: ['Tool', 'Template', 'Prompt', 'Article', 'Other'].includes(problem.category) ? problem.category : 'Tool',
     industry,
     source: 'x',
     source_url: problem.tweet_url,
@@ -169,7 +157,7 @@ function transformProblem(problem) {
     tags: problem.engagement_signal || null,
     country: null,
     approved: true,
-    name: `@${problem.author_handle}`,
+    name: `@${handle}`,
     email: null,
   };
 }
