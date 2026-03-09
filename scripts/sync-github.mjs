@@ -113,7 +113,7 @@ async function aiBatchFilter(issues) {
   if (!anthropic || issues.length === 0) {
     return issues.map((i) => ({
       ...i,
-      _ai: { is_real_problem: true, category: 'Tool', reason: 'AI filter skipped' },
+      _ai: { is_real_problem: false, category: 'Tool', reason: 'AI filter skipped' },
     }));
   }
 
@@ -155,6 +155,7 @@ ACCEPT only when ALL of these are true:
 2. A founder could build a STANDALONE product to solve it (not a PR to this repo)
 3. Someone would realistically pay for the solution
 4. It's NOT a feature request that the maintainers of THIS project should implement themselves
+5. There are signals of pain severity (significant reactions, multiple people confirming, or workaround descriptions)
 
 Return ONLY valid JSON (no markdown, no code fences):
 {"results": [{"index": 0, "is_real_problem": true, "category": "Tool", "reason": "..."}, ...]}`,
@@ -185,7 +186,7 @@ Return ONLY valid JSON (no markdown, no code fences):
       console.warn(`  AI batch filter failed: ${err.message}. Passing batch through.`);
       for (const issue of batch) {
         if (!issue._ai)
-          issue._ai = { is_real_problem: true, category: 'Tool', reason: 'AI filter error' };
+          issue._ai = { is_real_problem: false, category: 'Tool', reason: 'AI filter error' };
       }
     }
 

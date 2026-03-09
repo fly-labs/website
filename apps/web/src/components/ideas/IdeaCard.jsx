@@ -71,7 +71,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
                 {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x' || idea.source === 'hackernews' || idea.source === 'github') && idea.source_url ? (
@@ -103,7 +103,16 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
             </div>
 
             {/* Score badges */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+              {idea.flylabs_score != null && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 text-[11px] font-bold tabular-nums hover:bg-indigo-500/20 transition-colors"
+                  title="Fly Labs Score"
+                >
+                  FL {idea.flylabs_score}
+                </button>
+              )}
               {idea.hormozi_score != null && (
                 <button
                   onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
@@ -163,7 +172,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (
-            <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-2 whitespace-pre-wrap">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2 line-clamp-3 sm:line-clamp-2 whitespace-pre-wrap">
               {idea.idea_description}
             </p>
           )}

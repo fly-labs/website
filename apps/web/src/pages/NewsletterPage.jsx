@@ -34,15 +34,15 @@ const NewsletterPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Fala Comigo Newsletter | Money, Career & Productivity for Builders",
-        description: "A free newsletter about money, business, career, and productivity. Written by Luiz Alves, CFA, for people who build things and want to get better at it.",
-        keywords: "newsletter, money, career, productivity, tech, Luiz Alves, CFA, falacomigo, Substack",
+        title: "Fala Comigo! | Vibe Building in Public",
+        description: "Vibe building in public. Follow along as I build digital assets in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way.",
+        keywords: "newsletter, vibe building, building in public, AI, digital assets, Luiz Alves, CFA, falacomigo, Substack",
         url: "https://flylabs.fun/newsletter",
         schema: {
           "@context": "https://schema.org",
           "@type": "Blog",
-          "name": "Fala Comigo",
-          "description": "A free newsletter about money, business, career, and productivity.",
+          "name": "Fala Comigo!",
+          "description": "Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building digital assets with AI.",
           "url": "https://falacomigo.substack.com",
           "author": { "@type": "Person", "name": "Luiz Alves" },
         },
@@ -62,10 +62,10 @@ const NewsletterPage = () => {
             Free on Substack
           </p>
           <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tight">
-            Fala <span className="text-primary">Comigo</span>
+            Fala <span className="text-primary">Comigo!</span>
           </h1>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-8">
-            Money, business, career, and productivity. Written for people who build things and want to get better at all of it. In English and Portuguese. By Luiz Alves, CFA. Always free.
+            Vibe building in public. Follow along as I build digital assets in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way. In English and Portuguese. Always free.
           </p>
           <a
             href="https://falacomigo.substack.com"
@@ -162,7 +162,7 @@ const NewsletterPage = () => {
         >
           <h2 className="text-3xl md:text-4xl font-black mb-4">Never miss an edition</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            I cover money, career, and building products in English and Portuguese. Subscribe on Substack and it lands in your inbox, always free.
+            I build digital stuff for fun using AI and document the process. Subscribe on Substack and it lands in your inbox, always free.
           </p>
           <a
             href="https://falacomigo.substack.com"

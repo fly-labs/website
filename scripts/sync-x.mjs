@@ -50,7 +50,9 @@ Evaluate each problem through these lenses:
 - Bruno Okamoto: Is this a MicroSaaS opportunity?
 - Hormozi: Is the pain severe enough that people would pay to solve it?
 
-Only include problems that pass at least 3 of these 5 lenses. Skip tweets that are:
+Only include problems that pass at least 3 of these 5 lenses. Additional quality filter: Only include problems where the target group is clearly aware of the pain, current solutions are insufficient, and there's willingness to act (not just venting).
+
+Skip tweets that are:
 - Self-promotion or product launches
 - Jokes or memes
 - Generic complaints without actionable problems

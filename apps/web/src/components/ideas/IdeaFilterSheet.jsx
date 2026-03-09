@@ -52,7 +52,7 @@ const IdeaFilterSheet = ({
               <div className="w-10 h-1 rounded-full bg-muted-foreground/20 mx-auto mb-3" />
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-sm">Filters</h3>
-                <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors">
+                <button onClick={onClose} className="p-3 rounded-lg hover:bg-muted text-muted-foreground transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -145,7 +145,7 @@ const FilterSections = ({
           <button
             key={type}
             onClick={() => setActiveType(type)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
               activeType === type
                 ? 'bg-primary/10 text-primary border border-primary/30'
                 : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
@@ -167,7 +167,7 @@ const FilterSections = ({
         <div className="flex gap-1.5 flex-wrap">
           <button
             onClick={() => setActiveIndustry('All')}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
               activeIndustry === 'All'
                 ? 'bg-primary/10 text-primary border border-primary/30'
                 : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
@@ -182,7 +182,7 @@ const FilterSections = ({
             <button
               key={ind.value}
               onClick={() => setActiveIndustry(ind.value)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
                 activeIndustry === ind.value
                   ? 'bg-primary/10 text-primary border border-primary/30'
                   : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
@@ -206,7 +206,7 @@ const FilterSections = ({
           <button
             key={opt.value}
             onClick={() => setMinScore(opt.value)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
               minScore === opt.value
                 ? 'bg-primary/10 text-primary border border-primary/30'
                 : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
@@ -226,7 +226,7 @@ const FilterSections = ({
           <button
             key={opt.value}
             onClick={() => setConfidence(opt.value)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
               confidence === opt.value
                 ? 'bg-primary/10 text-primary border border-primary/30'
                 : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
@@ -249,7 +249,7 @@ const FilterSections = ({
           <button
             key={n}
             onClick={() => setPerPage(n)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors ${
               perPage === n
                 ? 'bg-primary/10 text-primary border border-primary/30'
                 : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'

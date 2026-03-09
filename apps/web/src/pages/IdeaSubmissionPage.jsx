@@ -137,10 +137,10 @@ const IdeaSubmissionPage = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showMoreSort]);
 
-  // Sync searchInput with URL state (on mount)
+  // Sync searchInput with URL state
   useEffect(() => {
     setSearchInput(searchQuery);
-  }, []);
+  }, [searchQuery]);
 
   // Debounced search
   const handleSearchInput = useCallback((e) => {
@@ -259,7 +259,7 @@ const IdeaSubmissionPage = () => {
 
       toast({
         title: 'Idea received!',
-        description: "It'll be AI-scored with 3 frameworks and given a verdict. Top ideas get validated against real conversations.",
+        description: "It'll be scored with the Fly Labs Method and 3 expert frameworks, given a verdict, and top ideas get validated against real conversations.",
       });
 
       setFormData({
@@ -326,7 +326,7 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community. Scored by 3 AI frameworks with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations with competitive intelligence.",
+          description: "Real problems from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community. Scored by 4 AI frameworks (Fly Labs Method + Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations with competitive intelligence.",
           keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
@@ -366,12 +366,12 @@ const IdeaSubmissionPage = () => {
                     placeholder="Search ideas..."
                     value={searchInput}
                     onChange={handleSearchInput}
-                    className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
+                    className="w-full h-10 pl-9 pr-8 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                   />
                   {searchInput && (
                     <button
                       onClick={clearSearch}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded hover:bg-muted text-muted-foreground transition-colors"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -386,7 +386,7 @@ const IdeaSubmissionPage = () => {
               </div>
 
               {/* Row 2: Sort pills + More dropdown + Filters toggle */}
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div className="flex items-center gap-1.5">
                   {sortOptions.filter(o => PRIMARY_SORTS.includes(o.value)).map((opt) => (
                     <button
@@ -462,7 +462,7 @@ const IdeaSubmissionPage = () => {
               </div>
 
               {/* Row 3: Source pills with counts */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {sourceOptions.map((opt) => {
                   const count = opt.value === 'all'
                     ? sourceCounts.all
@@ -489,7 +489,7 @@ const IdeaSubmissionPage = () => {
               </div>
 
               {/* Row 4: Verdict tabs with counts */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {verdictOptions.map((opt) => {
                   const count = verdictCounts[opt.value] || 0;
                   const isActive = verdict === opt.value;
@@ -723,12 +723,11 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Every day we scan Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt,
-                      and X for real problems people are struggling with. Community members submit their own too.
-                      Every idea gets scored by AI using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning.
-                      The scores synthesize into a BUILD / VALIDATE / SKIP verdict with strengths, risks, and next steps.
-                      Top ideas then get validated against real conversations on X and Reddit. We map the competitive landscape:
-                      who the players are, what they charge, where they fall short. The best ones get built.
+                      We scan 7 sources daily: Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt,
+                      X, and community submissions. Every idea gets scored by AI using the Fly Labs Method
+                      and 3 expert frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning,
+                      then synthesized into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated
+                      against real conversations on X and Reddit, with competitive intelligence mapped.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

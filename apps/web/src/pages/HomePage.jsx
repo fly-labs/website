@@ -49,7 +49,7 @@ const pillars = [
   {
     title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems from Reddit, Hacker News, GitHub, Product Hunt, X, and more. AI-scored with 3 frameworks, given a BUILD/VALIDATE/SKIP verdict, validated against real conversations, and mapped against the competitive landscape. Free ideation intelligence for vibe builders.',
+    description: 'Real problems from Reddit, Hacker News, GitHub, Product Hunt, X, ProblemHunt, and the community. AI-scored with the Fly Labs Method + 3 expert frameworks, given a BUILD/VALIDATE/SKIP verdict, validated against real conversations, and mapped against the competitive landscape. Free ideation intelligence for vibe builders.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
@@ -226,7 +226,7 @@ const HomePage = () => {
             Every project started as a real problem.
           </h2>
           <p className="text-muted-foreground font-medium leading-relaxed mb-8 max-w-xl mx-auto">
-            I write about what I learn along the way. Building, shipping, and the lessons in between.
+            I build digital stuff for fun using AI and document the process. The newsletter covers what I build, what breaks, and what I figure out along the way.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link

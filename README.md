@@ -14,8 +14,8 @@ Built by one person with AI. Open source.
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Lab** - Community submissions + real-world problems from 7 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the community. Every idea scored by AI using Hormozi, Dan Koe, and Okamoto frameworks with per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
-- **Scoring Frameworks** - Full breakdown of AI scoring frameworks (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
+- **Idea Lab** - Community submissions + real-world problems from 7 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the community. Every idea scored by AI using 4 frameworks: the Fly Labs Method (problem-solution fit for vibe builders) + Hormozi, Dan Koe, and Okamoto as expert perspectives. Per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Scoring Frameworks** - Full breakdown of AI scoring: Fly Labs Method (4 dimensions: Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus 3 expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
 - **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
@@ -105,7 +105,7 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run sync:x` | Sync problems from X/Twitter via Grok xAI API with x_search tool |
 | `npm run sync:hackernews` | Sync problems from Hacker News (Firebase API + Claude AI filter) |
 | `npm run sync:github` | Sync feature requests from GitHub Issues (Search API + Claude AI filter) |
-| `npm run score` | Score unscored ideas with Claude Sonnet (Hormozi + Dan Koe + Okamoto + synthesis verdict) |
+| `npm run score` | Score unscored ideas with Claude Sonnet (Fly Labs Method + Hormozi + Dan Koe + Okamoto + synthesis verdict) |
 | `npm run enrich` | Validate top-scoring ideas with Grok x_search (primary) + Reddit (secondary) |
 
 ## Project Structure
@@ -166,7 +166,7 @@ apps/web/
 | `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
-| `/scoring` | Scoring Frameworks (Hormozi + Dan Koe + Okamoto + Validation) | Public |
+| `/scoring` | Scoring Frameworks (Fly Labs Method + Hormozi + Dan Koe + Okamoto + Validation) | Public |
 | `/library` | Library (ebooks, topic filter, waitlist) | Public |
 | `/prompts` | AI Prompt Library | Hybrid (5 public, full for members) |
 | `/microsaas` | Micro Tools | Public (waitlist capture) |
@@ -185,7 +185,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + ProblemHunt + Reddit + Product Hunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', or 'producthunt'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, created_at
+**ideas** - Community idea submissions + ProblemHunt + Reddit + Product Hunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', 'producthunt', 'x', 'hackernews', or 'github'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, created_at
 
 **idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 

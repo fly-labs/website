@@ -148,6 +148,11 @@ Given a Product Hunt product, return ONLY this JSON (no markdown, no code fences
   "is_real_problem": true/false
 }
 
+A "good problem" (evaluate strictly):
+- A specific target group is aware they have this problem
+- Current solutions are genuinely unsatisfying
+- The pain is strong enough that people would try something new
+
 Set is_real_problem to false if:
 - The product is just a new AI model, framework, or platform without a clear user pain
 - The product is entertainment, social, or a game

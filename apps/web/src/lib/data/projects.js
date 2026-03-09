@@ -79,7 +79,7 @@ export const projects = [
   },
   {
     title: 'The Newsletter',
-    description: 'Money, career, and building products. Written in English and Portuguese for builders who refuse to stay still.',
+    description: 'Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building digital assets with AI.',
     icon: Mail,
     link: '/newsletter',
     color: 'text-purple-500',
@@ -103,7 +103,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: 'Real problems from Reddit, ProblemHunt, Product Hunt, X, and the community. AI-scored and validated against real market data. The best ones get built.',
+    description: 'Real problems from Reddit, Hacker News, GitHub, Product Hunt, X, ProblemHunt, and the community. AI-scored with the Fly Labs Method + 3 expert frameworks and validated against real market data. The best ones get built.',
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

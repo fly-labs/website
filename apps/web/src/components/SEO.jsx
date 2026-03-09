@@ -24,7 +24,7 @@ export const SEO = ({
       "logo": "https://flylabs.fun/images/og-logo.png",
       "sameAs": [
         "https://www.youtube.com/@falacomigoyt",
-        "https://substack.com/@falacomigo",
+        "https://falacomigo.substack.com",
         "https://github.com/fly-labs/"
       ]
     },

@@ -23,11 +23,41 @@ const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
 const scoreAll = process.argv.includes('--all');
 
-const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using three frameworks, provide per-pillar reasoning, and synthesize a final verdict. Return ONLY valid JSON.
+const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using four frameworks, provide per-pillar reasoning, and synthesize a final verdict. Return ONLY valid JSON.
+
+**Fly Labs Method (0-100)** - Problem-Solution Fit for Vibe Builders
+Evaluate from the perspective of a solo builder with AI tools and limited time.
+The 4 questions every vibe builder should ask before building:
+
+1. Problem Clarity (30pts): Is this problem REAL and FELT?
+   - Existence & Awareness (0-10): Do real people actively experience and discuss this pain? A hidden or suppressed problem is unwanted. Look for signals: people searching for solutions, discussing frustrations, creating workarounds.
+   - Specificity (0-10): Is it concrete enough to build a targeted solution? "Communication is hard" scores low. "Remote teams waste 30 min/day switching between chat and project management tools" scores high.
+   - Severity (0-10): How painful? Daily frustration (10) vs mild annual inconvenience (2). Consider frequency, time wasted, money lost, emotional impact.
+
+2. Solution Gap (25pts): Is there ROOM for something new?
+   - Alternative Quality (0-10): How good are existing solutions? If current tools handle 90% of the need, score low. If people are using spreadsheets and duct tape, score high.
+   - Addressable Complaints (0-8): Are there specific, fixable weaknesses in current solutions? Generic "it's expensive" scores low. "Zapier breaks when webhooks timeout and there's no retry logic" scores high.
+   - Whitespace (0-7): Is there market space for a new entrant? Consider positioning gaps, underserved segments, pricing tiers nobody occupies.
+
+3. Willingness to Act (25pts): Would people actually DO something?
+   - Switching Motivation (0-10): Is the pain strong enough to overcome inertia? People hate switching tools. The problem must be painful enough to justify the effort.
+   - Payment Signals (0-8): Evidence people would pay. Explicit statements ("I'd pay for this"), pricing discussions, complaints about free tools being insufficient, workaround effort (time = money).
+   - Urgency (0-7): Is this "need it now" or "maybe someday"? Growing problems score higher. Problems getting worse with scale score higher.
+
+4. Buildability (20pts): Can a VIBE BUILDER ship this?
+   - Solo Feasibility (0-8): Can one person with AI tools (Claude, Cursor, no-code platforms) build an MVP? Consider technical complexity, integrations needed, infrastructure requirements.
+   - Speed to Market (0-7): Can a useful v1 ship in days or weeks, not months? The best vibe building projects start small and iterate.
+   - Compound Value (0-5): Does building this teach skills or create assets useful for the next project? Does it generate content? Does it compound?
+
+Provide per-dimension reasoning (one sentence each explaining the score).
 
 **Hormozi Evaluation (0-100)** based on Alex Hormozi's $100M framework:
 - Market Viability (20pts): Massive Pain (0-7), Purchasing Power (0-7), Easy to Target (0-6)
-- Value Equation (25pts): Dream Outcome (0-8), Likelihood of Achievement (0-9), Speed to Results (0-4), Low Effort Required (0-4)
+- Value Equation (25pts) - Hormozi's perceived value formula: Value = (Dream Outcome x Likelihood) / (Time Delay x Effort)
+  - Dream Outcome (0-7): The REAL dream the customer wants, not just the feature you're delivering. What transformation are they buying? Score high if the outcome connects to a deep desire (save time, make money, reduce stress), low if it's incremental improvement.
+  - Perceived Likelihood (0-6): How likely does the customer BELIEVE your solution will work? Score based on proof signals (testimonials, demos, guarantees, social proof), not actual efficacy. A solution can be great but score low if it's hard to believe.
+  - Speed to First Result (0-6): Time to FIRST visible result, not full transformation. Can the user see value in minutes (score 6) or does it take months (score 1)? The first "aha moment" determines retention.
+  - Low Effort/Sacrifice (0-6): Perceived effort or sacrifice in the customer journey. Switching costs, learning curve, data migration, behavior change. Score high if frictionless, low if requires significant lifestyle or workflow changes.
 - Market Growth & Timing (15pts): Market Trajectory (0-8), Timing Fit (0-7)
 - Offer Differentiation (20pts): Competitive Moat (0-7), Offer Stacking (0-6), Pricing Power (0-7)
 - Execution Feasibility (20pts): Build Complexity (0-7), GTM Clarity (0-7), Resource Requirements (0-6)
@@ -48,23 +78,30 @@ const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. Yo
 - Business Model (15pts): Monetization Clarity (0-5), Willingness to Pay (0-5), Pricing Power (0-5). Is there a clear path to revenue?
 - Assumption Risk (10pts): Testability (0-5), Critical Assumptions (0-5). How testable are the core assumptions?
 - Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
-Decision: FOLLOW (>=70), ADJUST (40-69), or PIVOT (<40) based on total score.
-
-**Synthesis** - After scoring all three frameworks, cross-reference them and produce a final verdict:
-- composite_score: weighted average (35% hormozi + 30% koe + 35% okamoto)
+**Synthesis** - After scoring all four frameworks, cross-reference them and produce a final verdict:
+- composite_score: weighted average (40% flylabs + 20% hormozi + 20% koe + 20% okamoto)
 - verdict rules:
-  - BUILD: composite >= 70 AND no single framework below 40. Strong signal across all lenses.
-  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but one framework below 40. Promising but has gaps.
+  - BUILD: composite >= 70 AND flylabs >= 60 AND no single framework below 30. Strong signal across all lenses.
+  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or any framework below 30. Promising but has gaps.
   - SKIP: composite < 45. Not viable for a solo builder right now.
 
 IMPORTANT: For each pillar, include a "reasoning" string (one sentence explaining the score). For each framework, include a "reasoning" string (2-3 sentences on what drives the score up and what holds it back).
 
 Return ONLY this JSON structure (no markdown, no code fences):
 {
+  "flylabs": {
+    "total": <number 0-100>,
+    "problem_clarity": { "score": <0-30>, "max": 30, "existence": <0-10>, "specificity": <0-10>, "severity": <0-10>, "reasoning": "..." },
+    "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-10>, "addressable_complaints": <0-8>, "whitespace": <0-7>, "reasoning": "..." },
+    "willingness": { "score": <0-25>, "max": 25, "switching_motivation": <0-10>, "payment_signals": <0-8>, "urgency": <0-7>, "reasoning": "..." },
+    "buildability": { "score": <0-20>, "max": 20, "solo_feasibility": <0-8>, "speed_to_market": <0-7>, "compound_value": <0-5>, "reasoning": "..." },
+    "summary": "<one-line>",
+    "reasoning": "<2-3 sentences>"
+  },
   "hormozi": {
     "total": <number 0-100>,
     "market_viability": { "score": <0-20>, "max": 20, "pain": <0-7>, "purchasing_power": <0-7>, "targeting": <0-6>, "reasoning": "..." },
-    "value_equation": { "score": <0-25>, "max": 25, "dream_outcome": <0-8>, "likelihood": <0-9>, "speed": <0-4>, "effort": <0-4>, "reasoning": "..." },
+    "value_equation": { "score": <0-25>, "max": 25, "dream_outcome": <0-7>, "likelihood": <0-6>, "speed": <0-6>, "effort": <0-6>, "reasoning": "..." },
     "market_growth": { "score": <0-15>, "max": 15, "trajectory": <0-8>, "timing": <0-7>, "reasoning": "..." },
     "differentiation": { "score": <0-20>, "max": 20, "moat": <0-7>, "stacking": <0-6>, "pricing": <0-7>, "reasoning": "..." },
     "feasibility": { "score": <0-20>, "max": 20, "build": <0-7>, "gtm": <0-7>, "resources": <0-6>, "reasoning": "..." },
@@ -91,7 +128,6 @@ Return ONLY this JSON structure (no markdown, no code fences):
     "business_model": { "score": <0-15>, "max": 15, "monetization_clarity": <0-5>, "willingness_to_pay": <0-5>, "pricing_power": <0-5>, "reasoning": "..." },
     "assumption_risk": { "score": <0-10>, "max": 10, "testability": <0-5>, "critical_assumptions": <0-5>, "reasoning": "..." },
     "validation_readiness": { "score": <0-10>, "max": 10, "experiment_feasibility": <0-5>, "evidence_availability": <0-5>, "reasoning": "..." },
-    "decision": "<FOLLOW|ADJUST|PIVOT>",
     "summary": "<one-line validation-focused assessment>",
     "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
   },
@@ -102,7 +138,7 @@ Return ONLY this JSON structure (no markdown, no code fences):
     "strengths": ["strength 1", "strength 2"],
     "risks": ["risk 1", "risk 2"],
     "next_steps": ["step 1", "step 2", "step 3"],
-    "reasoning": "<2-3 sentences explaining the verdict by cross-referencing all three frameworks>"
+    "reasoning": "<2-3 sentences explaining the verdict by cross-referencing all four frameworks>"
   }
 }`;
 
@@ -119,7 +155,7 @@ async function scoreIdea(idea) {
     try {
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 3000,
+        max_tokens: 4000,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       });
@@ -130,7 +166,7 @@ async function scoreIdea(idea) {
       }
       const parsed = JSON.parse(text);
 
-      if (typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {
+      if (typeof parsed.flylabs?.total !== 'number' || typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {
         throw new Error('Invalid score structure');
       }
 
@@ -152,16 +188,16 @@ function sleep(ms) {
 }
 
 async function main() {
-  // Fetch ideas to score: missing ANY of the 3 scores, or --all to re-score everything
+  // Fetch ideas to score: missing ANY of the 4 scores, or --all to re-score everything
   let ideas = [];
   if (scoreAll) {
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true).limit(MAX_IDEAS_PER_RUN);
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
   } else {
-    // Fetch ideas missing any score (hormozi, koe, or okamoto)
+    // Fetch ideas missing any score (flylabs, hormozi, koe, or okamoto)
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
-      .or('hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null')
+      .or('flylabs_score.is.null,hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null')
       .limit(MAX_IDEAS_PER_RUN);
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
@@ -185,6 +221,7 @@ async function main() {
         const { error: updateErr } = await supabase
           .from('ideas')
           .update({
+            flylabs_score: result.flylabs.total,
             hormozi_score: result.hormozi.total,
             koe_score: result.koe.total,
             okamoto_score: result.okamoto.total,
@@ -196,7 +233,7 @@ async function main() {
           console.log('DB error:', updateErr.message);
           failed++;
         } else {
-          console.log(`H:${result.hormozi.total} K:${result.koe.total} B:${result.okamoto.total}`);
+          console.log(`F:${result.flylabs.total} H:${result.hormozi.total} K:${result.koe.total} B:${result.okamoto.total}`);
           scored++;
         }
       } else {

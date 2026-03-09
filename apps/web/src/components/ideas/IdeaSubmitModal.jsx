@@ -48,12 +48,13 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent/5 border border-accent/10 mb-4">
               <Zap className="w-4 h-4 text-accent shrink-0" />
               <p className="text-xs text-muted-foreground">
-                Your idea will be scored by AI using{' '}
+                Your idea will be scored by AI using the{' '}
+                <span className="font-semibold text-foreground">Fly Labs Method</span> +{' '}
                 <span className="font-semibold text-foreground">Hormozi</span>,{' '}
                 <span className="font-semibold text-foreground">Dan Koe</span>, and{' '}
                 <span className="font-semibold text-foreground">Okamoto</span> frameworks,
                 then given a BUILD / VALIDATE / SKIP verdict with reasoning.
-                Top ideas get validated against real market conversations and competitive intelligence mapped.
+                Top ideas get validated against real conversations on X and Reddit.
               </p>
             </div>
 

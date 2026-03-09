@@ -51,13 +51,13 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-        className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-lg bg-card border-l border-border shadow-2xl overflow-y-auto"
+        className="fixed top-0 right-0 bottom-0 z-50 w-full sm:max-w-lg bg-card border-l border-border shadow-2xl overflow-y-auto"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-card/95 backdrop-blur-sm">
           <h2 className="text-lg font-bold truncate">Idea Analysis</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
+            className="p-3 rounded-lg hover:bg-muted text-muted-foreground transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -137,8 +137,8 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
 
             return (
               <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
-                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on 3 AI frameworks + real market evidence</p>
-                <div className="flex items-center justify-between">
+                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on 4 AI frameworks + real market evidence</p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
                   {compositeScore != null && (
                     <div className="flex items-center gap-2">
@@ -185,6 +185,70 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
               </div>
             );
           })()}
+
+          {/* Fly Labs Method */}
+          {idea.score_breakdown?.flylabs && (() => {
+            const fl = idea.score_breakdown.flylabs;
+            const tier = getScoreTier(fl.total);
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-indigo-500">Fly Labs Method</h4>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-black tabular-nums text-indigo-500">{fl.total}</span>
+                    <span className="text-xs text-muted-foreground/60">/100</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${tier.bg} ${tier.color}`}>{tier.label}</span>
+                  </div>
+                </div>
+
+                {fl.summary && (
+                  <p className="text-sm text-muted-foreground italic">"{fl.summary}"</p>
+                )}
+                {fl.reasoning && (
+                  <p className="text-xs text-muted-foreground">{fl.reasoning}</p>
+                )}
+
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">Problem Clarity</span>
+                    </div>
+                    <ScoreBar score={fl.problem_clarity?.score || 0} max={fl.problem_clarity?.max || 30} color="bg-indigo-500" />
+                    {fl.problem_clarity?.reasoning && <p className="text-xs text-muted-foreground mt-1">{fl.problem_clarity.reasoning}</p>}
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">Solution Gap</span>
+                    </div>
+                    <ScoreBar score={fl.solution_gap?.score || 0} max={fl.solution_gap?.max || 25} color="bg-indigo-500" />
+                    {fl.solution_gap?.reasoning && <p className="text-xs text-muted-foreground mt-1">{fl.solution_gap.reasoning}</p>}
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">Willingness to Act</span>
+                    </div>
+                    <ScoreBar score={fl.willingness?.score || 0} max={fl.willingness?.max || 25} color="bg-indigo-500" />
+                    {fl.willingness?.reasoning && <p className="text-xs text-muted-foreground mt-1">{fl.willingness.reasoning}</p>}
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">Buildability</span>
+                    </div>
+                    <ScoreBar score={fl.buildability?.score || 0} max={fl.buildability?.max || 20} color="bg-indigo-500" />
+                    {fl.buildability?.reasoning && <p className="text-xs text-muted-foreground mt-1">{fl.buildability.reasoning}</p>}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Expert Perspectives divider */}
+          {(idea.score_breakdown?.hormozi || idea.score_breakdown?.koe || idea.score_breakdown?.okamoto) && (
+            <div className="flex items-center gap-3 pt-2">
+              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">Expert Perspectives</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+          )}
 
           {/* Hormozi Score */}
           {idea.score_breakdown?.hormozi && (() => {
@@ -316,12 +380,6 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
           {idea.score_breakdown?.okamoto && (() => {
             const o = idea.score_breakdown.okamoto;
             const tier = getScoreTier(o.total);
-            const decisionColors = {
-              FOLLOW: { bg: 'bg-primary/10', text: 'text-primary' },
-              ADJUST: { bg: 'bg-amber-500/10', text: 'text-amber-500' },
-              PIVOT: { bg: 'bg-red-500/10', text: 'text-red-500' },
-            };
-            const dc = decisionColors[o.decision] || decisionColors.ADJUST;
             return (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -338,12 +396,6 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 )}
                 {o.reasoning && (
                   <p className="text-xs text-muted-foreground">{o.reasoning}</p>
-                )}
-
-                {o.decision && (
-                  <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${dc.bg} ${dc.text}`}>
-                    {o.decision}
-                  </div>
                 )}
 
                 <div className="space-y-3">
@@ -382,7 +434,15 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             );
           })()}
 
-          {/* Reddit Validation */}
+          {/* Market Evidence divider */}
+          {(idea.enrichment?.validation || idea.enrichment?.competitors) && (
+            <div className="flex items-center gap-3 pt-2">
+              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">Market Evidence</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+          )}
+
+          {/* Market Validation */}
           {idea.enrichment?.validation && (() => {
             const v = idea.enrichment.validation;
             const tier = getScoreTier(v.strength);
@@ -488,9 +548,9 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 {c.products?.length > 0 && (
                   <div className="space-y-3">
                     {c.products.map((p, i) => (
-                      <div key={i} className="border-l-2 border-yellow-500 pl-3 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold">{p.name}</span>
+                      <div key={i} className="border-l-2 border-yellow-500 pl-3 space-y-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <span className="text-sm font-bold truncate">{p.name}</span>
                           {p.pricing && <span className="text-xs text-muted-foreground">{p.pricing}</span>}
                         </div>
                         {p.positioning && <p className="text-xs text-muted-foreground">{p.positioning}</p>}
@@ -546,15 +606,19 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             </summary>
             <div className="mt-3 space-y-3 text-sm text-muted-foreground leading-relaxed">
               <p>
-                <strong className="text-foreground">Verdict</strong> synthesizes all three framework scores
+                <strong className="text-foreground">Verdict</strong> synthesizes all four framework scores
                 into a single BUILD / VALIDATE FIRST / SKIP recommendation with a composite score,
                 strengths, risks, and concrete next steps. When market validation data exists,
                 the verdict incorporates real evidence for the most informed recommendation.
               </p>
               <p>
+                <strong className="text-foreground">Fly Labs Method</strong> evaluates problem-solution fit
+                through 4 questions every vibe builder should ask: Is the problem real? Is there room for
+                something new? Would people act? Can I ship this?
+              </p>
+              <p>
                 <strong className="text-foreground">Hormozi Score</strong> evaluates through Alex Hormozi's $100M framework:
                 market pain, value equation, growth timing, differentiation, and execution feasibility.
-                Each pillar includes reasoning explaining the score.
               </p>
               <p>
                 <strong className="text-foreground">Dan Koe Score</strong> evaluates through the one-person business lens:
@@ -564,7 +628,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
               <p>
                 <strong className="text-foreground">Okamoto Score</strong> evaluates through Bruno Okamoto's MicroSaaS validation lens:
                 target audience, value proposition, distribution, business model,
-                assumption risk, and validation readiness. Includes a FOLLOW/ADJUST/PIVOT decision.
+                assumption risk, and validation readiness.
               </p>
               <p>
                 <strong className="text-foreground">Market Validation</strong> cross-validates ideas

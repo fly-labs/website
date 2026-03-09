@@ -10,6 +10,41 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 
+const flylabsDimensions = [
+  {
+    title: 'Problem Clarity',
+    points: 30,
+    icon: Eye,
+    question: 'Is this problem real?',
+    items: ['Existence & Awareness', 'Specificity', 'Severity'],
+    color: 'border-indigo-500',
+  },
+  {
+    title: 'Solution Gap',
+    points: 25,
+    icon: Search,
+    question: 'Is there room for something new?',
+    items: ['Alternative Quality', 'Addressable Complaints', 'Whitespace'],
+    color: 'border-indigo-500',
+  },
+  {
+    title: 'Willingness to Act',
+    points: 25,
+    icon: Zap,
+    question: 'Would people actually act?',
+    items: ['Switching Motivation', 'Payment Signals', 'Urgency'],
+    color: 'border-indigo-500',
+  },
+  {
+    title: 'Buildability',
+    points: 20,
+    icon: Rocket,
+    question: 'Can I ship this?',
+    items: ['Solo Feasibility', 'Speed to Market', 'Compound Value'],
+    color: 'border-indigo-500',
+  },
+];
+
 const hormoziPillars = [
   {
     title: 'Market Viability',
@@ -22,7 +57,7 @@ const hormoziPillars = [
     title: 'Value Equation',
     points: 25,
     icon: Lightbulb,
-    items: ['Dream Outcome', 'Likelihood', 'Speed', 'Low Effort'],
+    items: ['Dream Outcome (0-7)', 'Perceived Likelihood (0-6)', 'Speed to First Result (0-6)', 'Low Effort/Sacrifice (0-6)'],
     color: 'border-secondary',
   },
   {
@@ -153,13 +188,21 @@ const scoreTiers = [
   { range: '0-29', label: 'Risky', color: 'text-red-500', bg: 'bg-red-500/10', border: 'border-red-500/20' },
 ];
 
+const cycleStages = [
+  { label: 'Ideation', active: true },
+  { label: 'Build', active: false },
+  { label: 'Market', active: false },
+  { label: 'Close', active: false },
+  { label: 'Compound', active: false },
+];
+
 const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Scoring, Verdicts & Validation - Hormozi, Dan Koe, Okamoto + Market Evidence",
-        description: "How we score, reason, and verdict every idea with AI. 7 sources, three frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, a BUILD/VALIDATE/SKIP synthesis verdict, plus market validation with evidence confidence from X and Reddit, and competitive intelligence.",
-        keywords: "idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis, X validation, Reddit validation, market research",
+        title: "Fly Labs Method + AI Scoring, Verdicts & Validation",
+        description: "How the Idea Lab evaluates every idea. The Fly Labs Method (problem-solution fit for vibe builders) plus Hormozi, Dan Koe, and Okamoto frameworks. 7 sources, 4 frameworks, market validation, one verdict.",
+        keywords: "Fly Labs Method, vibe building, problem-solution fit, ideation, idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis",
         url: "https://flylabs.fun/scoring",
       }}
       className="pt-32 pb-24"
@@ -177,13 +220,42 @@ const ScoringFrameworksPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Ideas from 7 sources get AI-scored using three frameworks with per-pillar reasoning, synthesized into a verdict, validated against real market evidence, and mapped against the competitive landscape.
+              Every idea gets evaluated through the Fly Labs Method and 3 expert frameworks, then validated against real conversations. 7 sources, 4 frameworks, one verdict.
+            </p>
+          </motion.div>
+
+          {/* Vibe Building Cycle */}
+          <motion.div
+            {...fadeUp}
+            className="mb-16"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-4">
+              {cycleStages.map((stage, i) => (
+                <React.Fragment key={stage.label}>
+                  {i > 0 && (
+                    <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/30 hidden sm:block shrink-0" />
+                  )}
+                  <div
+                    className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
+                      stage.active
+                        ? 'bg-primary/10 text-primary border-primary/30 shadow-sm shadow-primary/10'
+                        : 'bg-muted/30 text-muted-foreground/50 border-border/50'
+                    }`}
+                  >
+                    {stage.label}
+                    {!stage.active && <span className="text-[10px] ml-1 opacity-60">soon</span>}
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+            <p className="text-center text-sm text-muted-foreground max-w-xl mx-auto">
+              The Idea Lab covers Stage 1 of the vibe building cycle: finding problems worth solving. The Fly Labs Method is how we separate signal from noise.
             </p>
           </motion.div>
 
@@ -198,16 +270,66 @@ const ScoringFrameworksPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                I built this system because every framework answers a different question. Hormozi asks "Is this a $100M business?" Koe asks "Can one person build this?" Okamoto asks "Can you validate this before building?" And the validation layer asks "Is the pain real?" - not by guessing, but by searching real conversations on X and Reddit, finding actual evidence from real users. Together they filter signal from noise.
+                I built this system because the hardest part of building is knowing WHAT to build. The Fly Labs Method asks the 4 questions that matter: Is the problem real? Is there room for something new? Would people act? Can I ship this? The expert frameworks add depth. The market validation adds evidence. Together they give you everything you need to decide: build, validate, or move on.
               </p>
             </div>
           </motion.div>
+
+          {/* Fly Labs Method Section */}
+          <div className="mb-24">
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-500 font-bold text-sm border border-indigo-500/20 mb-4">
+                <Lightbulb className="w-4 h-4" /> Our Method
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Fly Labs Method</h2>
+              <p className="text-lg text-muted-foreground font-medium mb-2">Problem-Solution Fit for Vibe Builders</p>
+              <p className="text-muted-foreground leading-relaxed max-w-3xl">
+                The 4 questions every vibe builder should ask before writing a line of code. Evaluates from the perspective of a solo builder with AI tools and limited time.
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {flylabsDimensions.map((dim, i) => (
+                <motion.div
+                  key={dim.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  className={`card-playful p-5 bg-card border-l-4 ${dim.color}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <dim.icon className="w-5 h-5 text-foreground" />
+                      <h3 className="font-bold text-sm">{dim.title}</h3>
+                    </div>
+                    <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">{dim.points} pts</span>
+                  </div>
+                  <p className="text-sm font-medium text-indigo-500 mb-2">{dim.question}</p>
+                  <ul className="space-y-1">
+                    {dim.items.map((item) => (
+                      <li key={item} className="text-xs text-muted-foreground font-medium flex items-center gap-1.5">
+                        <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Expert Perspectives Divider */}
+          <div className="flex items-center gap-3 mb-12">
+            <span className="text-sm font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">Expert Perspectives</span>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+          <p className="text-muted-foreground text-sm mb-16 max-w-xl">
+            Three frameworks that add depth to the Fly Labs Method.
+          </p>
 
           {/* Alex Hormozi Section */}
           <div className="mb-24">
             <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20 mb-4">
-                <Target className="w-4 h-4" /> Framework 1
+                <Target className="w-4 h-4" /> Expert Perspective 1
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Alex Hormozi</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
@@ -246,7 +368,7 @@ const ScoringFrameworksPage = () => {
           <div className="mb-24">
             <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary font-bold text-sm border border-secondary/20 mb-4">
-                <User className="w-4 h-4" /> Framework 2
+                <User className="w-4 h-4" /> Expert Perspective 2
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Dan Koe</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
@@ -278,7 +400,7 @@ const ScoringFrameworksPage = () => {
           <div className="mb-24">
             <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-8">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-bold text-sm border border-accent/20 mb-4">
-                <FlaskConical className="w-4 h-4" /> Framework 3
+                <FlaskConical className="w-4 h-4" /> Expert Perspective 3
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Bruno Okamoto</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl mb-4">
@@ -319,27 +441,6 @@ const ScoringFrameworksPage = () => {
               ))}
             </div>
 
-            {/* Decision Governance */}
-            <motion.div {...fadeUp} transition={{ duration: 0.5, delay: 0.3 }} className="mt-8">
-              <h3 className="font-bold text-sm mb-4 text-center">Decision Governance</h3>
-              <div className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto">
-                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-primary/20 bg-primary/10">
-                  <span className="text-sm font-bold text-primary tabular-nums">70-100</span>
-                  <span className="text-sm font-bold text-primary">FOLLOW</span>
-                  <span className="text-xs text-muted-foreground ml-auto">Proceed to build</span>
-                </div>
-                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-amber-500/20 bg-amber-500/10">
-                  <span className="text-sm font-bold text-amber-500 tabular-nums">40-69</span>
-                  <span className="text-sm font-bold text-amber-500">ADJUST</span>
-                  <span className="text-xs text-muted-foreground ml-auto">Pivot some assumptions</span>
-                </div>
-                <div className="flex-1 flex items-center gap-3 p-3 rounded-xl border border-red-500/20 bg-red-500/10">
-                  <span className="text-sm font-bold text-red-500 tabular-nums">0-39</span>
-                  <span className="text-sm font-bold text-red-500">PIVOT</span>
-                  <span className="text-xs text-muted-foreground ml-auto">Rethink fundamentals</span>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Validation Layer */}
@@ -350,7 +451,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Idea Validation</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                After scoring, top ideas go through FlyLabs' own validation process: searching real conversations on X and Reddit, extracting frustration language from actual users, mapping the competitive landscape (who the players are, what they charge, where they fall short), and synthesizing evidence with confidence scoring. This layer answers whether the pain is real and the market is accessible.
+                Scores tell you what frameworks think. Validation tells you what the market says. We search real conversations on X and Reddit, extract frustration language, map competitors (who they are, what they charge, where they fall short), and synthesize everything with confidence scoring.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -395,7 +496,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Synthesis</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                After all three frameworks score an idea, AI cross-references the results and produces a single verdict. The composite score is a weighted average (35% Hormozi + 30% Koe + 35% Okamoto). Each pillar includes reasoning explaining the score. When market validation data exists, the enrichment verdict supersedes the scoring verdict because it has real evidence.
+                Four frameworks, one verdict. The composite score blends all four (40% Fly Labs + 20% each expert). Each pillar includes reasoning explaining the score. When market validation exists, real evidence gets the final say.
               </p>
             </motion.div>
             <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
@@ -404,14 +505,14 @@ const ScoringFrameworksPage = () => {
                   <span className="text-lg font-black text-primary">BUILD</span>
                   <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">70+</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Composite {">="} 70 AND no framework below 40. Strong signal across all lenses. This is worth building.</p>
+                <p className="text-xs text-muted-foreground">Composite {">="} 70, Fly Labs {">="} 60, no framework below 30. Strong signal across all lenses. This is worth building.</p>
               </div>
               <div className="flex-1 p-5 rounded-xl border border-amber-500/20 bg-amber-500/10 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-amber-600">VALIDATE FIRST</span>
                   <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">45-69</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Composite 45-69, or 70+ but one framework below 40. Promising but has gaps. Validate before investing time.</p>
+                <p className="text-xs text-muted-foreground">Composite 45-69, or gaps in any single framework. Promising but has gaps. Validate before investing time.</p>
               </div>
               <div className="flex-1 p-5 rounded-xl border border-red-500/20 bg-red-500/10 space-y-2">
                 <div className="flex items-center justify-between">
@@ -455,7 +556,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Problems from 7 sources (Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community) get analyzed by Claude AI through three scoring frameworks with per-pillar reasoning, then synthesized into a BUILD / VALIDATE / SKIP verdict. Top ideas go through market validation: cross-referenced against real conversations on X and Reddit, with evidence confidence scoring, competitive intelligence, and pricing analysis. All scores, reasoning, and verdicts update daily.
+              7 sources. 4 frameworks. Real validation. Every idea gets scored by Claude AI through the Fly Labs Method and three expert perspectives, each with per-pillar reasoning. The scores synthesize into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated against real conversations on X and Reddit with competitive intelligence and evidence confidence. Updated daily.
             </p>
           </motion.div>
 

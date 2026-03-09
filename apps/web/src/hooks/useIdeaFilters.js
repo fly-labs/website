@@ -63,6 +63,10 @@ function sortIdeas(arr, sortBy) {
       );
     case 'top':
       return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
+    case 'flylabs':
+      return sorted.sort(
+        (a, b) => (b.flylabs_score || 0) - (a.flylabs_score || 0)
+      );
     case 'hormozi':
       return sorted.sort(
         (a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0)
@@ -327,8 +331,10 @@ export function useIdeaFilters(ideas) {
 
   // Active filter count for badge
   const activeFilterCount =
+    (activeSource !== 'all' ? 1 : 0) +
     (activeType !== 'All' ? 1 : 0) +
     (activeIndustry !== 'All' ? 1 : 0) +
+    (verdict !== 'all' ? 1 : 0) +
     (minScore > 0 ? 1 : 0) +
     (confidence !== 'all' ? 1 : 0);
 

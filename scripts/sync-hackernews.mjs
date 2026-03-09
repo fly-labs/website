@@ -110,7 +110,7 @@ async function aiBatchFilter(stories) {
   if (!anthropic || stories.length === 0) {
     return stories.map((s) => ({
       ...s,
-      _ai: { is_real_problem: true, category: 'Tool', reason: 'AI filter skipped' },
+      _ai: { is_real_problem: false, category: 'Tool', reason: 'AI filter skipped' },
     }));
   }
 
@@ -148,7 +148,7 @@ REJECT (is_real_problem = false):
 - Performance benchmarks or comparisons
 - Philosophical or existential questions
 
-ACCEPT only when: "A founder could read this and start building a solution this week"
+ACCEPT only when: "A founder could read this and start building a solution this week. The problem must be FELT by a specific group, current solutions must be insufficient, and there should be signals people would act to fix it."
 
 Return ONLY valid JSON (no markdown, no code fences):
 {"results": [{"index": 0, "is_real_problem": true, "category": "Tool", "reason": "..."}, ...]}`,
@@ -178,7 +178,7 @@ Return ONLY valid JSON (no markdown, no code fences):
     } catch (err) {
       console.warn(`  AI batch filter failed: ${err.message}. Passing batch through.`);
       for (const s of batch) {
-        if (!s._ai) s._ai = { is_real_problem: true, category: 'Tool', reason: 'AI filter error' };
+        if (!s._ai) s._ai = { is_real_problem: false, category: 'Tool', reason: 'AI filter error' };
       }
     }
 

@@ -235,6 +235,12 @@ async function aiBatchFilter(posts) {
 - category (Tool/Template/Prompt/Article/Other): What type of solution would address this?
 - reason (string): One sentence explaining your decision
 
+Evaluate problem quality through the Fly Labs lens:
+- Is the problem FELT by a specific, identifiable group? (not hidden or suppressed)
+- Are current solutions genuinely insufficient? (people still struggling despite alternatives)
+- Are there signals of willingness to act or pay? (explicit statements, workaround effort, switching behavior)
+Reject if the problem is vague, already well-solved, or just venting without action intent.
+
 Return ONLY valid JSON (no markdown, no code fences):
 {"results": [{"index": 0, "is_real_problem": true, "category": "Tool", "reason": "..."}, ...]}`,
         messages: [{ role: 'user', content: `Evaluate these ${batch.length} Reddit posts:\n\n${postsText}` }],
