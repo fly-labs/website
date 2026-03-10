@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { ChevronUp, X, Zap, ArrowRight, Info, Archive } from 'lucide-react';
+import { ChevronUp, X, Zap, ArrowRight, Info, Archive, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
@@ -238,6 +238,17 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                     </div>
                   )}
                 </div>
+                {fa.company_name && (
+                  <a
+                    href={`https://startups.rip/company/${fa.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackEvent('outbound_click', { link_url: 'startups.rip', link_label: `${fa.company_name} post-mortem`, location: 'idea_drawer_yc' })}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 hover:underline transition-colors pt-1"
+                  >
+                    Read full post-mortem on startups.rip <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             );
           })()}
