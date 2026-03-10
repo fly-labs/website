@@ -29,8 +29,8 @@ const Header = () => {
     return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -50,18 +50,21 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-bold px-3 py-2 rounded-xl transition-colors duration-200 ${
-                  isActive(link.path) 
-                    ? 'bg-primary/10 text-primary shadow-[0_0_10px_rgba(var(--glow-primary),0.2)]'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                className={`relative text-sm font-medium px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  isActive(link.path)
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {link.name}
+                {isActive(link.path) && (
+                  <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                )}
               </Link>
             ))}
             
@@ -97,7 +100,7 @@ const Header = () => {
             ) : (
               <Link 
                 to="/login"
-                className="ml-2 px-4 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-bold text-sm transition-colors border border-transparent hover:border-border"
+                className="ml-2 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted font-medium text-sm transition-colors border border-transparent hover:border-border"
               >
                 Log In
               </Link>
@@ -149,7 +152,7 @@ const Header = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded-xl transition-colors font-bold text-lg ${
+                  className={`block px-4 py-3 rounded-xl transition-colors font-medium text-lg ${
                     isActive(link.path)
                       ? 'bg-primary/10 text-primary'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'

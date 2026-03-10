@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categories, scoreThresholds, confidenceOptions, perPageOptions } from '@/lib/data/ideas.js';
@@ -7,6 +8,12 @@ const IdeaFilterSheet = ({
   onClose,
   filters,
 }) => {
+  useEffect(() => {
+    if (!show) return;
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [show, onClose]);
   const {
     activeType,
     setActiveType,
@@ -22,10 +29,10 @@ const IdeaFilterSheet = ({
     industryCounts,
     activeIndustries,
     confidenceCounts,
-    sorted,
+    totalCount,
   } = filters;
 
-  const resultCount = sorted.length;
+  const resultCount = totalCount;
 
   return (
     <AnimatePresence>

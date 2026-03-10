@@ -75,7 +75,7 @@ const WebsiteBlueprintPage = () => {
 
           {/* Back link */}
           <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold mb-8 transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
           </Link>
 
           {/* Section 1: Hero */}

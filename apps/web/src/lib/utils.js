@@ -14,6 +14,7 @@ export function isValidEmail(email) {
 }
 
 export function timeAgo(dateStr) {
+	if (!dateStr || isNaN(new Date(dateStr).getTime())) return '';
 	const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
 	if (seconds < 60) return 'just now';
 	const minutes = Math.floor(seconds / 60);

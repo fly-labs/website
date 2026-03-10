@@ -41,9 +41,10 @@ export const SEO = ({
     }
   ];
 
-  const allSchemas = schema
-    ? Array.isArray(schema) ? schema : [schema]
-    : baseSchema;
+  const allSchemas = [
+    ...baseSchema,
+    ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])
+  ];
 
   return (
     <Helmet>

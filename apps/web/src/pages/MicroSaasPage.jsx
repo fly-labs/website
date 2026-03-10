@@ -55,7 +55,7 @@ const MicroSaasPage = () => {
 
     if (error) {
       if (error.code === '23505') {
-        toast({ title: "You are already on the list.", description: "We will let you know when tools drop." });
+        toast({ title: "You're already on the list.", description: "We'll ping you when the first tools ship." });
         setIsSubmitted(true);
       } else {
         toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
@@ -63,7 +63,7 @@ const MicroSaasPage = () => {
     } else {
       setIsSubmitted(true);
       trackEvent('waitlist_joined', { source: 'micro-tools' });
-      toast({ title: "You are in!", description: "We will let you know when tools drop." });
+      toast({ title: "You're in!", description: "We'll ping you when the first tools ship." });
     }
   };
 
@@ -83,7 +83,7 @@ const MicroSaasPage = () => {
 
           <div className="mb-12">
             <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
             </Link>
           </div>
 

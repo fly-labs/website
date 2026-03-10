@@ -49,8 +49,6 @@ const VERDICT_COLORS = {
 const IdeaSubmissionPage = () => {
   const { toast } = useToast();
   const { currentUser, profile, isAuthenticated } = useAuth();
-  const [ideas, setIdeas] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votedIds, setVotedIds] = useState(() => {
@@ -78,8 +76,8 @@ const IdeaSubmissionPage = () => {
     existing_solutions: '',
   });
 
-  // Hook: all filter/sort/pagination logic
-  const filters = useIdeaFilters(ideas);
+  // Hook: all filter/sort/pagination logic + data fetching
+  const filters = useIdeaFilters();
   const {
     sortBy, setSortBy,
     activeSource, setActiveSource,
@@ -87,6 +85,7 @@ const IdeaSubmissionPage = () => {
     searchQuery, setSearchQuery,
     perPage,
     currentPage, setCurrentPage,
+    loading, ideas, totalCount,
     sorted, paginated, totalPages,
     sourceCounts, verdictCounts,
     activeFilterCount,
@@ -105,25 +104,6 @@ const IdeaSubmissionPage = () => {
       }));
     }
   }, [isAuthenticated, currentUser, profile]);
-
-  // Fetch ideas on mount
-  useEffect(() => {
-    const fetchIdeas = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('ideas')
-          .select('*')
-          .eq('approved', true);
-        if (error) throw error;
-        setIdeas(data || []);
-      } catch (error) {
-        // silently fail
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchIdeas();
-  }, []);
 
   // Close "More" dropdown on outside click
   useEffect(() => {
@@ -157,9 +137,8 @@ const IdeaSubmissionPage = () => {
     setSearchQuery('');
   }, [setSearchQuery]);
 
-  // Shipped ideas from DB, fall back to static
-  const shippedFromDB = ideas.filter(i => i.status === 'shipped');
-  const shippedItems = shippedFromDB.length > 0 ? shippedFromDB : null;
+  // Shipped ideas: always use static fallback since main query filters by approved only
+  const shippedItems = null;
 
   // Vote handler
   const handleVote = async (id) => {
@@ -168,11 +147,6 @@ const IdeaSubmissionPage = () => {
     const newVotedIds = [...votedIds, id];
     setVotedIds(newVotedIds);
     localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
-    setIdeas((prev) =>
-      prev.map((idea) =>
-        idea.id === id ? { ...idea, votes: (idea.votes || 0) + 1 } : idea
-      )
-    );
 
     const idea = ideas.find(i => i.id === id);
     trackEvent('idea_voted', {
@@ -185,11 +159,6 @@ const IdeaSubmissionPage = () => {
     if (error) {
       setVotedIds((prev) => prev.filter((vid) => vid !== id));
       localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
-      setIdeas((prev) =>
-        prev.map((idea) =>
-          idea.id === id ? { ...idea, votes: Math.max((idea.votes || 0) - 1, 0) } : idea
-        )
-      );
     }
   };
 
@@ -258,8 +227,8 @@ const IdeaSubmissionPage = () => {
       trackEvent('idea_submitted', { category: formData.category });
 
       toast({
-        title: 'Idea received!',
-        description: "It'll be scored with the Fly Labs Method and 3 expert frameworks, given a verdict, and top ideas get validated against real conversations.",
+        title: 'Your idea is in the lab.',
+        description: "We'll score it, give it a verdict, and validate the best ones against real market conversations.",
       });
 
       setFormData({
@@ -346,7 +315,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {ideas.length} ideas{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}7 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}7 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -550,9 +519,9 @@ const IdeaSubmissionPage = () => {
             </motion.div>
 
             {/* Result counter */}
-            {!loading && sorted.length > 0 && (
+            {!loading && totalCount > 0 && (
               <div className="text-xs text-muted-foreground/60 font-medium mb-3 tabular-nums">
-                Showing {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, sorted.length)} of {sorted.length} ideas
+                Showing {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount} ideas
               </div>
             )}
 
@@ -561,14 +530,14 @@ const IdeaSubmissionPage = () => {
               <div className="flex justify-center py-20">
                 <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
               </div>
-            ) : sorted.length === 0 ? (
+            ) : totalCount === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center py-20"
               >
                 <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium mb-3">No ideas match your filters.</p>
+                <p className="text-muted-foreground font-medium mb-3">The filters are tight. Loosen up or try a different angle.</p>
                 {(() => {
                   const restrictive = getMostRestrictiveFilter();
                   if (restrictive) {
@@ -641,7 +610,7 @@ const IdeaSubmissionPage = () => {
                   </div>
 
                   <span className="text-xs text-muted-foreground/60 font-medium tabular-nums">
-                    {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, sorted.length)} of {sorted.length}
+                    {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount}
                   </span>
                 </div>
               </>
@@ -723,11 +692,12 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      We scan 7 sources daily: Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt,
-                      X, and community submissions. Every idea gets scored by AI using the Fly Labs Method
-                      and 3 expert frameworks (Hormozi, Dan Koe, Okamoto) with per-pillar reasoning,
-                      then synthesized into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated
-                      against real conversations on X and Reddit, with competitive intelligence mapped.
+                      The hardest part of building is knowing what to build. Most people grab the first
+                      idea that excites them and start coding. Six months later they've built something
+                      nobody wants. This system fixes that. We pull real problems from 7 sources daily,
+                      score each one through the Fly Labs Method and 3 expert frameworks, then validate
+                      top ideas against real conversations on X and Reddit. You get a verdict: build it,
+                      validate first, or move on.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

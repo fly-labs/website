@@ -187,7 +187,7 @@ const AboutPage = () => {
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
                     <span className="w-2 h-2 rounded-full bg-primary mr-3 shrink-0" />
                     {item.text}
-                    <ArrowRight className="w-3.5 h-3.5 ml-2 opacity-0 group-hover:opacity-100" />
+                    <ArrowRight className="w-3.5 h-3.5 ml-2 opacity-60" />
                   </Link>
                 </li>
               ))}

@@ -405,7 +405,7 @@ const PromptsPage = () => {
           {/* Top bar */}
           <div className="flex items-center justify-between mb-12">
             <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
             </Link>
             <div className="flex items-center gap-2 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
               {isAuthenticated ? (
@@ -423,7 +423,7 @@ const PromptsPage = () => {
             </div>
             <div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight">Prompts</h1>
-              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Copy-paste prompts that actually work. Tested, tweaked, ready to use.</p>
+              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Extracted from real building sessions. The ones I reach for every day when shipping code, writing copy, or thinking through a problem.</p>
             </div>
           </div>
 
@@ -568,13 +568,15 @@ const PromptsPage = () => {
                             className="w-full text-left px-4 md:px-5 py-3.5 flex items-center gap-3 md:gap-4 hover:bg-muted/30 transition-colors cursor-pointer"
                           >
                             {/* Vote */}
-                            <motion.div
+                            <motion.button
+                              type="button"
                               whileTap={{ scale: 1.3 }}
                               transition={{ type: 'spring', stiffness: 500, damping: 15 }}
                               onClick={(e) => { e.stopPropagation(); handleVote(prompt.id); }}
                               className={`flex flex-col items-center gap-0.5 shrink-0 w-10 cursor-pointer transition-colors ${
                                 hasVoted ? 'text-primary' : 'text-muted-foreground hover:text-primary'
                               }`}
+                              aria-label={`Vote for ${prompt.title}`}
                               title={!isAuthenticated ? 'Sign up to vote' : undefined}
                             >
                               <ChevronUp className={`w-4 h-4 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
@@ -590,7 +592,7 @@ const PromptsPage = () => {
                                   {voteCount}
                                 </motion.span>
                               </AnimatePresence>
-                            </motion.div>
+                            </motion.button>
 
                             {/* Title + category badge */}
                             <div className="flex-1 min-w-0 flex items-center gap-2.5">
@@ -843,10 +845,10 @@ const PromptsPage = () => {
                   <Lock className="w-7 h-7 text-primary" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">
-                  Unlock {lockedCount} more prompts
+                  {lockedCount} more prompts inside
                 </h2>
                 <p className="text-muted-foreground font-medium mb-6 max-w-md mx-auto">
-                  Create a free account to access the full library, vote on your favorites, and leave comments.
+                  The ones I actually use every day. Free account gets you the full library, voting, and comments.
                 </p>
 
                 {/* Value bullets */}
@@ -905,8 +907,8 @@ const PromptsPage = () => {
               {suggestSuccess ? (
                 <div className="text-center py-8">
                   <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
-                  <p className="font-semibold text-foreground mb-1">Suggestion received!</p>
-                  <p className="text-sm text-muted-foreground">I'll review it and add it to the library if it's a good fit.</p>
+                  <p className="font-semibold text-foreground mb-1">Prompt received.</p>
+                  <p className="text-sm text-muted-foreground">I'll test it, add my spin, and credit you if it makes the cut.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSuggestSubmit} className="space-y-4">

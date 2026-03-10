@@ -170,6 +170,34 @@ async function scoreIdea(idea) {
         throw new Error('Invalid score structure');
       }
 
+      // Clamp all scores to 0-100
+      const clamp = (v) => Math.max(0, Math.min(100, Math.round(v)));
+      parsed.flylabs.total = clamp(parsed.flylabs.total);
+      parsed.hormozi.total = clamp(parsed.hormozi.total);
+      parsed.koe.total = clamp(parsed.koe.total);
+      parsed.okamoto.total = clamp(parsed.okamoto.total);
+
+      // Validate verdict
+      const VALID_VERDICTS = ['BUILD', 'VALIDATE_FIRST', 'SKIP'];
+      if (parsed.synthesis?.verdict && !VALID_VERDICTS.includes(parsed.synthesis.verdict)) {
+        console.warn(`  Invalid verdict "${parsed.synthesis.verdict}", falling back to VALIDATE_FIRST`);
+        parsed.synthesis.verdict = 'VALIDATE_FIRST';
+      }
+
+      // Recompute composite to verify AI math
+      if (parsed.synthesis) {
+        const expected = Math.round(
+          parsed.flylabs.total * 0.4 +
+          parsed.hormozi.total * 0.2 +
+          parsed.koe.total * 0.2 +
+          parsed.okamoto.total * 0.2
+        );
+        if (parsed.synthesis.composite_score != null && Math.abs(parsed.synthesis.composite_score - expected) > 3) {
+          console.warn(`  Composite mismatch: AI=${parsed.synthesis.composite_score}, expected=${expected}. Using computed.`);
+          parsed.synthesis.composite_score = expected;
+        }
+      }
+
       return parsed;
     } catch (err) {
       if (attempt < MAX_RETRIES) {
@@ -226,6 +254,8 @@ async function main() {
             koe_score: result.koe.total,
             okamoto_score: result.okamoto.total,
             score_breakdown: result,
+            verdict: result.synthesis?.verdict || null,
+            composite_score: result.synthesis?.composite_score || null,
           })
           .eq('id', idea.id);
 

@@ -161,7 +161,10 @@ Set is_real_problem to false if:
       messages: [{ role: 'user', content: input }],
     });
 
-    const text = response.content[0].text.trim();
+    let text = response.content[0].text.trim();
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+    }
     return JSON.parse(text);
   } catch (err) {
     console.warn(`  Failed to extract problem from "${post.name}": ${err.message}`);

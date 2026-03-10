@@ -12,65 +12,65 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    /* Vibrant Green, adjusted for AA contrast on white */
-    --primary: 142 76% 36%;
+    /* Deep green, AA contrast on white */
+    --primary: 142 70% 35%;
     --primary-foreground: 0 0% 100%;
 
-    /* Vibrant Cyan, adjusted for AA contrast on white */
-    --secondary: 186 100% 30%;
+    /* Muted cyan, AA contrast on white */
+    --secondary: 186 80% 30%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
 
-    /* Magenta, adjusted for AA contrast on white */
-    --accent: 292 84% 40%;
+    /* Muted violet (replaces magenta) */
+    --accent: 262 60% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 142 76% 36%;
+    --ring: 142 70% 35%;
     --radius: 0.75rem;
 
-    --glow-primary: 0, 180, 60;
-    --glow-secondary: 0, 180, 180;
-    --glow-accent: 180, 0, 180;
+    --glow-primary: 34, 150, 72;
+    --glow-secondary: 20, 140, 150;
+    --glow-accent: 120, 80, 180;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 220 15% 6%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 220 15% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 220 15% 6%;
     --popover-foreground: 0 0% 98%;
 
-    /* Bright Vibrant Green */
-    --primary: 120 100% 50%;
+    /* Softer green (premium, not neon) */
+    --primary: 142 72% 50%;
     --primary-foreground: 0 0% 0%;
 
-    /* Bright Vibrant Cyan */
-    --secondary: 180 100% 50%;
+    /* Muted cyan */
+    --secondary: 180 60% 45%;
     --secondary-foreground: 0 0% 0%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 8% 56%;
 
-    /* Bright Vibrant Magenta */
-    --accent: 300 100% 50%;
+    /* Muted violet (premium accent, replaces neon magenta) */
+    --accent: 262 50% 60%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 120 100% 50%;
+    --border: 220 12% 16%;
+    --input: 220 12% 16%;
+    --ring: 142 72% 50%;
 
-    --glow-primary: 0, 255, 0;
-    --glow-secondary: 0, 255, 255;
-    --glow-accent: 255, 0, 255;
+    --glow-primary: 50, 190, 100;
+    --glow-secondary: 50, 170, 180;
+    --glow-accent: 140, 100, 200;
   }
 
   * {
@@ -79,43 +79,48 @@
 
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
-    font-family: 'Nunito', 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-extrabold tracking-tight;
+    @apply font-extrabold;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
   .btn-playful {
-    @apply relative inline-flex items-center justify-center font-bold rounded-xl transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:translate-y-1 active:border-b-0 border-2 border-transparent;
+    @apply relative inline-flex items-center justify-center font-semibold rounded-xl transition-[color,background-color,border-color,box-shadow,transform] duration-150 active:translate-y-0.5;
   }
   .btn-playful-primary {
-    @apply bg-primary text-primary-foreground border-b-4 border-primary/50 hover:bg-primary/90;
-    &:hover {
-      box-shadow: 0 0 15px rgba(var(--glow-primary), 0.5);
-    }
+    @apply bg-primary text-primary-foreground hover:brightness-110;
   }
   .btn-playful-secondary {
-    @apply bg-secondary text-secondary-foreground border-b-4 border-secondary/50 hover:bg-secondary/90;
-    &:hover {
-      box-shadow: 0 0 15px rgba(var(--glow-secondary), 0.5);
-    }
+    @apply bg-secondary text-secondary-foreground hover:brightness-110;
   }
   .btn-playful-accent {
-    @apply bg-accent text-accent-foreground border-b-4 border-accent/50 hover:bg-accent/90;
-    &:hover {
-      box-shadow: 0 0 15px rgba(var(--glow-accent), 0.5);
-    }
+    @apply bg-accent text-accent-foreground hover:brightness-110;
   }
   .btn-playful-outline {
-    @apply bg-transparent text-foreground border-2 border-b-4 border-border hover:bg-muted;
+    @apply bg-transparent text-foreground border border-border hover:bg-muted;
   }
   .card-playful {
-    @apply bg-card border-2 border-border rounded-xl shadow-lg hover:shadow-2xl transition-[color,background-color,border-color,box-shadow] duration-300 hover:border-primary/50;
+    @apply bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-[color,background-color,border-color,box-shadow] duration-300 hover:border-primary/40;
   }
 }
+
+/* GeometricBackground CSS animations (GPU-composited, no React re-renders) */
+@keyframes geo-float-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes geo-float-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+@keyframes geo-float-3 { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+@keyframes geo-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes geo-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(8px, -6px); } }
+
+.geo-float-1 { animation: geo-float-1 30s ease-in-out infinite; }
+.geo-float-2 { animation: geo-float-2 34s ease-in-out infinite; }
+.geo-float-3 { animation: geo-float-3 28s ease-in-out infinite; }
+.geo-spin { animation: geo-spin 40s linear infinite; }
+.geo-drift { animation: geo-drift 32s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

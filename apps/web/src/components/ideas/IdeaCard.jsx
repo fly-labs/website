@@ -102,53 +102,8 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               )}
             </div>
 
-            {/* Score badges */}
+            {/* Score badges - verdict + FL score only, full breakdown in drawer */}
             <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
-              {idea.flylabs_score != null && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 text-[11px] font-bold tabular-nums hover:bg-indigo-500/20 transition-colors"
-                  title="Fly Labs Score"
-                >
-                  FL {idea.flylabs_score}
-                </button>
-              )}
-              {idea.hormozi_score != null && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[11px] font-bold tabular-nums hover:bg-primary/20 transition-colors"
-                  title="Hormozi Score"
-                >
-                  H {idea.hormozi_score}
-                </button>
-              )}
-              {idea.koe_score != null && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-secondary/10 text-secondary text-[11px] font-bold tabular-nums hover:bg-secondary/20 transition-colors"
-                  title="Koe Score"
-                >
-                  K {idea.koe_score}
-                </button>
-              )}
-              {idea.okamoto_score != null && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent/10 text-accent text-[11px] font-bold tabular-nums hover:bg-accent/20 transition-colors"
-                  title="Okamoto Score"
-                >
-                  B {idea.okamoto_score}
-                </button>
-              )}
-              {idea.validation_score != null && (
-                <button
-                  onClick={(e) => { e.stopPropagation(); onOpenDrawer(idea); }}
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-yellow-500/10 text-yellow-600 text-[11px] font-bold tabular-nums hover:bg-yellow-500/20 transition-colors"
-                  title="Validation Score"
-                >
-                  V {idea.validation_score}
-                </button>
-              )}
               {(() => {
                 const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
                 if (!verdict) return null;
@@ -164,6 +119,14 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
                   </span>
                 );
               })()}
+              {idea.flylabs_score != null && (
+                <span
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 text-[11px] font-bold tabular-nums"
+                  title="Fly Labs Score"
+                >
+                  FL {idea.flylabs_score}
+                </span>
+              )}
               {idea.enrichment?.competitors?.products?.length > 0 && (
                 <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px] font-medium">
                   {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}

@@ -1,7 +1,8 @@
-import { useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { industries } from '@/lib/data/ideas.js';
 import { trackEvent } from '@/lib/analytics.js';
+import supabase from '@/lib/supabaseClient.js';
 
 const DEFAULTS = {
   sort: 'hot',
@@ -16,26 +17,8 @@ const DEFAULTS = {
   page: 1,
 };
 
-function getVerdict(idea) {
-  return (
-    idea.enrichment?.verdict?.recommendation ||
-    idea.score_breakdown?.synthesis?.verdict ||
-    null
-  );
-}
-
-function getConfidence(idea) {
-  return (
-    idea.enrichment?.validation?.confidence ||
-    null
-  );
-}
-
-function getCompositeScore(idea) {
-  return idea.score_breakdown?.synthesis?.composite_score || 0;
-}
-
 // Time-decay hot score: votes / (hoursAge + 2)^1.5
+// Used client-side for hot sort only (can't be done server-side without RPC)
 function getHotScore(idea) {
   const votes = idea.votes || 0;
   const hoursAge =
@@ -44,59 +27,19 @@ function getHotScore(idea) {
   return votes / Math.pow(hoursAge + 2, 1.5);
 }
 
-function sortIdeas(arr, sortBy) {
-  const sorted = [...arr];
-  switch (sortBy) {
-    case 'hot':
-      return sorted.sort((a, b) => getHotScore(b) - getHotScore(a));
-    case 'new':
-      return sorted.sort(
-        (a, b) =>
-          new Date(b.published_at || b.created_at) -
-          new Date(a.published_at || a.created_at)
-      );
-    case 'oldest':
-      return sorted.sort(
-        (a, b) =>
-          new Date(a.published_at || a.created_at) -
-          new Date(b.published_at || b.created_at)
-      );
-    case 'top':
-      return sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0));
-    case 'flylabs':
-      return sorted.sort(
-        (a, b) => (b.flylabs_score || 0) - (a.flylabs_score || 0)
-      );
-    case 'hormozi':
-      return sorted.sort(
-        (a, b) => (b.hormozi_score || 0) - (a.hormozi_score || 0)
-      );
-    case 'koe':
-      return sorted.sort((a, b) => (b.koe_score || 0) - (a.koe_score || 0));
-    case 'okamoto':
-      return sorted.sort(
-        (a, b) => (b.okamoto_score || 0) - (a.okamoto_score || 0)
-      );
-    case 'validation':
-      return sorted.sort(
-        (a, b) => (b.validation_score || 0) - (a.validation_score || 0)
-      );
-    case 'verdict': {
-      const priority = { BUILD: 3, VALIDATE_FIRST: 2, SKIP: 1 };
-      return sorted.sort((a, b) => {
-        const pa = priority[getVerdict(a)] || 0;
-        const pb = priority[getVerdict(b)] || 0;
-        if (pa !== pb) return pb - pa;
-        return getCompositeScore(b) - getCompositeScore(a);
-      });
-    }
-    default:
-      return sorted;
-  }
-}
-
-export function useIdeaFilters(ideas) {
+export function useIdeaFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [ideas, setIdeas] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [counts, setCounts] = useState({
+    source: { all: 0 },
+    type: { All: 0 },
+    industry: { All: 0 },
+    verdict: { all: 0 },
+    confidence: { all: 0 },
+  });
+  const abortRef = useRef(null);
 
   // Read state from URL (fallback to defaults)
   const sortBy = searchParams.get('sort') || DEFAULTS.sort;
@@ -212,118 +155,267 @@ export function useIdeaFilters(ideas) {
     [updateParams, currentPage]
   );
 
-  // Filter pipeline: search -> source -> type -> industry -> verdict -> score -> confidence -> sort -> paginate
-  const { filtered, sorted, paginated, totalPages, sourceCounts, typeCounts, industryCounts, verdictCounts, confidenceCounts } = useMemo(() => {
-    // 1. Search
-    const searched = searchQuery
-      ? ideas.filter((i) => {
-          const q = searchQuery.toLowerCase();
-          return (
-            (i.idea_title || '').toLowerCase().includes(q) ||
-            (i.idea_description || '').toLowerCase().includes(q)
-          );
-        })
-      : ideas;
+  // Build base query with all filters (reused for data + counts)
+  const buildFilteredQuery = useCallback((selectClause, opts = {}) => {
+    let query = supabase
+      .from('ideas')
+      .select(selectClause, opts)
+      .eq('approved', true);
 
-    // 2. Source
-    const sourceFiltered =
-      activeSource === 'all'
-        ? searched
-        : activeSource === 'community'
-          ? searched.filter((i) => !i.source || i.source === 'community')
-          : searched.filter((i) => i.source === activeSource);
-
-    // Compute source counts (after search only)
-    const srcCounts = {};
-    for (const i of searched) {
-      const s = i.source || 'community';
-      srcCounts[s] = (srcCounts[s] || 0) + 1;
-    }
-    srcCounts.all = searched.length;
-
-    // 3. Type
-    const typeFiltered =
-      activeType === 'All'
-        ? sourceFiltered
-        : sourceFiltered.filter((i) => i.category === activeType);
-
-    // Compute type counts (after source filter)
-    const tCounts = { All: sourceFiltered.length };
-    for (const i of sourceFiltered) {
-      const t = i.category || 'Other';
-      tCounts[t] = (tCounts[t] || 0) + 1;
-    }
-
-    // 4. Industry
-    const industryFiltered =
-      activeIndustry === 'All'
-        ? typeFiltered
-        : typeFiltered.filter((i) => i.industry === activeIndustry);
-
-    // Compute industry counts (after type filter)
-    const indCounts = { All: typeFiltered.length };
-    for (const i of typeFiltered) {
-      if (i.industry) {
-        indCounts[i.industry] = (indCounts[i.industry] || 0) + 1;
+    // Source filter
+    if (activeSource !== 'all') {
+      if (activeSource === 'community') {
+        query = query.or('source.is.null,source.eq.community');
+      } else {
+        query = query.eq('source', activeSource);
       }
     }
 
-    // 5. Verdict
-    const verdictFiltered =
-      verdict === 'all'
-        ? industryFiltered
-        : industryFiltered.filter((i) => getVerdict(i) === verdict);
-
-    // Compute verdict counts (after industry filter)
-    const vCounts = { all: industryFiltered.length };
-    for (const i of industryFiltered) {
-      const v = getVerdict(i);
-      if (v) vCounts[v] = (vCounts[v] || 0) + 1;
+    // Type filter
+    if (activeType !== 'All') {
+      query = query.eq('category', activeType);
     }
 
-    // 6. Score threshold
-    const scoreFiltered =
-      minScore === 0
-        ? verdictFiltered
-        : verdictFiltered.filter(
-            (i) => getCompositeScore(i) >= minScore
-          );
-
-    // 7. Confidence
-    const confFiltered =
-      confidence === 'all'
-        ? scoreFiltered
-        : scoreFiltered.filter((i) => getConfidence(i) === confidence);
-
-    // Compute confidence counts (after score filter)
-    const cCounts = { all: scoreFiltered.length };
-    for (const i of scoreFiltered) {
-      const c = getConfidence(i);
-      if (c) cCounts[c] = (cCounts[c] || 0) + 1;
+    // Industry filter
+    if (activeIndustry !== 'All') {
+      query = query.eq('industry', activeIndustry);
     }
 
-    // Sort
-    const sortedArr = sortIdeas(confFiltered, sortBy);
+    // Text search
+    if (searchQuery) {
+      const escaped = searchQuery.replace(/%/g, '\\%').replace(/_/g, '\\_');
+      query = query.or(`idea_title.ilike.%${escaped}%,idea_description.ilike.%${escaped}%`);
+    }
 
-    // Paginate
-    const tp = Math.max(1, Math.ceil(sortedArr.length / perPage));
-    const p = Math.min(currentPage, tp);
-    const paginatedArr = sortedArr.slice((p - 1) * perPage, p * perPage);
+    // Verdict filter (uses materialized column)
+    if (verdict !== 'all') {
+      query = query.eq('verdict', verdict);
+    }
 
-    return {
-      filtered: confFiltered,
-      sorted: sortedArr,
-      paginated: paginatedArr,
-      totalPages: tp,
-      sourceCounts: srcCounts,
-      typeCounts: tCounts,
-      industryCounts: indCounts,
-      verdictCounts: vCounts,
-      confidenceCounts: cCounts,
+    // Score threshold (uses materialized composite_score)
+    if (minScore > 0) {
+      query = query.gte('composite_score', minScore);
+    }
+
+    // Confidence filter (uses materialized column)
+    if (confidence !== 'all') {
+      query = query.eq('confidence', confidence);
+    }
+
+    return query;
+  }, [activeSource, activeType, activeIndustry, searchQuery, verdict, minScore, confidence]);
+
+  // Apply sorting to query
+  const applySorting = useCallback((query, sort) => {
+    switch (sort) {
+      case 'new':
+        return query
+          .order('published_at', { ascending: false, nullsFirst: false })
+          .order('created_at', { ascending: false });
+      case 'oldest':
+        return query
+          .order('published_at', { ascending: true, nullsFirst: true })
+          .order('created_at', { ascending: true });
+      case 'top':
+        return query.order('votes', { ascending: false });
+      case 'flylabs':
+        return query.order('flylabs_score', { ascending: false, nullsFirst: false });
+      case 'hormozi':
+        return query.order('hormozi_score', { ascending: false, nullsFirst: false });
+      case 'koe':
+        return query.order('koe_score', { ascending: false, nullsFirst: false });
+      case 'okamoto':
+        return query.order('okamoto_score', { ascending: false, nullsFirst: false });
+      case 'validation':
+        return query.order('validation_score', { ascending: false, nullsFirst: false });
+      case 'verdict':
+        // Verdict sort: BUILD > VALIDATE_FIRST > SKIP, then by composite_score
+        return query
+          .order('verdict', { ascending: true, nullsFirst: false })
+          .order('composite_score', { ascending: false, nullsFirst: false });
+      case 'hot':
+      default:
+        // Hot sort requires client-side computation, fetch by votes+recency as approximation
+        // We'll re-sort client-side after fetch
+        return query
+          .order('votes', { ascending: false })
+          .order('created_at', { ascending: false });
+    }
+  }, []);
+
+  // Fetch paginated data
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      setLoading(true);
+
+      try {
+        // Hot sort needs all results for proper scoring, but we cap at reasonable limit
+        const isHotSort = sortBy === 'hot';
+        const isVerdictSort = sortBy === 'verdict';
+
+        let data, count;
+
+        if (isHotSort) {
+          // For hot sort, fetch all matching items (lightweight), sort client-side, then slice
+          // This is necessary because hot score is a computed value
+          const query = buildFilteredQuery('*', { count: 'exact' });
+          const result = await query.limit(500);
+          if (cancelled) return;
+          if (result.error) throw result.error;
+
+          // Sort by hot score client-side
+          const sorted = (result.data || []).sort((a, b) => getHotScore(b) - getHotScore(a));
+          count = result.count || sorted.length;
+
+          // Paginate client-side
+          const from = (currentPage - 1) * perPage;
+          data = sorted.slice(from, from + perPage);
+        } else {
+          // For all other sorts, use server-side pagination
+          let query = buildFilteredQuery('*', { count: 'exact' });
+          query = applySorting(query, sortBy);
+
+          const from = (currentPage - 1) * perPage;
+          const to = from + perPage - 1;
+          query = query.range(from, to);
+
+          const result = await query;
+          if (cancelled) return;
+          if (result.error) throw result.error;
+
+          data = result.data || [];
+          count = result.count || 0;
+
+          // For verdict sort, re-sort client-side with proper priority
+          if (isVerdictSort) {
+            const priority = { BUILD: 3, VALIDATE_FIRST: 2, SKIP: 1 };
+            data.sort((a, b) => {
+              const pa = priority[a.verdict] || 0;
+              const pb = priority[b.verdict] || 0;
+              if (pa !== pb) return pb - pa;
+              return (b.composite_score || 0) - (a.composite_score || 0);
+            });
+          }
+        }
+
+        if (!cancelled) {
+          setIdeas(data);
+          setTotalCount(count);
+        }
+      } catch (err) {
+        console.error('Failed to fetch ideas:', err);
+        if (!cancelled) {
+          setIdeas([]);
+          setTotalCount(0);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     };
-  }, [ideas, searchQuery, activeSource, activeType, activeIndustry, verdict, minScore, confidence, sortBy, perPage, currentPage]);
 
-  // Dynamic industries based on type-filtered results
+    fetchData();
+    return () => { cancelled = true; };
+  }, [buildFilteredQuery, applySorting, sortBy, perPage, currentPage]);
+
+  // Fetch counts for filters (lightweight query)
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchCounts = async () => {
+      try {
+        // Fetch lightweight data for all approved ideas matching search only
+        // (counts should reflect what's available before source/type/industry/verdict/score/confidence filters)
+        let query = supabase
+          .from('ideas')
+          .select('source, category, industry, verdict, confidence')
+          .eq('approved', true);
+
+        if (searchQuery) {
+          const escaped = searchQuery.replace(/%/g, '\\%').replace(/_/g, '\\_');
+          query = query.or(`idea_title.ilike.%${escaped}%,idea_description.ilike.%${escaped}%`);
+        }
+
+        const { data, error } = await query.limit(2000);
+        if (cancelled || error) return;
+
+        const src = { all: data.length };
+        const typ = { All: 0 };
+        const ind = { All: 0 };
+        const vrd = { all: 0 };
+        const cnf = { all: 0 };
+
+        // Apply cascading counts
+        // Source counts: after search
+        for (const i of data) {
+          const s = i.source || 'community';
+          src[s] = (src[s] || 0) + 1;
+        }
+
+        // Type counts: after search + source
+        const sourceFiltered = activeSource === 'all'
+          ? data
+          : activeSource === 'community'
+            ? data.filter(i => !i.source || i.source === 'community')
+            : data.filter(i => i.source === activeSource);
+        typ.All = sourceFiltered.length;
+        for (const i of sourceFiltered) {
+          const t = i.category || 'Other';
+          typ[t] = (typ[t] || 0) + 1;
+        }
+
+        // Industry counts: after search + source + type
+        const typeFiltered = activeType === 'All'
+          ? sourceFiltered
+          : sourceFiltered.filter(i => i.category === activeType);
+        ind.All = typeFiltered.length;
+        for (const i of typeFiltered) {
+          if (i.industry) ind[i.industry] = (ind[i.industry] || 0) + 1;
+        }
+
+        // Verdict counts: after search + source + type + industry
+        const industryFiltered = activeIndustry === 'All'
+          ? typeFiltered
+          : typeFiltered.filter(i => i.industry === activeIndustry);
+        vrd.all = industryFiltered.length;
+        for (const i of industryFiltered) {
+          if (i.verdict) vrd[i.verdict] = (vrd[i.verdict] || 0) + 1;
+        }
+
+        // Confidence counts: after all above + verdict + score
+        const verdictFiltered = verdict === 'all'
+          ? industryFiltered
+          : industryFiltered.filter(i => i.verdict === verdict);
+        cnf.all = verdictFiltered.length;
+        for (const i of verdictFiltered) {
+          if (i.confidence) cnf[i.confidence] = (cnf[i.confidence] || 0) + 1;
+        }
+
+        if (!cancelled) {
+          setCounts({
+            source: src,
+            type: typ,
+            industry: ind,
+            verdict: vrd,
+            confidence: cnf,
+          });
+        }
+      } catch (err) {
+        // silently fail for counts
+      }
+    };
+
+    fetchCounts();
+    return () => { cancelled = true; };
+  }, [searchQuery, activeSource, activeType, activeIndustry, verdict]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
+  const paginated = ideas;
+  const sorted = ideas; // Already sorted from server
+
+  // Dynamic industries based on counts
+  const industryCounts = counts.industry;
   const activeIndustries = useMemo(
     () => industries.filter((ind) => industryCounts[ind.value] > 0),
     [industryCounts]
@@ -472,16 +564,20 @@ export function useIdeaFilters(ideas) {
     setPerPage,
     setCurrentPage,
 
+    // Data
+    loading,
+    ideas,
+    totalCount,
+
     // Computed
-    filtered,
     sorted,
     paginated,
     totalPages,
-    sourceCounts,
-    typeCounts,
-    industryCounts,
-    verdictCounts,
-    confidenceCounts,
+    sourceCounts: counts.source,
+    typeCounts: counts.type,
+    industryCounts: counts.industry,
+    verdictCounts: counts.verdict,
+    confidenceCounts: counts.confidence,
     activeIndustries,
     activeFilterCount,
     activeFilters,

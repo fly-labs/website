@@ -59,7 +59,7 @@ apps/web/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
-│   │   ├── useIdeaFilters.js # URL state filter hook (search, sort, 7 filter dimensions, pagination via useSearchParams)
+│   │   ├── useIdeaFilters.js # Server-side paginated filter hook (Supabase queries, URL state, 7 filter dimensions, cascading counts)
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
@@ -126,7 +126,7 @@ apps/web/
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
 - **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist
-- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), published_at (original publication date), created_at
+- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized weighted avg), published_at (original publication date), created_at, updated_at (auto-updated via trigger)
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
@@ -135,20 +135,20 @@ apps/web/
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**
-- **Primary:** Green `hsl(142 76% 36%)` light / `hsl(120 100% 50%)` dark
-- **Secondary:** Cyan `hsl(186 100% 30%)` light / `hsl(180 100% 50%)` dark
-- **Accent:** Magenta `hsl(292 84% 40%)` light / `hsl(300 100% 50%)` dark
-- **Background:** White `hsl(0 0% 100%)` / Very dark blue `hsl(240 10% 3.9%)`
+- **Primary:** Green `hsl(142 70% 35%)` light / `hsl(142 72% 50%)` dark
+- **Secondary:** Cyan `hsl(186 80% 30%)` light / `hsl(180 60% 45%)` dark
+- **Accent:** Violet `hsl(262 60% 50%)` light / `hsl(262 50% 60%)` dark
+- **Background:** White `hsl(0 0% 100%)` / Warm dark `hsl(220 15% 6%)`
 - **Foreground:** Near-black `hsl(240 10% 3.9%)` / Off-white `hsl(0 0% 98%)`
 
-**Font:** Nunito (primary), Inter (fallback), system-ui
+**Font:** Inter (primary), system-ui (fallback)
 
 **Radius:** 0.75rem base (--radius)
 
 **Custom classes (in index.css):**
-- `.btn-playful` - 3D press effect with `active:translate-y-1` (intentional, uses `transition-all`)
-- `.btn-playful-primary`, `.btn-playful-secondary`, `.btn-playful-accent`, `.btn-playful-outline` - color variants with glow on hover
-- `.card-playful` - card with shadow + border highlight (uses scoped transitions, NOT `transition-all`)
+- `.btn-playful` - flat with subtle `active:translate-y-0.5` micro-interaction
+- `.btn-playful-primary`, `.btn-playful-secondary`, `.btn-playful-accent`, `.btn-playful-outline` - color variants with brightness hover
+- `.card-playful` - card with subtle shadow + border highlight on hover (uses scoped transitions, NOT `transition-all`)
 
 ## Coding Conventions
 - **JSX only** - no TypeScript, no `.tsx` files

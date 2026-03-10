@@ -38,9 +38,9 @@ const ExplorePage = () => {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center mb-14"
           >
-            <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">The Playground</h1>
+            <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">Explore</h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
-              AI prompts, templates, and micro tools. All open source.
+              Every project here started as a real problem. Built with AI, shipped open source, free to use and fork.
             </p>
           </motion.div>
 
@@ -85,7 +85,7 @@ const ExplorePage = () => {
               </motion.p>
             ) : (
               <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xl:gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-5"
               >
                 {filteredProjects.map((project, i) => {
                   const isLocked = project.isGated && !isAuthenticated;

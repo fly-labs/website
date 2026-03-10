@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react';
 import { ChevronUp, X, Zap, ArrowRight, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -27,6 +28,13 @@ const ScoreBar = ({ score, max, color }) => {
 };
 
 const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
+  useEffect(() => {
+    if (!idea) return;
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [idea, onClose]);
+
   if (!idea) return null;
 
   const status = statusConfig[idea.status] || statusConfig.open;
@@ -45,6 +53,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
         exit={{ opacity: 0 }}
         onClick={onClose}
         className="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm"
+        aria-hidden="true"
       />
       <motion.div
         initial={{ x: '100%' }}
@@ -63,7 +72,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-8">
           {/* Idea info */}
           <div>
             <h3 className="text-xl font-bold mb-2">{idea.idea_title}</h3>
@@ -245,7 +254,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
           {/* Expert Perspectives divider */}
           {(idea.score_breakdown?.hormozi || idea.score_breakdown?.koe || idea.score_breakdown?.okamoto) && (
             <div className="flex items-center gap-3 pt-2">
-              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">Expert Perspectives</span>
+              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">What the frameworks say</span>
               <div className="flex-1 h-px bg-border" />
             </div>
           )}
@@ -437,7 +446,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
           {/* Market Evidence divider */}
           {(idea.enrichment?.validation || idea.enrichment?.competitors) && (
             <div className="flex items-center gap-3 pt-2">
-              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">Market Evidence</span>
+              <span className="text-[11px] font-bold text-muted-foreground/50 uppercase tracking-wider whitespace-nowrap">What the market says</span>
               <div className="flex-1 h-px bg-border" />
             </div>
           )}

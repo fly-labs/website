@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import supabase from '@/lib/supabaseClient.js';
 import { trackEvent, setUserProperties, setUserId } from '@/lib/analytics.js';
 
@@ -63,6 +63,9 @@ export const AuthProvider = ({ children }) => {
           is_member: true,
         });
       }
+      setIsLoading(false);
+    }).catch((err) => {
+      console.error('Session fetch failed:', err);
       setIsLoading(false);
     });
 
@@ -132,7 +135,7 @@ export const AuthProvider = ({ children }) => {
     setProfile(null);
   };
 
-  const value = {
+  const value = useMemo(() => ({
     currentUser,
     profile,
     isAuthenticated: !!currentUser,
@@ -142,7 +145,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     updateProfile,
-  };
+  }), [currentUser, profile, isLoading]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -2,7 +2,7 @@ export const books = [
   {
     id: 'ai-builders-guide',
     title: "The AI Builder's Guide",
-    description: 'What I learned building with AI every day. Tools, workflows, and honest takes.',
+    description: 'What I learned building with AI every day for months. The tools that actually work, the workflows that save time, and the honest takes on what the hype gets wrong.',
     topic: 'AI',
     status: 'coming_soon',
     coverColor: 'primary',
@@ -12,7 +12,7 @@ export const books = [
   {
     id: 'validate-microsaas-ideas',
     title: 'How to Find and Validate Micro-SaaS Ideas with AI',
-    description: 'The complete playbook for discovering, scoring, and validating business ideas. 7 sources, 4 frameworks (Fly Labs Method + 3 expert perspectives), real validation from X and Reddit, competitive analysis.',
+    description: 'How to find ideas worth building and kill the ones that aren\'t. The full system: 7 sources, 4 scoring frameworks, real market validation. Everything I learned building the Idea Lab, distilled into one book.',
     topic: 'Business',
     status: 'coming_soon',
     coverColor: 'accent',

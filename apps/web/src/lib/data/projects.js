@@ -6,7 +6,7 @@ export const categories = ['All', 'Business', 'Tools', 'Learn'];
 export const projects = [
   {
     title: 'Website Blueprint',
-    description: 'See exactly how I built this site. Full stack breakdown, open source, and free to fork.',
+    description: 'The full stack breakdown of how this site was built. React, Supabase, Tailwind, Vercel. Fork it, learn from it, make it yours.',
     icon: Globe,
     link: '/templates/website-blueprint',
     color: 'text-primary',
@@ -18,7 +18,7 @@ export const projects = [
   },
   {
     title: 'Prompt Library',
-    description: 'Stop staring at a blank prompt. Copy-paste AI prompts for shipping code faster, writing better, and thinking clearer.',
+    description: 'The prompts I actually use every day for coding, writing, and thinking. Tested, tweaked, copy-paste ready.',
     icon: Sparkles,
     link: '/prompts',
     color: 'text-primary',
@@ -31,7 +31,7 @@ export const projects = [
   },
   {
     title: 'Micro Tools',
-    description: 'Small apps that do one thing really well. No bloat, no features you don\'t need. The first batch is cooking now.',
+    description: 'Small apps that do one thing really well. No sign-ups, no bloat. Built because I needed them, now you can use them too.',
     icon: Code,
     link: '/microsaas',
     color: 'text-blue-500',
@@ -43,7 +43,7 @@ export const projects = [
   },
   {
     title: 'Launch Checklist',
-    description: 'A step-by-step Notion template to take your idea from zero to launched. Based on The $100 Startup framework.',
+    description: 'From zero to launched in one Notion template. Every step mapped out so you know what to do next.',
     icon: ListChecks,
     link: '/templates/launch-checklist',
     color: 'text-amber-500',
@@ -55,7 +55,7 @@ export const projects = [
   },
   {
     title: 'One-Page Business Plan',
-    description: 'Answer five questions. Get clarity on your entire business. A Notion template inspired by The $100 Startup.',
+    description: 'Five questions that force clarity on what you\'re building, who it\'s for, and why it matters. One page, no fluff.',
     icon: FileText,
     link: '/templates/one-page-business-plan',
     color: 'text-violet-500',
@@ -67,7 +67,7 @@ export const projects = [
   },
   {
     title: 'Garmin to Notion',
-    description: 'Never manually log a workout again. Your Garmin data flows into Notion every day: steps, sleep, heart rate, workouts.',
+    description: 'The project that started everything. I wanted my Garmin data in Notion, nothing existed, so I built it. Now it runs automatically every day.',
     icon: LayoutTemplate,
     link: '/templates/garmin-to-notion',
     color: 'text-secondary',
@@ -79,7 +79,7 @@ export const projects = [
   },
   {
     title: 'The Newsletter',
-    description: 'Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building digital assets with AI.',
+    description: 'Where I write about what I\'m building, what breaks, and what I learn along the way. The honest version.',
     icon: Mail,
     link: '/newsletter',
     color: 'text-purple-500',
@@ -91,7 +91,7 @@ export const projects = [
   },
   {
     title: 'Library',
-    description: 'Free ebooks from study notes. AI, business, mindset, and everything in between. Written for builders.',
+    description: 'Free ebooks distilled from hundreds of hours of reading. AI, business, mindset. What I learned, written for people who build.',
     icon: BookOpen,
     link: '/library',
     color: 'text-purple-500',
@@ -103,7 +103,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: 'Real problems from Reddit, Hacker News, GitHub, Product Hunt, X, ProblemHunt, and the community. AI-scored with the Fly Labs Method + 3 expert frameworks and validated against real market data. The best ones get built.',
+    description: 'The hardest part of building is knowing what to build. This system pulls real problems from 7 sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.',
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

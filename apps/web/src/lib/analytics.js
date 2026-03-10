@@ -52,5 +52,5 @@ export const setUserProperties = (properties) => {
 
 // Set user ID for cross-device tracking
 export const setUserId = (userId) => {
-  gtag('config', GA_ID, { user_id: userId || undefined });
+  gtag('set', { user_id: userId || undefined });
 };

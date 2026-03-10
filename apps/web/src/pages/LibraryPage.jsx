@@ -30,11 +30,16 @@ const LibraryPage = () => {
 
   useEffect(() => {
     const fetchCounts = async () => {
+      const comingSoon = books.filter((b) => b.status === 'coming_soon');
+      const results = await Promise.all(
+        comingSoon.map((book) =>
+          supabase.rpc('get_waitlist_count', { p_source: `library-${book.id}` })
+        )
+      );
       const counts = {};
-      for (const book of books.filter((b) => b.status === 'coming_soon')) {
-        const { data } = await supabase.rpc('get_waitlist_count', { p_source: `library-${book.id}` });
-        if (typeof data === 'number') counts[book.id] = data;
-      }
+      comingSoon.forEach((book, i) => {
+        if (typeof results[i].data === 'number') counts[book.id] = results[i].data;
+      });
       setWaitlistCounts(counts);
     };
     fetchCounts();
@@ -57,13 +62,13 @@ const LibraryPage = () => {
 
     if (error) {
       if (error.code === '23505') {
-        toast({ title: 'Already on the list', description: "We'll notify you when it's ready." });
+        toast({ title: 'You\'re already on the list.', description: "We'll let you know when it drops." });
       } else {
         toast({ title: 'Something went wrong', description: 'Please try again.', variant: 'destructive' });
         return;
       }
     } else {
-      toast({ title: 'You\'re on the list!', description: `We'll notify you when "${book.title}" is ready.` });
+      toast({ title: 'You\'re on the list!', description: `We'll ping you when "${book.title}" is ready to download.` });
       trackEvent('ebook_notify', { book_id: book.id, book_title: book.title, topic: book.topic });
     }
 
@@ -154,7 +159,7 @@ const LibraryPage = () => {
               <p className="text-muted-foreground font-medium">No books in this topic yet. More coming soon.</p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((book, i) => {
                 const colors = topicColors[book.topic] || topicColors.Random;
                 const isAvailable = book.status === 'available';

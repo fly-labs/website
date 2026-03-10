@@ -105,7 +105,7 @@ const HomePage = () => {
             <img
               src="/images/luiz-alves.png"
               alt="Luiz Alves"
-              loading="lazy"
+              loading="eager"
               className="w-8 h-8 rounded-full object-cover border border-border"
             />
             <span className="text-sm font-semibold text-muted-foreground">Built by Luiz Alves</span>

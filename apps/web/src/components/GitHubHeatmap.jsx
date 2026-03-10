@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Trophy, Calendar, Github } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils.js';
 import { fetchContributions } from '@/lib/githubApi.js';
 
@@ -181,14 +180,10 @@ function CompactHeatmapGrid({ weeks }) {
         >
           {weeks.map((week, colIdx) =>
             week.map((day, rowIdx) => (
-              <motion.div
+              <div
                 key={`${colIdx}-${rowIdx}`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.15, delay: colIdx * 0.008 }}
                 className={cn(
-                  'rounded-sm transition-colors aspect-square',
+                  'rounded-sm aspect-square',
                   INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
                 )}
               />
@@ -237,13 +232,9 @@ function FullHeatmapGrid({ weeks }) {
                 key={`${colIdx}-${rowIdx}`}
                 text={`${day.count} contribution${day.count !== 1 ? 's' : ''} on ${formatDate(day.date)}`}
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.15, delay: colIdx * 0.008 }}
+                <div
                   className={cn(
-                    'rounded-sm transition-colors cursor-default aspect-square',
+                    'rounded-sm cursor-default aspect-square',
                     INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
                   )}
                 />

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
@@ -20,6 +20,12 @@ export const AuthModal = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') navigate('/'); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -67,6 +73,9 @@ export const AuthModal = () => {
         setIsGoogleLoading(false);
         toast({ title: "Auth Failed", description: result.error, variant: "destructive" });
       }
+    }).catch(() => {
+      setIsGoogleLoading(false);
+      toast({ title: "Auth Failed", description: "Google authentication failed. Please try again.", variant: "destructive" });
     });
   };
 

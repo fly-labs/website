@@ -74,7 +74,7 @@ const TemplatesPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-12">
             <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Playground
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
             </Link>
           </div>
 

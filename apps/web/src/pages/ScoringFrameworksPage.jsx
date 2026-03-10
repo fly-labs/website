@@ -333,7 +333,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Alex Hormozi</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                Entrepreneur, author of $100M Offers and $100M Leads. Co-founder of Acquisition.com. Has scaled 10+ companies to $10M+. His value equation framework revolutionized how entrepreneurs think about offer design.
+                Built $100M+ in revenue and wrote the book on offer design. His Value Equation changed how entrepreneurs think about what makes people buy. We adapted it for solo builders evaluating ideas before writing code.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -372,7 +372,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Dan Koe</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl">
-                Creator, writer, and entrepreneur behind The Human Colosseum newsletter (500K+ subscribers). Built a $5M+ one-person business. Author of "The Art of Focus." Popularized the anti-niche approach and one-person business model.
+                Built a $5M+ one-person business and 500K+ newsletter subscribers by proving you don't need a team or a niche to win. His framework evaluates whether a solo creator can actually ship and monetize an idea.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -404,7 +404,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Bruno Okamoto</h2>
               <p className="text-muted-foreground leading-relaxed max-w-3xl mb-4">
-                3x Founder, TEDx Speaker, Creator & Investor in Micro-SaaS. Creator of Comunidade MicroSaaS, Brazil's largest MicroSaaS community with 20,000+ founders. His 4 Pillars of a Scalable MVP and Validation Copilot methodology help founders validate ideas before writing a single line of code.
+                Built 3 companies and Brazil's largest MicroSaaS community (20,000+ founders). His validation methodology helps founders kill bad ideas before wasting months building them. We use his framework to stress-test distribution and business model assumptions.
               </p>
               <div className="flex items-center gap-3 flex-wrap">
                 <a href="https://www.linkedin.com/in/brunomicrosaas" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-accent transition-colors">LinkedIn</a>

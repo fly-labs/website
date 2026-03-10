@@ -1,11 +1,18 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Send, ArrowRight, X, Loader2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
 import { categories, industries, frequencyOptions, formSteps } from '@/lib/data/ideas.js';
 
 const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onStepChange, onSubmit, isSubmitting, toast }) => {
+  useEffect(() => {
+    if (!show) return;
+    const handler = (e) => { if (e.key === 'Escape') { onClose(); onStepChange(0); } };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [show, onClose, onStepChange]);
+
   if (!show) return null;
 
   const handleClose = () => {

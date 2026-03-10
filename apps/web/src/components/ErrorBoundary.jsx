@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { trackError } from '@/lib/analytics.js';
 
 export class ErrorBoundary extends React.Component {
@@ -26,13 +25,12 @@ export class ErrorBoundary extends React.Component {
             <p className="text-muted-foreground font-medium mb-8">
               Try refreshing the page. If the problem persists, let me know.
             </p>
-            <Link
-              to="/"
-              onClick={() => this.setState({ hasError: false })}
+            <button
+              onClick={() => { window.location.href = '/'; }}
               className="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
             >
               Go home
-            </Link>
+            </button>
           </div>
         </div>
       );

@@ -26,6 +26,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 const enrichAll = process.argv.includes('--all');
 let redditToken = null;
+let redditTokenExpiry = 0;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -48,6 +49,7 @@ async function getRedditToken() {
     const data = await res.json();
     if (data.access_token) {
       console.log('Reddit OAuth: authenticated (100 QPM)');
+      redditTokenExpiry = Date.now() + (data.expires_in || 3600) * 1000 - 60000; // refresh 1min early
       return data.access_token;
     }
     console.warn('Reddit OAuth: token exchange failed, using unauthenticated');
@@ -250,7 +252,15 @@ Return ONLY this JSON (no markdown, no code fences). Keep it focused - max 3 que
   return JSON.parse(text);
 }
 
+async function ensureRedditToken() {
+  if (redditToken && Date.now() < redditTokenExpiry) return;
+  if (REDDIT_CLIENT_ID && REDDIT_CLIENT_SECRET) {
+    redditToken = await getRedditToken();
+  }
+}
+
 async function searchReddit(subreddit, query) {
+  await ensureRedditToken();
   const baseUrl = redditToken ? 'https://oauth.reddit.com' : 'https://www.reddit.com';
   const headers = redditToken
     ? { 'Authorization': `Bearer ${redditToken}`, 'User-Agent': USER_AGENT }
@@ -383,7 +393,7 @@ async function synthesizeEvidence(idea, xEvidence, xCompetitors, redditPosts) {
         : 'Limited evidence available from both sources. Be conservative with scoring.';
 
   // Pass score_breakdown if available for cross-referencing
-  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}` : '';
+  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nFly Labs Method: ${idea.flylabs_score || idea.score_breakdown.flylabs?.total || 'N/A'}/100\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}` : '';
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
@@ -511,7 +521,8 @@ async function main() {
   // Fetch promising, unvalidated ideas
   let query = supabase.from('ideas').select('*')
     .eq('approved', true)
-    .not('hormozi_score', 'is', null);
+    .not('hormozi_score', 'is', null)
+    .not('flylabs_score', 'is', null);
   if (!enrichAll) {
     query = query.is('enrichment', null);
   }
@@ -525,7 +536,7 @@ async function main() {
 
   // Filter: average of available scores >= 40
   const eligible = ideas.filter((idea) => {
-    const scores = [idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
+    const scores = [idea.flylabs_score, idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
     if (scores.length === 0) return false;
     const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
     return avg >= 40;
@@ -533,7 +544,7 @@ async function main() {
 
   // Sort by highest average score first
   const avgScore = (idea) => {
-    const scores = [idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
+    const scores = [idea.flylabs_score, idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
     return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
   };
   eligible.sort((a, b) => avgScore(b) - avgScore(a));
@@ -556,6 +567,8 @@ async function main() {
         .update({
           enrichment: result,
           validation_score: validationScore,
+          verdict: result.verdict?.recommendation || null,
+          confidence: result.validation?.confidence || null,
         })
         .eq('id', idea.id);
 
