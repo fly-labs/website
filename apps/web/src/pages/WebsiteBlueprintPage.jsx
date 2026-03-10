@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, Globe, Code, Zap, Palette, Layers, Navigation, Sparkles,
   Smile, Database, BarChart3, Layout, AtSign, ShieldCheck, CheckCircle2,
-  Scissors, GitBranch, Rocket, Moon, Sun, ArrowRight, MessageSquare,
+  GitBranch, Rocket, Moon, Sun, ArrowRight, MessageSquare, Brain, Search,
+  Users, BookOpen, Lightbulb, Terminal, Clock,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -13,32 +13,170 @@ import { trackEvent } from '@/lib/analytics.js';
 
 const GITHUB_URL = 'https://github.com/fly-labs/website';
 
+const heroStats = [
+  { label: 'Routes', value: '18' },
+  { label: 'Data Sources', value: '9' },
+  { label: 'AI Frameworks', value: '4' },
+  { label: 'Scripts', value: '10' },
+  { label: 'GA4 Events', value: '24' },
+  { label: 'DB Tables', value: '6' },
+];
+
+const platformSections = [
+  {
+    stage: 'Ideation',
+    title: 'Idea Lab',
+    route: '/ideas',
+    desc: '9 automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across 4 frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.',
+    highlights: ['9 sources', '4 AI frameworks', 'Market validation'],
+    icon: Lightbulb,
+    color: 'border-primary',
+  },
+  {
+    stage: 'Ideation',
+    title: 'Scoring Frameworks',
+    route: '/scoring',
+    desc: 'The Fly Labs Method (40% weight) plus Hormozi, Dan Koe, and Okamoto as expert perspectives (20% each). Per-pillar reasoning. Composite score. One verdict.',
+    highlights: ['4 frameworks', 'Per-pillar reasoning', 'Weighted synthesis'],
+    icon: BarChart3,
+    color: 'border-secondary',
+  },
+  {
+    stage: 'Ideation',
+    title: 'Prompt Library',
+    route: '/prompts',
+    desc: '24 prompts across Coding, Writing, Strategy, and Thinking. 5 free for everyone, full library for members. Community voting, comments, and suggestions.',
+    highlights: ['24 prompts', '4 categories', 'Voting + comments'],
+    icon: Sparkles,
+    color: 'border-accent',
+  },
+  {
+    stage: 'Building',
+    title: 'Templates',
+    route: '/templates',
+    desc: 'Blueprints for builders. Garmin-to-Notion sync, this Website Blueprint, Launch Checklist, One-Page Business Plan. Built from real workflows.',
+    highlights: ['4 templates', '2 live, 2 coming'],
+    icon: Layout,
+    color: 'border-primary',
+  },
+  {
+    stage: 'Building',
+    title: 'Micro Tools',
+    route: '/microsaas',
+    desc: 'Small, focused apps that do one thing well. Waitlist is live, first batch coming soon.',
+    highlights: ['Coming soon', 'Waitlist live'],
+    icon: Zap,
+    color: 'border-secondary',
+  },
+  {
+    stage: 'Compounding',
+    title: 'Library',
+    route: '/library',
+    desc: 'Free ebooks distilled from real reading. AI, business, mindset. Topic filtering and waitlist for upcoming titles.',
+    highlights: ['Free ebooks', '5 topics'],
+    icon: BookOpen,
+    color: 'border-accent',
+  },
+];
+
 const stackItems = [
-  { name: 'React 18', icon: Code, desc: 'UI framework. JSX, no TypeScript.', color: 'border-primary' },
-  { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Stupid fast.', color: 'border-secondary' },
-  { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first styling with HSL theming.', color: 'border-accent' },
+  { name: 'Claude Sonnet 4', icon: Brain, desc: 'AI scoring engine. 4 frameworks, per-pillar reasoning, verdicts.', color: 'border-accent' },
+  { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
+  { name: 'Supabase', icon: Database, desc: 'PostgreSQL + Auth + RLS. 6 tables, 6 RPCs.', color: 'border-secondary' },
+  { name: 'GitHub Actions', icon: GitBranch, desc: '3 workflows. Sync 3x/day, enrich daily, CI on PRs.', color: 'border-accent' },
+  { name: 'React 18', icon: Code, desc: 'UI framework. 18 lazy-loaded routes. JSX, no TypeScript.', color: 'border-primary' },
+  { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Vendor/motion/supabase chunking.', color: 'border-secondary' },
+  { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first with HSL theming. Light and dark mode.', color: 'border-accent' },
   { name: 'shadcn/ui', icon: Layers, desc: 'Radix primitives with CVA variants.', color: 'border-primary' },
-  { name: 'React Router v7', icon: Navigation, desc: 'Client-side SPA routing.', color: 'border-secondary' },
-  { name: 'Framer Motion', icon: Sparkles, desc: 'Smooth page and scroll animations.', color: 'border-accent' },
-  { name: 'Lucide React', icon: Smile, desc: 'Tree-shakeable icon library. 250+ icons.', color: 'border-primary' },
-  { name: 'Supabase', icon: Database, desc: 'PostgreSQL, Auth, and Row Level Security.', color: 'border-secondary' },
-  { name: 'Google Analytics 4', icon: BarChart3, desc: 'Event tracking. Privacy-respecting.', color: 'border-accent' },
-  { name: 'Vercel', icon: Globe, desc: 'Push to main, deployed in seconds.', color: 'border-primary' },
+  { name: 'React Router v7', icon: Navigation, desc: 'Client-side SPA. URL state persistence for filters.', color: 'border-secondary' },
+  { name: 'Framer Motion 11', icon: Sparkles, desc: 'Scroll-triggered animations. No layout thrashing.', color: 'border-accent' },
+  { name: 'Lucide React', icon: Smile, desc: 'Tree-shakeable icon library.', color: 'border-primary' },
+  { name: 'Google Analytics 4', icon: BarChart3, desc: '24 custom events. User properties. Debug mode in dev.', color: 'border-secondary' },
+  { name: 'react-helmet-async', icon: Globe, desc: 'SEO meta tags, Open Graph, JSON-LD schemas.', color: 'border-accent' },
+  { name: 'Vercel', icon: Rocket, desc: 'Push to main, deployed in seconds.', color: 'border-primary' },
+];
+
+const dataSources = [
+  { name: 'Reddit', detail: '19 subreddits incl. 3 Portuguese. Claude AI batch filter.', icon: MessageSquare },
+  { name: 'X / Twitter', detail: 'Grok xAI x_search. 8 prompts, rotates 2 daily.', icon: AtSign },
+  { name: 'Hacker News', detail: 'Firebase API. Ask + Show stories. 70%+ Claude rejection rate.', icon: Zap },
+  { name: 'GitHub Issues', detail: 'Search API. Pain-point queries. 35+ repo exclusions.', icon: GitBranch },
+  { name: 'Product Hunt', detail: 'GraphQL API. Claude extracts underlying problems.', icon: Rocket },
+  { name: 'ProblemHunt', detail: 'Tilda feed API. Daily sync of real user problems.', icon: Globe },
+  { name: 'YC Graveyard', detail: 'yc-oss API. ~1,700 dead startups filtered for solo builders.', icon: Database },
+  { name: 'Community', detail: '3-step form. Rate limiting + honeypot defense.', icon: Users },
+];
+
+const workflows = [
+  { name: 'Sync Ideas', schedule: '3x/day', desc: 'ProblemHunt, Reddit, Product Hunt, X, HN, GitHub, YC, then score with Claude.' },
+  { name: 'Enrich Ideas', schedule: 'Daily', desc: 'Grok x_search + Reddit validation for top-scoring ideas.' },
+  { name: 'CI', schedule: 'Every PR', desc: 'Lint + build. Catches breaks before deploy.' },
+];
+
+const scripts = [
+  { name: 'sync-problemhunt', desc: 'Tilda feed API' },
+  { name: 'sync-reddit', desc: 'Reddit OAuth + 19 subreddits' },
+  { name: 'sync-producthunt', desc: 'Product Hunt GraphQL' },
+  { name: 'sync-x', desc: 'Grok xAI x_search' },
+  { name: 'sync-hackernews', desc: 'Firebase API' },
+  { name: 'sync-github', desc: 'GitHub Search API' },
+  { name: 'sync-yc', desc: 'yc-oss dead startups' },
+  { name: 'score-ideas', desc: 'Claude Sonnet 4 frameworks' },
+  { name: 'enrich-ideas', desc: 'Dual-source validation' },
+  { name: 'clean-titles', desc: 'One-time DB cleanup' },
 ];
 
 const folderTree = `src/
   components/
-    ui/           # shadcn/ui primitives
-    Header.jsx    # Sticky nav
-    Footer.jsx    # Social links
-    PageLayout.jsx# SEO + Header + Footer
-  pages/          # One file per route
+    ui/             # shadcn/ui (button, avatar, input, tabs, toast)
+    ideas/          # IdeaCard, IdeaDrawer, IdeaFilterSheet, IdeaSubmitModal, SourceBadge
+    Header.jsx      # Sticky nav, blur backdrop
+    PageLayout.jsx  # SEO + Header + Footer + ScrollProgress
+    AuthModal.jsx   # Login/signup (tabs, Google OAuth)
+  pages/            # 18 routes, one file each
+  hooks/
+    useIdeaFilters.js  # Server-side pagination, URL state, 7 filter dimensions
   lib/
-    data/         # Static data (projects, prompts)
-    analytics.js  # GA4 helpers
-    utils.js      # cn(), timeAgo()
-  contexts/       # Auth + Theme providers
-  hooks/          # Custom hooks`;
+    data/           # projects, prompts, ideas, library
+    analytics.js    # GA4 helpers (24 events)
+    supabaseClient.js
+  contexts/         # Auth (Supabase) + Theme (dark/light)
+scripts/            # 10 scripts (7 sync, 1 score, 1 enrich, 1 cleanup)
+.github/workflows/  # 3 workflows (sync, enrich, CI)`;
+
+const dbHighlights = [
+  { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), enrichment (validation evidence, competitors), meta (YC failure analysis).', icon: Layers },
+  { title: 'Materialized Columns', desc: 'verdict, confidence, composite_score. Written by scripts, used for server-side filtering.', icon: Zap },
+  { title: 'Row Level Security', desc: 'Every table has RLS. Public read for approved ideas, auth-gated writes.', icon: ShieldCheck },
+  { title: '6 RPCs', desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
+];
+
+const securityItems = [
+  'Email/password + Google OAuth via Supabase',
+  'Row Level Security on every database table',
+  'Rate limiting on idea submissions (3/email/24h)',
+  'Honeypot defense in submission RPCs',
+  'CSP, HSTS, COOP, Permissions-Policy headers',
+  'Input validation on all user-facing forms',
+  'No secrets in client-side code',
+  'Every page lazy-loaded via React.lazy',
+  'Vendor/motion/supabase chunk splitting',
+  'Viewport-triggered animations, no layout thrash',
+  'GitHub Actions CI on every PR',
+  'Push to main = live via Vercel',
+];
+
+const stageColors = {
+  Ideation: 'text-primary bg-primary/10 border-primary/30',
+  Building: 'text-secondary bg-secondary/10 border-secondary/30',
+  Compounding: 'text-accent bg-accent/10 border-accent/30',
+};
+
+const stageDotColors = {
+  Ideation: 'bg-primary',
+  Building: 'bg-secondary',
+  Compounding: 'bg-accent',
+};
 
 const WebsiteBlueprintPage = () => {
   const handleGitHubClick = (location) => {
@@ -49,12 +187,15 @@ const WebsiteBlueprintPage = () => {
     });
   };
 
+  // Group platform sections by stage for the timeline
+  const stages = [...new Set(platformSections.map((s) => s.stage))];
+
   return (
     <PageLayout
       seo={{
-        title: "Website Blueprint - React SPA Architecture Guide",
-        description: "See exactly how flylabs.fun was built. Full stack breakdown with React, Supabase, Tailwind, and Vite. Open source architecture decisions and design system.",
-        keywords: "website blueprint, React SPA, open source, Supabase, Tailwind CSS, Vite, web development, architecture guide",
+        title: "Website Blueprint - Full Stack Architecture with AI Scoring Pipeline",
+        description: "How flylabs.fun was built. 18 routes, 10 scripts, 9 data sources, 4 AI scoring frameworks, 3 automated workflows. React, Supabase, Claude AI, Grok. Open source.",
+        keywords: "website blueprint, React SPA, open source, Supabase, AI scoring, data pipeline, Claude AI, Grok, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",
         schema: [
           {
@@ -93,7 +234,7 @@ const WebsiteBlueprintPage = () => {
                 Website <span className="text-primary">Blueprint</span>
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
-                This is exactly how I built flylabs.fun. Every tool, every decision, every line of thinking. Think of it as me walking you through my project over coffee.
+                18 routes, 10 scripts, 3 automated workflows, 9 data sources, 4 AI frameworks. Built by one person. Open source.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <a
@@ -114,21 +255,27 @@ const WebsiteBlueprintPage = () => {
               </div>
             </div>
 
-            {/* Decorative cards (desktop only) */}
-            <div className="hidden lg:flex items-center justify-center relative h-72">
-              <div className="absolute w-48 h-32 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center -rotate-6 -translate-x-6 translate-y-4 shadow-lg">
-                <span className="text-primary font-black text-lg">React</span>
-              </div>
-              <div className="absolute w-48 h-32 rounded-2xl bg-secondary/10 border border-secondary/20 flex items-center justify-center rotate-3 translate-x-2 -translate-y-2 shadow-lg">
-                <span className="text-secondary font-black text-lg">Tailwind</span>
-              </div>
-              <div className="absolute w-48 h-32 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center rotate-12 translate-x-10 translate-y-8 shadow-lg">
-                <span className="text-accent font-black text-lg">Supabase</span>
-              </div>
+            {/* Stat grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+              {heroStats.map((stat, i) => {
+                const borderColors = ['border-primary', 'border-secondary', 'border-accent'];
+                return (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 + i * 0.06 }}
+                    className={`card-playful p-4 bg-card text-center border-t-2 ${borderColors[i % 3]}`}
+                  >
+                    <p className="text-2xl md:text-3xl font-black text-foreground">{stat.value}</p>
+                    <p className="text-xs text-muted-foreground font-medium mt-1">{stat.label}</p>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
 
-          {/* Builder's Note */}
+          {/* Section 2: Builder's Note */}
           <motion.div
             {...fadeUp}
             className="bg-primary/5 border border-primary/20 rounded-2xl p-6 md:p-8 mb-20 flex gap-4 items-start"
@@ -144,25 +291,86 @@ const WebsiteBlueprintPage = () => {
             </div>
           </motion.div>
 
-          {/* Section 2: What You're Looking At */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto text-center mb-24"
-          >
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-6">
-              What You're Looking At
-            </h2>
-            <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-              This isn't a polished template you download and forget. It's a live website I'm building in public, upgrading in real-time. You're looking at a React SPA with auth, a database, analytics, SEO, dark mode, animations, and responsive design. All of it open source. Still a work in progress. That's the fun part.
-            </p>
-          </motion.div>
+          {/* Section 3: The Platform */}
+          <div className="mb-24">
+            <motion.div
+              {...fadeUp}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
+                The Platform
+              </h2>
+              <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+                Fly Labs covers the vibe building cycle: ideation, building, and compounding. Each section is a tool for a different stage. Here's what's live.
+              </p>
+            </motion.div>
 
-          {/* Section 3: The Stack */}
+            {/* Timeline */}
+            <div className="relative">
+              {/* Vertical line */}
+              <div className="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-border" />
+
+              {stages.map((stage) => {
+                const items = platformSections.filter((s) => s.stage === stage);
+                return (
+                  <div key={stage} className="mb-10 last:mb-0">
+                    {/* Stage label */}
+                    <motion.div
+                      {...fadeUp}
+                      className="relative flex items-center gap-3 mb-6 pl-1 md:pl-3"
+                    >
+                      <div className={`w-7 h-7 md:w-7 md:h-7 rounded-full ${stageDotColors[stage]} flex items-center justify-center z-10 shrink-0`}>
+                        <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                      </div>
+                      <span className={`text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border ${stageColors[stage]}`}>
+                        {stage}
+                      </span>
+                    </motion.div>
+
+                    {/* Items */}
+                    <div className="space-y-4 pl-11 md:pl-14">
+                      {items.map((item, i) => (
+                        <motion.div
+                          key={item.title}
+                          {...fadeUp}
+                          transition={{ duration: 0.3, delay: i * 0.05 }}
+                          className={`card-playful p-5 bg-card border-l-4 ${item.color}`}
+                        >
+                          <div className="flex items-start gap-4">
+                            <item.icon className="w-6 h-6 text-foreground shrink-0 mt-0.5" />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                <h3 className="font-bold text-base">{item.title}</h3>
+                                <Link
+                                  to={item.route}
+                                  className="text-xs text-primary font-semibold hover:underline transition-colors inline-flex items-center gap-1"
+                                >
+                                  See it live <ArrowRight className="w-3 h-3" />
+                                </Link>
+                              </div>
+                              <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-3">{item.desc}</p>
+                              <div className="flex flex-wrap gap-2">
+                                {item.highlights.map((h) => (
+                                  <span key={h} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground">
+                                    {h}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Section 4: The Stack */}
           <div className="mb-24">
             <motion.h2
               {...fadeUp}
-              transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-black tracking-tight mb-8 text-center"
             >
               The Stack
@@ -172,7 +380,7 @@ const WebsiteBlueprintPage = () => {
                 <motion.div
                   key={item.name}
                   {...fadeUp}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  transition={{ duration: 0.3, delay: index * 0.04 }}
                   className={`card-playful p-4 bg-card border-l-4 ${item.color}`}
                 >
                   <item.icon className="w-6 h-6 text-foreground mb-2" />
@@ -183,11 +391,125 @@ const WebsiteBlueprintPage = () => {
             </div>
           </div>
 
-          {/* Section 4: How It's Organized */}
+          {/* Section 5: The Intelligence Layer */}
+          <div className="mb-24">
+            <motion.div
+              {...fadeUp}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
+                The Intelligence Layer
+              </h2>
+              <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+                What runs behind the scenes. Automated data collection, AI scoring, market validation, and deployment pipelines.
+              </p>
+            </motion.div>
+
+            {/* 5a: Data Sources */}
+            <motion.div {...fadeUp} className="mb-10">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Terminal className="w-5 h-5 text-primary" /> Data Sources
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {dataSources.map((source, i) => (
+                  <motion.div
+                    key={source.name}
+                    {...fadeUp}
+                    transition={{ duration: 0.3, delay: i * 0.04 }}
+                    className="card-playful p-4 bg-card"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <source.icon className="w-4 h-4 text-foreground" />
+                      <h4 className="font-bold text-sm">{source.name}</h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-medium leading-relaxed">{source.detail}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 5b: Scoring */}
+            <motion.div {...fadeUp} className="mb-10">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Brain className="w-5 h-5 text-accent" /> Scoring
+              </h3>
+              <div className="card-playful p-5 bg-card">
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-4">
+                  Every idea gets scored by Claude Sonnet 4 across four frameworks. Each framework evaluates different dimensions. The composite score determines the verdict: BUILD, VALIDATE, or SKIP.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { name: 'Fly Labs Method', weight: '40%', color: 'bg-primary/10 text-primary border-primary/30' },
+                    { name: 'Hormozi', weight: '20%', color: 'bg-secondary/10 text-secondary border-secondary/30' },
+                    { name: 'Dan Koe', weight: '20%', color: 'bg-accent/10 text-accent border-accent/30' },
+                    { name: 'Okamoto', weight: '20%', color: 'bg-muted text-muted-foreground border-border' },
+                  ].map((fw) => (
+                    <span key={fw.name} className={`text-xs font-bold px-3 py-1.5 rounded-full border ${fw.color}`}>
+                      {fw.name} ({fw.weight})
+                    </span>
+                  ))}
+                </div>
+                <Link to="/scoring" className="inline-flex items-center gap-1 text-xs text-primary font-semibold mt-4 hover:underline transition-colors">
+                  How the scoring works <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* 5c: Validation */}
+            <motion.div {...fadeUp} className="mb-10">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Search className="w-5 h-5 text-secondary" /> Validation
+              </h3>
+              <div className="card-playful p-5 bg-card">
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                  Top-scoring ideas get validated against real market conversations. Grok xAI searches X for live evidence. Reddit adds a second signal. Claude synthesizes both into a confidence level with evidence counts and a validation verdict. If the data disagrees with the score, the validation layer catches it.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* 5d: Automation */}
+            <motion.div {...fadeUp} className="mb-10">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Clock className="w-5 h-5 text-primary" /> Automation
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {workflows.map((wf, i) => (
+                  <motion.div
+                    key={wf.name}
+                    {...fadeUp}
+                    transition={{ duration: 0.3, delay: i * 0.05 }}
+                    className="card-playful p-4 bg-card"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-bold text-sm">{wf.name}</h4>
+                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{wf.schedule}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-medium leading-relaxed">{wf.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 5e: Scripts */}
+            <motion.div {...fadeUp}>
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Code className="w-5 h-5 text-accent" /> Scripts
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {scripts.map((s) => (
+                  <div key={s.name} className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-muted/50 border border-border">
+                    <code className="text-xs font-mono font-bold text-foreground">{s.name}</code>
+                    <span className="text-xs text-muted-foreground font-medium">{s.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Section 6: How It's Organized */}
           <div className="mb-24">
             <motion.h2
               {...fadeUp}
-              transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-black tracking-tight mb-8 text-center"
             >
               How It's Organized
@@ -202,8 +524,8 @@ const WebsiteBlueprintPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { icon: Layout, title: 'PageLayout wraps everything', desc: 'SEO, Header, Footer included automatically.' },
-                { icon: Zap, title: 'Every page is lazy-loaded', desc: 'React.lazy + Suspense, code-split per route.' },
-                { icon: AtSign, title: 'Clean imports with @/', desc: 'Path alias, zero relative path mess.' },
+                { icon: Database, title: 'Server-side filtering with URL state', desc: 'useIdeaFilters hook: 7 dimensions, cascading counts, shareable URLs.' },
+                { icon: Layers, title: 'Extracted components for complexity', desc: 'Ideas page split into 5 components. Pattern scales to future sections.' },
               ].map((card, i) => (
                 <motion.div
                   key={card.title}
@@ -219,11 +541,39 @@ const WebsiteBlueprintPage = () => {
             </div>
           </div>
 
-          {/* Section 5: The Design System */}
+          {/* Section 7: The Database */}
+          <div className="mb-24">
+            <motion.div
+              {...fadeUp}
+              className="text-center mb-8"
+            >
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
+                The Database
+              </h2>
+              <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+                6 tables, 6 RPCs, Row Level Security on everything. 30+ columns on the ideas table alone.
+              </p>
+            </motion.div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {dbHighlights.map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  {...fadeUp}
+                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  className={`card-playful p-5 bg-card border-l-4 ${['border-primary', 'border-secondary', 'border-accent', 'border-primary'][i]}`}
+                >
+                  <item.icon className="w-6 h-6 text-foreground mb-3" />
+                  <h3 className="font-bold text-sm mb-1">{item.title}</h3>
+                  <p className="text-xs text-muted-foreground font-medium leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 8: The Design System */}
           <div className="mb-24">
             <motion.h2
               {...fadeUp}
-              transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-black tracking-tight mb-8 text-center"
             >
               The Design System
@@ -254,7 +604,7 @@ const WebsiteBlueprintPage = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm mb-2 uppercase tracking-wider text-muted-foreground">Font</h3>
-                  <p className="text-foreground"><span className="font-bold">Nunito</span> <span className="text-muted-foreground text-sm">(primary), Inter (fallback)</span></p>
+                  <p className="text-foreground"><span className="font-bold">Inter</span> <span className="text-muted-foreground text-sm">(primary), system-ui (fallback)</span></p>
                 </div>
                 <div>
                   <h3 className="font-bold text-sm mb-2 uppercase tracking-wider text-muted-foreground">Radius</h3>
@@ -293,25 +643,17 @@ const WebsiteBlueprintPage = () => {
             </div>
           </div>
 
-          {/* Section 6: Auth and Security */}
+          {/* Section 9: Auth, Security, and DevOps */}
           <motion.div
             {...fadeUp}
-            transition={{ duration: 0.5 }}
             className="card-playful p-6 md:p-10 bg-card mb-24"
           >
             <div className="flex items-center gap-3 mb-6">
               <ShieldCheck className="w-7 h-7 text-primary" />
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight">Auth and Security</h2>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight">Auth, Security, and DevOps</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                'Email/password + Google OAuth via Supabase',
-                'Row Level Security on every database table',
-                'Security headers (CSP, HSTS, COOP, Permissions-Policy)',
-                'Input validation on all user-facing forms',
-                'No secrets in client-side code',
-                'GitHub Actions CI on every pull request',
-              ].map((item) => (
+              {securityItems.map((item) => (
                 <div key={item} className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <span className="text-sm font-medium text-foreground">{item}</span>
@@ -320,59 +662,27 @@ const WebsiteBlueprintPage = () => {
             </div>
           </motion.div>
 
-          {/* Section 7: Performance and DevOps */}
-          <div className="mb-24">
-            <motion.h2
-              {...fadeUp}
-              transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-black tracking-tight mb-8 text-center"
-            >
-              Performance and DevOps
-            </motion.h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { icon: Scissors, title: 'Code Splitting', desc: 'Every page lazy-loaded via React.lazy.' },
-                { icon: Sparkles, title: 'Smart Animations', desc: 'Viewport-triggered, no layout thrashing.' },
-                { icon: GitBranch, title: 'CI/CD', desc: 'GitHub Actions lint + build on every PR.' },
-                { icon: Rocket, title: 'Auto-Deploy', desc: 'Push to main, live in seconds via Vercel.' },
-              ].map((card, i) => (
-                <motion.div
-                  key={card.title}
-                  {...fadeUp}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
-                  className="card-playful p-5 bg-card text-center"
-                >
-                  <card.icon className="w-7 h-7 text-primary mx-auto mb-3" />
-                  <h3 className="font-bold text-sm mb-1">{card.title}</h3>
-                  <p className="text-xs text-muted-foreground font-medium">{card.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Section 8: What would this cost? */}
+          {/* Section 10: What would this cost? */}
           <motion.div
             {...fadeUp}
-            transition={{ duration: 0.5 }}
             className="bg-primary/5 border border-primary/20 rounded-3xl p-8 md:p-12 text-center mb-24"
           >
             <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-6">
               What would this cost?
             </h2>
             <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto mb-8">
-              A custom React site with auth, database, analytics, SEO, dark mode, animations, and responsive design? Freelancers charge $300 to $500+ for this kind of setup. I'm giving it away. Fork it, clone it, make it yours.
+              A React SPA with auth, AI scoring pipeline, 9-source data sync, market validation, community features, 3 automated workflows, analytics, SEO, dark mode, and responsive design? Agencies charge $2,000+ for this kind of setup. I'm giving it away. Fork it, clone it, make it yours.
             </p>
             <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="line-through text-muted-foreground text-xl font-medium">$300+</span>
+              <span className="line-through text-muted-foreground text-xl font-medium">$2,000+</span>
               <span className="text-primary font-black text-3xl">Free</span>
             </div>
             <p className="text-sm text-muted-foreground font-medium">MIT License. Do whatever you want with it.</p>
           </motion.div>
 
-          {/* Section 9: CTA Footer */}
+          {/* Section 11: CTA Footer */}
           <motion.div
             {...fadeUp}
-            transition={{ duration: 0.5 }}
             className="text-center"
           >
             <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
@@ -393,7 +703,7 @@ const WebsiteBlueprintPage = () => {
               </Link>
             </div>
             <p className="text-muted-foreground font-bold">
-              Still cooking. Being upgraded in real-time. Come build with me.
+              Still cooking. New sections every month. Come build with me.
             </p>
           </motion.div>
 
