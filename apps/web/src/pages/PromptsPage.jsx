@@ -178,14 +178,26 @@ const PromptsPage = () => {
 
     setIsSuggesting(true);
     try {
+      // Rate limit check
+      const trimmedEmail = suggestForm.email.trim().toLowerCase();
+      const { data: rateOk } = await supabase.rpc('check_idea_rate_limit', { p_email: trimmedEmail });
+      if (rateOk === false) {
+        toast({ title: 'Slow down', description: 'Max 3 suggestions per day. Try again later.', variant: 'destructive' });
+        setIsSuggesting(false);
+        return;
+      }
+
       const { error } = await supabase.from('ideas').insert({
         name: profile?.name || currentUser?.email?.split('@')[0] || null,
-        email: suggestForm.email.trim().toLowerCase(),
+        email: trimmedEmail,
         idea_title: `[Prompt - ${suggestForm.category}] ${suggestForm.idea_title.trim()}`,
         idea_description: suggestForm.idea_description.trim(),
         category: 'Prompt',
       });
       if (error) throw error;
+
+      // Log submission for rate limiting
+      await supabase.rpc('log_idea_submission', { p_email: trimmedEmail });
 
       trackEvent('idea_submitted', { category: 'Prompt', prompt_category: suggestForm.category });
 

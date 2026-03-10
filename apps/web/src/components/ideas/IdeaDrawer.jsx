@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
+import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const getScoreTier = (score) => {
   if (score >= 75) return { label: 'Exceptional', color: 'text-primary', bg: 'bg-primary/10', bar: 'bg-primary' };
@@ -38,9 +39,6 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
   if (!idea) return null;
 
   const status = statusConfig[idea.status] || statusConfig.open;
-  const subreddit = idea.source === 'reddit' && idea.tags
-    ? idea.tags.split(',')[0]?.trim()
-    : null;
   const showStatus = idea.source === 'reddit'
     ? false
     : idea.status === 'building' || idea.status === 'shipped';
@@ -78,21 +76,7 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
             <h3 className="text-xl font-bold mb-2">{idea.idea_title}</h3>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap mb-3">
               <span>
-                {idea.source === 'problemhunt' ? (
-                  <span className="text-accent font-medium">via ProblemHunt</span>
-                ) : idea.source === 'reddit' ? (
-                  <span className="text-red-500 font-medium">{subreddit ? `r/${subreddit}` : 'via Reddit'}</span>
-                ) : idea.source === 'producthunt' ? (
-                  <span className="text-orange-600 font-medium">via Product Hunt</span>
-                ) : idea.source === 'x' ? (
-                  <span className="text-foreground font-medium">via X</span>
-                ) : idea.source === 'hackernews' ? (
-                  <span className="text-orange-500 font-medium">via Hacker News</span>
-                ) : idea.source === 'github' ? (
-                  <span className="text-muted-foreground font-medium">{idea.tags || 'via GitHub'}</span>
-                ) : (
-                  `by ${idea.name || 'Anonymous'}`
-                )}
+                <SourceBadge source={idea.source} sourceUrl={idea.source_url} tags={idea.tags} name={idea.name} location="ideas_drawer" />
               </span>
               <span className="text-muted-foreground/40">&middot;</span>
               <span>{timeAgo(idea.published_at || idea.created_at)}</span>
@@ -669,70 +653,16 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
               {hasVoted ? 'Voted' : 'Vote'}
               <span className="tabular-nums">{idea.votes || 0}</span>
             </button>
-            {idea.source === 'problemhunt' && (
-              <a
-                href={idea.source_url || 'https://problemhunt.pro'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-accent/20 text-sm font-medium text-accent hover:bg-accent/10 transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url || 'https://problemhunt.pro', link_label: 'ProblemHunt Detail', location: 'ideas_drawer' })}
-              >
-                via ProblemHunt <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {idea.source === 'reddit' && idea.source_url && (
-              <a
-                href={idea.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/20 text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: subreddit ? `r/${subreddit}` : 'Reddit Detail', location: 'ideas_drawer' })}
-              >
-                {subreddit ? `r/${subreddit}` : 'via Reddit'} <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {idea.source === 'producthunt' && idea.source_url && (
-              <a
-                href={idea.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-600/20 text-sm font-medium text-orange-600 hover:bg-orange-600/10 transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'Product Hunt Detail', location: 'ideas_drawer' })}
-              >
-                via Product Hunt <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {idea.source === 'x' && idea.source_url && (
-              <a
-                href={idea.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'X Detail', location: 'ideas_drawer' })}
-              >
-                via X <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {idea.source === 'hackernews' && idea.source_url && (
-              <a
-                href={idea.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-orange-500/20 text-sm font-medium text-orange-500 hover:bg-orange-500/10 transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: 'Hacker News Detail', location: 'ideas_drawer' })}
-              >
-                via Hacker News <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {idea.source === 'github' && idea.source_url && (
+            {idea.source !== 'community' && idea.source_url && (
               <a
                 href={idea.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
-                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: idea.tags || 'GitHub Detail', location: 'ideas_drawer' })}
+                onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: `${idea.source} Detail`, location: 'ideas_drawer' })}
               >
-                {idea.tags || 'via GitHub'} <ArrowRight className="w-3.5 h-3.5" />
+                <SourceBadge source={idea.source} sourceUrl={idea.source_url} tags={idea.tags} name={idea.name} location="ideas_drawer" />
+                <ArrowRight className="w-3.5 h-3.5" />
               </a>
             )}
           </div>

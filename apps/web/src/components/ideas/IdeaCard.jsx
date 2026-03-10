@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
+import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const TRENDING_THRESHOLD = 5;
 
@@ -14,11 +15,6 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
     : idea.status === 'shipped'
       ? 'bg-primary'
       : 'bg-orange-500';
-
-  // Extract subreddit from tags for Reddit ideas
-  const subreddit = idea.source === 'reddit' && idea.tags
-    ? idea.tags.split(',')[0]?.trim()
-    : null;
 
   // Only show status for non-default (building/shipped)
   const showStatus = idea.source === 'reddit'
@@ -141,111 +137,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
           )}
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap">
             <span>
-              {idea.source === 'problemhunt' ? (
-                <a
-                  href={idea.source_url || 'https://problemhunt.pro'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url || 'https://problemhunt.pro',
-                      link_label: 'ProblemHunt',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  via ProblemHunt
-                </a>
-              ) : idea.source === 'reddit' && idea.source_url ? (
-                <a
-                  href={idea.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-red-500 hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url,
-                      link_label: subreddit ? `r/${subreddit}` : 'Reddit',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  {subreddit ? `r/${subreddit}` : 'via Reddit'}
-                </a>
-              ) : idea.source === 'producthunt' ? (
-                <a
-                  href={idea.source_url || 'https://producthunt.com'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-orange-600 hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url || 'https://producthunt.com',
-                      link_label: 'Product Hunt',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  via Product Hunt
-                </a>
-              ) : idea.source === 'x' && idea.source_url ? (
-                <a
-                  href={idea.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url,
-                      link_label: 'X',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  via X
-                </a>
-              ) : idea.source === 'hackernews' ? (
-                <a
-                  href={idea.source_url || 'https://news.ycombinator.com'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-orange-500 hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url || 'https://news.ycombinator.com',
-                      link_label: 'Hacker News',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  via Hacker News
-                </a>
-              ) : idea.source === 'github' && idea.source_url ? (
-                <a
-                  href={idea.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:underline font-medium"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    trackEvent('outbound_click', {
-                      link_url: idea.source_url,
-                      link_label: idea.tags || 'GitHub',
-                      location: 'ideas',
-                    });
-                  }}
-                >
-                  {idea.tags ? idea.tags : 'via GitHub'}
-                </a>
-              ) : (
-                `by ${idea.name || 'Anonymous'}`
-              )}
+              <SourceBadge source={idea.source} sourceUrl={idea.source_url} tags={idea.tags} name={idea.name} />
             </span>
             <span className="text-muted-foreground/40">&middot;</span>
             <span>{timeAgo(idea.published_at || idea.created_at)}</span>

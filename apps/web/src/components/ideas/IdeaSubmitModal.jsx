@@ -1,17 +1,50 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Send, ArrowRight, X, Loader2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
 import { categories, industries, frequencyOptions, formSteps } from '@/lib/data/ideas.js';
 
 const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onStepChange, onSubmit, isSubmitting, toast }) => {
+  const modalRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
   useEffect(() => {
     if (!show) return;
     const handler = (e) => { if (e.key === 'Escape') { onClose(); onStepChange(0); } };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [show, onClose, onStepChange]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!show) return;
+    previousFocusRef.current = document.activeElement;
+    const timer = setTimeout(() => {
+      const modal = modalRef.current;
+      if (!modal) return;
+      const focusable = modal.querySelectorAll('input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+      if (focusable.length) focusable[0].focus();
+    }, 100);
+
+    const trapFocus = (e) => {
+      if (e.key !== 'Tab') return;
+      const modal = modalRef.current;
+      if (!modal) return;
+      const focusable = modal.querySelectorAll('input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', trapFocus);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('keydown', trapFocus);
+      if (previousFocusRef.current) previousFocusRef.current.focus();
+    };
+  }, [show]);
 
   if (!show) return null;
 
@@ -36,6 +69,7 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', duration: 0.5, bounce: 0.3 }}
+          ref={modalRef}
           role="dialog" aria-modal="true"
           className="w-full max-w-lg bg-card border border-border rounded-3xl shadow-2xl overflow-hidden pointer-events-auto relative"
         >

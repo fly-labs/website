@@ -27,6 +27,25 @@ export const AuthModal = () => {
     return () => document.removeEventListener('keydown', handler);
   }, [navigate]);
 
+  // Focus trap: keep focus inside the modal
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    const modal = document.querySelector('[role="dialog"]');
+    if (!modal) return;
+    const focusable = modal.querySelectorAll('input, button, select, textarea, a[href], [tabindex]:not([tabindex="-1"])');
+    if (focusable.length) focusable[0].focus();
+
+    const trapFocus = (e) => {
+      if (e.key !== 'Tab' || !focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', trapFocus);
+    return () => { document.removeEventListener('keydown', trapFocus); if (previousFocus) previousFocus.focus(); };
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) return;
