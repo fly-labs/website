@@ -49,7 +49,7 @@ const pillars = [
   {
     title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems from Reddit, Hacker News, GitHub, Product Hunt, X, ProblemHunt, and the community. AI-scored with the Fly Labs Method + 3 expert frameworks, given a BUILD/VALIDATE/SKIP verdict, validated against real conversations, and mapped against the competitive landscape. Free ideation intelligence for vibe builders.',
+    description: 'Real problems from 9 sources. AI-scored with the Fly Labs Method, given a verdict, and validated against real conversations.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',

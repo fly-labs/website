@@ -306,7 +306,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}8 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}9 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -656,7 +656,7 @@ const IdeaSubmissionPage = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       The hardest part of building is knowing what to build. Most people grab the first
                       idea that excites them and start coding. Six months later they've built something
-                      nobody wants. This system fixes that. We pull real problems from 8 sources daily,
+                      nobody wants. This system fixes that. We pull real problems from 9 sources daily,
                       score each one through the Fly Labs Method and 3 expert frameworks, then validate
                       top ideas against real conversations on X and Reddit. You get a verdict: build it,
                       validate first, or move on.

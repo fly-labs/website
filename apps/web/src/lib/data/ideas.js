@@ -112,3 +112,5 @@ export const verdictLabels = {
   VALIDATE_FIRST: 'VALIDATE',
   SKIP: 'SKIP',
 };
+
+export const SOURCE_COUNT = sourceOptions.filter(s => s.value !== 'all').length;

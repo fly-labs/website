@@ -228,7 +228,7 @@ function transformStory(story) {
     : null;
 
   return {
-    idea_title: story.title.slice(0, 200),
+    idea_title: story.title.replace(/^(?:Show|Ask|Launch|Tell)\s+HN:\s*/i, '').slice(0, 200),
     idea_description: description,
     category,
     industry: detectIndustry(story),

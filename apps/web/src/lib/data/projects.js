@@ -103,7 +103,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: 'The hardest part of building is knowing what to build. This system pulls real problems from 8 sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.',
+    description: 'The hardest part of building is knowing what to build. This system pulls real problems from 9 sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.',
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

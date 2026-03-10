@@ -1,6 +1,6 @@
 # Supabase Setup
 
-This document describes the database schema and Row Level Security (RLS) policies for FlyLabs.
+This document describes the database schema, Row Level Security (RLS) policies, RPCs, and scoring system for FlyLabs.
 
 ## Migrations
 
@@ -18,34 +18,226 @@ Or apply manually in the [Supabase SQL Editor](https://supabase.com/dashboard/pr
 | Table | Purpose |
 |-------|---------|
 | `profiles` | User profiles (synced with auth.users) |
-| `ideas` | Community idea submissions + ProblemHunt/Reddit/Product Hunt imports with voting, AI scoring, and enrichment |
+| `ideas` | Community + automated idea submissions with AI scoring, validation, and enrichment |
 | `idea_rate_limits` | Rate limiting for idea submissions (max 3 per email per 24h) |
-| `prompt_votes` | Upvotes on prompts |
+| `prompt_votes` | Upvotes on prompts (one per user per prompt) |
 | `prompt_comments` | Comments on prompts |
-| `waitlist` | Email capture for micro tools and library |
+| `waitlist` | Email capture for micro tools, library, and other features |
 
-### Ideas Table Columns
+## Table Details
 
-id, idea_title, idea_description (nullable), category, industry (nullable), source (default 'community'), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score (integer), created_at
+### profiles
+
+User profiles, automatically created on signup and synced with `auth.users`.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK, references `auth.users(id)` |
+| `name` | text | Display name |
+| `phone` | text | Phone number |
+| `country` | text | Country |
+| `city` | text | City |
+| `age` | integer | Age |
+| `gender` | text | Gender |
+| `bio` | text | Short bio |
+| `avatar_url` | text | Avatar image URL |
+| `updated_at` | timestamptz | Last profile update |
+
+### ideas
+
+Community submissions and automated imports from 8 external sources. Each idea goes through AI scoring (4 frameworks) and optional enrichment (dual-source validation).
+
+| Column | Type | Default | Notes |
+|--------|------|---------|-------|
+| `id` | uuid | gen_random_uuid() | PK |
+| `idea_title` | text | | Required |
+| `idea_description` | text | | Nullable, longer description |
+| `category` | text | | Tool, Template, Prompt, Article, or Other |
+| `industry` | text | | Nullable, 30 domain verticals (Marketing & Sales, Developer Tools, Health & Fitness, etc.) |
+| `source` | text | 'community' | One of: community, problemhunt, reddit, producthunt, x, hackernews, github, yc |
+| `source_url` | text | | Link to original post/product/issue |
+| `external_id` | text | | Unique dedup key per source (e.g. `reddit-abc123`, `yc-42`, `github-999`) |
+| `tags` | text[] | | Array of tags |
+| `country` | text | | Country of origin |
+| `name` | text | | Submitter name (community submissions) |
+| `email` | text | | Nullable, submitter email |
+| `votes` | integer | 0 | Community upvote count |
+| `approved` | boolean | false | Visibility flag (RLS filters on this) |
+| `status` | text | | open, building, or shipped |
+| `frequency` | text | | Daily, Weekly, Sometimes, Once |
+| `existing_solutions` | text | | Known alternatives |
+| `flylabs_score` | integer | | 0-100, Fly Labs Method score (primary framework, 40% weight) |
+| `hormozi_score` | integer | | 0-100, Hormozi Value Equation score (20% weight) |
+| `koe_score` | integer | | 0-100, Dan Koe One-Person Business score (20% weight) |
+| `okamoto_score` | integer | | 0-100, Okamoto MicroSaaS score (20% weight) |
+| `score_breakdown` | jsonb | | Per-framework pillar scores + reasoning + synthesis (verdict, reasoning, next_steps) |
+| `enrichment` | jsonb | | Validation data: evidence, competitors, summary, confidence level, evidence_count, enrichment verdict |
+| `validation_score` | integer | | 0-100, computed from enrichment evidence |
+| `verdict` | text | | Materialized: BUILD, VALIDATE_FIRST, or SKIP |
+| `confidence` | text | | Materialized: high, medium, or low |
+| `composite_score` | numeric | | Materialized weighted average (40% FL + 20% H + 20% K + 20% O) |
+| `published_at` | timestamptz | | Original publication date from source (tweet date, Reddit created_utc, etc.). Falls back to created_at in frontend |
+| `meta` | jsonb | | Source-specific context. Currently used for YC ideas (failure_analysis: failure_reason, what_changed, rebuild_angle) |
+| `created_at` | timestamptz | now() | Row creation time |
+| `updated_at` | timestamptz | | Auto-updated via database trigger on any row change |
+
+**Indexes:**
+- Unique index on `external_id` (deduplication across syncs)
+- Index on `flylabs_score` (sorting)
+- Index on `composite_score` (sorting)
+- Index on `verdict` (filtering)
+
+**score_breakdown JSONB structure:**
+
+```json
+{
+  "flylabs": { "total": 78, "pillars": { "problem_clarity": 24, "solution_gap": 20, "willingness_to_act": 18, "buildability": 16 }, "reasoning": "..." },
+  "hormozi": { "total": 72, "pillars": { "dream_outcome": 6, "likelihood": 5, "speed": 5, "effort": 4 }, "reasoning": "..." },
+  "koe": { "total": 68, "pillars": { ... }, "reasoning": "..." },
+  "okamoto": { "total": 74, "pillars": { ... }, "reasoning": "..." },
+  "synthesis": { "verdict": "BUILD", "reasoning": "...", "next_steps": ["..."] }
+}
+```
+
+**enrichment JSONB structure:**
+
+```json
+{
+  "validation": { "evidence": ["..."], "summary": "..." },
+  "competitors": [{ "name": "...", "url": "...", "gap": "..." }],
+  "confidence": "high",
+  "evidence_count": 12,
+  "verdict": { "recommendation": "BUILD", "reasoning": "...", "confidence": "high" }
+}
+```
+
+### idea_rate_limits
+
+Rate limiting table for community idea submissions. Maximum 3 submissions per email address per 24-hour window. RLS enabled, accessed exclusively via RPCs.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `email` | text | Submitter email |
+| `created_at` | timestamptz | Submission timestamp |
+
+### prompt_votes
+
+One vote per user per prompt. Toggle behavior handled by `toggle_prompt_vote` RPC.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `user_id` | uuid | References `auth.users(id)` |
+| `prompt_id` | text | Prompt identifier (matches frontend prompt data) |
+| `created_at` | timestamptz | Vote timestamp |
+
+**Constraints:** Unique on `(user_id, prompt_id)`.
+
+### prompt_comments
+
+Comments on prompts by authenticated users.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `user_id` | uuid | References `auth.users(id)` |
+| `prompt_id` | text | Prompt identifier |
+| `content` | text | Comment body |
+| `created_at` | timestamptz | Comment timestamp |
+
+### waitlist
+
+Email capture for various features (micro tools, library ebooks, future products). Unique constraint on `(email, source)` prevents duplicate signups per feature.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `email` | text | Subscriber email |
+| `source` | text | Feature identifier (e.g. `microsaas`, `library-ai-builders-toolkit`) |
+| `created_at` | timestamptz | Signup timestamp |
 
 ## RPCs
 
-| Function | Purpose |
-|----------|---------|
-| `increment_vote(idea_id)` | Atomic vote increment for ideas |
-| `toggle_prompt_vote(p_prompt_id)` | Toggle vote on prompt, returns `{ count }` |
-| `get_prompt_vote_counts()` | Returns vote counts for all prompts (SECURITY DEFINER) |
-| `get_waitlist_count(p_source)` | Returns waitlist count (no email exposure) |
-| `check_idea_rate_limit(p_email)` | Returns count of submissions in last 24h |
-| `log_idea_submission(p_email)` | Logs a submission for rate limiting |
+| Function | Purpose | Auth |
+|----------|---------|------|
+| `increment_vote(idea_id uuid)` | Atomic vote increment for ideas | Public |
+| `toggle_prompt_vote(p_prompt_id text)` | Insert or delete a vote, returns `{ count }` | Authenticated |
+| `get_prompt_vote_counts()` | Returns all prompt vote counts (no user data exposed) | SECURITY DEFINER |
+| `get_waitlist_count(p_source text)` | Returns subscriber count for a source (no email exposure) | Public |
+| `check_idea_rate_limit(p_email text)` | Returns count of submissions by this email in last 24h | Public |
+| `log_idea_submission(p_email text)` | Logs a submission for rate limiting. Includes honeypot defense | Public |
 
 ## RLS Policies
 
-- **profiles**: Users can select/insert/update own profile
-- **ideas**: Public select where `approved = true`; anyone can insert
-- **prompt_votes**: Authenticated users can select, insert, delete own
-- **prompt_comments**: Authenticated users can select all, insert/delete own
-- **waitlist**: Anyone can insert; no public select (use `get_waitlist_count` RPC for counts)
+All tables have RLS enabled.
+
+| Table | Policy | Who | Rule |
+|-------|--------|-----|------|
+| `profiles` | Select own | Authenticated | `auth.uid() = id` |
+| `profiles` | Insert own | Authenticated | `auth.uid() = id` |
+| `profiles` | Update own | Authenticated | `auth.uid() = id` |
+| `ideas` | Public read | Anyone | `approved = true` |
+| `ideas` | Public insert | Anyone | All columns |
+| `idea_rate_limits` | RLS enabled | N/A | Accessed exclusively via RPCs |
+| `prompt_votes` | Select own | Authenticated | `auth.uid() = user_id` |
+| `prompt_votes` | Insert own | Authenticated | `auth.uid() = user_id` |
+| `prompt_votes` | Delete own | Authenticated | `auth.uid() = user_id` |
+| `prompt_comments` | Select all | Authenticated | All rows |
+| `prompt_comments` | Insert own | Authenticated | `auth.uid() = user_id` |
+| `prompt_comments` | Delete own | Authenticated | `auth.uid() = user_id` |
+| `waitlist` | Insert | Anyone | All columns |
+| `waitlist` | No select | N/A | Use `get_waitlist_count` RPC for counts |
+
+## Scoring System
+
+Ideas are scored by Claude Sonnet 4 across 4 frameworks via `scripts/score-ideas.mjs`.
+
+### Frameworks and Weights
+
+| Framework | Weight | Score Range | Focus |
+|-----------|--------|-------------|-------|
+| Fly Labs Method | 40% | 0-100 | Problem Clarity (30pts), Solution Gap (25pts), Willingness to Act (25pts), Buildability (20pts) |
+| Hormozi Value Equation | 20% | 0-100 | Dream Outcome, Likelihood, Speed, Effort |
+| Dan Koe One-Person Business | 20% | 0-100 | 7 dimensions for solo creator viability |
+| Okamoto MicroSaaS | 20% | 0-100 | 6 dimensions for micro-SaaS validation |
+
+### Verdict Rules
+
+| Verdict | Condition |
+|---------|-----------|
+| **BUILD** | composite_score >= 70 AND flylabs_score >= 60 AND no single framework below 30 |
+| **VALIDATE_FIRST** | composite_score 45-69, or has gaps (one framework below 30 despite high composite) |
+| **SKIP** | composite_score < 45 |
+
+The `verdict`, `confidence`, and `composite_score` columns are materialized by the scoring and enrichment scripts. They are not computed at query time.
+
+## Enrichment System
+
+Top-scoring ideas are enriched via `scripts/enrich-ideas.mjs` with dual-source validation.
+
+- **Primary:** Grok xAI API with `x_search` tool (always available)
+- **Secondary:** Reddit API with OAuth auto-upgrade (best-effort)
+- **Synthesis:** Claude combines evidence from both sources, assigns confidence level (high/medium/low), counts evidence items, and produces an enrichment verdict (BUILD/VALIDATE_FIRST/SKIP)
+- **Threshold:** Only ideas with composite_score >= 40 are enriched
+- **Schedule:** Daily at 4 AM UTC via GitHub Actions
+
+Results are stored in the `enrichment` JSONB column and `validation_score` integer column.
+
+## Idea Sources
+
+| Source | Sync Script | External ID Format | Schedule |
+|--------|-------------|-------------------|----------|
+| community | Manual submissions | None (uuid) | On submit |
+| problemhunt | `scripts/sync-problemhunt.mjs` | `problemhunt-{uid}` | 3x/day |
+| reddit | `scripts/sync-reddit.mjs` | `reddit-{post_id}` | 3x/day |
+| producthunt | `scripts/sync-producthunt.mjs` | `producthunt-{id}` | 3x/day |
+| x | `scripts/sync-x.mjs` | `x-{tweet_id}` | 3x/day |
+| hackernews | `scripts/sync-hackernews.mjs` | `hackernews-{id}` | 3x/day |
+| github | `scripts/sync-github.mjs` | `github-{id}` | 3x/day |
+| yc | `scripts/sync-yc.mjs` | `yc-{id}` | 3x/day |
+
+All sync scripts run together via the "Sync Ideas" GitHub Actions workflow (2 AM, 10 AM, 6 PM UTC). New ideas are automatically scored by Claude after sync.
 
 ## New Project Setup
 
@@ -53,7 +245,8 @@ id, idea_title, idea_description (nullable), category, industry (nullable), sour
 2. Run migrations in order (or use `supabase db push`)
 3. Enable Email and Google auth in Authentication > Providers
 4. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to `.env`
+5. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env` for scripts (scoring, sync, enrichment)
 
 ## Existing Projects
 
-If you already have tables, run the migrations anyway. They use `CREATE TABLE IF NOT EXISTS` and `CREATE OR REPLACE FUNCTION`, so existing tables are preserved. The new `get_waitlist_count` RPC is required for the Micro Tools waitlist count to display.
+If you already have tables, run the migrations anyway. They use `CREATE TABLE IF NOT EXISTS` and `CREATE OR REPLACE FUNCTION`, so existing tables are preserved.

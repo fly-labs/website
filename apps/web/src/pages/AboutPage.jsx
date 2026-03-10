@@ -39,7 +39,7 @@ const milestones = [
   {
     phase: 'Right now',
     title: 'AI scores ideas, the community votes, the best get built',
-    description: 'New ideas come from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community. AI scores them with 4 frameworks (the Fly Labs Method + 3 expert perspectives), validates against real conversations, and maps the competitive landscape. The best ones get built.',
+    description: 'New ideas come from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, the YC Graveyard, and the community. AI scores them with 4 frameworks (the Fly Labs Method + 3 expert perspectives), validates against real conversations, and maps the competitive landscape. The best ones get built.',
     link: { label: 'Browse the idea lab', to: '/ideas' },
   },
 ];
@@ -48,9 +48,9 @@ const AboutPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "About Luiz Alves - Builder, CFA & Creator",
-        description: "Meet Luiz Alves - CFA, CAIA, and vibe builder. AI tools, templates, and open source experiments at Fly Labs.",
-        keywords: "Luiz Alves, CFA, CAIA, indie maker, AI builder, open source, tools, templates",
+        title: "About Luiz Alves - Builder & Creator at Fly Labs",
+        description: "Meet Luiz Alves. Finance background, vibe builder. AI tools, templates, and open source experiments at Fly Labs.",
+        keywords: "Luiz Alves, indie maker, AI builder, open source, tools, templates, vibe building",
         url: "https://flylabs.fun/about",
         schema: {
           "@context": "https://schema.org",
@@ -95,7 +95,7 @@ const AboutPage = () => {
               Nobody asked me to build any of this. I did it anyway, for fun.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-6">
-              I'm Luiz Alves. CFA, CAIA, vibe builder. I ship tools and templates with AI and no-code. All open source.
+              I'm Luiz Alves. Over a decade in finance, and somehow I ended up building tools with AI on weekends. All open source.
             </p>
             <div className="flex flex-wrap gap-2 mb-6">
               {socials.map((s) => (
@@ -181,7 +181,7 @@ const AboutPage = () => {
               {[
                 { text: 'Library - writing the first ebooks', link: '/library' },
                 { text: 'Micro Tools - building the first batch', link: '/microsaas' },
-                { text: 'Idea Lab - 8 sources, Fly Labs Method + 3 expert frameworks, market validated', link: '/ideas' },
+                { text: 'Idea Lab - 9 sources, Fly Labs Method + 3 expert frameworks, market validated', link: '/ideas' },
               ].map((item) => (
                 <li key={item.text}>
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
@@ -205,7 +205,7 @@ const AboutPage = () => {
                 <span className="text-primary font-bold">Vibe building</span> is the natural extension of all of that. It's the whole picture. No investors, no pitch decks, no growth-at-all-costs pressure. Just you, your curiosity, and the joy of making something useful.
               </p>
               <p>
-                Every project teaches you something you didn't expect. One day you're learning APIs, the next you're figuring out how to write copy that actually connects with people. It's the ultimate creative side hustle, and honestly, it doesn't feel like work at all.
+                Every project teaches you something you didn't expect. One day you're learning APIs, the next you're figuring out how to write copy that actually connects with people. It compounds in ways you can't predict, and honestly, it doesn't feel like work at all.
               </p>
             </div>
           </motion.section>

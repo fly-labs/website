@@ -233,7 +233,7 @@ function transformIssue(issue) {
   const repoFullName = issue.repository_url?.split('/').slice(-2).join('/') || null;
 
   return {
-    idea_title: issue.title.slice(0, 200),
+    idea_title: issue.title.replace(/^\[(?:Feature Request|Enhancement|Bug|Help Wanted|RFC)\]\s*/i, '').replace(/^(?:Feature Request|Enhancement):\s*/i, '').slice(0, 200),
     idea_description: issue.body ? issue.body.replace(/<[^>]+>/g, '').slice(0, 2000) : null,
     category,
     industry: detectIndustry(issue),

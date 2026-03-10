@@ -14,7 +14,7 @@ Built by one person with AI. Open source.
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
 - **AI Prompt Library** - 24 curated prompts for coding, writing, strategy, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
-- **Idea Lab** - Community submissions + real-world problems from 7 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the community. Every idea scored by AI using 4 frameworks: the Fly Labs Method (problem-solution fit for vibe builders) + Hormozi, Dan Koe, and Okamoto as expert perspectives. Per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
+- **Idea Lab** - Community submissions + real-world problems from 9 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, YC Graveyard, and the community. Every idea scored by AI using 4 frameworks: the Fly Labs Method (problem-solution fit for vibe builders) + Hormozi, Dan Koe, and Okamoto as expert perspectives. Per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail drawer, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of AI scoring: Fly Labs Method (4 dimensions: Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus 3 expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
 - **Newsletter** - RSS-powered feed from the Fala Comigo Substack
@@ -105,6 +105,7 @@ All env vars live in `apps/web/.env` with the `VITE_` prefix (client-side).
 | `npm run sync:x` | Sync problems from X/Twitter via Grok xAI API with x_search tool |
 | `npm run sync:hackernews` | Sync problems from Hacker News (Firebase API + Claude AI filter) |
 | `npm run sync:github` | Sync feature requests from GitHub Issues (Search API + Claude AI filter) |
+| `npm run sync:yc` | Sync dead YC startups from YC Graveyard (yc-oss API + Claude AI filter) |
 | `npm run score` | Score unscored ideas with Claude Sonnet (Fly Labs Method + Hormozi + Dan Koe + Okamoto + synthesis verdict) |
 | `npm run enrich` | Validate top-scoring ideas with Grok x_search (primary) + Reddit (secondary) |
 
@@ -141,7 +142,7 @@ apps/web/
 │   │   │   ├── projects.js   # Projects array + categories
 │   │   │   ├── prompts.js    # 24 prompts (4 categories, featured flag)
 │   │   │   ├── library.js    # Books array, topics, topic colors
-│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (8), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps
+│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
@@ -185,7 +186,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + ProblemHunt + Reddit + Product Hunt imports (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', 'producthunt', 'x', 'hackernews', or 'github'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, created_at
+**ideas** - Community idea submissions + automated imports from 9 sources (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', 'producthunt', 'x', 'hackernews', 'github', or 'yc'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, verdict (BUILD/VALIDATE_FIRST/SKIP), confidence (high/medium/low), composite_score, published_at, meta (JSONB), created_at, updated_at
 
 **idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 
