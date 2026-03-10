@@ -25,6 +25,7 @@
     "sync:x": "node scripts/sync-x.mjs",
     "sync:hackernews": "node scripts/sync-hackernews.mjs",
     "sync:github": "node scripts/sync-github.mjs",
+    "sync:yc": "node scripts/sync-yc.mjs",
     "score": "node scripts/score-ideas.mjs",
     "enrich": "node scripts/enrich-ideas.mjs"
   },

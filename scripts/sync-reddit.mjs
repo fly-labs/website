@@ -68,6 +68,10 @@ const SUBREDDITS = {
   webdev: 'Dev',
   digital_marketing: 'Marketing Sales',
   Bookkeeping: 'Finance',
+  // Portuguese-language subreddits
+  brdev: 'Dev',
+  empreendedorismo: 'Business',
+  O_Empreendedor: 'Business',
 };
 
 // Flair text -> industry override
@@ -103,6 +107,9 @@ const SEARCH_QUERIES = [
   '"wish there was" OR "someone should build" OR "idea for a"',
   '"automate" OR "workflow" OR "repetitive task" OR "save time"',
   '"would pay for" OR "willing to pay" OR "need a solution"',
+  // Portuguese queries
+  '"preciso de uma ferramenta" OR "alguém conhece" OR "existe alguma"',
+  '"frustração" OR "perda de tempo" OR "deveria ter" OR "problema que"',
 ];
 
 // Positive signals for business opportunity detection
@@ -234,6 +241,8 @@ async function aiBatchFilter(posts) {
 - is_real_problem (boolean): Is this a genuine, solvable pain point? NOT: shopping threads, self-promotion, general discussion, homework, venting without a solvable problem, "I built X" posts, generic questions, advice requests
 - category (Tool/Template/Prompt/Article/Other): What type of solution would address this?
 - reason (string): One sentence explaining your decision
+
+Posts may be in Portuguese. Evaluate the business problem regardless of language. Extract idea_title and idea_description in English.
 
 Evaluate problem quality through the Fly Labs lens:
 - Is the problem FELT by a specific, identifiable group? (not hidden or suppressed)

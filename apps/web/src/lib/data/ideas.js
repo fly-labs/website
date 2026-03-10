@@ -67,6 +67,7 @@ export const sourceOptions = [
   { value: 'x', label: 'X' },
   { value: 'hackernews', label: 'Hacker News' },
   { value: 'github', label: 'GitHub' },
+  { value: 'yc', label: 'YC Graveyard' },
 ];
 
 export const verdictOptions = [
@@ -99,3 +100,15 @@ export const formSteps = [
   { id: 'context', label: 'Context' },
   { id: 'you', label: 'About You' },
 ];
+
+export const verdictColors = {
+  BUILD: 'bg-primary/10 text-primary border-primary/30',
+  VALIDATE_FIRST: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
+  SKIP: 'bg-red-500/10 text-red-500 border-red-500/30',
+};
+
+export const verdictLabels = {
+  BUILD: 'BUILD',
+  VALIDATE_FIRST: 'VALIDATE',
+  SKIP: 'SKIP',
+};

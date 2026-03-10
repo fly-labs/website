@@ -30,6 +30,9 @@ const SEARCH_PROMPTS = [
   '"someone should make" OR "why hasn\'t anyone built" OR "billion dollar idea" - find tweets with builder/opportunity signals',
   '"need a tool" OR "is there an app" OR "looking for a tool" OR "any recommendations for" - find tweets where people are actively searching for solutions',
   '"manually doing" OR "waste so much time" OR "automate this" OR "repetitive task" - find tweets about automation needs and time waste',
+  // Portuguese queries
+  '"eu queria que existisse" OR "por que não tem" OR "alguém deveria criar" - find Portuguese tweets expressing pain about missing tools',
+  '"eu pagaria por" OR "muito frustrado com" OR "perda de tempo" - find Portuguese tweets showing frustration and willingness to pay',
 ];
 
 const INDUSTRIES = [
@@ -57,6 +60,8 @@ Skip tweets that are:
 - Jokes or memes
 - Generic complaints without actionable problems
 - Already well-solved problems with dominant solutions
+
+Include Portuguese-language tweets. Translate all findings to English.
 
 For each real problem found, extract the underlying pain point as a clear problem statement (not a solution description).
 

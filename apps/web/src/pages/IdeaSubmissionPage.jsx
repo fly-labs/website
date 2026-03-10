@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
-import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions } from '@/lib/data/ideas.js';
+import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors } from '@/lib/data/ideas.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
@@ -39,12 +39,6 @@ const SHIPPED_FALLBACK = [
 
 // Primary sort pills shown inline
 const PRIMARY_SORTS = ['hot', 'new', 'top'];
-
-const VERDICT_COLORS = {
-  BUILD: 'bg-primary/10 text-primary border-primary/30',
-  VALIDATE_FIRST: 'bg-amber-500/10 text-amber-600 border-amber-500/30',
-  SKIP: 'bg-red-500/10 text-red-500 border-red-500/30',
-};
 
 const IdeaSubmissionPage = () => {
   const { toast } = useToast();
@@ -136,9 +130,6 @@ const IdeaSubmissionPage = () => {
     setSearchInput('');
     setSearchQuery('');
   }, [setSearchQuery]);
-
-  // Shipped ideas: always use static fallback since main query filters by approved only
-  const shippedItems = null;
 
   // Vote handler
   const handleVote = async (id) => {
@@ -315,7 +306,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}7 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}8 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
               </p>
             </motion.div>
 
@@ -467,7 +458,7 @@ const IdeaSubmissionPage = () => {
                       ? 'bg-primary/10 text-primary border-primary/30'
                       : 'text-muted-foreground hover:text-foreground bg-muted/50 border-transparent'
                     : isActive
-                      ? VERDICT_COLORS[opt.value]
+                      ? verdictColors[opt.value]
                       : 'text-muted-foreground hover:text-foreground bg-muted/50 border-transparent';
                   return (
                     <button
@@ -622,35 +613,7 @@ const IdeaSubmissionPage = () => {
                 Shipped from the lab
               </p>
               <div className="flex flex-col gap-3">
-                {shippedItems ? (
-                  shippedItems.map((idea) => (
-                    <div
-                      key={idea.id}
-                      onClick={() => handleOpenDrawer(idea)}
-                      className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200 cursor-pointer"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200">
-                        <CheckCircle2 className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {idea.idea_title}
-                          </h3>
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                            <CheckCircle2 className="w-3 h-3" /> Shipped
-                          </span>
-                        </div>
-                        {idea.idea_description && (
-                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                            {idea.idea_description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  SHIPPED_FALLBACK.map((item) => (
+                {SHIPPED_FALLBACK.map((item) => (
                     <Link
                       key={item.link}
                       to={item.link}
@@ -679,8 +642,7 @@ const IdeaSubmissionPage = () => {
                         </span>
                       </div>
                     </Link>
-                  ))
-                )}
+                ))}
               </div>
             </motion.div>
 
@@ -694,7 +656,7 @@ const IdeaSubmissionPage = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       The hardest part of building is knowing what to build. Most people grab the first
                       idea that excites them and start coding. Six months later they've built something
-                      nobody wants. This system fixes that. We pull real problems from 7 sources daily,
+                      nobody wants. This system fixes that. We pull real problems from 8 sources daily,
                       score each one through the Fly Labs Method and 3 expert frameworks, then validate
                       top ideas against real conversations on X and Reddit. You get a verdict: build it,
                       validate first, or move on.

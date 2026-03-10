@@ -1,11 +1,11 @@
 
 import { useEffect } from 'react';
-import { ChevronUp, X, Zap, ArrowRight, Info } from 'lucide-react';
+import { ChevronUp, X, Zap, ArrowRight, Info, Archive } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { industries, statusConfig } from '@/lib/data/ideas.js';
+import { industries, statusConfig, verdictColors as sharedVerdictColors } from '@/lib/data/ideas.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const getScoreTier = (score) => {
@@ -143,6 +143,18 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                 </div>
                 {oneLiner && <p className="text-sm text-foreground font-medium">{oneLiner}</p>}
                 {reasoning && <p className="text-sm text-muted-foreground italic">{reasoning}</p>}
+                {/* Distribution insight from Okamoto */}
+                {(() => {
+                  const distChannel = idea.score_breakdown?.okamoto?.distribution_channel;
+                  if (!distChannel?.reasoning) return null;
+                  const distScore = distChannel.score || 0;
+                  const distColor = distScore >= 15 ? 'text-primary' : distScore >= 8 ? 'text-amber-500' : 'text-red-500';
+                  return (
+                    <p className={`text-xs ${distColor}`}>
+                      <span className="font-medium">Distribution:</span> {distChannel.reasoning}
+                    </p>
+                  );
+                })()}
                 {confidence && (
                   <span className={`text-xs font-medium ${confidenceColors[confidence] || confidenceColors.medium}`}>
                     {confidence} confidence{enrichVerdict ? ' (market-validated)' : ''}
@@ -175,6 +187,57 @@ const IdeaDrawer = ({ idea, onClose, onVote, hasVoted }) => {
                     </ol>
                   </div>
                 )}
+              </div>
+            );
+          })()}
+
+          {/* YC Graveyard Context */}
+          {idea.source === 'yc' && idea.meta?.failure_analysis && (() => {
+            const fa = idea.meta.failure_analysis;
+            return (
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Archive className="w-4 h-4 text-amber-600" />
+                  <h4 className="font-bold text-amber-600 text-sm">YC Graveyard</h4>
+                </div>
+                {fa.original_one_liner && (
+                  <p className="text-sm text-muted-foreground italic">"{fa.original_one_liner}"</p>
+                )}
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap">
+                  {fa.company_name && <span className="font-medium text-foreground">{fa.company_name}</span>}
+                  {fa.batch && (
+                    <>
+                      <span className="text-muted-foreground/40">&middot;</span>
+                      <span>{fa.batch}</span>
+                    </>
+                  )}
+                  {fa.team_size && (
+                    <>
+                      <span className="text-muted-foreground/40">&middot;</span>
+                      <span>{fa.team_size} people</span>
+                    </>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {fa.failure_reason && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">Why it failed</p>
+                      <p className="text-sm text-muted-foreground">{fa.failure_reason}</p>
+                    </div>
+                  )}
+                  {fa.what_changed && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">What's different now</p>
+                      <p className="text-sm text-muted-foreground">{fa.what_changed}</p>
+                    </div>
+                  )}
+                  {fa.rebuild_angle && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">Rebuild angle</p>
+                      <p className="text-sm text-muted-foreground">{fa.rebuild_angle}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })()}

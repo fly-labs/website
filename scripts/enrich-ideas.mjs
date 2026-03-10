@@ -83,6 +83,8 @@ Find tweets showing:
 - Workarounds people are using
 - Complaints about existing tools
 
+Also search in Portuguese for this problem (e.g., "frustração", "preciso de", "alguém conhece").
+
 Return a JSON object with these fields:
 - evidence: array of objects with tweet_summary (string), author (string), engagement (string like "5 likes, 2 reposts"), sentiment (one of: frustration, need, complaint, workaround, wishlist)
 - total_found: integer count of relevant tweets found

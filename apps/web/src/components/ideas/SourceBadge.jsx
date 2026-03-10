@@ -7,6 +7,7 @@ const sourceConfig = {
   x: { label: 'X', color: 'text-foreground' },
   hackernews: { label: 'Hacker News', color: 'text-orange-500', fallbackUrl: 'https://news.ycombinator.com' },
   github: { color: 'text-muted-foreground' },
+  yc: { label: 'YC Graveyard', color: 'text-amber-600', fallbackUrl: 'https://www.ycombinator.com' },
 };
 
 const SourceBadge = ({ source, sourceUrl, tags, name, location = 'ideas' }) => {
@@ -38,6 +39,24 @@ const SourceBadge = ({ source, sourceUrl, tags, name, location = 'ideas' }) => {
   // GitHub: show repo name from tags
   if (source === 'github') {
     const label = tags || 'via GitHub';
+    return sourceUrl ? (
+      <a
+        href={sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${config.color} hover:underline font-medium`}
+        onClick={(e) => { e.stopPropagation(); trackEvent('outbound_click', { link_url: sourceUrl, link_label: label, location }); }}
+      >
+        {label}
+      </a>
+    ) : (
+      <span className={`${config.color} font-medium`}>{label}</span>
+    );
+  }
+
+  // YC: show company name via YC Graveyard
+  if (source === 'yc') {
+    const label = name ? `${name} via YC Graveyard` : 'via YC Graveyard';
     return sourceUrl ? (
       <a
         href={sourceUrl}

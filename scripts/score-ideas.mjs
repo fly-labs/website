@@ -143,13 +143,29 @@ Return ONLY this JSON structure (no markdown, no code fences):
 }`;
 
 async function scoreIdea(idea) {
-  const userPrompt = [
+  const parts = [
     `Idea: ${idea.idea_title}`,
     idea.idea_description ? `Description: ${idea.idea_description}` : null,
     idea.industry ? `Industry: ${idea.industry}` : null,
     idea.tags ? `Tags: ${idea.tags}` : null,
     idea.country ? `Country: ${idea.country}` : null,
-  ].filter(Boolean).join('\n');
+  ];
+
+  // Include YC failure analysis as additional context when available
+  if (idea.meta?.failure_analysis) {
+    const fa = idea.meta.failure_analysis;
+    parts.push('');
+    parts.push('=== YC Graveyard Context ===');
+    parts.push(`A YC startup (${fa.company_name || 'unknown'}, ${fa.batch || 'unknown batch'}) tried to solve this problem and failed.`);
+    if (fa.team_size) parts.push(`Team size: ${fa.team_size}`);
+    if (fa.failure_reason) parts.push(`Why it failed: ${fa.failure_reason}`);
+    if (fa.what_changed) parts.push(`What changed since: ${fa.what_changed}`);
+    if (fa.rebuild_angle) parts.push(`Solo builder angle: ${fa.rebuild_angle}`);
+    if (fa.original_one_liner) parts.push(`Original pitch: "${fa.original_one_liner}"`);
+    parts.push('Score this idea in its CURRENT context. The YC failure provides useful signal about risks and timing.');
+  }
+
+  const userPrompt = parts.filter(Boolean).join('\n');
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {

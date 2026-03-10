@@ -12,7 +12,7 @@ export const books = [
   {
     id: 'validate-microsaas-ideas',
     title: 'How to Find and Validate Micro-SaaS Ideas with AI',
-    description: 'How to find ideas worth building and kill the ones that aren\'t. The full system: 7 sources, 4 scoring frameworks, real market validation. Everything I learned building the Idea Lab, distilled into one book.',
+    description: 'How to find ideas worth building and kill the ones that aren\'t. The full system: 8 sources, 4 scoring frameworks, real market validation. Everything I learned building the Idea Lab, distilled into one book.',
     topic: 'Business',
     status: 'coming_soon',
     coverColor: 'accent',

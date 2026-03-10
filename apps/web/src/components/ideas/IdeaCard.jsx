@@ -3,7 +3,7 @@ import { ChevronUp, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { industries, statusConfig } from '@/lib/data/ideas.js';
+import { industries, statusConfig, verdictColors, verdictLabels } from '@/lib/data/ideas.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const TRENDING_THRESHOLD = 5;
@@ -70,7 +70,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x' || idea.source === 'hackernews' || idea.source === 'github') && idea.source_url ? (
+                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x' || idea.source === 'hackernews' || idea.source === 'github' || idea.source === 'yc') && idea.source_url ? (
                   <a
                     href={idea.source_url}
                     target="_blank"
@@ -103,15 +103,9 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               {(() => {
                 const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
                 if (!verdict) return null;
-                const colors = {
-                  BUILD: 'bg-primary/10 text-primary',
-                  VALIDATE_FIRST: 'bg-amber-500/10 text-amber-600',
-                  SKIP: 'bg-red-500/10 text-red-500',
-                };
-                const labels = { BUILD: 'BUILD', VALIDATE_FIRST: 'VALIDATE', SKIP: 'SKIP' };
                 return (
-                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${colors[verdict] || colors.VALIDATE_FIRST}`}>
-                    {labels[verdict] || verdict}
+                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>
+                    {verdictLabels[verdict] || verdict}
                   </span>
                 );
               })()}

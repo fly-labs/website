@@ -181,7 +181,7 @@ const AboutPage = () => {
               {[
                 { text: 'Library - writing the first ebooks', link: '/library' },
                 { text: 'Micro Tools - building the first batch', link: '/microsaas' },
-                { text: 'Idea Lab - 7 sources, Fly Labs Method + 3 expert frameworks, market validated', link: '/ideas' },
+                { text: 'Idea Lab - 8 sources, Fly Labs Method + 3 expert frameworks, market validated', link: '/ideas' },
               ].map((item) => (
                 <li key={item.text}>
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
