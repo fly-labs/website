@@ -1,5 +1,6 @@
 
 import { ChevronUp, Flame } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
@@ -8,7 +9,8 @@ import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const TRENDING_THRESHOLD = 5;
 
-const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
+const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
+  const navigate = useNavigate();
   const status = statusConfig[idea.status] || statusConfig.open;
   const dotColor = idea.status === 'building'
     ? 'bg-blue-500'
@@ -21,6 +23,11 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
     ? false // Reddit ideas show subreddit instead
     : idea.status === 'building' || idea.status === 'shipped';
 
+  const handleClick = () => {
+    trackEvent('idea_detail_opened', { idea_id: idea.id, idea_title: idea.idea_title, source: idea.source });
+    navigate(`/ideas/${idea.id}`);
+  };
+
   return (
     <motion.div
       key={idea.id}
@@ -28,7 +35,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
-      onClick={() => onOpenDrawer(idea)}
+      onClick={handleClick}
       className={`group px-5 py-4 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200 cursor-pointer ${
         hasVoted ? 'border-l-2 border-l-primary/40' : ''
       }`}
@@ -36,7 +43,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
       <div className="flex gap-3.5">
         {/* Vote button */}
         <button
-          onClick={(e) => { e.stopPropagation(); onVote(idea.id); }}
+          onClick={(e) => { e.stopPropagation(); e.preventDefault(); onVote(idea.id); }}
           disabled={hasVoted}
           aria-label={`Vote for ${idea.idea_title}${hasVoted ? ' (voted)' : ''}`}
           className={`flex flex-col items-center gap-0.5 pt-0.5 shrink-0 transition-colors duration-200 ${
@@ -98,7 +105,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               )}
             </div>
 
-            {/* Score badges - verdict + FL score only, full breakdown in drawer */}
+            {/* Score badges - verdict + FL score only, full breakdown in detail page */}
             <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
               {(() => {
                 const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;

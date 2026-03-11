@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import supabase from '@/lib/supabaseClient.js';
@@ -15,7 +15,6 @@ import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
 
 import IdeaCard from '@/components/ideas/IdeaCard.jsx';
-import IdeaDrawer from '@/components/ideas/IdeaDrawer.jsx';
 import IdeaSubmitModal from '@/components/ideas/IdeaSubmitModal.jsx';
 import IdeaFilterSheet from '@/components/ideas/IdeaFilterSheet.jsx';
 
@@ -42,6 +41,7 @@ const PRIMARY_SORTS = ['hot', 'new', 'top'];
 
 const IdeaSubmissionPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { currentUser, profile, isAuthenticated } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +53,6 @@ const IdeaSubmissionPage = () => {
     }
   });
   const [formStep, setFormStep] = useState(0);
-  const [selectedIdea, setSelectedIdea] = useState(null);
   const [showMoreSort, setShowMoreSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -111,30 +110,11 @@ const IdeaSubmissionPage = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showMoreSort]);
 
-  // Auto-open drawer from ?idea= URL param on mount
+  // Redirect legacy ?idea= URLs to /ideas/:id
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ideaId = params.get('idea');
-    if (!ideaId) return;
-
-    const fetchIdea = async () => {
-      const { data, error } = await supabase
-        .from('ideas')
-        .select('*')
-        .eq('id', ideaId)
-        .single();
-
-      if (error || !data) {
-        // Invalid ID: clean up URL silently
-        const url = new URL(window.location);
-        url.searchParams.delete('idea');
-        window.history.replaceState({}, '', url);
-        return;
-      }
-      setSelectedIdea(data);
-    };
-    fetchIdea();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const ideaId = new URLSearchParams(window.location.search).get('idea');
+    if (ideaId) navigate(`/ideas/${ideaId}`, { replace: true });
+  }, [navigate]);
 
   // Sync searchInput with URL state
   useEffect(() => {
@@ -274,21 +254,6 @@ const IdeaSubmissionPage = () => {
     setSortBy(v);
     setShowMoreSort(false);
   };
-
-  const handleOpenDrawer = useCallback((idea) => {
-    setSelectedIdea(idea);
-    const url = new URL(window.location);
-    url.searchParams.set('idea', idea.id);
-    window.history.replaceState({}, '', url);
-    trackEvent('idea_drawer_opened', { idea_id: idea.id, idea_title: idea.idea_title, source: idea.source });
-  }, []);
-
-  const handleCloseDrawer = useCallback(() => {
-    setSelectedIdea(null);
-    const url = new URL(window.location);
-    url.searchParams.delete('idea');
-    window.history.replaceState({}, '', url);
-  }, []);
 
   const openSubmitModal = () => {
     setFormStep(0);
@@ -592,7 +557,6 @@ const IdeaSubmissionPage = () => {
                         idea={idea}
                         hasVoted={votedIds.includes(idea.id)}
                         onVote={handleVote}
-                        onOpenDrawer={handleOpenDrawer}
                         index={i}
                       />
                     ))}
@@ -732,17 +696,6 @@ const IdeaSubmissionPage = () => {
         />
       </AnimatePresence>
 
-      {/* Detail Drawer */}
-      <AnimatePresence>
-        {selectedIdea && (
-          <IdeaDrawer
-            idea={selectedIdea}
-            onClose={handleCloseDrawer}
-            onVote={handleVote}
-            hasVoted={votedIds.includes(selectedIdea.id)}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 };

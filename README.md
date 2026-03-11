@@ -129,7 +129,7 @@ apps/web/
 │   │   ├── GitHubHeatmap.jsx # GitHub contribution heatmap (compact + full)
 │   │   ├── GridBackground.jsx # Subtle graph-paper grid
 │   │   ├── GeometricBackground.jsx # Hand-drawn doodle background
-│   │   ├── ideas/            # Extracted Ideas page components (IdeaCard, IdeaDrawer, IdeaSubmitModal, IdeaFilterSheet)
+│   │   ├── ideas/            # Extracted Ideas page components (IdeaCard, IdeaSubmitModal, IdeaFilterSheet, ScoreUtils)
 │   │   └── ...               # ThemeToggle, SmileLogo, ScrollToTop, icons
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, profile CRUD, GA4 user props
@@ -163,6 +163,7 @@ apps/web/
 | `/` | Home (hero, value pillars, narrative closing) | Public |
 | `/explore` | Explore (category filter: Business, Tools, Learn) | Public |
 | `/ideas` | Idea Lab (AI-scored, validated, paginated, multi-filter) | Public |
+| `/ideas/:id` | Idea detail (verdict, scoring, market evidence, vote, share) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
 | `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |
 | `/login` | Login | Public |

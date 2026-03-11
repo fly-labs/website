@@ -516,12 +516,7 @@ export function useIdeaFilters() {
 
   const clearAllFilters = useCallback(() => {
     const prevCount = activeFilters.length;
-    setSearchParams((prev) => {
-      const next = new URLSearchParams();
-      const idea = prev.get('idea');
-      if (idea) next.set('idea', idea);
-      return next;
-    }, { replace: true });
+    setSearchParams({}, { replace: true });
     trackEvent('ideas_filters_cleared', { previous_count: prevCount });
   }, [setSearchParams, activeFilters.length]);
 

@@ -129,7 +129,7 @@ const scripts = [
 const folderTree = `src/
   components/
     ui/             # shadcn/ui (button, avatar, input, tabs, toast)
-    ideas/          # IdeaCard, IdeaDrawer, IdeaFilterSheet, IdeaSubmitModal, SourceBadge
+    ideas/          # IdeaCard, IdeaFilterSheet, IdeaSubmitModal, ScoreUtils, SourceBadge
     Header.jsx      # Sticky nav, blur backdrop
     PageLayout.jsx  # SEO + Header + Footer + ScrollProgress
     AuthModal.jsx   # Login/signup (tabs, Google OAuth)

@@ -51,11 +51,11 @@ apps/web/
 │   │   ├── SmileLogo.jsx     # Animated brand logo
 │   │   ├── ScrollToTop.jsx   # Resets scroll on route change
 │   │   └── ideas/            # Extracted Ideas page components
-│   │       ├── IdeaCard.jsx      # Idea card (vote, verdict + FL score badges, competitor count, 9-source display, status logic)
-│   │       ├── IdeaDrawer.jsx    # Detail view: tabbed (Verdict/Scores/Market), mobile bottom sheet + desktop side drawer, expandable framework rows, shareable ?idea= URLs
+│   │       ├── IdeaCard.jsx      # Idea card (vote, verdict + FL score badges, competitor count, navigates to /ideas/:id via useNavigate)
 │   │       ├── IdeaFilterSheet.jsx # Bottom sheet (mobile) + inline panel (desktop) for type/industry/score/confidence/perPage
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
-│   │       └── SourceBadge.jsx    # Shared source link badge (used in IdeaCard + IdeaDrawer)
+│   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, verdictStyles, confidenceColors)
+│   │       └── SourceBadge.jsx    # Shared source link badge (used in IdeaCard + IdeaDetailPage)
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
@@ -76,7 +76,8 @@ apps/web/
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
-│       ├── IdeaSubmissionPage.jsx # Idea Lab (URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, 9-source pills, filter sheet, smart empty states)
+│       ├── IdeaSubmissionPage.jsx # Idea Lab list (URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, 9-source pills, filter sheet, smart empty states)
+│       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Pull quote, journey timeline, GitHub heatmap, current focus, the approach, social links
 │       ├── LoginPage.jsx         # Email + Google OAuth login
@@ -109,6 +110,7 @@ apps/web/
 | `/` | HomePage | Public |
 | `/explore` | ExplorePage | Public |
 | `/ideas` | IdeaSubmissionPage | Public |
+| `/ideas/:id` | IdeaDetailPage | Public |
 | `/newsletter` | NewsletterPage | Public |
 | `/about` | AboutPage | Public |
 | `/login` | LoginPage | Public |
@@ -203,8 +205,8 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `ideas_confidence_filter` | useIdeaFilters | `confidence` |
 | `ideas_filter_removed` | useIdeaFilters | `filter_type`, `filter_value` |
 | `ideas_filters_cleared` | useIdeaFilters | `previous_count` |
-| `idea_drawer_opened` | IdeaSubmissionPage | `idea_id`, `idea_title`, `source` |
-| `idea_drawer_tab` | IdeaDrawer | `tab` (verdict/scores/market), `idea_id` |
+| `idea_detail_opened` | IdeaCard | `idea_id`, `idea_title`, `source` |
+| `idea_shared` | IdeaDetailPage | `idea_id`, `idea_title` |
 | `idea_form_step` | IdeaSubmissionPage | `step` (0/1/2), `step_name` (problem/context/about_you) |
 | `ebook_clicked` | LibraryPage | `book_id`, `book_title`, `topic`, `status` |
 | `ebook_downloaded` | LibraryPage | `book_id`, `book_title`, `topic` |
