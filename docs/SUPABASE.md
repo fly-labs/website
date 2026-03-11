@@ -229,15 +229,15 @@ Results are stored in the `enrichment` JSONB column and `validation_score` integ
 | Source | Sync Script | External ID Format | Schedule |
 |--------|-------------|-------------------|----------|
 | community | Manual submissions | None (uuid) | On submit |
-| problemhunt | `scripts/sync-problemhunt.mjs` | `problemhunt-{uid}` | 3x/day |
-| reddit | `scripts/sync-reddit.mjs` | `reddit-{post_id}` | 3x/day |
-| producthunt | `scripts/sync-producthunt.mjs` | `producthunt-{id}` | 3x/day |
-| x | `scripts/sync-x.mjs` | `x-{tweet_id}` | 3x/day |
-| hackernews | `scripts/sync-hackernews.mjs` | `hackernews-{id}` | 3x/day |
-| github | `scripts/sync-github.mjs` | `github-{id}` | 3x/day |
-| yc | `scripts/sync-yc.mjs` | `yc-{id}` | 3x/day |
+| problemhunt | `scripts/sync-problemhunt.mjs` | `problemhunt-{uid}` | Daily |
+| reddit | `scripts/sync-reddit.mjs` | `reddit-{post_id}` | Daily |
+| producthunt | `scripts/sync-producthunt.mjs` | `producthunt-{id}` | Daily |
+| x | `scripts/sync-x.mjs` | `x-{tweet_id}` | Daily |
+| hackernews | `scripts/sync-hackernews.mjs` | `hackernews-{id}` | Daily |
+| github | `scripts/sync-github.mjs` | `github-{id}` | Daily |
+| yc | `scripts/sync-yc.mjs` | `yc-{id}` | Daily |
 
-All sync scripts run together via the "Sync Ideas" GitHub Actions workflow (2 AM, 10 AM, 6 PM UTC). New ideas are automatically scored by Claude after sync.
+All sync scripts run together via the "Sync Ideas" GitHub Actions workflow (daily at 6 AM UTC). Sync scripts use Claude Haiku for filtering. New ideas are automatically scored by Claude Sonnet after sync.
 
 ## New Project Setup
 

@@ -78,7 +78,7 @@ const IdeaSubmissionPage = () => {
     searchQuery, setSearchQuery,
     perPage,
     currentPage, setCurrentPage,
-    loading, ideas, totalCount,
+    loading, ideas, totalCount, globalCount,
     sorted, paginated, totalPages,
     sourceCounts, verdictCounts,
     activeFilterCount,
@@ -312,7 +312,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {totalCount > 0 ? `${totalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}9 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated 3x daily
+                {globalCount ? `${globalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}9 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated daily
               </p>
             </motion.div>
 

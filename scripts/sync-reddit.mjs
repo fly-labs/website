@@ -235,7 +235,7 @@ async function aiBatchFilter(posts) {
 
     try {
       const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: `You evaluate Reddit posts for genuine business-relevant pain points. For each post, determine:
 - is_real_problem (boolean): Is this a genuine, solvable pain point? NOT: shopping threads, self-promotion, general discussion, homework, venting without a solvable problem, "I built X" posts, generic questions, advice requests

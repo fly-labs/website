@@ -130,7 +130,7 @@ async function aiBatchFilter(issues) {
 
     try {
       const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1500,
         system: `You are a STRICT filter for an idea lab that surfaces real business opportunities. Be very selective (reject 70%+).
 

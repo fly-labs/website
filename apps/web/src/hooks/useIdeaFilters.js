@@ -31,6 +31,7 @@ export function useIdeaFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [ideas, setIdeas] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [globalCount, setGlobalCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [counts, setCounts] = useState({
     source: { all: 0 },
@@ -40,6 +41,12 @@ export function useIdeaFilters() {
     confidence: { all: 0 },
   });
   const abortRef = useRef(null);
+
+  // Fetch total idea count once (unaffected by filters)
+  useEffect(() => {
+    supabase.from('ideas').select('*', { count: 'exact', head: true }).eq('approved', true)
+      .then(({ count }) => { if (count != null) setGlobalCount(count); });
+  }, []);
 
   // Read state from URL (fallback to defaults)
   const sortBy = searchParams.get('sort') || DEFAULTS.sort;
@@ -568,6 +575,7 @@ export function useIdeaFilters() {
     loading,
     ideas,
     totalCount,
+    globalCount,
 
     // Computed
     sorted,

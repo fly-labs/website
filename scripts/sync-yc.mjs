@@ -103,7 +103,7 @@ async function aiBatchFilter(companies) {
 
     try {
       const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 4000,
         system: `You evaluate dead YC startups for solo builder opportunities. These companies failed, but the PROBLEM they tried to solve might still be real. AI slashed build costs, so previously unviable ideas might work now for a one-person builder.
 

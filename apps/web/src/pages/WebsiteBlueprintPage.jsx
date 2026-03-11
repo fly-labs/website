@@ -83,7 +83,7 @@ const stackItems = [
   { name: 'Claude Sonnet 4', icon: Brain, desc: 'AI scoring engine. 4 frameworks, per-pillar reasoning, verdicts.', color: 'border-accent' },
   { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
   { name: 'Supabase', icon: Database, desc: 'PostgreSQL + Auth + RLS. 6 tables, 6 RPCs.', color: 'border-secondary' },
-  { name: 'GitHub Actions', icon: GitBranch, desc: '3 workflows. Sync 3x/day, enrich daily, CI on PRs.', color: 'border-accent' },
+  { name: 'GitHub Actions', icon: GitBranch, desc: '2 workflows. Sync + enrich daily, auto-deploy on push.', color: 'border-accent' },
   { name: 'React 18', icon: Code, desc: 'UI framework. 18 lazy-loaded routes. JSX, no TypeScript.', color: 'border-primary' },
   { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Vendor/motion/supabase chunking.', color: 'border-secondary' },
   { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first with HSL theming. Light and dark mode.', color: 'border-accent' },
@@ -108,7 +108,7 @@ const dataSources = [
 ];
 
 const workflows = [
-  { name: 'Sync Ideas', schedule: '3x/day', desc: 'ProblemHunt, Reddit, Product Hunt, X, HN, GitHub, YC, then score with Claude.' },
+  { name: 'Sync Ideas', schedule: 'Daily', desc: 'ProblemHunt, Reddit, Product Hunt, X, HN, GitHub, YC, then score with Claude.' },
   { name: 'Enrich Ideas', schedule: 'Daily', desc: 'Grok x_search + Reddit validation for top-scoring ideas.' },
   { name: 'CI', schedule: 'Every PR', desc: 'Lint + build. Catches breaks before deploy.' },
 ];

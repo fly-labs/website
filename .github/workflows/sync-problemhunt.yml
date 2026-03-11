@@ -1,7 +1,7 @@
 name: Sync Ideas
 on:
   schedule:
-    - cron: '0 2,10,18 * * *'   # Every 8h: 2 AM, 10 AM, 6 PM UTC
+    - cron: '0 6 * * *'          # Daily at 6 AM UTC
   workflow_dispatch:              # manual trigger
 
 concurrency:
