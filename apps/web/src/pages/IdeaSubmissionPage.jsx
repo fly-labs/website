@@ -111,6 +111,31 @@ const IdeaSubmissionPage = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [showMoreSort]);
 
+  // Auto-open drawer from ?idea= URL param on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ideaId = params.get('idea');
+    if (!ideaId) return;
+
+    const fetchIdea = async () => {
+      const { data, error } = await supabase
+        .from('ideas')
+        .select('*')
+        .eq('id', ideaId)
+        .single();
+
+      if (error || !data) {
+        // Invalid ID: clean up URL silently
+        const url = new URL(window.location);
+        url.searchParams.delete('idea');
+        window.history.replaceState({}, '', url);
+        return;
+      }
+      setSelectedIdea(data);
+    };
+    fetchIdea();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Sync searchInput with URL state
   useEffect(() => {
     setSearchInput(searchQuery);
@@ -250,10 +275,20 @@ const IdeaSubmissionPage = () => {
     setShowMoreSort(false);
   };
 
-  const handleOpenDrawer = (idea) => {
+  const handleOpenDrawer = useCallback((idea) => {
     setSelectedIdea(idea);
+    const url = new URL(window.location);
+    url.searchParams.set('idea', idea.id);
+    window.history.replaceState({}, '', url);
     trackEvent('idea_drawer_opened', { idea_id: idea.id, idea_title: idea.idea_title, source: idea.source });
-  };
+  }, []);
+
+  const handleCloseDrawer = useCallback(() => {
+    setSelectedIdea(null);
+    const url = new URL(window.location);
+    url.searchParams.delete('idea');
+    window.history.replaceState({}, '', url);
+  }, []);
 
   const openSubmitModal = () => {
     setFormStep(0);
@@ -702,7 +737,7 @@ const IdeaSubmissionPage = () => {
         {selectedIdea && (
           <IdeaDrawer
             idea={selectedIdea}
-            onClose={() => setSelectedIdea(null)}
+            onClose={handleCloseDrawer}
             onVote={handleVote}
             hasVoted={votedIds.includes(selectedIdea.id)}
           />

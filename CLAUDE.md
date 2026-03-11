@@ -52,7 +52,7 @@ apps/web/
 │   │   ├── ScrollToTop.jsx   # Resets scroll on route change
 │   │   └── ideas/            # Extracted Ideas page components
 │   │       ├── IdeaCard.jsx      # Idea card (vote, verdict + FL score badges, competitor count, 9-source display, status logic)
-│   │       ├── IdeaDrawer.jsx    # Detail drawer (YC Graveyard section, ScoreBar, score tiers, distribution insight, market validation + competitors, scoring explainer)
+│   │       ├── IdeaDrawer.jsx    # Detail view: tabbed (Verdict/Scores/Market), mobile bottom sheet + desktop side drawer, expandable framework rows, shareable ?idea= URLs
 │   │       ├── IdeaFilterSheet.jsx # Bottom sheet (mobile) + inline panel (desktop) for type/industry/score/confidence/perPage
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
 │   │       └── SourceBadge.jsx    # Shared source link badge (used in IdeaCard + IdeaDrawer)
@@ -204,6 +204,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `ideas_filter_removed` | useIdeaFilters | `filter_type`, `filter_value` |
 | `ideas_filters_cleared` | useIdeaFilters | `previous_count` |
 | `idea_drawer_opened` | IdeaSubmissionPage | `idea_id`, `idea_title`, `source` |
+| `idea_drawer_tab` | IdeaDrawer | `tab` (verdict/scores/market), `idea_id` |
 | `idea_form_step` | IdeaSubmissionPage | `step` (0/1/2), `step_name` (problem/context/about_you) |
 | `ebook_clicked` | LibraryPage | `book_id`, `book_title`, `topic`, `status` |
 | `ebook_downloaded` | LibraryPage | `book_id`, `book_title`, `topic` |

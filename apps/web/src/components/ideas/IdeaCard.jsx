@@ -129,6 +129,16 @@ const IdeaCard = ({ idea, hasVoted, onVote, onOpenDrawer, index }) => {
               {idea.idea_description}
             </p>
           )}
+          {idea.score_breakdown?.synthesis?.one_liner && (
+            <p className="text-xs text-muted-foreground/60 italic line-clamp-1 mb-2">{idea.score_breakdown.synthesis.one_liner}</p>
+          )}
+          {idea.score_breakdown?.synthesis?.strengths?.length > 0 && (
+            <div className="hidden sm:flex items-center gap-1.5 mb-2">
+              {idea.score_breakdown.synthesis.strengths.slice(0, 2).map((s, i) => (
+                <span key={i} className="text-[11px] px-2 py-0.5 rounded-full bg-primary/8 text-primary/70">{s}</span>
+              ))}
+            </div>
+          )}
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70 flex-wrap">
             <span>
               <SourceBadge source={idea.source} sourceUrl={idea.source_url} tags={idea.tags} name={idea.name} />
