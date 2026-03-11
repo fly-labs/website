@@ -65,6 +65,7 @@ const PromptsPage = () => {
     idea_title: '',
     idea_description: '',
     category: 'Coding',
+    website: '', // honeypot
   });
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestSuccess, setSuggestSuccess] = useState(false);
@@ -197,7 +198,7 @@ const PromptsPage = () => {
       if (error) throw error;
 
       // Log submission for rate limiting
-      await supabase.rpc('log_idea_submission', { p_email: trimmedEmail });
+      await supabase.rpc('log_idea_submission', { p_email: trimmedEmail, p_honeypot: suggestForm.website });
 
       trackEvent('idea_submitted', { category: 'Prompt', prompt_category: suggestForm.category });
 
@@ -924,6 +925,18 @@ const PromptsPage = () => {
                 </div>
               ) : (
                 <form onSubmit={handleSuggestSubmit} className="space-y-4">
+                  {/* Honeypot */}
+                  <div className="absolute opacity-0 pointer-events-none" style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true" tabIndex={-1}>
+                    <label htmlFor="suggest-website">Website</label>
+                    <input
+                      id="suggest-website"
+                      type="text"
+                      autoComplete="off"
+                      value={suggestForm.website}
+                      onChange={(e) => setSuggestForm(prev => ({ ...prev, website: e.target.value }))}
+                      tabIndex={-1}
+                    />
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label htmlFor="suggest-email" className="text-sm font-medium text-muted-foreground">Email</label>
@@ -931,6 +944,7 @@ const PromptsPage = () => {
                         id="suggest-email"
                         type="email"
                         required
+                        maxLength={254}
                         placeholder="So I can follow up"
                         value={suggestForm.email}
                         onChange={(e) => setSuggestForm(prev => ({ ...prev, email: e.target.value }))}

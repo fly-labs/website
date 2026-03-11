@@ -123,6 +123,19 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
             </div>
 
             <form onSubmit={onSubmit}>
+              {/* Honeypot - hidden from real users, bots fill it */}
+              <div className="absolute opacity-0 pointer-events-none" style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true" tabIndex={-1}>
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  autoComplete="off"
+                  value={formData.website || ''}
+                  onChange={onFormChange}
+                  tabIndex={-1}
+                />
+              </div>
               {/* Step 1: The Problem */}
               {formStep === 0 && (
                 <div className="space-y-5">
@@ -325,6 +338,7 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
                         name="email"
                         type="email"
                         required
+                        maxLength={254}
                         placeholder="So I can follow up"
                         value={formData.email}
                         onChange={onFormChange}

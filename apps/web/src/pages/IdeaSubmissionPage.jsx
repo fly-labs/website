@@ -67,6 +67,7 @@ const IdeaSubmissionPage = () => {
     industry: '',
     frequency: '',
     existing_solutions: '',
+    website: '', // honeypot
   });
 
   // Hook: all filter/sort/pagination logic + data fetching
@@ -224,7 +225,7 @@ const IdeaSubmissionPage = () => {
       if (error) throw error;
 
       // Log submission for rate limiting
-      await supabase.rpc('log_idea_submission', { p_email: sanitized.email });
+      await supabase.rpc('log_idea_submission', { p_email: sanitized.email, p_honeypot: formData.website });
 
       trackEvent('idea_submitted', { category: formData.category });
 
@@ -242,6 +243,7 @@ const IdeaSubmissionPage = () => {
         industry: '',
         frequency: '',
         existing_solutions: '',
+        website: '',
       });
       setFormStep(0);
       setShowModal(false);
