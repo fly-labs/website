@@ -21,7 +21,7 @@ export const ScoreBar = ({ score, max, color }) => {
 
 export const verdictStyles = {
   BUILD: { bg: 'bg-primary/10', border: 'border-primary/30', text: 'text-primary', label: 'BUILD' },
-  VALIDATE_FIRST: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-600', label: 'VALIDATE FIRST' },
+  VALIDATE_FIRST: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-600', label: 'VALIDATE' },
   SKIP: { bg: 'bg-red-500/10', border: 'border-red-500/30', text: 'text-red-500', label: 'SKIP' },
 };
 

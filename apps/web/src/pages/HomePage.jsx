@@ -49,7 +49,7 @@ const pillars = [
   {
     title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems from 9 sources. AI-scored with the Fly Labs Method, given a verdict, and validated against real conversations.',
+    description: 'Real problems from 8 sources. AI-scored with the Fly Labs Method, given a verdict, and validated against real conversations.',
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',

@@ -201,7 +201,7 @@ const ScoringFrameworksPage = () => {
     <PageLayout
       seo={{
         title: "Fly Labs Method + AI Scoring, Verdicts & Validation",
-        description: "How the Idea Lab evaluates every idea. The Fly Labs Method (problem-solution fit for vibe builders) plus Hormozi, Dan Koe, and Okamoto frameworks. 9 sources, 4 frameworks, market validation, one verdict.",
+        description: "How the Idea Lab evaluates every idea. The Fly Labs Method (problem-solution fit for vibe builders) plus Hormozi, Dan Koe, and Okamoto frameworks. 8 sources, 4 frameworks, market validation, one verdict.",
         keywords: "Fly Labs Method, vibe building, problem-solution fit, ideation, idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis",
         url: "https://flylabs.fun/scoring",
       }}
@@ -226,7 +226,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea gets evaluated through the Fly Labs Method and 3 expert frameworks, then validated against real conversations. 9 sources, 4 frameworks, one verdict.
+              Every idea gets evaluated through the Fly Labs Method and 3 expert frameworks, then validated against real conversations. 8 sources, 4 frameworks, one verdict.
             </p>
           </motion.div>
 
@@ -509,7 +509,7 @@ const ScoringFrameworksPage = () => {
               </div>
               <div className="flex-1 p-5 rounded-xl border border-amber-500/20 bg-amber-500/10 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-black text-amber-600">VALIDATE FIRST</span>
+                  <span className="text-lg font-black text-amber-600">VALIDATE</span>
                   <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">45-69</span>
                 </div>
                 <p className="text-xs text-muted-foreground">Composite 45-69, or gaps in any single framework. Promising but has gaps. Validate before investing time.</p>
@@ -556,7 +556,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              9 sources. 4 frameworks. Real validation. Every idea gets scored by Claude AI through the Fly Labs Method and three expert perspectives, each with per-pillar reasoning. The scores synthesize into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated against real conversations on X and Reddit with competitive intelligence and evidence confidence. Updated daily.
+              8 sources. 4 frameworks. Real validation. Every idea gets scored by Claude AI through the Fly Labs Method and three expert perspectives, each with per-pillar reasoning. The scores synthesize into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated against real conversations on X and Reddit with competitive intelligence and evidence confidence. Updated daily.
             </p>
           </motion.div>
 

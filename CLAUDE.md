@@ -67,7 +67,7 @@ apps/web/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
 │   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
-│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (9 sources), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
+│   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (8 sources), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp: scroll-triggered fade + slide)
