@@ -136,25 +136,31 @@ const IdeaSubmissionPage = () => {
     setSearchQuery('');
   }, [setSearchQuery]);
 
-  // Vote handler
+  // Vote handler (toggle: vote/unvote)
   const handleVote = async (id) => {
-    if (votedIds.includes(id)) return;
-
-    const newVotedIds = [...votedIds, id];
-    setVotedIds(newVotedIds);
-    localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
-
+    const alreadyVoted = votedIds.includes(id);
     const idea = ideas.find(i => i.id === id);
-    trackEvent('idea_voted', {
-      idea_id: id,
-      idea_title: idea?.idea_title,
-      category: idea?.category,
-    });
 
-    const { error } = await supabase.rpc('increment_vote', { idea_id: id });
-    if (error) {
-      setVotedIds((prev) => prev.filter((vid) => vid !== id));
-      localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
+    if (alreadyVoted) {
+      const newVotedIds = votedIds.filter(vid => vid !== id);
+      setVotedIds(newVotedIds);
+      localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
+      trackEvent('idea_unvoted', { idea_id: id, idea_title: idea?.idea_title, category: idea?.category });
+      const { error } = await supabase.rpc('decrement_vote', { idea_id: id });
+      if (error) {
+        setVotedIds(prev => [...prev, id]);
+        localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
+      }
+    } else {
+      const newVotedIds = [...votedIds, id];
+      setVotedIds(newVotedIds);
+      localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
+      trackEvent('idea_voted', { idea_id: id, idea_title: idea?.idea_title, category: idea?.category });
+      const { error } = await supabase.rpc('increment_vote', { idea_id: id });
+      if (error) {
+        setVotedIds(prev => prev.filter(vid => vid !== id));
+        localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
+      }
     }
   };
 

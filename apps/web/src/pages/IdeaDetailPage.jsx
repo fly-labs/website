@@ -51,17 +51,34 @@ const IdeaDetailPage = () => {
   }, [id]);
 
   const handleVote = async (ideaId) => {
-    if (votedIds.includes(ideaId)) return;
-    const newVotedIds = [...votedIds, ideaId];
-    setVotedIds(newVotedIds);
-    localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
-    setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) + 1 } : prev);
-    trackEvent('idea_voted', { idea_id: ideaId, idea_title: idea?.idea_title, category: idea?.category });
-    const { error } = await supabase.rpc('increment_vote', { idea_id: ideaId });
-    if (error) {
-      setVotedIds(prev => prev.filter(v => v !== ideaId));
-      localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
-      setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) - 1 } : prev);
+    const alreadyVoted = votedIds.includes(ideaId);
+
+    if (alreadyVoted) {
+      // Unvote: optimistic removal
+      const newVotedIds = votedIds.filter(v => v !== ideaId);
+      setVotedIds(newVotedIds);
+      localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
+      setIdea(prev => prev ? { ...prev, votes: Math.max((prev.votes || 0) - 1, 0) } : prev);
+      trackEvent('idea_unvoted', { idea_id: ideaId, idea_title: idea?.idea_title, category: idea?.category });
+      const { error } = await supabase.rpc('decrement_vote', { idea_id: ideaId });
+      if (error) {
+        setVotedIds(prev => [...prev, ideaId]);
+        localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
+        setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) + 1 } : prev);
+      }
+    } else {
+      // Vote: optimistic add
+      const newVotedIds = [...votedIds, ideaId];
+      setVotedIds(newVotedIds);
+      localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
+      setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) + 1 } : prev);
+      trackEvent('idea_voted', { idea_id: ideaId, idea_title: idea?.idea_title, category: idea?.category });
+      const { error } = await supabase.rpc('increment_vote', { idea_id: ideaId });
+      if (error) {
+        setVotedIds(prev => prev.filter(v => v !== ideaId));
+        localStorage.setItem('voted_ideas', JSON.stringify(votedIds));
+        setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) - 1 } : prev);
+      }
     }
   };
 
@@ -192,10 +209,9 @@ const IdeaDetailPage = () => {
           <div className="hidden sm:flex items-center gap-3">
             <button
               onClick={() => handleVote(idea.id)}
-              disabled={hasVoted}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 hasVoted
-                  ? 'bg-primary/10 text-primary cursor-default'
+                  ? 'bg-primary/10 text-primary'
                   : 'bg-primary text-primary-foreground hover:bg-primary/90'
               }`}
             >
@@ -628,10 +644,9 @@ const IdeaDetailPage = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => handleVote(idea.id)}
-            disabled={hasVoted}
             className={`flex-1 flex items-center justify-center gap-2 h-11 rounded-lg text-sm font-medium transition-colors ${
               hasVoted
-                ? 'bg-primary/10 text-primary cursor-default'
+                ? 'bg-primary/10 text-primary'
                 : 'bg-primary text-primary-foreground hover:bg-primary/90'
             }`}
           >

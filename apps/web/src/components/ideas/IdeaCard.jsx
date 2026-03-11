@@ -44,16 +44,15 @@ const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
         {/* Vote button */}
         <button
           onClick={(e) => { e.stopPropagation(); e.preventDefault(); onVote(idea.id); }}
-          disabled={hasVoted}
-          aria-label={`Vote for ${idea.idea_title}${hasVoted ? ' (voted)' : ''}`}
+          aria-label={`${hasVoted ? 'Remove vote from' : 'Vote for'} ${idea.idea_title}`}
           className={`flex flex-col items-center gap-0.5 pt-0.5 shrink-0 transition-colors duration-200 ${
             hasVoted
-              ? 'text-primary cursor-default'
+              ? 'text-primary hover:text-primary/60 cursor-pointer'
               : 'text-muted-foreground hover:text-primary cursor-pointer'
           }`}
         >
           <motion.div
-            whileTap={!hasVoted ? { scale: 1.3 } : {}}
+            whileTap={{ scale: 1.3 }}
             transition={{ type: 'spring', stiffness: 500, damping: 15 }}
           >
             <ChevronUp className={`w-5 h-5 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
