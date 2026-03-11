@@ -157,7 +157,25 @@ Return ONLY valid JSON (no markdown, no code fences):
       if (text.startsWith('```')) {
         text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
       }
-      const parsed = JSON.parse(text);
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        // Retry once on JSON parse failure (Haiku can be flaky with structured output)
+        await sleep(500);
+        const retry = await anthropic.messages.create({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 4000,
+          messages: [
+            { role: 'user', content: `Fix this invalid JSON and return ONLY valid JSON, nothing else:\n\n${text}` },
+          ],
+        });
+        let retryText = retry.content[0].text.trim();
+        if (retryText.startsWith('```')) {
+          retryText = retryText.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+        }
+        parsed = JSON.parse(retryText);
+      }
 
       for (const r of parsed.results || []) {
         if (r.index >= 0 && r.index < batch.length && r.is_viable) {

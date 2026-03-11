@@ -8,7 +8,7 @@ config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../apps/web/.en
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const MAX_IDEAS_PER_RUN = 50;
+const MAX_IDEAS_PER_RUN = 25;
 const BATCH_SIZE = 10;
 const BATCH_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
