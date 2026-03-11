@@ -165,7 +165,21 @@ Set is_real_problem to false if:
     if (text.startsWith('```')) {
       text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
     }
-    return JSON.parse(text);
+    try {
+      return JSON.parse(text);
+    } catch {
+      // Retry once: ask Haiku to fix its own JSON
+      const retry = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: `Fix this invalid JSON and return ONLY valid JSON, nothing else:\n\n${text}` }],
+      });
+      let retryText = retry.content[0].text.trim();
+      if (retryText.startsWith('```')) {
+        retryText = retryText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+      }
+      return JSON.parse(retryText);
+    }
   } catch (err) {
     console.warn(`  Failed to extract problem from "${post.name}": ${err.message}`);
     return null;
