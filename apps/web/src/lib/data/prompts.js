@@ -489,4 +489,129 @@ Explain what was wrong with the original and why each change improves the output
 Here is the prompt to improve:
 [PASTE YOUR PROMPT]`,
   },
+
+  // ── Marketing ──────────────────────────────────────────────
+  {
+    id: 25,
+    title: 'The Social Media Strategist',
+    category: 'Marketing',
+    description: 'Get a complete social media strategy: brand positioning, content direction, audience targeting, and monetization plan.',
+    content: `You are a social media strategist who has built brands from zero to millions of followers.
+
+Review my business, niche, target audience, competitors, and growth goals. Build a complete strategy covering:
+
+1. Brand positioning: what makes me different and why someone should follow me over competitors
+2. Content direction: themes, formats, and posting cadence that match my capacity
+3. Audience targeting: who exactly I am creating for, where they spend time, what makes them engage
+4. Monetization path: how this audience becomes revenue (products, services, partnerships, or audience licensing)
+
+My details:
+[PASTE YOUR BUSINESS/NICHE/AUDIENCE/GOALS]`,
+  },
+  {
+    id: 26,
+    title: 'The Authority Positioner',
+    category: 'Marketing',
+    description: 'Build a positioning strategy that separates you from everyone else in your space and makes you the go-to name.',
+    content: `Act as a personal branding expert. Based on my skills and niche, build a positioning strategy that separates me from everyone else in my space and makes me the go-to name in my industry.
+
+Cover:
+- My unique angle: what combination of skills, experience, and perspective only I have
+- Content pillars: 3-5 recurring themes that reinforce my positioning
+- Authority signals: what to create, publish, or demonstrate to build credibility fast
+- Differentiation: what I should stop doing because everyone else already does it
+- The one sentence someone would use to describe me to a friend
+
+My niche and background:
+[PASTE YOUR NICHE, SKILLS, EXPERIENCE, AND WHAT YOU WANT TO BE KNOWN FOR]`,
+  },
+  {
+    id: 27,
+    title: 'The 30-Day Content Calendar',
+    category: 'Marketing',
+    description: 'Generate a full month of content ideas with daily topics, formats, message angles, and goals for each post.',
+    content: `Create a full 30-day content calendar for my social media.
+
+For each day, include:
+- Content idea (specific topic, not vague)
+- Post format (carousel, text post, video, story, thread, etc.)
+- Core message angle (the one thing the reader should take away)
+- Goal of the post: reach (new eyeballs), trust (deepen relationship), or convert (drive action)
+
+Balance the calendar: roughly 50% reach, 30% trust, 20% convert.
+
+My platform: [PLATFORM]
+My niche: [YOUR NICHE]
+My audience: [WHO FOLLOWS YOU]
+My offer (if any): [WHAT YOU SELL OR WANT TO PROMOTE]`,
+  },
+  {
+    id: 28,
+    title: 'The Audience Monetizer',
+    category: 'Marketing',
+    description: 'Turn followers into paying customers. Get a monetization plan with offer ideas, pricing, and content angles that convert.',
+    content: `Help me turn my followers into paying customers.
+
+Review my current situation and build a monetization plan:
+
+1. Offer ideas: what products, services, or digital assets my audience would actually pay for (be specific, not generic)
+2. Pricing structure: how to price and package offers for my audience size and engagement level
+3. Content-to-sale bridge: the specific content angles that naturally move people from follower to buyer without feeling salesy
+4. Funnel sketch: the journey from "just discovered me" to "paying customer" in concrete steps
+5. Quick wins: what I can monetize within the next 30 days with minimal setup
+
+My current business model: [DESCRIBE WHAT YOU DO NOW]
+My audience size and platform: [NUMBERS AND PLATFORM]
+My niche: [YOUR NICHE]
+What I have tried so far: [ANY PREVIOUS MONETIZATION ATTEMPTS]`,
+  },
+  {
+    id: 29,
+    title: 'The Launch Email Sequence',
+    category: 'Marketing',
+    description: 'Write a 5-email launch sequence that builds anticipation and drives sales: teaser, value, story, objections, and deadline.',
+    content: `Act as an email marketing strategist. Write a 5-email launch sequence for my product.
+
+The sequence:
+1. TEASER: Build curiosity. Hint at what is coming without revealing everything. Create a reason to open the next email.
+2. VALUE: Teach something genuinely useful related to the problem your product solves. Position yourself as someone who knows what they are talking about.
+3. STORY: Tell a real (or realistic) story about someone who had the problem and what happened. Make the reader see themselves in it.
+4. OBJECTION HANDLER: Address the top 3-5 reasons someone would hesitate to buy. Answer each honestly and directly.
+5. DEADLINE: Create real urgency (limited time, limited spots, price increase). Make the cost of inaction clear. Strong CTA.
+
+Each email should:
+- Have a subject line that earns the open
+- Be scannable (short paragraphs, line breaks)
+- End with a clear link or CTA to the sales page
+- Feel like it comes from a person, not a brand
+
+My product: [DESCRIBE YOUR PRODUCT]
+Price: [PRICE]
+Target audience: [WHO IT IS FOR]
+Launch date: [WHEN]`,
+  },
+  {
+    id: 30,
+    title: 'The Lead Magnet Builder',
+    category: 'Marketing',
+    description: 'Design a free PDF, checklist, or guide that attracts the right people and makes them want your paid product.',
+    content: `Act as a funnel strategist. Design a free lead magnet that attracts buyers for my product.
+
+Give me:
+1. TITLE: A specific, benefit-driven title that promises a quick win (not vague like "Ultimate Guide to X")
+2. FORMAT: The best format for this audience (PDF guide, checklist, cheat sheet, template, swipe file, mini-course)
+3. OUTLINE: Detailed structure with sections, key points, and the "aha moment" that makes them want the paid version
+4. THE BRIDGE: How the free content naturally leads to the paid product without feeling like a bait-and-switch
+5. OPT-IN PAGE COPY: Headline, 3 bullet points, and CTA text for the landing page
+
+The lead magnet should:
+- Be completable in under 15 minutes
+- Deliver one specific result, not broad education
+- Make the reader think "if the free stuff is this good, the paid version must be incredible"
+- Qualify the audience (attract buyers, not freebie hunters)
+
+My paid product: [DESCRIBE YOUR PRODUCT]
+My target audience: [WHO IT IS FOR]
+The main problem it solves: [THE PAIN POINT]`,
+  },
 ];

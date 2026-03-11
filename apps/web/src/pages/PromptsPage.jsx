@@ -14,7 +14,7 @@ import supabase from '@/lib/supabaseClient.js';
 import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
-const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Thinking'];
+const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'Thinking'];
 const SORT_OPTIONS = [
   { value: 'hot', label: 'Hot' },
   { value: 'new', label: 'New' },
@@ -26,6 +26,7 @@ const CATEGORY_COLORS = {
   Coding:   { text: 'text-blue-500',   bg: 'bg-blue-500/10',   border: 'border-blue-500/25',   pill: 'text-blue-500',   pillBg: 'bg-blue-500/10',   pillBorder: 'border-blue-500/30' },
   Writing:  { text: 'text-violet-500',  bg: 'bg-violet-500/10',  border: 'border-violet-500/25',  pill: 'text-violet-500',  pillBg: 'bg-violet-500/10',  pillBorder: 'border-violet-500/30' },
   Strategy: { text: 'text-amber-500',   bg: 'bg-amber-500/10',   border: 'border-amber-500/25',   pill: 'text-amber-500',   pillBg: 'bg-amber-500/10',   pillBorder: 'border-amber-500/30' },
+  Marketing:{ text: 'text-rose-500',    bg: 'bg-rose-500/10',    border: 'border-rose-500/25',    pill: 'text-rose-500',    pillBg: 'bg-rose-500/10',    pillBorder: 'border-rose-500/30' },
   Thinking: { text: 'text-cyan-500',    bg: 'bg-cyan-500/10',    border: 'border-cyan-500/25',    pill: 'text-cyan-500',    pillBg: 'bg-cyan-500/10',    pillBorder: 'border-cyan-500/30' },
 };
 
@@ -401,7 +402,7 @@ const PromptsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Prompt Library - Coding, Writing & Strategy",
+        title: "AI Prompt Library - Coding, Writing, Strategy & Marketing",
         description: "Curated collection of AI prompts for coding, writing, strategy, and thinking. Copy-paste ready for ChatGPT and Claude. Vote on favorites and suggest new ones.",
         keywords: "AI prompts, coding prompts, writing prompts, strategy prompts, ChatGPT prompts, Claude prompts, prompt library",
         url: "https://flylabs.fun/prompts",

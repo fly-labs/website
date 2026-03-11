@@ -65,7 +65,7 @@ apps/web/
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
-│   │   │   ├── prompts.js        # 24 prompts across 4 categories (featured flag for lead magnet)
+│   │   │   ├── prompts.js        # 30 prompts across 5 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
 │   │   │   └── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (8 sources), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
@@ -174,7 +174,7 @@ apps/web/
 
 ## Data Layer
 - **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
-- **prompts.js:** 24 prompts across 4 categories (Coding, Writing, Strategy, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
+- **prompts.js:** 30 prompts across 5 categories (Coding, Writing, Strategy, Marketing, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (10-way: hot/newest/oldest/top/flylabs/hormozi/koe/okamoto/validation/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 
