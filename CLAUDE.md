@@ -51,7 +51,8 @@ apps/web/
 │   │   ├── SmileLogo.jsx     # Animated brand logo
 │   │   ├── ScrollToTop.jsx   # Resets scroll on route change
 │   │   └── ideas/            # Extracted Ideas page components
-│   │       ├── IdeaCard.jsx      # Idea card (vote, verdict + FL score badges, competitor count, navigates to /ideas/:id via useNavigate)
+│   │       ├── IdeaCard.jsx      # Idea card view (vote, verdict + FL score + confidence badges, competitor count, navigates to /ideas/:id)
+│   │       ├── IdeaTableRow.jsx  # Compact table row view (vote, title, verdict, FL score, source, age)
 │   │       ├── IdeaFilterSheet.jsx # Bottom sheet (mobile) + inline panel (desktop) for type/industry/score/confidence/perPage
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
 │   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, verdictStyles, confidenceColors)
@@ -76,7 +77,7 @@ apps/web/
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
-│       ├── IdeaSubmissionPage.jsx # Idea Lab list (URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, 9-source pills, filter sheet, smart empty states)
+│       ├── IdeaSubmissionPage.jsx # Idea Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
 │       ├── AboutPage.jsx         # Pull quote, journey timeline, GitHub heatmap, current focus, the approach, social links

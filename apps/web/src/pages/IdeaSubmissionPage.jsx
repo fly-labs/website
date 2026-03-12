@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -9,12 +9,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
-import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors } from '@/lib/data/ideas.js';
+import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
 
 import IdeaCard from '@/components/ideas/IdeaCard.jsx';
+import IdeaTableRow from '@/components/ideas/IdeaTableRow.jsx';
 import IdeaSubmitModal from '@/components/ideas/IdeaSubmitModal.jsx';
 import IdeaFilterSheet from '@/components/ideas/IdeaFilterSheet.jsx';
 
@@ -53,6 +54,9 @@ const IdeaSubmissionPage = () => {
     }
   });
   const [formStep, setFormStep] = useState(0);
+  const [viewMode, setViewMode] = useState(() => {
+    try { return localStorage.getItem('ideas_view') || 'cards'; } catch { return 'cards'; }
+  });
   const [showMoreSort, setShowMoreSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -258,6 +262,11 @@ const IdeaSubmissionPage = () => {
     }
   };
 
+  const toggleView = useCallback((mode) => {
+    setViewMode(mode);
+    try { localStorage.setItem('ideas_view', mode); } catch {}
+  }, []);
+
   const handleSortChange = (v) => {
     setSortBy(v);
     setShowMoreSort(false);
@@ -314,7 +323,7 @@ const IdeaSubmissionPage = () => {
                 The <span className="text-primary">Idea Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
-                {globalCount ? `${globalCount} ideas` : 'Ideas'}{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}8 sources{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}AI-scored + validated{' '}<span className="text-muted-foreground/30">&middot;</span>{' '}Updated daily
+                {globalCount ? `${globalCount} real problems from ${SOURCE_COUNT} sources` : `Real problems from ${SOURCE_COUNT} sources`}, scored by AI daily.
               </p>
             </motion.div>
 
@@ -411,25 +420,46 @@ const IdeaSubmissionPage = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
-                    showFilters || activeFilterCount > 0
-                      ? 'bg-primary/10 text-primary border border-primary/30'
-                      : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
-                  }`}
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                  Filters
-                  {activeFilterCount > 0 && (
-                    <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </button>
+                <div className="flex items-center gap-1.5">
+                  {/* View toggle */}
+                  <div className="hidden sm:flex items-center rounded-full bg-muted/50 border border-transparent p-0.5">
+                    <button
+                      onClick={() => toggleView('cards')}
+                      className={`p-1.5 rounded-full transition-colors ${viewMode === 'cards' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                      aria-label="Card view"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => toggleView('table')}
+                      className={`p-1.5 rounded-full transition-colors ${viewMode === 'table' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                      aria-label="Table view"
+                    >
+                      <LayoutList className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors shrink-0 ${
+                      showFilters || activeFilterCount > 0
+                        ? 'bg-primary/10 text-primary border border-primary/30'
+                        : 'text-muted-foreground hover:text-foreground bg-muted/50 border border-transparent'
+                    }`}
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    Filters
+                    {activeFilterCount > 0 && (
+                      <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Row 3: Source pills with counts */}
+              <div className="relative">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {sourceOptions.map((opt) => {
                   const count = opt.value === 'all'
@@ -455,8 +485,11 @@ const IdeaSubmissionPage = () => {
                   );
                 })}
               </div>
+              <div className="absolute right-0 top-0 bottom-1 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
+              </div>
 
               {/* Row 4: Verdict tabs with counts */}
+              <div className="relative">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {verdictOptions.map((opt) => {
                   const count = verdictCounts[opt.value] || 0;
@@ -481,6 +514,8 @@ const IdeaSubmissionPage = () => {
                     </button>
                   );
                 })}
+              </div>
+              <div className="absolute right-0 top-0 bottom-1 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
               </div>
 
               {/* Row 5: Active filter chips */}
@@ -520,7 +555,8 @@ const IdeaSubmissionPage = () => {
             {/* Result counter */}
             {!loading && totalCount > 0 && (
               <div className="text-xs text-muted-foreground/60 font-medium mb-3 tabular-nums">
-                Showing {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount} ideas
+                {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount} ideas
+                {sortBy !== 'hot' && <span className="text-muted-foreground/40"> &middot; sorted by {sortOptions.find(o => o.value === sortBy)?.label?.toLowerCase()}</span>}
               </div>
             )}
 
@@ -536,7 +572,7 @@ const IdeaSubmissionPage = () => {
                 className="text-center py-20"
               >
                 <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium mb-3">The filters are tight. Loosen up or try a different angle.</p>
+                <p className="text-muted-foreground font-medium mb-3">No ideas match these filters. Try loosening up.</p>
                 {(() => {
                   const restrictive = getMostRestrictiveFilter();
                   if (restrictive) {
@@ -557,19 +593,49 @@ const IdeaSubmissionPage = () => {
               </motion.div>
             ) : (
               <>
-                <motion.div className="flex flex-col gap-3">
-                  <AnimatePresence mode="wait">
-                    {paginated.map((idea, i) => (
-                      <IdeaCard
-                        key={idea.id}
-                        idea={idea}
-                        hasVoted={votedIds.includes(idea.id)}
-                        onVote={handleVote}
-                        index={i}
-                      />
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
+                {viewMode === 'table' ? (
+                  <div className="overflow-x-auto rounded-xl border border-border/60">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="border-b border-border/60 bg-muted/30">
+                          <th className="py-2 px-2 w-12 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
+                          <th className="py-2 px-2 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Problem</th>
+                          <th className="py-2 px-2 w-24 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">Verdict</th>
+                          <th className="py-2 px-2 w-16 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">FL</th>
+                          <th className="py-2 px-2 w-28 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden md:table-cell">Source</th>
+                          <th className="py-2 px-2 w-20 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Age</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <AnimatePresence mode="wait">
+                          {paginated.map((idea, i) => (
+                            <IdeaTableRow
+                              key={idea.id}
+                              idea={idea}
+                              hasVoted={votedIds.includes(idea.id)}
+                              onVote={handleVote}
+                              index={i}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <motion.div className="flex flex-col gap-3">
+                    <AnimatePresence mode="wait">
+                      {paginated.map((idea, i) => (
+                        <IdeaCard
+                          key={idea.id}
+                          idea={idea}
+                          hasVoted={votedIds.includes(idea.id)}
+                          onVote={handleVote}
+                          index={i}
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
 
                 {/* Pagination Bar */}
                 <div className="flex items-center justify-between gap-4 mt-6 px-1">
@@ -663,7 +729,7 @@ const IdeaSubmissionPage = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       The hardest part of building is knowing what to build. Most people grab the first
                       idea that excites them and start coding. Six months later they've built something
-                      nobody wants. This system fixes that. We pull real problems from 8 sources daily,
+                      nobody wants. This system fixes that. We pull real problems from {SOURCE_COUNT} sources daily,
                       score each one through the Fly Labs Method and 3 expert frameworks, then validate
                       top ideas against real conversations on X and Reddit. You get a verdict: build it,
                       validate first, or move on.

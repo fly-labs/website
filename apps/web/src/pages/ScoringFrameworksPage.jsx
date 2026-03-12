@@ -9,6 +9,7 @@ import {
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
+import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 
 const flylabsDimensions = [
   {
@@ -201,7 +202,7 @@ const ScoringFrameworksPage = () => {
     <PageLayout
       seo={{
         title: "Fly Labs Method + AI Scoring, Verdicts & Validation",
-        description: "How the Idea Lab evaluates every idea. The Fly Labs Method (problem-solution fit for vibe builders) plus Hormozi, Dan Koe, and Okamoto frameworks. 8 sources, 4 frameworks, market validation, one verdict.",
+        description: `How the Idea Lab evaluates every idea. The Fly Labs Method (problem-solution fit for vibe builders) plus Hormozi, Dan Koe, and Okamoto frameworks. ${SOURCE_COUNT} sources, 4 frameworks, market validation, one verdict.`,
         keywords: "Fly Labs Method, vibe building, problem-solution fit, ideation, idea scoring, Hormozi framework, Dan Koe, Bruno Okamoto, MicroSaaS, business evaluation, AI scoring, startup ideas, validation, competitive analysis",
         url: "https://flylabs.fun/scoring",
       }}
@@ -226,7 +227,7 @@ const ScoringFrameworksPage = () => {
               How We <span className="text-primary">Score Ideas</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl mx-auto">
-              Every idea gets evaluated through the Fly Labs Method and 3 expert frameworks, then validated against real conversations. 8 sources, 4 frameworks, one verdict.
+              Every idea gets evaluated through the Fly Labs Method and 3 expert frameworks, then validated against real conversations. {SOURCE_COUNT} sources, 4 frameworks, one verdict.
             </p>
           </motion.div>
 
@@ -556,7 +557,7 @@ const ScoringFrameworksPage = () => {
             <BarChart3 className="w-8 h-8 text-primary mx-auto mb-4" />
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">How AI Scores</h2>
             <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              8 sources. 4 frameworks. Real validation. Every idea gets scored by Claude AI through the Fly Labs Method and three expert perspectives, each with per-pillar reasoning. The scores synthesize into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated against real conversations on X and Reddit with competitive intelligence and evidence confidence. Updated daily.
+              {SOURCE_COUNT} sources. 4 frameworks. Real validation. Every idea gets scored by Claude AI through the Fly Labs Method and three expert perspectives, each with per-pillar reasoning. The scores synthesize into a BUILD / VALIDATE / SKIP verdict. Top ideas get validated against real conversations on X and Reddit with competitive intelligence and evidence confidence. Updated daily.
             </p>
           </motion.div>
 

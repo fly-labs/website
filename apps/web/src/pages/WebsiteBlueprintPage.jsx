@@ -10,6 +10,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
+import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 
 const GITHUB_URL = 'https://github.com/fly-labs/website';
 
@@ -27,8 +28,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Idea Lab',
     route: '/ideas',
-    desc: '8 automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across 4 frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.',
-    highlights: ['8 sources', '4 AI frameworks', 'Market validation'],
+    desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across 4 frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
+    highlights: [`${SOURCE_COUNT} sources`, '4 AI frameworks', 'Market validation'],
     icon: Lightbulb,
     color: 'border-primary',
   },

@@ -128,6 +128,15 @@ const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
                   {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}
                 </span>
               )}
+              {idea.confidence && (
+                <span className={`hidden sm:inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium ${
+                  idea.confidence === 'high' ? 'bg-primary/10 text-primary' :
+                  idea.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
+                  'bg-muted text-muted-foreground'
+                }`}>
+                  {idea.confidence} conf.
+                </span>
+              )}
             </div>
           </div>
           {idea.idea_description && idea.idea_description !== idea.idea_title && (
@@ -156,14 +165,15 @@ const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
             {idea.industry && (
               <>
                 <span className="text-muted-foreground/40">&middot;</span>
-                <span>{industries.find(i => i.value === idea.industry)?.label || idea.industry}</span>
+                <span className="hidden sm:inline">{industries.find(i => i.value === idea.industry)?.label || idea.industry}</span>
+                <span className="sm:hidden">{(industries.find(i => i.value === idea.industry)?.label || idea.industry).split(' ')[0]}</span>
               </>
             )}
             {idea.country && (
-              <>
+              <span className="hidden sm:contents">
                 <span className="text-muted-foreground/40">&middot;</span>
                 <span>{idea.country}</span>
-              </>
+              </span>
             )}
             {showStatus && (
               <>

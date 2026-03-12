@@ -1,4 +1,5 @@
 import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
+import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 
 export const categories = ['All', 'Business', 'Tools', 'Learn'];
 
@@ -103,7 +104,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: 'The hardest part of building is knowing what to build. This system pulls real problems from 8 sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.',
+    description: `The hardest part of building is knowing what to build. This system pulls real problems from ${SOURCE_COUNT} sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.`,
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

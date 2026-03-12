@@ -7,6 +7,7 @@ import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
 import { books } from '@/lib/data/library.js';
+import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 import supabase from '@/lib/supabaseClient.js';
 import { cn } from '@/lib/utils.js';
 
@@ -49,7 +50,7 @@ const pillars = [
   {
     title: 'Idea Lab',
     icon: Users,
-    description: 'Real problems from 8 sources. AI-scored with the Fly Labs Method, given a verdict, and validated against real conversations.',
+    description: `Real problems from ${SOURCE_COUNT} sources. AI-scored with the Fly Labs Method, given a verdict, and validated against real conversations.`,
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
     link: '/ideas',
