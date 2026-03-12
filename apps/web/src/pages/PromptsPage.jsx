@@ -14,7 +14,7 @@ import supabase from '@/lib/supabaseClient.js';
 import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
-const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'Thinking'];
+const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'SEO', 'Research', 'Thinking'];
 const SORT_OPTIONS = [
   { value: 'hot', label: 'Hot' },
   { value: 'new', label: 'New' },
@@ -27,6 +27,8 @@ const CATEGORY_COLORS = {
   Writing:  { text: 'text-violet-500',  bg: 'bg-violet-500/10',  border: 'border-violet-500/25',  pill: 'text-violet-500',  pillBg: 'bg-violet-500/10',  pillBorder: 'border-violet-500/30' },
   Strategy: { text: 'text-amber-500',   bg: 'bg-amber-500/10',   border: 'border-amber-500/25',   pill: 'text-amber-500',   pillBg: 'bg-amber-500/10',   pillBorder: 'border-amber-500/30' },
   Marketing:{ text: 'text-rose-500',    bg: 'bg-rose-500/10',    border: 'border-rose-500/25',    pill: 'text-rose-500',    pillBg: 'bg-rose-500/10',    pillBorder: 'border-rose-500/30' },
+  SEO:      { text: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/25', pill: 'text-emerald-500', pillBg: 'bg-emerald-500/10', pillBorder: 'border-emerald-500/30' },
+  Research: { text: 'text-indigo-500',  bg: 'bg-indigo-500/10',  border: 'border-indigo-500/25',  pill: 'text-indigo-500',  pillBg: 'bg-indigo-500/10',  pillBorder: 'border-indigo-500/30' },
   Thinking: { text: 'text-cyan-500',    bg: 'bg-cyan-500/10',    border: 'border-cyan-500/25',    pill: 'text-cyan-500',    pillBg: 'bg-cyan-500/10',    pillBorder: 'border-cyan-500/30' },
 };
 

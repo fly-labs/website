@@ -614,4 +614,899 @@ My paid product: [DESCRIBE YOUR PRODUCT]
 My target audience: [WHO IT IS FOR]
 The main problem it solves: [THE PAIN POINT]`,
   },
+
+  // ── Writing (continued) ─────────────────────────────────────
+  {
+    id: 31,
+    title: 'The Brand Voice Builder',
+    category: 'Writing',
+    author: 'The AI Corner',
+    description: 'Define your brand voice in a structured document so AI always writes like you. Tone, vocabulary, examples, and anti-patterns.',
+    content: `Help me define my brand voice in a structured document I can reuse every time I write or have AI write for me.
+
+Walk me through each section and ask me questions before filling it in:
+
+## Tone
+How do I sound? Direct? Warm? Analytical? Playful? Describe the overall feel.
+
+## What I Sound Like
+Specific descriptions. Example: "Short sentences. No fluff. Talks like a smart friend, not a professor."
+
+## What I Never Sound Like
+What feels wrong? Example: "Corporate speak. Buzzwords. Motivational poster energy."
+
+## Words I Use
+My vocabulary. Phrases that sound like me. Slang or expressions I naturally reach for.
+
+## Words I Avoid
+Things that feel off-brand. Jargon, cliches, or tones I hate.
+
+## Example of My Writing
+I will paste 500+ words of my best work below. Use this as the benchmark for everything you write for me.
+
+[PASTE YOUR BEST WRITING HERE]
+
+After I answer, compile everything into a clean brand-voice.md document I can paste into any AI tool as context.`,
+  },
+
+  // ── Strategy (continued) ────────────────────────────────────
+  {
+    id: 32,
+    title: 'The Socratic Strategist',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Force AI to think before it writes by asking about principles first. Based on Socratic prompting research.',
+    content: `What makes a go-to-market strategy actually work for early-stage B2B SaaS?
+What are the most common mistakes founders make?
+What channels tend to work best when you have limited budget?
+What should be prioritized in the first 90 days vs. later?
+
+Now create a go-to-market strategy for [DESCRIBE YOUR PRODUCT AND TARGET CUSTOMER].`,
+  },
+  {
+    id: 33,
+    title: 'The Socratic Product Manager',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Use Socratic questioning to prioritize features like the best PMs. Surfaces real signals from noise.',
+    content: `What frameworks do the best product managers use to prioritize features?
+How do you balance customer requests vs. strategic bets?
+What signals indicate a feature will actually move the needle?
+How should prioritization differ at different company stages?
+
+Here's my current backlog: [LIST FEATURES]. Help me prioritize based on [YOUR GOALS/CONSTRAINTS].`,
+  },
+  {
+    id: 34,
+    title: 'The Socratic Negotiator',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Prepare for any negotiation by forcing AI to reason through leverage, framing, and common mistakes first.',
+    content: `What makes salary negotiations actually succeed?
+What leverage do candidates typically underestimate?
+How should the conversation be framed to maximize outcome?
+What are the most common mistakes people make when negotiating compensation?
+
+I'm negotiating for [ROLE] at [COMPANY TYPE]. My current situation is [CONTEXT]. Help me prepare.`,
+  },
+  {
+    id: 35,
+    title: 'The SOP Builder',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Turn any repeatable workflow into a professional Standard Operating Procedure document anyone can follow.',
+    content: `I'm going to describe a task I do regularly, and I want you to document it as a Standard Operating Procedure (SOP) that anyone could follow.
+
+TASK NAME: [WHAT YOU'RE DOCUMENTING]
+
+Document it in this format:
+
+## [TASK NAME] - Standard Operating Procedure
+
+**Purpose:** [What this task accomplishes]
+**Frequency:** [How often this should be done]
+**Time Required:** [Estimated duration]
+**Tools Needed:** [Software, access required]
+
+### Prerequisites
+- What needs to be true before starting
+- Required access or permissions
+- Materials needed
+
+### Step-by-Step Instructions
+
+**Step 1: [Action]**
+- Detailed description
+- Where to click / what to type
+- Expected result
+- Common mistake to avoid
+
+**Step 2: [Action]**
+[Continue for each step]
+
+### Troubleshooting
+- If X happens, do Y
+- Common errors and fixes
+
+### Quality Check
+- How to verify the task was done correctly
+- What the end result should look like
+
+Here is the task I want documented:
+[DESCRIBE YOUR WORKFLOW IN DETAIL]`,
+  },
+  {
+    id: 36,
+    title: 'The AI Employee Blueprint',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Design a complete AI assistant with identity, personality, boundaries, routines, and permissions. The full onboarding system.',
+    content: `Help me design a complete AI employee using four configuration documents. Ask me questions for each section before generating.
+
+## DOCUMENT 1: IDENTITY
+- Name, role, and a 1-3 sentence bio describing personality and purpose
+
+## DOCUMENT 2: SOUL (Behavior & Boundaries)
+- Mission: one sentence stating the AI's fundamental purpose
+- Personality: 3 adjectives + communication style
+- Guiding principles: 3-5 rules it always follows
+- Boundaries (NEVER DO): specific actions it must never take
+- When in doubt: fallback rules for ambiguous situations
+
+## DOCUMENT 3: OPERATING MANUAL
+- Role & responsibilities overview
+- Routine tasks with frequency (daily/weekly)
+- On-demand skills it can perform
+- Tools & integrations it uses
+- Key contacts and entities it should know about
+
+## DOCUMENT 4: MEMORY
+- Important decisions and context to remember
+- User preferences learned over time
+- Format: dated notes that get updated
+
+My situation:
+- My role: [YOUR ROLE]
+- What I need help with: [MAIN USE CASES]
+- Tools I use: [LIST YOUR TOOLS]
+- Communication style I prefer: [BRIEF/DETAILED/CASUAL/FORMAL]
+
+Start by asking me 5 clarifying questions, then generate all four documents.`,
+  },
+  {
+    id: 37,
+    title: 'The AI Chief of Staff',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Configure an AI as your executive assistant and project manager. Handles scheduling, triage, research, and ops.',
+    content: `You are my AI Chief of Staff. You take administrative and operational load off my plate. Think: executive assistant meets project manager.
+
+WHAT YOU DO:
+- Manage scheduling and triage requests
+- Draft email and message responses
+- Prepare meeting agendas and notes
+- Perform research on demand
+- Handle routine operational tasks
+- Post daily stand-up prompts and reminders
+- Proactively alert me of urgent items
+
+WHAT YOU NEVER DO:
+- Commit me to agreements or promises
+- Make financial transactions without explicit approval
+- Send external communications that haven't been approved
+- Make personnel decisions
+- Delete important data or files
+
+HOW YOU OPERATE:
+- Start in observe-and-suggest mode. Ask before acting.
+- When suggesting actions, explain your reasoning briefly.
+- Match my communication style: [BRIEF/DETAILED/CASUAL/FORMAL]
+- Flag anything time-sensitive immediately
+- When uncertain, ask. I prefer a quick question over a wrong action.
+
+MY CONTEXT:
+- My role: [YOUR ROLE]
+- My team: [TEAM SIZE AND KEY PEOPLE]
+- Current priorities: [TOP 3 PRIORITIES]
+- Working hours: [YOUR SCHEDULE]
+- Preferred communication: [EMAIL/SLACK/OTHER]
+
+Start by asking me what needs attention today.`,
+  },
+  {
+    id: 38,
+    title: 'The AI Opportunity Map',
+    category: 'Strategy',
+    author: 'The AI Corner',
+    description: 'Identify the highest-opportunity sectors for AI-powered businesses using the gap between theoretical and actual automation coverage.',
+    content: `Act as a market analyst specializing in AI adoption and business opportunities.
+
+For each sector below, analyze the gap between what AI could theoretically automate and what is actually being automated today. The larger the gap, the bigger the opportunity.
+
+SECTORS TO ANALYZE:
+[LIST 3-5 INDUSTRIES YOU'RE INTERESTED IN, OR USE THESE DEFAULTS:]
+- Legal services
+- Financial services
+- Healthcare
+- Education
+- HR and recruiting
+- Real estate
+- Insurance
+- Government
+
+FOR EACH SECTOR, PROVIDE:
+1. Theoretical AI coverage (% of tasks AI could handle)
+2. Actual AI adoption today (% being automated in practice)
+3. The gap in percentage points
+4. Why the gap exists (regulation, trust, integration complexity, liability)
+5. What type of AI company could close this gap
+6. Estimated timeline for the gap to narrow significantly
+
+THEN IDENTIFY:
+- The top 3 sectors with the most accessible opportunity for a solo builder or small team
+- What an AI-native company in each sector does differently than incumbents
+- The specific friction points where a new entrant could win
+
+My background: [YOUR SKILLS AND EXPERIENCE]
+My budget: [BOOTSTRAPPED / FUNDED / SIDE PROJECT]
+My goal: [BUILD A PRODUCT / CONSULT / INVEST / EXPLORE]`,
+  },
+
+  // ── Marketing (continued) ───────────────────────────────────
+  {
+    id: 39,
+    title: 'The Socratic Marketer',
+    category: 'Marketing',
+    author: 'The AI Corner',
+    description: 'Write marketing copy that actually persuades by forcing AI to understand what makes copy convert before writing yours.',
+    content: `What makes marketing copy actually persuade someone to buy?
+What's the difference between copy that sounds good and copy that converts?
+What emotional triggers work best for [YOUR PRODUCT CATEGORY]?
+How should the copy differ for someone who's aware of the problem vs. someone who isn't?
+
+Now write marketing copy for [YOUR PRODUCT] targeting [YOUR AUDIENCE].`,
+  },
+  {
+    id: 40,
+    title: 'The Socratic Seller',
+    category: 'Marketing',
+    author: 'The AI Corner',
+    description: 'Write cold emails that get opened and replied to. AI reasons through what actually works before writing yours.',
+    content: `What makes a cold email get opened instead of deleted?
+What makes someone actually reply?
+What are the biggest mistakes people make in cold outreach?
+How should the email differ based on the recipient's seniority?
+
+Now write a cold email for [YOUR PRODUCT] targeting [YOUR TARGET ROLE/COMPANY].`,
+  },
+  {
+    id: 41,
+    title: 'The Socratic Content Planner',
+    category: 'Marketing',
+    author: 'The AI Corner',
+    description: 'Build a content calendar that feels coherent, not random. AI thinks through what works on your platform before planning.',
+    content: `What type of content works best on [PLATFORM] for [YOUR INDUSTRY] companies?
+How often should you post without tiring your audience?
+How should topics connect to each other so the calendar feels coherent?
+What mix of content types (stories, insights, how-tos, opinion) tends to perform best?
+
+Now design a 30-day content calendar for [YOUR BUSINESS/TOPIC].`,
+  },
+  {
+    id: 42,
+    title: 'The Objection Killer',
+    category: 'Marketing',
+    author: 'The AI Corner',
+    description: 'Pre-empt every buyer objection before they even think it. Write copy that addresses resistance head-on.',
+    content: `What would a skeptical [BUYER TYPE] ask about [YOUR PRODUCT]?
+What concerns would they have?
+How would the best salespeople address each objection?
+
+Now write copy that pre-empts these objections for [YOUR LANDING PAGE / EMAIL / DECK].
+
+Rules:
+- Address each objection naturally within the flow, not as a FAQ
+- Use social proof, specifics, and risk reversal where appropriate
+- The reader should feel like you read their mind
+- End with a clear call to action that feels low-risk`,
+  },
+  {
+    id: 43,
+    title: 'The Pitch Deck Architect',
+    category: 'Marketing',
+    author: 'The AI Corner',
+    description: 'Design a 12-slide pitch deck structure with content for each slide. Covers problem, solution, traction, market, team, and the ask.',
+    content: `Help me build the content for a 12-slide pitch deck.
+
+For each slide, give me:
+- The headline (one line, bold, clear)
+- The key message (what the audience must take away)
+- The content (bullets, data points, or short copy)
+- Design direction (layout suggestion: full-bleed, two-column, metric grid, etc.)
+
+THE 12 SLIDES:
+
+1. TITLE: Company name, one-line description, and tagline
+2. AGENDA: 4 sections the deck will cover
+3. PROBLEM: One big statement + 3 supporting points max
+4. SOLUTION: The promise (left) + 3 key features (right)
+5. TRACTION: 4 key metrics in a 2x2 grid with large numbers
+6. PRODUCT: Screenshot or demo placeholder + 3 callout features
+7. MARKET: TAM, SAM, SOM with clear definitions
+8. GO-TO-MARKET: 3-step acquisition loop or strategy
+9. PRICING: 3 tiers with the recommended one highlighted
+10. COMPETITION: Comparison table, 3-4 rows, highlight our advantage
+11. TEAM: 3-4 people with name, title, and one-line credential
+12. THE ASK: What you need, your plan for using it, and a clear CTA
+
+My company: [COMPANY NAME AND DESCRIPTION]
+What we do: [PRODUCT/SERVICE]
+Stage: [PRE-SEED / SEED / SERIES A / GROWTH]
+Raising: [AMOUNT]
+Key metrics: [LIST YOUR BEST NUMBERS]`,
+  },
+
+  // ── SEO ─────────────────────────────────────────────────────
+  {
+    id: 44,
+    title: 'SEO Competitive Matrix',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Build a complete competitive intelligence spreadsheet showing where you outperform, fall short, and the exact gaps to close.',
+    content: `Analyze my website and compare it against my top competitors for SEO competitive intelligence.
+
+MY SITE: [YOUR_URL]
+COMPETITORS: [COMP1_URL], [COMP2_URL], [COMP3_URL]
+
+For each site, extract:
+- Business name and core services offered
+- Unique selling points and trust signals (testimonials, certifications, awards, years in business)
+- Content strengths (blog depth, resource pages, tools, guides)
+- Areas served (cities, regions, or markets)
+
+Build a comparison matrix showing:
+- Where I outperform each competitor
+- Where I fall short
+- Specific gaps I need to close
+
+Add a summary that ranks my top 5 competitive advantages and top 5 vulnerabilities.
+
+Format as a structured table I can reference and update quarterly.`,
+  },
+  {
+    id: 45,
+    title: 'The Content Gap Finder',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Find the exact topics your competitors invest in that you completely ignore. The highest-ROI SEO activity most businesses skip.',
+    content: `Analyze these competitor sites for content gap opportunities:
+
+COMPETITORS: [COMP1_URL], [COMP2_URL], [COMP3_URL]
+MY SITE: [YOUR_URL]
+
+For each competitor, analyze:
+- Their deepest content pages (by likely internal linking density and word count)
+- The topics they cover thoroughly
+- Content formats they use (long-form guides, comparison pages, templates, calculators, case studies, tools)
+- Their weaknesses (thin content, outdated stats, missing visuals, poor structure)
+
+Cross-reference all competitors to find topics that at least 2 of them cover and I do not.
+
+Give me a prioritized list of 15 content opportunities, ranked by:
+1. How many competitors cover it
+2. Estimated buyer intent (high/medium/low)
+3. How realistic it is for me to create something better than what exists
+
+For each opportunity, suggest: the content format, a working title, and target word count.`,
+  },
+  {
+    id: 46,
+    title: 'The Keyword Reverse-Engineer',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Reverse-engineer your competitors\' top-performing keywords and pages into a prioritized opportunity spreadsheet.',
+    content: `I want to reverse-engineer my competitors' keyword strategy.
+
+COMPETITOR 1: [COMP1_URL]
+COMPETITOR 2: [COMP2_URL]
+MY SITE: [YOUR_URL]
+
+For each competitor, analyze their top 25 organic pages and extract:
+- The primary keyword each page targets
+- Estimated monthly search volume (low/medium/high)
+- Keyword difficulty estimate
+- Content format that's ranking (blog post, landing page, tool, comparison page)
+- Approximate word count
+
+Merge both datasets into one table with columns:
+Keyword | Volume | Difficulty | Which Competitor Ranks | Content Type Needed | Estimated Effort | Priority (High/Medium/Low)
+
+Sort by opportunity: high volume + low difficulty + weak existing content at the top.
+
+Give me the top 20 keywords I should target first, with a suggested content plan for the top 5.`,
+  },
+  {
+    id: 47,
+    title: 'The Local Keyword Generator',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Generate 40 high-intent local keywords organized by search intent. The specific phrases that turn into calls and bookings.',
+    content: `Generate 40 high-intent keywords for a [YOUR_SERVICE] in [YOUR_CITY] organized into 5 categories:
+
+(1) Emergency and urgent searches
+Examples: "emergency [service] [city]", "[service] open now near me"
+
+(2) Comparison and evaluation
+Examples: "best [service] in [city]", "[service A] vs [service B] [city]"
+
+(3) Cost and pricing
+Examples: "how much does [service] cost in [city]"
+
+(4) Hyper-local variations
+Examples: "[service] [neighborhood name]", "[service] near [landmark]"
+
+(5) Trust and review searches
+Examples: "top rated [service] [city]", "[service] reviews [city]"
+
+For each keyword, note:
+- Intent: transactional, commercial investigation, or informational
+- Suggested page type: service page, blog post, landing page, FAQ, or comparison page
+- Priority: high, medium, or low based on likely conversion rate`,
+  },
+  {
+    id: 48,
+    title: 'The Funnel Keyword Mapper',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Map keywords to every stage of the buyer journey, from problem-aware to ready-to-buy. Built for SaaS and online businesses.',
+    content: `Build a keyword map for [YOUR_PRODUCT] targeting [YOUR_IDEAL_CUSTOMER].
+
+Organize by funnel stage:
+
+(1) PROBLEM-AWARE: 10 keywords people search when they know they have a problem but haven't started looking for solutions
+
+(2) SOLUTION-AWARE: 10 keywords where they compare categories of solutions
+
+(3) PRODUCT-AWARE: 10 keywords comparing specific products including "[product] vs [competitor]", "[product] alternatives", and "[product] reviews"
+
+(4) DECISION-STAGE: 10 keywords indicating imminent purchase like "[product] pricing", "[product] free trial", and "is [product] worth it"
+
+For each keyword, suggest:
+- The content format (blog post, landing page, comparison page, case study)
+- A working title
+- A one-sentence angle that would differentiate my content from what currently ranks on page one
+
+Prioritize publishing from the bottom of the funnel upward. Decision-stage content converts fastest.`,
+  },
+  {
+    id: 49,
+    title: 'The Technical SEO Auditor',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Run a full 8-category technical SEO audit with severity ratings and specific fixes. The diagnostic work agencies charge $2K+ for.',
+    content: `Analyze [YOUR_URL] for technical SEO issues across 8 categories:
+
+(1) Core Web Vitals: LCP under 2.5s, INP under 200ms, CLS under 0.1
+(2) Mobile responsiveness: viewport tag, tap targets, font sizes
+(3) Crawlability: robots.txt, XML sitemap validity, canonical tags
+(4) Page speed: image compression, render-blocking resources, caching, lazy loading
+(5) Internal linking: orphan pages, link depth, anchor text quality
+(6) URL architecture: clean URLs, logical hierarchy, duplicate content
+(7) Security: HTTPS, mixed content warnings, security headers
+(8) Indexation: noindex tags, crawl budget waste, thin pages in the index
+
+For each issue found:
+- Rate severity: Critical, High, Medium, or Low
+- Explain the impact in one sentence
+- Give the specific fix including code or configuration changes
+
+Output as a prioritized list, critical issues first. End with a summary score (out of 100) and the 3 highest-impact fixes I should make this week.`,
+  },
+  {
+    id: 50,
+    title: 'The Page SEO Scorer',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Score any page against 12 on-page SEO factors with pass/fail grades and exact fixes. Best for pages stuck on page 2-3 of Google.',
+    content: `Analyze [PAGE_URL] targeting the keyword "[TARGET_KEYWORD]" and score each of these pass or fail:
+
+(1) Title tag under 60 characters with primary keyword in the first half
+(2) Meta description under 155 characters with a reason to click
+(3) Single H1 that includes the primary keyword naturally
+(4) Logical H2/H3 hierarchy with semantic keyword variations in subheadings
+(5) Primary keyword in the first 100 words
+(6) Minimum 3 internal links to related pages
+(7) At least 1 outbound link to an authoritative source
+(8) All images have descriptive alt text
+(9) Content depth competitive with the top 3 results for the target keyword
+(10) Short paragraphs and subheadings every 200-300 words
+(11) E-E-A-T signals present: author bio, experience markers, data citations
+(12) Content freshness: no outdated references or stale statistics
+
+For every failing item, write the exact fix. Not advice. The actual rewritten title tag, the actual new meta description, the actual paragraph revision. Give me copy I can paste in.`,
+  },
+  {
+    id: 51,
+    title: 'The Pre-Publish SEO Check',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Run this 11-point checklist on every piece of content before you hit publish. Catches issues that cost months of ranking potential.',
+    content: `Review this content before I publish it. Target keyword: [TARGET_KEYWORD]
+
+Check each item and mark pass or fail:
+
+(1) Primary keyword in title tag, H1, URL slug, first 100 words, and at least 2 subheadings
+(2) Semantic and related keywords naturally present throughout. List which ones are there and which are missing
+(3) Title under 60 characters with keyword front-loaded
+(4) Meta description under 155 characters with a clear value proposition
+(5) Clean header hierarchy a reader can scan
+(6) Minimum 3 internal links
+(7) At least 1 authoritative external link
+(8) Descriptive alt text on every image
+(9) Word count competitive with page-1 results for the target keyword
+(10) Clear calls to action
+(11) Reads naturally when spoken aloud, no keyword stuffing
+
+For anything that fails, give me the corrected version ready to paste in.
+
+Here is my content:
+[PASTE YOUR DRAFT]`,
+  },
+  {
+    id: 52,
+    title: 'The E-E-A-T Optimizer',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Score your content on Google\'s Experience, Expertise, Authoritativeness, and Trustworthiness framework with specific fixes.',
+    content: `Analyze this page using Google's E-E-A-T framework (Experience, Expertise, Authoritativeness, Trustworthiness).
+
+PAGE: [PAGE_URL or PASTE CONTENT]
+
+Score each dimension as Weak, Adequate, or Strong:
+
+(1) EXPERIENCE: Does the content show first-hand knowledge? Personal anecdotes, original data, specific details only someone with direct experience would include.
+
+(2) EXPERTISE: Does the author demonstrate depth? Is there a bio with relevant credentials? Are claims supported with data or citations?
+
+(3) AUTHORITATIVENESS: Is this site or author recognized in the space? External mentions, authoritative backlinks, industry affiliations.
+
+(4) TRUSTWORTHINESS: Clear About page, contact information, privacy policy, HTTPS, accurate claims, transparent sourcing.
+
+For each dimension, give me 3 specific and actionable improvements I can make this week.
+
+Prioritize changes that require the least effort but create the biggest perception shift. Focus on signals that both humans and Google's quality raters would notice.`,
+  },
+  {
+    id: 53,
+    title: 'The Backlink Strategist',
+    category: 'SEO',
+    author: 'The AI Corner',
+    description: 'Turn your competitors\' backlink profiles into a 90-day outreach plan with specific targets and email templates.',
+    content: `Research the backlink profiles of my competitors and build me an outreach strategy.
+
+COMPETITORS: [COMP1_URL], [COMP2_URL], [COMP3_URL]
+MY SITE: [YOUR_URL]
+
+Identify:
+(1) The top 10 highest-authority referring domains for each competitor
+(2) Which content types earn the most links (original research, free tools, guest posts, data studies, infographics, resource pages)
+(3) Link sources all 3 share (directories, associations, media outlets, industry resource lists)
+(4) Sites linking to at least 2 competitors but not to me
+
+Build a 90-day link acquisition plan in 3 phases:
+- Weeks 1-4: Quick wins (directories, associations, existing relationships)
+- Weeks 5-8: Medium effort (guest posts, resource page outreach, broken link replacement)
+- Weeks 9-12: High effort (original research, digital PR)
+
+Include 25 specific outreach targets with: the site, contact method, and what to pitch.
+
+Write outreach email templates for the top 5 opportunities.`,
+  },
+
+  // ── Research ────────────────────────────────────────────────
+  {
+    id: 54,
+    title: 'The Deep Researcher',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Get a comprehensive research report on any topic in minutes. Executive summary, key findings, different perspectives, and action items.',
+    content: `I need comprehensive research on a topic. Create a detailed report I can reference.
+
+TOPIC: [YOUR TOPIC]
+RESEARCH DEPTH: [Quick overview - 1 page / Standard - 3-5 pages / Deep dive - 10+ pages]
+
+Structure the report as:
+
+## Executive Summary
+- Key findings in 3-5 bullet points
+- Bottom line conclusion
+- Recommended action (if applicable)
+
+## Background & Context
+- What this topic is about
+- Why it matters now
+- Key players and stakeholders
+
+## Current State
+- What's happening today
+- Recent developments
+- Key statistics and data
+
+## Key Findings
+- Finding 1: [with supporting evidence]
+- Finding 2: [with supporting evidence]
+- Finding 3: [with supporting evidence]
+
+## Different Perspectives
+- Perspective A: who believes this and why
+- Perspective B: who believes this and why
+- Areas of consensus
+- Areas of debate
+
+## Implications
+- What this means for [MY INDUSTRY / MY DECISION]
+- Risks to consider
+- Opportunities to explore
+
+## Recommended Actions
+- Prioritized next steps
+- Timeline if applicable
+
+## Questions for Further Research
+- What couldn't you find answers to?
+- What would require deeper investigation?
+
+SPECIFIC ANGLES I CARE ABOUT: [ADD ANY SPECIFIC QUESTIONS]
+MY CONTEXT: [WHY YOU'RE RESEARCHING THIS]`,
+  },
+  {
+    id: 55,
+    title: 'The Due Diligence Analyst',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Run a 10-section due diligence analysis on any company or opportunity. Financial analysis, competitive position, risks, and a clear recommendation.',
+    content: `I'm evaluating an opportunity and need thorough due diligence.
+
+COMPANY/OPPORTUNITY: [NAME]
+TYPE: [Public company / Private startup / Real estate / Partnership / Other]
+MY CONTEXT: [WHY YOU'RE EVALUATING THIS]
+
+Conduct this analysis:
+
+1. OVERVIEW: What do they do? Business model, key products, target market.
+
+2. FINANCIAL ANALYSIS: Revenue and growth trends, profitability, balance sheet health, cash flow, valuation metrics vs. industry.
+
+3. COMPETITIVE POSITION: Main competitors, market share, competitive advantages (moats), disadvantages.
+
+4. MANAGEMENT & LEADERSHIP: Key executives, their track records, any red flags.
+
+5. GROWTH CATALYSTS: What could drive upside? Upcoming products, expansions, industry tailwinds, with timelines.
+
+6. RISKS: What could go wrong? Industry, company-specific, and regulatory risks. Rate each: High/Medium/Low probability and impact.
+
+7. RECENT DEVELOPMENTS: Significant news from the last 90 days, analyst ratings, sentiment.
+
+8. COMPARISON: How does this compare to 2-3 alternatives in the same space?
+
+9. VALUATION ASSESSMENT: Fairly valued, overvalued, or undervalued? Bear / Base / Bull case.
+
+10. RECOMMENDATION: Go / Hold / Avoid with clear reasoning. Key things to monitor going forward.
+
+Be direct. Tell me what you actually think, not just neutral analysis.`,
+  },
+  {
+    id: 56,
+    title: 'The Socratic Analyst',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Run a competitor analysis that separates signal from noise. AI thinks through what great analysts actually look at first.',
+    content: `What would a great competitive analyst actually look at?
+What data points matter most vs. what's just noise?
+How do you identify a competitor's real strategy vs. their stated positioning?
+What are the most useful frameworks for understanding competitive dynamics?
+
+Now analyze these competitors: [LIST COMPETITORS]. My company is [DESCRIPTION]. Focus on [WHAT YOU NEED TO KNOW].`,
+  },
+  {
+    id: 57,
+    title: 'The Expert Panel Simulator',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Simulate what a domain expert would ask before tackling a problem. Surfaces assumptions and data requirements you\'d miss.',
+    content: `What would someone very good at [DOMAIN/SKILL] ask before setting up a [PROJECT/SYSTEM]?
+What data would they need?
+What assumptions would they have to validate first?
+
+Okay, now answer those questions for my business: [DESCRIPTION].
+
+Then design the [PROJECT/SYSTEM] based on those answers.
+
+Rules:
+- Be specific, not generic. Reference my actual situation.
+- Flag any assumptions you're making that I should validate.
+- If you need more information to give a good answer, ask before proceeding.`,
+  },
+  {
+    id: 58,
+    title: 'The AI Research Analyst',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Configure AI as a dedicated research analyst that consumes large volumes of information and produces useful insights.',
+    content: `You are my dedicated Research Analyst. Your job is to consume large volumes of information and produce useful, actionable insights.
+
+WHAT YOU DO:
+- Search for information across multiple sources and synthesize findings
+- Read long documents and produce structured summaries
+- Maintain a running knowledge base of key findings
+- Create outlines, draft reports, and generate data tables
+- Cross-reference claims with evidence and flag contradictions
+
+WHAT YOU NEVER DO:
+- Fabricate sources or make up data
+- Express biased opinions unless I specifically ask for your take
+- Present unverified information as fact
+- Share research externally without my review
+
+HOW YOU WORK:
+- Always cite where you found information
+- Rate the reliability of each source (high/medium/low confidence)
+- When findings conflict, present both sides and explain the disagreement
+- Start with a brief summary before going deep
+- Flag gaps in available information explicitly
+
+MY RESEARCH AREA: [YOUR DOMAIN]
+CURRENT QUESTION: [WHAT YOU NEED RESEARCHED]
+OUTPUT FORMAT: [EXECUTIVE SUMMARY / FULL REPORT / BULLET POINTS / COMPARISON TABLE]
+
+Begin by telling me what you'll investigate and asking any clarifying questions.`,
+  },
+  {
+    id: 59,
+    title: 'The Meeting Prep Brief',
+    category: 'Research',
+    author: 'The AI Corner',
+    description: 'Prepare for any meeting in minutes. Get context, their priorities, your goals, talking points, and questions to ask.',
+    content: `I have a meeting coming up and need to be prepared.
+
+WHO: [PERSON/COMPANY NAME]
+WHEN: [DATE/TIME]
+CONTEXT: [WHAT THE MEETING IS ABOUT]
+RELATIONSHIP: [NEW CONTACT / EXISTING CLIENT / INTERNAL TEAM / INVESTOR / PARTNER]
+
+Create a prep brief covering:
+
+1. THEIR CONTEXT
+- What they do and their current situation
+- Recent news or developments about them
+- Their likely priorities and pain points
+
+2. OUR HISTORY
+- What we've discussed or worked on before (if applicable)
+- Any outstanding commitments or follow-ups
+
+3. MY GOALS
+- What I want to achieve in this meeting
+- What a successful outcome looks like
+- My non-negotiables vs. areas of flexibility
+
+4. TALKING POINTS
+- 3-5 key points I should make
+- How to frame them for this specific audience
+
+5. QUESTIONS TO ASK
+- 5 questions that show preparation and move the conversation forward
+- At least 1 question that surfaces information I might not think to ask
+
+6. POTENTIAL LANDMINES
+- Topics to avoid or handle carefully
+- Objections they might raise and how to address them
+
+Keep it concise. I want to review this in 5 minutes, not 30.`,
+  },
+
+  // ── Thinking (continued) ───────────────────────────────────
+  {
+    id: 60,
+    title: 'The Pre-Mortem',
+    category: 'Thinking',
+    author: 'The AI Corner',
+    description: 'Kill your project\'s biggest risks before they happen. AI analyzes common failure modes and builds a plan that avoids them.',
+    content: `What are the most common reasons [TYPE OF PROJECT] fails?
+What do people typically underestimate?
+What would someone who's done this successfully do differently?
+
+Now create a plan for [YOUR PROJECT] that specifically avoids these failure modes.
+
+For each risk identified:
+- Rate the probability: High, Medium, or Low
+- Rate the impact: Critical, Significant, or Minor
+- Give a specific mitigation action I can take this week
+- Identify the earliest warning sign that this risk is materializing
+
+End with: the 3 things most likely to kill this project and exactly what I should do about each one right now.`,
+  },
+  {
+    id: 61,
+    title: 'The AI Career Auditor',
+    category: 'Thinking',
+    author: 'The AI Corner',
+    description: 'Calculate your AI exposure score and get specific career moves based on how automatable your daily tasks are.',
+    content: `Help me calculate my AI exposure score and figure out what to do about it.
+
+Step 1: I'll list my 10 biggest tasks. For each one, score it 0-3:
+- Score 3: AI handles this with minimal oversight today
+- Score 2: AI speeds this up but I stay involved throughout
+- Score 1: AI could do this but I haven't implemented it yet
+- Score 0: Requires physical presence, real-time judgment, or relationships
+
+Step 2: For each task, I'll estimate what percentage of my job it represents.
+
+Step 3: Multiply each task's score by its percentage. Add up. Divide by 3. That's my exposure score.
+
+Here are my tasks:
+[LIST YOUR 10 BIGGEST DAILY/WEEKLY TASKS WITH APPROXIMATE % OF YOUR JOB]
+
+After calculating my score, tell me:
+
+1. MY EXPOSURE LEVEL (0-25% Low / 25-50% Moderate / 50-75% High / 75%+ Critical)
+
+2. SKILLS LOSING VALUE in my role over the next 2-4 years
+
+3. SKILLS GAINING VALUE that I should develop
+
+4. 5 SPECIFIC CAREER MOVES based on my exposure level:
+   - What to start doing this month
+   - What to stop investing time in
+   - What new skill would make me hardest to replace
+   - How to position my experience as a competitive advantage
+   - One concrete project I could start this week
+
+Be direct. Don't sugarcoat. I'd rather know now than be surprised later.`,
+  },
+  {
+    id: 62,
+    title: 'The Weekly Reviewer',
+    category: 'Thinking',
+    author: 'The AI Corner',
+    description: 'Run a comprehensive weekly productivity review. Wins, time analysis, commitments made, and priorities for next week.',
+    content: `Help me conduct a comprehensive weekly review. I'll provide the raw information, you structure the analysis.
+
+Review these areas:
+
+1. CALENDAR REVIEW:
+- What meetings did I have?
+- How much time in meetings vs. focused work?
+- Any meetings that could have been emails?
+
+2. OUTPUT REVIEW:
+- What did I create, ship, or complete this week?
+- What projects made progress?
+- What deliverables were finished?
+
+3. COMMITMENTS:
+- What promises did I make to others this week?
+- What decisions were made?
+- What's still pending?
+
+4. TIME ANALYSIS:
+- Estimate how I spent my time by category
+- Identify my most productive day and why
+- Flag time wasters or inefficiencies
+
+5. NEXT WEEK PREP:
+- What's already scheduled?
+- What deadlines are approaching?
+- What should I prioritize?
+
+Format the output as:
+
+**WINS** (3-5 accomplishments I should feel good about)
+**WATCH OUT** (things that need attention)
+**NEXT WEEK TOP 3** (the three most important things to focus on)
+**ONE THING TO STOP DOING** (a time-waster or low-value habit I should drop)
+
+Here's what happened this week:
+[DESCRIBE YOUR WEEK: MEETINGS, TASKS, PROJECTS, ACCOMPLISHMENTS, FRUSTRATIONS]`,
+  },
 ];
