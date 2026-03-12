@@ -1509,4 +1509,558 @@ Format the output as:
 Here's what happened this week:
 [DESCRIBE YOUR WEEK: MEETINGS, TASKS, PROJECTS, ACCOMPLISHMENTS, FRUSTRATIONS]`,
   },
+
+  // ── Workflows ──────────────────────────────────────────────
+  {
+    id: 63,
+    title: 'Subscription Audit & Cleaner',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Find every subscription you pay for, calculate annual waste, and get cancel links. Run quarterly to catch $50-200/month in forgotten charges.',
+    content: `I want to audit all my subscriptions and recurring payments. Help me find and evaluate every one.
+
+1. SEARCH MY EMAIL for:
+   - "Your subscription"
+   - "Payment received"
+   - "Billing statement"
+   - "Auto-renewal"
+   - "Monthly charge"
+   - "Annual membership"
+   - Any receipts from known subscription services
+
+2. ALSO CHECK (if I provide access):
+   - Bank statements for recurring charges
+   - Credit card statements
+   - PayPal recurring payments
+   - Apple/Google Play subscriptions
+
+3. FOR EACH SUBSCRIPTION, DOCUMENT:
+   - Service name
+   - What it's for
+   - Monthly or annual cost
+   - Billing date
+   - Last time I actually used it (if detectable)
+   - Cancellation difficulty (easy/medium/hard)
+   - Direct unsubscribe/cancel link
+
+4. CREATE A SUMMARY TABLE:
+   | Service | Cost/Month | Cost/Year | Last Used | Recommendation |
+
+5. CATEGORIZE AS:
+   - KEEP: I use this regularly
+   - REVIEW: Might not need this
+   - CANCEL: Haven't used in 60+ days
+   - DOWNGRADE: Using but could use cheaper tier
+
+6. CALCULATE:
+   - Total monthly subscription spend
+   - Total annual subscription spend
+   - Potential savings if I cancel "CANCEL" items
+   - Potential savings if I downgrade "DOWNGRADE" items
+
+7. PROVIDE for each "CANCEL" item:
+   - Direct link to cancel
+   - Steps to cancel
+   - Any cancellation fees or gotchas
+
+Sort by cost (highest first) so I can prioritize.`,
+  },
+  {
+    id: 64,
+    title: 'Price Comparison Engine',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Compare prices across Amazon, Best Buy, Walmart, eBay, and specialty retailers. Includes coupon codes, price history, and refurb options.',
+    content: `I need to buy something and I want the best deal. Help me compare options.
+
+PRODUCT I'M LOOKING FOR: [DETAILED DESCRIPTION - be specific about model, size, specs]
+
+RESEARCH THESE SOURCES:
+- Amazon
+- Best Buy
+- Walmart
+- Target
+- Manufacturer's website
+- eBay (new items only)
+- Costco (if applicable)
+- Any specialty retailers for this category
+
+FOR EACH OPTION, TELL ME:
+1. Exact product name/model
+2. Price (including tax if possible)
+3. Shipping cost and speed
+4. Return policy
+5. Current stock status
+6. Review summary (rating + common complaints)
+7. Any active coupon codes or promotions
+
+ALSO CHECK:
+- Is this product frequently on sale? When?
+- Are there refurbished/open-box options?
+- Is a newer model coming soon? (Should I wait?)
+- Are there comparable alternatives that are better value?
+
+MY PRIORITIES:
+- Budget: [MAX PRICE]
+- Timeline: [Need it by DATE / Flexible]
+- Priority: [Lowest price / Fastest shipping / Best reviews / Best warranty]
+
+Give me a clear recommendation with reasoning.`,
+  },
+  {
+    id: 65,
+    title: 'Calendar Optimizer',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Analyze your calendar, protect deep work blocks, suggest meeting consolidation, and draft scheduling emails. Ongoing calendar management.',
+    content: `I need you to help me optimize my calendar and schedule meetings efficiently.
+
+ACCESS: Connect to my Google Calendar
+
+1. ANALYZE MY CALENDAR:
+   - Show me my availability for the next 2 weeks
+   - Identify my current meeting load (hours per day)
+   - Find patterns (when do I have most meetings?)
+   - Flag any days that are overloaded
+
+2. SCHEDULING RULES I want you to follow:
+   - No meetings before [9am / 10am / TIME]
+   - No meetings after [5pm / 6pm / TIME]
+   - Keep [TUESDAY/WEDNESDAY] afternoons blocked for deep work
+   - Leave 15 min buffer between meetings
+   - Lunch: [12-1pm] should stay free
+   - Maximum [X] hours of meetings per day
+
+3. WHEN I NEED TO SCHEDULE A MEETING:
+   I'll tell you: who, how long, and urgency level
+   You respond with:
+   - 3 optimal time slots based on my rules
+   - Draft email I can send to request the meeting
+   - Calendar hold I can accept with one click
+
+4. WEEKLY OPTIMIZATION:
+   Every Monday, show me:
+   - Meeting load for the week
+   - Focus time available
+   - Suggestions to move/consolidate meetings
+   - Any conflicts or double-bookings
+
+CURRENT SCHEDULING REQUEST:
+Meeting with: [NAME/PEOPLE]
+Duration: [30min / 60min]
+Urgency: [This week / Next 2 weeks / Flexible]
+Topic: [BRIEF DESCRIPTION]
+
+Find me the best times.`,
+  },
+  {
+    id: 66,
+    title: 'Expense Tracker & Audit',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Scan your computer for receipts, invoices, and financial documents. Categorize expenses, flag deductions, and generate a summary spreadsheet.',
+    content: `I need you to conduct a comprehensive expense audit of my computer.
+
+1. SEARCH for financial documents:
+   - Look in Desktop, Downloads, Documents, and any folder named "Receipts," "Expenses," "Finance," or "Taxes"
+   - Find: PDFs, images of receipts, bank statements, invoices
+   - Include email attachments if you have access
+
+2. EXTRACT from each document:
+   - Date of transaction
+   - Vendor/merchant name
+   - Amount
+   - Payment method (if visible)
+   - Category (food, travel, software, office supplies, etc.)
+
+3. ORGANIZE into a spreadsheet with columns:
+   - Date | Vendor | Amount | Category | Tax Deductible? | File Location
+
+4. SUMMARIZE:
+   - Total expenses by category
+   - Monthly breakdown
+   - Potential tax deductions flagged
+   - Missing receipts (charges without matching receipts if bank statements available)
+
+5. FLAG any:
+   - Duplicate charges
+   - Unusually large expenses
+   - Subscriptions I might have forgotten about
+
+Time period to scan: [LAST 3 MONTHS / LAST YEAR / 2024]
+Business vs Personal: [I want to separate these / All personal / All business]
+
+Save the final spreadsheet to my Desktop as "Expense_Audit_[DATE].xlsx"`,
+  },
+  {
+    id: 67,
+    title: 'Email Inbox Zero',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Connect to your email, categorize unread messages by urgency, draft responses for urgent items, and identify newsletters to unsubscribe from.',
+    content: `I need you to help me achieve inbox zero. Connect to my email and help me process my unread messages.
+
+Here's the system I want you to use:
+
+1. SCAN all unread emails
+
+2. CATEGORIZE into:
+   - URGENT: Needs response today (from boss, clients, time-sensitive)
+   - THIS WEEK: Important but not urgent
+   - FYI ONLY: No response needed, just information
+   - NEWSLETTERS: Subscriptions and marketing
+   - SPAM/JUNK: Can be archived or deleted
+
+3. For URGENT emails:
+   - Summarize each one in 1-2 sentences
+   - Draft a response I can review and send
+   - Flag any that need a call instead of email
+
+4. For NEWSLETTERS:
+   - List which ones I've actually opened in the last 30 days
+   - Recommend which to unsubscribe from
+   - Keep ones that seem valuable based on my reading history
+
+5. Create a daily email summary I can review in 5 minutes
+
+My priorities are: [WORK PROJECT], [CLIENT NAME], [FAMILY]
+
+Anything from these contacts is automatically URGENT: [LIST KEY CONTACTS]
+
+Start with a scan and show me the breakdown before taking action.`,
+  },
+  {
+    id: 68,
+    title: 'Desktop Deep Clean',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Scan your desktop and downloads folder, categorize every file, create an organized folder structure, and move everything into place.',
+    content: `I need you to conduct a comprehensive cleanup of my desktop and downloads folder.
+
+Here's what I want you to do:
+
+1. SCAN: Look through every file on my Desktop and in my Downloads folder
+
+2. CATEGORIZE: Group files into these categories:
+   - Documents (PDFs, Word, spreadsheets)
+   - Images (screenshots, photos, graphics)
+   - Videos/Audio
+   - Archives (zip files, compressed)
+   - Applications/Installers
+   - Old/Unused (anything not accessed in 90+ days)
+
+3. CREATE STRUCTURE: Make these folders on my Desktop:
+   - /Documents_Organized
+   - /Images_Organized
+   - /Media
+   - /Archives
+   - /To_Review (for files you're unsure about)
+   - /Trash_Candidates (files that seem deletable)
+
+4. MOVE FILES: Sort everything into the appropriate folders
+
+5. REPORT: Give me a summary including:
+   - Total files processed
+   - Storage space by category
+   - Files you recommend deleting
+   - Any duplicates found
+
+Do not delete anything without my explicit approval.
+Ask me before taking any destructive action.
+
+Start with the scan and show me what you find before moving files.`,
+  },
+  {
+    id: 69,
+    title: 'Morning Routine Chain',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'A 12-minute morning sequence: triage email, review today\'s calendar, and run a weekly review on Mondays. Complete daily prep in one go.',
+    content: `Run my morning routine. Execute these workflows in sequence:
+
+STEP 1: EMAIL TRIAGE (5 min)
+Connect to my email. Scan all unread messages.
+Categorize into: URGENT (needs response today), THIS WEEK, FYI ONLY, NEWSLETTERS.
+For URGENT items: summarize in 1-2 sentences and draft a response.
+Anything from these contacts is automatically URGENT: [LIST KEY CONTACTS]
+
+STEP 2: TODAY'S CALENDAR (2 min)
+Connect to my Google Calendar. Show me today's schedule.
+For each meeting: who it's with, what it's about, what I should prepare.
+Flag any conflicts or back-to-back meetings without buffer.
+Identify my available focus blocks.
+
+STEP 3: WEEKLY REVIEW (only if today is Monday, 5 min)
+Look at the full week ahead.
+Meeting load per day, total focus time available.
+Flag overloaded days and suggest which meetings to move or decline.
+Show any deadlines approaching this week.
+
+After all steps, give me a single-page briefing:
+- Top 3 things that need my attention right now
+- My schedule for today at a glance
+- Any fires I need to put out
+
+Total time: under 12 minutes for complete daily prep.`,
+  },
+  {
+    id: 70,
+    title: 'Monthly Financial Chain',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Run on the 1st of every month: audit subscriptions, categorize last month\'s expenses, and review your financial position in 45 minutes.',
+    content: `Run my monthly financial review. Execute these workflows in sequence on the 1st of the month:
+
+STEP 1: SUBSCRIPTION AUDIT (10 min)
+Search my email for subscription confirmations, payment receipts, and auto-renewal notices.
+For each subscription: name, cost, last used, recommendation (KEEP/REVIEW/CANCEL/DOWNGRADE).
+Calculate total monthly and annual subscription spend.
+List potential savings with direct cancel links for "CANCEL" items.
+
+STEP 2: EXPENSE TRACKING (15 min)
+Search Desktop, Downloads, Documents, and email for receipts, invoices, and bank statements from last month.
+Extract: date, vendor, amount, category.
+Organize into a spreadsheet: Date | Vendor | Amount | Category | Tax Deductible? | File Location
+Summarize: total by category, potential deductions, duplicate charges, unusually large expenses.
+
+STEP 3: FINANCIAL POSITION REVIEW (20 min)
+Based on the data gathered in Steps 1 and 2, create a monthly financial summary:
+- Total income vs. total expenses
+- Savings rate
+- Top 5 expense categories
+- Subscription waste identified
+- Tax deductions flagged
+- Month-over-month trends (if previous months' data is available)
+
+Save all outputs to a folder: /Finance/Monthly_Review_[MONTH]_[YEAR]/
+Include: subscription_audit.xlsx, expense_report.xlsx, monthly_summary.md
+
+Total time: approximately 45 minutes for complete financial overview.`,
+  },
+  {
+    id: 71,
+    title: 'Research-to-Action Chain',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'Go from zero knowledge to documented action plan: deep research, price comparison (if buying), and SOP documentation for any new process.',
+    content: `Run a research-to-action chain. Execute these steps in sequence:
+
+STEP 1: DEEP RESEARCH (15 min)
+Research [TOPIC/OPPORTUNITY/PRODUCT CATEGORY] comprehensively.
+Structure findings as:
+- Executive summary (3-5 bullet points)
+- Key findings organized by theme
+- Different perspectives with evidence
+- Risks and opportunities
+- Recommended actions
+Cite all sources. Rate reliability. Flag information gaps.
+
+STEP 2: COMPARISON (if applicable, 5 min)
+If this involves buying a product or choosing between options:
+- Compare top 3-5 options across price, features, reviews, and availability
+- Check for coupon codes and refurbished options
+- Give a clear recommendation with reasoning
+
+If this involves evaluating an opportunity:
+- Compare to 2-3 alternatives
+- Rate risk vs. reward
+- Give a go/no-go recommendation
+
+STEP 3: DOCUMENT THE PROCESS (10 min)
+Create a standard operating procedure for whatever action I decide to take:
+- Step-by-step instructions
+- Tools and access needed
+- Common mistakes to avoid
+- Quality check criteria
+
+Save all outputs to a folder: /Research/[TOPIC]_[DATE]/
+Include: research_report.md, comparison_table.xlsx (if applicable), action_plan_sop.md
+
+TOPIC: [WHAT YOU WANT TO RESEARCH]
+GOAL: [WHAT DECISION THIS RESEARCH WILL INFORM]`,
+  },
+  {
+    id: 72,
+    title: '9-Step Slide Builder',
+    category: 'Workflows',
+    author: 'Ruben Hassid',
+    tools: ['Claude', 'Gamma'],
+    description: 'Build a complete slide deck using Claude for research and outlining, then Gamma for visual generation. Research-first, step-by-step approach.',
+    content: `I want to build a presentation. Follow this 9-step process precisely. Do not skip steps.
+
+STEP 1 - ALIGNMENT
+Start by asking me clarifying questions. Make sure you have enough context about: the topic, the audience, the goal, and what success looks like. Do not proceed until we agree on scope.
+
+STEP 2 - TASK DEFINITION
+"I want to build a presentation so that [SUCCESS CRITERIA]."
+Define the outcome clearly. No vague "make me a deck about X."
+
+STEP 3 - CONTEXT FILES
+Ask me if I have any files that describe my brand, audience, or standards. If provided, read them completely before responding.
+
+STEP 4 - REFERENCE
+Ask if I have an example presentation I'm aiming for. If yes, analyze it for structure, tone, and design direction before proceeding.
+
+STEP 5 - RESEARCH
+Search the web using at least 5 varied searches covering: trends, data, expert opinions, case studies, and counterarguments. Save a structured research brief organized by theme, with source URLs and key data points. Prioritize recent sources. Flag conflicts or thin data.
+
+STEP 6 - SLIDE BRIEF
+Turn research into a slide-by-slide outline. Each slide gets:
+- A title
+- 3 key points
+- Specific data or stats from the research that must appear on that slide
+Do not write full paragraphs. Just structure and data for Gamma to work with.
+
+STEP 7 - RULES CHECK
+Do not generate slides yet. Do not write full paragraphs. Review the outline with me first. A step-by-step approach takes longer but produces much better slides.
+
+STEP 8 - GENERATE
+Once I approve the outline, pass it to Gamma as a presentation using textMode "generate". Use theme: [YOUR BRAND THEME NAME].
+
+STEP 9 - REVIEW
+After generating, review each card against these questions:
+- Would I say this out loud?
+- Does this card earn its place?
+- Is the data right?
+Flag any issues and suggest specific fixes.`,
+  },
+  {
+    id: 73,
+    title: 'Web-Native Deck Kit',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Lovable'],
+    description: 'Build a full-screen, animated, web-native slide deck as a React app. Includes 12 slide templates, design system, and a 3-step workflow to ship without breaking things.',
+    content: `Create a web-based slide deck app.
+
+STRUCTURE
+Full-screen slides (100vw x 100vh), one slide visible at a time.
+Total slides: 12 placeholders for now.
+
+Navigation:
+- Keyboard: Left and Right arrows, Space to advance
+- Click: subtle Prev and Next buttons on the sides
+- Progress: bottom dots showing slide position
+- Start on Slide 1
+
+DESIGN
+- Theme: [dark]
+- Background: [deep navy gradient]
+- Accent: [#f59e0b]
+- Font: Inter
+- Big headline typography, minimal layout, lots of negative space
+- Must look great on a projector
+
+ANIMATION
+Use Framer Motion. Slide transition: quick fade + slight horizontal movement, under 0.4s. Stagger content entry inside each slide.
+
+--- BUILD WORKFLOW (3 steps) ---
+
+Step 1 (Skeleton): Build navigation and placeholders first. Test keyboard and dots before adding any content.
+
+Step 2 (Batch Build): Design 1-2 slides at a time using prompts below. Pin versions after each batch.
+
+Step 3 (Polish): Use Visual Edit for spacing, font sizes, minor copy, alignment. No credits needed.
+
+--- SLIDE TEMPLATES ---
+
+Slide 1 (Title): Huge headline, short subtitle, strong negative space, subtle gradient. Animate logo, then title, then subtitle.
+
+Slide 2 (Agenda): 4 sections, simple numbered items with short labels. Stagger each item entry.
+
+Slide 3 (Problem): One big statement, 3 supporting bullets max. Apple-style: minimal, bold.
+
+Slide 4 (Solution): Two-column layout. Left: the promise. Right: 3 features with icons.
+
+Slide 5 (Traction): 2x2 metrics grid with large numbers and short labels. Optional count-up animation.
+
+Slide 6 (Product): Screenshot placeholder in a card, 3 callouts, subtle motion.
+
+Slide 7 (Market): TAM, SAM, SOM in three cards. No charts unless needed.
+
+Slide 8 (GTM): Three-step go-to-market loop with arrows or simple flow diagram.
+
+Slide 9 (Pricing): Three tiers with middle highlighted. 5 feature rows with check icons.
+
+Slide 10 (Competition): Comparison table, 3-4 rows, 3 columns. Highlight our column subtly.
+
+Slide 11 (Team): Grid of 4 people with photo placeholders, name, title. Hover effect. Stagger entry.
+
+Slide 12 (CTA): The ask in one line, the plan in three bullets, and a button CTA. Signal clearly that the deck ends here.
+
+--- GUARDRAIL ---
+
+When editing a single slide later: update only that slide. Do not modify navigation, global styles, animations, or any other slides. Keep the theme and typography exactly the same. If you need a new component, create it as a separate file and import it.
+
+--- DESIGN RULES ---
+
+Layout: one idea per slide, max 3 bullets, large type (56-72px desktop), high contrast for projector.
+Navigation: arrow keys must always work, dots must reflect current slide.
+Animation: only opacity and translate, under 0.4s, stagger elements within slide.
+Guardrails: never refactor navigation unless explicitly asked, never change theme colors unless explicitly asked.`,
+  },
+  {
+    id: 74,
+    title: 'Cowork Setup System',
+    category: 'Workflows',
+    author: 'The AI Corner',
+    tools: ['Claude Cowork'],
+    description: 'The 30-minute setup that turns generic Cowork into a personalized assistant. Context files, global instructions, folder instructions, and first-task validation.',
+    content: `Help me set up Claude Cowork properly. Follow this 30-minute setup process.
+
+STEP 1: CREATE CONTEXT FILES (10 min)
+Create a folder called "Claude Context" with three files:
+
+FILE 1: about-me.md
+- Who I Am: [Name, role, company or situation]
+- What I Do: [Specific work description]
+- What Success Looks Like: [How I measure good work]
+- Current Priorities: [What I'm focused on now]
+- Example of Work I'm Proud Of: [Paste one example as quality benchmark]
+
+FILE 2: brand-voice.md
+- Tone: [How I sound: direct, warm, analytical, etc.]
+- What I Sound Like: [Specific descriptions: "Short sentences. No fluff."]
+- What I Never Sound Like: [What feels wrong: "Corporate speak. Buzzwords."]
+- Words I Use: [My vocabulary and phrases]
+- Words I Avoid: [Off-brand terms]
+- Example of My Writing: [500+ words of my best work for pattern-matching]
+
+FILE 3: working-style.md
+- How to Start Tasks: [Questions first? Or just begin?]
+- Output Length: [Short, long, depends on task?]
+- Output Format: [Bullets or prose? Markdown or plain text?]
+- What I Want More Of: [Things to emphasize]
+- What I Want Less Of: [Things to avoid]
+- How to Handle Uncertainty: [Ask me or make assumptions?]
+
+STEP 2: SET GLOBAL INSTRUCTIONS (5 min)
+Go to Settings > Cowork > Edit Global Instructions. Paste:
+
+You are working with [NAME], a [ROLE].
+ALWAYS: Ask clarifying questions before significant tasks. Reference files in the selected folder. Match my voice from brand-voice.md when writing. Save outputs directly to the folder.
+NEVER: Use corporate buzzwords or AI-sounding language. Start working on unclear requests without asking. Produce generic output that could apply to anyone. Add unnecessary introductions or conclusions.
+OUTPUT DEFAULTS: Articles in Markdown (.md), documents in Word (.docx), data in Excel (.xlsx) with working formulas.
+WHEN UNCERTAIN: Ask me. I prefer a quick question over redoing work.
+
+STEP 3: VALIDATION TEST (5 min)
+Open the Claude Context folder in Cowork and run this prompt:
+"Read all files in this folder. Then tell me: who am I, how do I work, and what context do you have?"
+If something is off, fix the files now.
+
+STEP 4: FIRST REAL TASK (10 min)
+Run a real task using this format:
+"I want to [TASK] so that [WHAT GOOD LOOKS LIKE]. First, read all files in this folder. DO NOT start yet. Ask me clarifying questions so we can align. Only begin once we agree on approach."
+
+After setup: your folder acts as persistent memory. Update about-me.md monthly with current priorities. Every session after this starts with Cowork already understanding your context.`,
+  },
 ];

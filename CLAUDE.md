@@ -175,7 +175,7 @@ apps/web/
 
 ## Data Layer
 - **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
-- **prompts.js:** 62 prompts across 7 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view)
+- **prompts.js:** 74 prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Each has: id, title, category, description, content, author (optional), featured (optional - marks lead magnet for guest view), tools (optional - array of tool names for workflows)
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (10-way: hot/newest/oldest/top/flylabs/hormozi/koe/okamoto/validation/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 

@@ -14,7 +14,7 @@ import supabase from '@/lib/supabaseClient.js';
 import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 
-const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'SEO', 'Research', 'Thinking'];
+const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'SEO', 'Research', 'Workflows', 'Thinking'];
 const SORT_OPTIONS = [
   { value: 'hot', label: 'Hot' },
   { value: 'new', label: 'New' },
@@ -28,7 +28,8 @@ const CATEGORY_COLORS = {
   Strategy: { text: 'text-amber-500',   bg: 'bg-amber-500/10',   border: 'border-amber-500/25',   pill: 'text-amber-500',   pillBg: 'bg-amber-500/10',   pillBorder: 'border-amber-500/30' },
   Marketing:{ text: 'text-rose-500',    bg: 'bg-rose-500/10',    border: 'border-rose-500/25',    pill: 'text-rose-500',    pillBg: 'bg-rose-500/10',    pillBorder: 'border-rose-500/30' },
   SEO:      { text: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/25', pill: 'text-emerald-500', pillBg: 'bg-emerald-500/10', pillBorder: 'border-emerald-500/30' },
-  Research: { text: 'text-indigo-500',  bg: 'bg-indigo-500/10',  border: 'border-indigo-500/25',  pill: 'text-indigo-500',  pillBg: 'bg-indigo-500/10',  pillBorder: 'border-indigo-500/30' },
+  Research: { text: 'text-indigo-500',   bg: 'bg-indigo-500/10',   border: 'border-indigo-500/25',   pill: 'text-indigo-500',   pillBg: 'bg-indigo-500/10',   pillBorder: 'border-indigo-500/30' },
+  Workflows:{ text: 'text-fuchsia-500', bg: 'bg-fuchsia-500/10', border: 'border-fuchsia-500/25', pill: 'text-fuchsia-500', pillBg: 'bg-fuchsia-500/10', pillBorder: 'border-fuchsia-500/30' },
   Thinking: { text: 'text-cyan-500',    bg: 'bg-cyan-500/10',    border: 'border-cyan-500/25',    pill: 'text-cyan-500',    pillBg: 'bg-cyan-500/10',    pillBorder: 'border-cyan-500/30' },
 };
 
@@ -404,9 +405,9 @@ const PromptsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Prompt Library - Coding, Writing, Strategy & Marketing",
-        description: "Curated collection of AI prompts for coding, writing, strategy, and thinking. Copy-paste ready for ChatGPT and Claude. Vote on favorites and suggest new ones.",
-        keywords: "AI prompts, coding prompts, writing prompts, strategy prompts, ChatGPT prompts, Claude prompts, prompt library",
+        title: "AI Prompts & Workflows - Coding, Writing, Strategy, SEO & More",
+        description: "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more. Copy-paste ready for Claude, ChatGPT, Cowork, Lovable, and Gamma.",
+        keywords: "AI prompts, AI workflows, coding prompts, writing prompts, strategy prompts, SEO prompts, Claude prompts, Claude Cowork workflows, prompt library",
         url: "https://flylabs.fun/prompts",
       }}
       className="pt-32 pb-24"
@@ -439,7 +440,7 @@ const PromptsPage = () => {
             </div>
             <div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight">Prompts</h1>
-              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Extracted from real building sessions. The ones I reach for every day when shipping code, writing copy, or thinking through a problem.</p>
+              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Prompts and workflows extracted from real building sessions. The ones I reach for every day when shipping code, writing copy, or thinking through a problem.</p>
             </div>
           </div>
 
@@ -623,6 +624,11 @@ const PromptsPage = () => {
                                   by {prompt.author}
                                 </span>
                               )}
+                              {prompt.tools && (
+                                <span className="hidden lg:inline text-[10px] font-semibold text-fuchsia-500/50 shrink-0">
+                                  {prompt.tools.join(' + ')}
+                                </span>
+                              )}
                               {isPopular && (
                                 <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20 shrink-0">
                                   <Flame className="w-3 h-3" /> Popular
@@ -688,6 +694,16 @@ const PromptsPage = () => {
                                       <p className="text-xs font-semibold text-muted-foreground/40 mt-1">
                                         Inspired by {prompt.author}
                                       </p>
+                                    )}
+                                    {prompt.tools && (
+                                      <div className="flex items-center gap-1.5 mt-1.5">
+                                        <span className="text-[10px] font-semibold text-muted-foreground/40">Tools:</span>
+                                        {prompt.tools.map(tool => (
+                                          <span key={tool} className="text-[10px] font-bold px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-500 border border-fuchsia-500/20">
+                                            {tool}
+                                          </span>
+                                        ))}
+                                      </div>
                                     )}
                                   </div>
 
