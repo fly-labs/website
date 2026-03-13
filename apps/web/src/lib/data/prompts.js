@@ -641,6 +641,46 @@ I will paste 500+ words of my best work below. Use this as the benchmark for eve
 After I answer, compile everything into a clean brand-voice.md document I can paste into any AI tool as context.`,
   },
 
+  {
+    id: 75,
+    title: 'The AI Humaniser',
+    category: 'Writing',
+    author: 'Ruben Dominguez',
+    description: 'Strip AI writing habits at the source. A constraint-based prompt that removes rhetorical questions, staccato rhythm, and filler so the output reads like a real person wrote it.',
+    content: `FOLLOW THIS WRITING STYLE:
+
+Use clear, simple language.
+Be concise and informative.
+Use active voice.
+Focus on practical, actionable insights.
+Support claims with concrete examples when possible.
+Address the reader directly using "you" and "your" when appropriate.
+
+AVOID ALL OF THE FOLLOWING:
+
+Rhetorical questions.
+Staccato or stop start sentences.
+Em dashes.
+Semicolons.
+Hashtags.
+Markdown formatting.
+Asterisks.
+Metaphors and clichés.
+Generalizations.
+Setup language such as "in conclusion," "to summarize," or similar phrases.
+Output warnings, notes, or meta commentary.
+Unnecessary adjectives and adverbs.
+
+DO NOT USE THESE WORDS OR PHRASES:
+
+can, may, just, that, very, really, literally, actually, certainly, probably, basically, could, maybe, delve, embark, enlightening, esteemed, shed light, craft, crafting, imagine, realm, game changer, unlock, discover, skyrocket, abyss, not alone, in a world where, revolutionize, disruptive, utilize, leveraging, dive deep, tapestry, illuminate, unveil, pivotal, intricate, elevate, hence, furthermore, however, harness, exciting, groundbreaking, cutting edge, remarkable, remains to be seen, glimpse into, navigating, landscape, stark, testament, in summary, in conclusion, moreover, boost, skyrocketing, opened up, powerful, inquiries, ever evolving
+
+IMPORTANT:
+
+If you need to connect ideas, use commas or periods. Never use em dashes.
+Review the output before finalizing and ensure no banned patterns appear.`,
+  },
+
   // ── Strategy (continued) ────────────────────────────────────
   {
     id: 32,
