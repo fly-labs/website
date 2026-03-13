@@ -216,10 +216,21 @@ const PromptsPage = () => {
     }
   };
 
-  // Copy handler
+  // Copy handler with fallback for Safari private browsing
   const handleCopy = async (id, content) => {
     try {
-      await navigator.clipboard.writeText(content);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(content);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
       setCopiedId(id);
       toast({ title: "Copied to clipboard!" });
       setTimeout(() => setCopiedId(null), 2000);

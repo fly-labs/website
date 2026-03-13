@@ -83,10 +83,25 @@ const IdeaDetailPage = () => {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({ title: 'Link copied', description: 'Share this idea with anyone.' });
-    trackEvent('idea_shared', { idea_id: idea?.id, idea_title: idea?.idea_title });
+  const handleShare = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(window.location.href);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = window.location.href;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      toast({ title: 'Link copied', description: 'Share this idea with anyone.' });
+      trackEvent('idea_shared', { idea_id: idea?.id, idea_title: idea?.idea_title });
+    } catch {
+      toast({ title: 'Copy failed', description: 'Could not copy to clipboard.', variant: 'destructive' });
+    }
   };
 
   if (loading) {

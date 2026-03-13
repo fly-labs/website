@@ -2,7 +2,9 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
-import { Toaster } from '@/components/ui/toaster.jsx';
+import { Toaster } from 'sonner';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import GridBackground from '@/components/GridBackground.jsx';
 import { ProtectedRoute } from '@/components/ProtectedRoute.jsx';
@@ -96,7 +98,9 @@ function App() {
               <Suspense fallback={<PageFallback />}>
                 <AnimatedRoutes />
               </Suspense>
-              <Toaster />
+              <Toaster position="bottom-right" richColors closeButton duration={4000} />
+              <Analytics />
+              <SpeedInsights />
             </ErrorBoundary>
           </Router>
         </AuthProvider>

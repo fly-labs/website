@@ -13,7 +13,7 @@ export const PageLayout = ({ children, seo, className, wrapperClassName }) => (
       <GeometricBackground />
       <Header />
       <ScrollProgress />
-      <main className={cn("flex-grow relative z-10", className)}>
+      <main id="main-content" className={cn("flex-grow relative z-10", className)}>
         {children}
       </main>
       <Footer />
