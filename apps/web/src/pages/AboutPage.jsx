@@ -108,7 +108,7 @@ const AboutPage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center py-20 md:py-24"
+          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center mb-16 md:mb-20"
         >
           <div className="flex justify-center">
             <img
@@ -150,10 +150,10 @@ const AboutPage = () => {
           </div>
         </motion.section>
 
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto space-y-16 md:space-y-20">
 
           {/* 2. THE MANIFESTO */}
-          <motion.section {...fadeUp} transition={{ duration: 0.5 }} className="py-20 md:py-24">
+          <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
             <SectionLabel icon={FlaskConical} label="The Manifesto" color="text-primary" />
             <div className="glass-card p-6 md:p-8">
               <blockquote className="border-l-4 border-primary pl-6">
@@ -165,7 +165,7 @@ const AboutPage = () => {
           </motion.section>
 
           {/* 3. THE STORY */}
-          <motion.section className="py-20 md:py-24" {...staggerContainer}>
+          <motion.section {...staggerContainer}>
             <motion.div {...staggerItem}>
               <SectionLabel icon={BookOpen} label="The Story" color="text-secondary" />
             </motion.div>
@@ -193,7 +193,7 @@ const AboutPage = () => {
           </motion.section>
 
           {/* 4. BY THE NUMBERS */}
-          <motion.section className="py-20 md:py-24" {...staggerContainer}>
+          <motion.section {...staggerContainer}>
             <motion.div {...staggerItem}>
               <SectionLabel icon={BarChart3} label="By The Numbers" color="text-primary" />
               <p className="text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-6">
@@ -222,7 +222,7 @@ const AboutPage = () => {
           </motion.section>
 
           {/* 5. CLOSING */}
-          <motion.section {...fadeUp} transition={{ duration: 0.5 }} className="py-20 md:py-24">
+          <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
             <SectionLabel icon={Rocket} label="Come Build Something" color="text-accent" />
             <div className="glass-card p-6 md:p-8">
               <div className="space-y-6 mb-8">
