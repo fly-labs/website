@@ -13,7 +13,7 @@ Built by one person with AI. Open source.
 ## What's Inside
 
 - **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
-- **AI Prompt Library** - 30 curated prompts for coding, writing, strategy, marketing, and thinking. 5 public, full library for members. Vote, comment, and suggest new prompts
+- **AI Prompt Library** - 74 curated prompts across 8 categories: Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, and Thinking. 5 public, full library for members. Vote, comment, copy, and suggest new prompts
 - **Idea Lab** - Community submissions + real-world problems from 8 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, YC Graveyard, and the community. Every idea scored by AI using 4 frameworks: the Fly Labs Method (problem-solution fit for vibe builders) + Hormozi, Dan Koe, and Okamoto as expert perspectives. Per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Card and table view toggle, full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail page, trending badges. Daily auto-sync via GitHub Actions
 - **Scoring Frameworks** - Full breakdown of AI scoring: Fly Labs Method (4 dimensions: Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus 3 expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
 - **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
@@ -140,9 +140,10 @@ apps/web/
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + categories
-│   │   │   ├── prompts.js    # 30 prompts (5 categories, featured flag)
+│   │   │   ├── prompts.js    # 74 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js    # Books array, topics, topic colors
-│   │   │   └── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
+│   │   │   ├── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
+│   │   │   └── siteStats.js  # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp)
@@ -165,7 +166,7 @@ apps/web/
 | `/ideas` | Idea Lab (AI-scored, validated, paginated, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scoring, market evidence, vote, share) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
-| `/about` | About (visual journey timeline, pull quote, GitHub heatmap) | Public |
+| `/about` | About (conversational intro, pull quote, GitHub heatmap, current focus) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
 | `/scoring` | Scoring Frameworks (Fly Labs Method + Hormozi + Dan Koe + Okamoto + Validation) | Public |
