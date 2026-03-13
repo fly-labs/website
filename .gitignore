@@ -39,3 +39,12 @@ coverage/
 .cache/
 supabase/.temp/
 .problemhunt-sync.json
+
+# Private content (never commit)
+references/
+drafts/
+docs/content/
+*.private.*
+
+# Claude Code local files
+.claude/
