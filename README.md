@@ -34,7 +34,7 @@ Built by one person with AI. Open source.
 | Styling | Tailwind CSS 3.4 + CSS variables (HSL theming) |
 | Components | shadcn/ui pattern (Radix UI + CVA) |
 | Routing | React Router DOM v7 |
-| Animation | Framer Motion 11 |
+| Animation | Framer Motion 11 (fadeUp, fadeIn, scaleIn, stagger) |
 | Icons | Lucide React |
 | Backend | Supabase (PostgreSQL + Auth + Storage) |
 | Auth | Email/password + Google OAuth |
@@ -143,13 +143,14 @@ apps/web/
 │   │   │   ├── prompts.js    # 74 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js    # Books array, topics, topic colors
 │   │   │   ├── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
-│   │   │   └── siteStats.js  # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
+│   │   │   ├── siteStats.js  # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
+│   │   │   └── constants.js  # Shared constants (FRAMEWORK_COUNT) to prevent circular deps
 │   │   ├── supabaseClient.js # Supabase init
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
-│   │   ├── animations.js     # Shared animation variants (fadeUp)
+│   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, stagger)
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # 18 route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # 19 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js            # Port 3001, @ alias, vendor chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
@@ -222,6 +223,15 @@ Deployed automatically via Vercel on push to `main`.
 - Root Directory: `apps/web`
 - Build Command: `vite build`
 - Output Directory: `dist`
+
+## Design Philosophy
+
+Hand-drawn lab doodles are the brand identity. The `GeometricBackground` component renders 15 SVG doodles (flasks, beakers, atoms, rockets, code brackets, bar charts, gears, and more) with subtle float/drift/spin animations at near-invisible opacity. Every page inherits this through `PageLayout`.
+
+- **No gradient text, no glow orbs, no AI-looking effects.** Solid colors only for emphasis (`text-primary`).
+- **Clean dark theme** with warm background (`hsl(220 15% 6%)`), green/cyan/violet accent palette.
+- **Hand-drawn stroke style** on all doodles: `strokeLinecap="round"`, `strokeLinejoin="round"`, slightly irregular paths.
+- **Mobile-aware:** excess doodles hidden on small screens (`hidden md:block`).
 
 ## Building in Public
 

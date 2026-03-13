@@ -45,7 +45,7 @@ apps/web/
 │   │   ├── ThemeToggle.jsx   # Dark/light switch
 │   │   ├── GoogleIcon.jsx    # Shared Google "G" SVG
 │   │   ├── XIcon.jsx         # X/Twitter icon
-│   │   ├── GeometricBackground.jsx  # Hand-drawn doodle background
+│   │   ├── GeometricBackground.jsx  # Hand-drawn doodle background (15 SVGs: flask, beaker, atom, plane, bulb, DNA, test tube, code brackets, rocket, bar chart, gear, terminal, dollar, brain, compass)
 │   │   ├── GridBackground.jsx       # Subtle 32px graph-paper grid
 │   │   ├── GitHubHeatmap.jsx        # GitHub contribution heatmap (compact + full)
 │   │   ├── SmileLogo.jsx     # Animated brand logo
@@ -69,10 +69,11 @@ apps/web/
 │   │   │   ├── prompts.js        # 74 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
 │   │   │   ├── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (8 sources), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
-│   │   │   └── siteStats.js     # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
+│   │   │   ├── siteStats.js     # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
+│   │   │   └── constants.js    # Shared constants (FRAMEWORK_COUNT) to prevent circular deps
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
-│   │   ├── animations.js     # Shared animation variants (fadeUp: scroll-triggered fade + slide)
+│   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, staggerContainer + staggerItem)
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
