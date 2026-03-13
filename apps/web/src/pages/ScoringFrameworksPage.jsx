@@ -333,9 +333,18 @@ const ScoringFrameworksPage = () => {
                 <Target className="w-4 h-4" /> Expert Perspective 1
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Alex Hormozi</h2>
-              <p className="text-muted-foreground leading-relaxed max-w-3xl">
+              <p className="text-muted-foreground leading-relaxed max-w-3xl mb-4">
                 Wrote the book on offer design. His Value Equation reframes what makes people buy. We adapted it for solo builders evaluating ideas before writing code.
               </p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <a href="https://www.acquisition.com" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">acquisition.com</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://www.youtube.com/@AlexHormozi" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">YouTube</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://x.com/alexhormozi" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">X</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://www.linkedin.com/in/alexhormozi" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors">LinkedIn</a>
+              </div>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {hormoziPillars.map((pillar, i) => (
@@ -372,9 +381,18 @@ const ScoringFrameworksPage = () => {
                 <User className="w-4 h-4" /> Expert Perspective 2
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">Dan Koe</h2>
-              <p className="text-muted-foreground leading-relaxed max-w-3xl">
+              <p className="text-muted-foreground leading-relaxed max-w-3xl mb-4">
                 Built a $5M+ one-person business and 500K+ newsletter subscribers by proving you don't need a team or a niche to win. His framework evaluates whether a solo creator can actually ship and monetize an idea.
               </p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <a href="https://thedankoe.com" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">thedankoe.com</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://www.youtube.com/@thedankoe" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">YouTube</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://x.com/thedankoe" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">X</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href="https://www.linkedin.com/in/thedankoe" target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-muted-foreground hover:text-secondary transition-colors">LinkedIn</a>
+              </div>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {koeDimensions.map((dim, i) => (
