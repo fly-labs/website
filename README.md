@@ -140,7 +140,7 @@ apps/web/
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + categories
-│   │   │   ├── prompts.js    # 74 prompts across 8 categories (featured flag for lead magnet)
+│   │   │   ├── prompts.js    # 79 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js    # Books array, topics, topic colors
 │   │   │   ├── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   │   ├── siteStats.js  # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)

@@ -2052,4 +2052,244 @@ Run a real task using this format:
 
 After setup: your folder acts as persistent memory. Update about-me.md monthly with current priorities. Every session after this starts with Cowork already understanding your context.`,
   },
+
+  // ── Strategy (Dan Koe / Eden Canvas adaptations) ────────
+  {
+    id: 75,
+    title: 'The Brand Architect',
+    category: 'Strategy',
+    featured: true,
+    description: 'Build your personal brand from scratch: identity, positioning, content pillars, and monetization path. One prompt, ten phases.',
+    content: `You are a personal brand strategist. Guide me through building a complete brand strategy, phase by phase.
+
+PHASE 1 - IDENTITY
+Ask me 5 questions about: what I do, what I care about, what makes me different, who I want to reach, and what I want to be known for. Wait for my answers before continuing.
+
+PHASE 2 - POSITIONING
+Based on my answers, define:
+- My one-sentence positioning statement
+- The 3 things I want people to associate with my name
+- The gap in my niche I can own
+
+PHASE 3 - AUDIENCE
+Build a detailed profile of my ideal reader/follower:
+- What they struggle with daily
+- What content they already consume
+- What would make them screenshot my post and send it to a friend
+
+PHASE 4 - CONTENT PILLARS
+Define 3-5 recurring themes I can write about for years. Each pillar should: connect to my experience, interest my audience, and differentiate me from others in the space.
+
+PHASE 5 - CONTENT SYSTEM
+Design my content ecosystem:
+- One long-form platform (newsletter, blog, or YouTube)
+- One short-form platform (X, LinkedIn, or Instagram)
+- How content flows from long to short
+- Realistic posting cadence based on my available hours
+
+PHASE 6 - VOICE
+Define my writing voice:
+- 3 words that describe how I sound
+- 3 words that describe how I never sound
+- One example sentence in my voice vs. generic voice
+
+PHASE 7 - MONETIZATION PATH
+Map the progression from free to paid:
+- What I give away (builds trust)
+- What I could sell first (low friction)
+- What I build toward (high value)
+- Timeline: what's realistic in 6 months vs. 2 years
+
+PHASE 8 - 90-DAY LAUNCH PLAN
+Week-by-week plan for the first 3 months:
+- What to publish and where
+- What to build behind the scenes
+- Milestones that signal I'm on track
+
+PHASE 9 - METRICS
+The 3-5 numbers I should track and the ones I should ignore.
+
+PHASE 10 - SUMMARY
+Compile everything into a one-page brand brief I can reference every time I create content.
+
+My niche: [YOUR NICHE]
+Hours per week I can dedicate: [HOURS]
+My background: [RELEVANT EXPERIENCE]`,
+  },
+  {
+    id: 76,
+    title: 'The Content Repurposer',
+    category: 'Marketing',
+    description: 'Turn any newsletter or long-form piece into platform-ready posts for X, LinkedIn, and Instagram. Repurpose once, distribute everywhere.',
+    content: `You are a content repurposing specialist. I will give you a newsletter article or long-form piece. Your job is to extract multiple standalone posts for different platforms.
+
+SOURCE MATERIAL:
+[PASTE YOUR NEWSLETTER OR ARTICLE]
+
+EXTRACT THE FOLLOWING:
+
+1. X/TWITTER (5 posts)
+- Each under 280 characters
+- Format mix: one-liner, hot take, "most people" reframe, numbered list (1-3 items), question
+- Each must stand alone (someone who never read the article should still engage)
+- No hashtags, no "thread" markers
+
+2. LINKEDIN (2 posts)
+- 150-300 words each
+- First line must hook in the feed preview (before "see more")
+- Professional but not corporate
+- End with a question or soft CTA
+
+3. INSTAGRAM CAPTION (1 post)
+- 100-200 words
+- Conversational, slightly more personal
+- Include a hook for the carousel or image
+
+4. THREAD STARTER (1 mini-thread, 4-6 tweets)
+- First tweet is the hook (must work as standalone)
+- Each subsequent tweet adds one idea
+- Last tweet links back to the full article
+
+RULES:
+- Never copy sentences directly from the source. Rewrite for each platform's native feel.
+- Each post should feel like it was written FOR that platform, not extracted FROM something.
+- Prioritize the ideas that would resonate most on each platform (what works on X might not work on LinkedIn).
+
+My voice: [DESCRIBE YOUR TONE IN 2-3 WORDS]`,
+  },
+  {
+    id: 77,
+    title: 'The Newsletter Engine',
+    category: 'Writing',
+    featured: true,
+    description: 'Write a full newsletter from topic to publish-ready draft. Generates headlines, builds the outline, writes the piece using APAG structure.',
+    content: `You are my newsletter writing partner. We are going to build a complete newsletter from scratch using a structured process.
+
+PHASE 1 - HEADLINE GENERATION
+My topic: [YOUR TOPIC OR IDEA]
+My audience: [WHO READS YOUR NEWSLETTER]
+
+Generate 10 headline options using these formulas:
+- "How To [outcome]" (instructional)
+- "[Number] [things] that [outcome]" (listicle)
+- "The [concept] that [changed something]" (narrative)
+- "[Contrarian claim]" (hot take)
+- "I [did something unexpected]" (personal)
+
+For each headline, rate it 1-10 on: curiosity, clarity, and click-worthiness.
+
+PHASE 2 - OUTLINE
+Using the best headline, build an outline with this structure:
+
+ATTENTION (hook): A scene, confession, or provocative statement that stops the scroll. 2-3 sentences max.
+
+PERSPECTIVE (the problem): Paint the picture of how most people approach this topic. Use a personal story or relatable scenario. Show you understand the struggle.
+
+ADVANTAGE (the reframe): Present your unique perspective. The insight that changes how the reader sees the problem. Support with one example, story, or concept from another field.
+
+GAMIFY (the action): Break down the solution into 3-5 concrete steps. Each step should be small enough to start today. Remove friction between reading and doing.
+
+CLOSE: One sentence that lingers. A question, a reframe, or a soft forward look.
+
+PHASE 3 - FULL DRAFT
+Write the full newsletter (800-1,500 words) following the outline. Rules:
+- Short paragraphs (2-3 lines max)
+- Every sentence earns the next one
+- One product/project mention maximum, placed where the narrative calls for it
+- Include at least one moment of genuine uncertainty or admission
+- End soft, never prescriptive
+- Write like a smart friend talking at a bar, not a content creator performing
+
+PHASE 4 - QUALITY CHECK
+After the draft, evaluate:
+- Does the opening make you want to keep reading?
+- Is there at least one sentence worth screenshotting?
+- Could someone guess AI wrote this? If yes, flag the specific sentences.
+- Does it pass the "would I send this to a friend?" test?`,
+  },
+  {
+    id: 78,
+    title: 'The Customer Avatar Builder',
+    category: 'Marketing',
+    description: 'Build a detailed buyer persona through a structured interview. Understand who you are building for before you write a single line of copy.',
+    content: `You are a customer research specialist. Help me build a detailed avatar of my ideal customer through a structured interview process.
+
+STEP 1 - CONTEXT
+Ask me these questions one at a time (wait for each answer):
+1. What do you sell or plan to sell?
+2. Who is already buying (or who do you think would buy)?
+3. What problem does it solve?
+4. What alternatives exist?
+5. Why would someone choose you over the alternative?
+
+STEP 2 - AVATAR CONSTRUCTION
+Based on my answers, build a detailed profile:
+
+DEMOGRAPHICS: Age range, role/job, income level, location pattern
+PSYCHOGRAPHICS: What they value, what frustrates them, what they aspire to
+DAILY LIFE: What does a typical day look like? When do they feel the pain your product solves?
+INFORMATION DIET: Where do they spend time online? Who do they follow? What newsletters do they read?
+BUYING BEHAVIOR: How do they make purchase decisions? What objections do they have? What would make them buy immediately?
+LANGUAGE: What exact words do they use to describe their problem? (This is gold for copywriting)
+
+STEP 3 - VALIDATION QUESTIONS
+Give me 5 questions I can ask real people in my audience to validate or update this avatar. Each question should be open-ended and reveal something I can't guess.
+
+STEP 4 - CONTENT IMPLICATIONS
+Based on this avatar:
+- What 3 topics would immediately grab their attention?
+- What tone and vocabulary should I use?
+- What is the one sentence that would make them think "this person gets me"?
+
+Compile everything into a one-page avatar document I can reference when creating content or building products.`,
+  },
+  {
+    id: 79,
+    title: 'The Offer Builder',
+    category: 'Strategy',
+    description: 'Design an offer people feel stupid saying no to. Uses the Hormozi value equation: dream outcome, perceived likelihood, time delay, effort and sacrifice.',
+    content: `You are an offer strategist. Help me design an offer so compelling that my target customer feels stupid saying no.
+
+We will use this value equation:
+Value = (Dream Outcome x Perceived Likelihood of Achievement) / (Time Delay x Effort and Sacrifice)
+
+To make the offer irresistible, we maximize the top (bigger dream, higher confidence) and minimize the bottom (faster results, less effort).
+
+STEP 1 - THE DREAM OUTCOME
+My product/service: [WHAT YOU SELL]
+My target customer: [WHO IT IS FOR]
+
+Ask me 3 questions to understand the transformation my customer actually wants (not what I think they want).
+
+STEP 2 - THE OFFER STACK
+Build an offer that includes:
+- The core deliverable (the main thing they get)
+- 2-3 bonuses that reduce risk or accelerate results
+- A guarantee that removes the last objection
+- Scarcity or urgency that is real (not fabricated)
+
+For each element, explain WHY it increases perceived value using the equation.
+
+STEP 3 - PRICING
+Based on the value stack:
+- What is this actually worth to the customer? (not what it costs you)
+- What price feels like a steal given the stack?
+- What pricing model works best? (one-time, subscription, tiered)
+
+STEP 4 - THE ONE-LINER
+Write the offer in one sentence that I could say in conversation: "I help [WHO] achieve [WHAT] in [TIMEFRAME] by [HOW], and if [GUARANTEE]."
+
+STEP 5 - OBJECTION MAP
+List the top 5 objections someone would have and how the offer stack already addresses each one. If any objection is not addressed, suggest what to add.
+
+STEP 6 - LANDING PAGE OUTLINE
+Structure a landing page that sells this offer:
+- Headline (dream outcome)
+- Problem section (what they have tried that did not work)
+- Solution section (your unique mechanism)
+- Offer stack (everything they get)
+- Social proof (what type of proof would be most convincing)
+- Guarantee
+- CTA`,
+  },
 ];

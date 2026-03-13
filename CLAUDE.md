@@ -66,7 +66,7 @@ apps/web/
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
-│   │   │   ├── prompts.js        # 74 prompts across 8 categories (featured flag for lead magnet)
+│   │   │   ├── prompts.js        # 79 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
 │   │   │   ├── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (8 sources), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   │   ├── siteStats.js     # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
@@ -177,7 +177,7 @@ apps/web/
 
 ## Data Layer
 - **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
-- **prompts.js:** 74 prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Each has: id, title, category, description, content, featured (optional - marks lead magnet for guest view), tools (optional - array of tool names for workflows)
+- **prompts.js:** 79 prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Each has: id, title, category, description, content, featured (optional - marks lead magnet for guest view), tools (optional - array of tool names for workflows)
 - **siteStats.js:** Centralized dynamic counts computed from data arrays (PROMPT_COUNT, CATEGORY_COUNT, BOOK_COUNT, TEMPLATE_COUNT, SOURCE_COUNT, FRAMEWORK_COUNT, etc.) plus architectural constants (ROUTE_COUNT, SCRIPT_COUNT, GA4_EVENT_COUNT, etc.). Imported by pages instead of hardcoding numbers
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (10-way: hot/newest/oldest/top/flylabs/hormozi/koe/okamoto/validation/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
