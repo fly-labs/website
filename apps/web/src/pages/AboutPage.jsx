@@ -99,7 +99,7 @@ const AboutPage = () => {
           ]
         },
       }}
-      className="pt-32 pb-24"
+      className="pt-24 pb-16"
     >
       <div className="container mx-auto px-6">
 
@@ -108,7 +108,7 @@ const AboutPage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center mb-16 md:mb-20"
+          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center"
         >
           <div className="flex justify-center">
             <img
@@ -150,7 +150,7 @@ const AboutPage = () => {
           </div>
         </motion.section>
 
-        <div className="max-w-5xl mx-auto space-y-16 md:space-y-20">
+        <div className="max-w-5xl mx-auto space-y-10 md:space-y-12">
 
           {/* 2. THE MANIFESTO */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
@@ -196,7 +196,7 @@ const AboutPage = () => {
           <motion.section {...staggerContainer}>
             <motion.div {...staggerItem}>
               <SectionLabel icon={BarChart3} label="By The Numbers" color="text-primary" />
-              <p className="text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-6">
+              <p className="text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-4">
                 Real numbers from a real project.
               </p>
             </motion.div>
@@ -216,7 +216,7 @@ const AboutPage = () => {
                 </motion.div>
               ))}
             </div>
-            <div className="glass-card p-5 md:p-6 mt-8">
+            <div className="glass-card p-5 md:p-6 mt-4">
               <GitHubHeatmap variant="full" />
             </div>
           </motion.section>
