@@ -52,7 +52,7 @@ const AboutPage = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center mb-24"
+          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center mb-20"
         >
           <div className="flex justify-center">
             <div className="relative">
@@ -98,34 +98,57 @@ const AboutPage = () => {
         </motion.section>
 
         {/* Pull quote */}
-        <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-5xl mx-auto mb-20">
-          <blockquote className="border-l-4 border-primary pl-6">
-            <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
-              I'm not trying to prove anything. I'm just building things I find interesting and sharing the process.
-            </p>
-          </blockquote>
+        <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-5xl mx-auto mb-16">
+          <div className="rounded-xl border border-border/60 bg-card/50 p-6 md:p-8">
+            <blockquote className="border-l-4 border-primary pl-6">
+              <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
+                I'm not trying to prove anything. I'm just building things I find interesting and sharing the process.
+              </p>
+            </blockquote>
+          </div>
         </motion.div>
 
-        {/* Story blocks */}
-        <div className="max-w-5xl mx-auto space-y-20">
+        {/* The full story */}
+        <div className="max-w-5xl mx-auto space-y-16">
 
-          {/* The story */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
               <p>
                 I work in finance. Have for over a decade. It's a serious job and I take it seriously. But somewhere along the way I started playing with AI tools, and I realized I could actually build things. Real things. Apps, templates, automated pipelines. With zero engineering background.
               </p>
               <p>
-                The first time I shipped something and a stranger used it, something clicked. I wasn't thinking about a business. I was just curious: what else can I build? What other problems can I solve? That curiosity turned into weekends and late nights in front of the screen, and honestly, it doesn't feel like work.
+                The first time I shipped something and a stranger used it, something clicked. I wasn't thinking about a business. I was just curious: what else can I build? What other problems can I solve? That curiosity turned into weekend mornings and late nights in front of the screen, and honestly, it doesn't feel like work.
               </p>
               <p>
-                I call it vibe building. Andrej Karpathy called the coding part vibe coding. I think the whole thing is bigger than code. You find a real problem, you build a solution, you share it openly. One person can now do what used to require a team. That feels like a shift worth paying attention to.
+                I've been reading a lot of business books. AI, strategy, mindset, the random stuff I can't stop learning about. It's amazing how many valuable frameworks are buried in these pages. My study notes kept piling up, so I turned them into something useful: <Link to="/library" className="text-foreground font-semibold hover:text-primary transition-colors">a library of free ebooks</Link>. Some of those books had templates I thought were worth highlighting, systems and blueprints that actually work, so I built <Link to="/templates" className="text-foreground font-semibold hover:text-primary transition-colors">a templates section</Link> for those too.
               </p>
               <p>
-                I share what I'm building, what I think is working, and what I'd do differently. Tomorrow I might reevaluate. I might be wrong about some of this. But I'd rather say what I actually think than perform certainty I don't have.
+                Then the prompts rabbit hole happened. I started collecting AI prompts from everywhere. People post incredible stuff on LinkedIn, X, personal blogs. I was copying, testing, tweaking. My notes app turned into a mess. So I built <Link to="/prompts" className="text-foreground font-semibold hover:text-primary transition-colors">a prompt library</Link> with {PROMPT_COUNT} prompts across {CATEGORY_COUNT} categories, a proper search, and filters that actually help me find what I need. It went from a personal tool to something other people started using, which was cool.
+              </p>
+              <p>
+                The <Link to="/ideas" className="text-foreground font-semibold hover:text-primary transition-colors">Idea Lab</Link> is a different beast. It was born to consolidate real pain points from {SOURCE_COUNT} sources: Reddit, Product Hunt, Hacker News, X, GitHub, and more. Every idea gets scored by {FRAMEWORK_COUNT} AI frameworks, including our own Fly Labs Method, which we built specifically for one-person builders. Then the top ideas get validated against real conversations happening online. The scoring system keeps evolving, and I'm unreasonably proud of how it works. This is ideation done right: the first step of what I call <span className="text-foreground font-semibold">vibe building</span>.
+              </p>
+              <p>
+                Vibe building is the whole cycle. You find a real problem, you build a solution with AI, you share it openly. One person can now do what used to require a team. Andrej Karpathy named the coding part "vibe coding." I think the whole thing is bigger than code. It's ideation, building, marketing, compounding. Each project feeds the next one.
+              </p>
+              <p>
+                This site is my playground. The way I organize, study, create, and share everything. I'm constantly improving it with AI tools, which is honestly the most fun part. Tomorrow I might reevaluate. I might be wrong about some of this. But I'd rather say what I actually think than perform certainty I don't have.
               </p>
             </div>
           </motion.section>
+
+          {/* Stats strip */}
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 py-4 text-sm font-semibold text-muted-foreground/70">
+              <span>{SOURCE_COUNT} idea sources</span>
+              <span className="hidden sm:inline text-border">|</span>
+              <span>{FRAMEWORK_COUNT} scoring frameworks</span>
+              <span className="hidden sm:inline text-border">|</span>
+              <span>{PROMPT_COUNT} prompts</span>
+              <span className="hidden sm:inline text-border">|</span>
+              <span>100% open source</span>
+            </div>
+          </motion.div>
 
           {/* Building in Public */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
@@ -139,30 +162,8 @@ const AboutPage = () => {
             <GitHubHeatmap variant="full" />
           </motion.section>
 
-          {/* What I'm working on now */}
+          {/* Closing */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">What I'm working on now</h2>
-            <ul className="space-y-3">
-              {[
-                { text: 'Library - writing the first ebooks', link: '/library' },
-                { text: 'Micro Tools - building the first batch', link: '/microsaas' },
-                { text: `Idea Lab - ${SOURCE_COUNT} sources, ${FRAMEWORK_COUNT} AI frameworks, market validated`, link: '/ideas' },
-                { text: `Prompt Library - ${PROMPT_COUNT} prompts across ${CATEGORY_COUNT} categories, copy-paste ready`, link: '/prompts' },
-              ].map((item) => (
-                <li key={item.text}>
-                  <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
-                    <span className="w-2 h-2 rounded-full bg-primary mr-3 shrink-0" />
-                    {item.text}
-                    <ArrowRight className="w-3.5 h-3.5 ml-2 opacity-60" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.section>
-
-          {/* What Fly Labs is + Closing */}
-          <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">What is Fly Labs</h2>
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-8">
               <p>
                 Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, poke around.
