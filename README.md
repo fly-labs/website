@@ -12,15 +12,17 @@ Built by one person with AI. Open source.
 
 ## What's Inside
 
-- **Explore** - Project catalog filterable by category (Business, Tools, Learn), with type and status badges
-- **AI Prompt Library** - 74 curated prompts across 8 categories: Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, and Thinking. 5 public, full library for members. Vote, comment, copy, and suggest new prompts
-- **Idea Lab** - Community submissions + real-world problems from 8 sources: [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, YC Graveyard, and the community. Every idea scored by AI using 4 frameworks: the Fly Labs Method (problem-solution fit for vibe builders) + Hormozi, Dan Koe, and Okamoto as expert perspectives. Per-pillar reasoning and a synthesized BUILD/VALIDATE/SKIP verdict. Top ideas validated against real conversations on X and Reddit, with evidence confidence scoring and competitive intelligence. Card and table view toggle, full-text search, verdict/score/confidence filtering, URL state persistence, source/type/industry filtering with counts, active filter chips, smart empty states. Reddit sync uses Claude AI filtering for quality. Multi-step submit form, score badges + verdict badges with detail page, trending badges. Daily auto-sync via GitHub Actions
-- **Scoring Frameworks** - Full breakdown of AI scoring: Fly Labs Method (4 dimensions: Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus 3 expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) plus validation layer methodology
-- **Library** - Ebooks from study notes. AI, business, mindset, and everything in between. Topic filtering and waitlist for coming-soon books
-- **Newsletter** - RSS-powered feed from the Fala Comigo Substack
-- **Micro Tools Waitlist** - Email capture for upcoming small, focused tools
-- **Templates** - Systems, tools, and blueprints built for real use (4 templates):
-  - Garmin to Notion Sync - auto-sync Garmin health data to Notion (live, open source)
+This platform changes every week. New prompts, new ideas scored, new tools shipped. Numbers below are always growing.
+
+- **Explore** - Every project in one place. Filter by Business, Tools, or Learn. Each card shows what it is, what stage it's at, and where to go next.
+- **AI Prompt Library** - A growing collection of copy-paste prompts across Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, and Thinking. Five are public. Members get the full library plus voting, comments, and the ability to suggest new ones.
+- **Idea Lab** - The engine of the whole platform. Real problems scraped daily from [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the YC Graveyard, plus community submissions. Every idea is scored by AI using four frameworks (the Fly Labs Method for solo builders + Hormozi, Dan Koe, and Okamoto as expert lenses), then the top ones are validated against live conversations on X and Reddit. The result: a BUILD, VALIDATE_FIRST, or SKIP verdict with per-pillar reasoning, confidence scoring, and competitive intelligence. Card and table views, full-text search, seven-dimension filtering, trending badges, and a multi-step submit form. New ideas flow in automatically via GitHub Actions.
+- **Scoring Frameworks** - The full methodology behind the AI scoring: Fly Labs Method (Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus three expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) and a validation layer that checks ideas against real-world evidence.
+- **Library** - Ebooks built from study notes. AI, business, mindset, and everything in between. New titles added as they're written. Topic filtering and waitlist for upcoming books.
+- **Newsletter** - RSS-powered feed from the [Fala Comigo](https://falacomigo.substack.com) Substack. The story behind the building.
+- **Micro Tools** - Small, focused apps that do one thing well. Waitlist open, first batch in progress.
+- **Templates** - Systems and blueprints built for real use:
+  - Garmin to Notion Sync - auto-sync health data to Notion (live, open source)
   - Website Blueprint - full stack breakdown of how this site was built (live, open source)
   - Launch Checklist - 4-phase Notion template based on The $100 Startup (coming soon)
   - One-Page Business Plan - 5-question Notion template based on The $100 Startup (coming soon)
@@ -39,7 +41,7 @@ Built by one person with AI. Open source.
 | Backend | Supabase (PostgreSQL + Auth + Storage) |
 | Auth | Email/password + Google OAuth |
 | SEO | react-helmet-async + JSON-LD |
-| Analytics | Google Analytics 4 (24 custom events) |
+| Analytics | Google Analytics 4 (custom events across all user interactions) |
 | Deploy | Vercel (auto-deploy on push to `main`) |
 
 ## Getting Started
@@ -140,9 +142,9 @@ apps/web/
 │   ├── lib/
 │   │   ├── data/
 │   │   │   ├── projects.js   # Projects array + categories
-│   │   │   ├── prompts.js    # 79 prompts across 8 categories (featured flag for lead magnet)
+│   │   │   ├── prompts.js    # Prompt definitions (featured flag for lead magnet)
 │   │   │   ├── library.js    # Books array, topics, topic colors
-│   │   │   ├── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions (9), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
+│   │   │   ├── ideas.js      # Idea categories, industries, statusConfig, sortOptions, sourceOptions, verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   │   ├── siteStats.js  # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
 │   │   │   └── constants.js  # Shared constants (FRAMEWORK_COUNT) to prevent circular deps
 │   │   ├── supabaseClient.js # Supabase init
@@ -150,7 +152,7 @@ apps/web/
 │   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, stagger)
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # 19 route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # Route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js            # Port 3001, @ alias, vendor chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
@@ -189,7 +191,7 @@ Schema and RLS policies are versioned in `supabase/migrations/`. Apply with `sup
 
 **profiles** - User profiles (synced with Supabase Auth, auto-created on signup). Fields: id, name, phone, country, city, age, gender, bio, avatar_url, updated_at
 
-**ideas** - Community idea submissions + automated imports from 8 sources (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', 'producthunt', 'x', 'hackernews', 'github', or 'yc'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, verdict (BUILD/VALIDATE_FIRST/SKIP), confidence (high/medium/low), composite_score, published_at, meta (JSONB), created_at, updated_at
+**ideas** - Community idea submissions + automated imports from multiple sources (public read when approved, anyone can insert). Fields: id, name, email (nullable), idea_title, idea_description (nullable), category, industry, source (default 'community', also 'problemhunt', 'reddit', 'producthunt', 'x', 'hackernews', 'github', or 'yc'), source_url, external_id, tags, country, votes, status, approved, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB), enrichment (JSONB), validation_score, verdict (BUILD/VALIDATE_FIRST/SKIP), confidence (high/medium/low), composite_score, published_at, meta (JSONB), created_at, updated_at
 
 **idea_rate_limits** - Rate limiting for idea submissions (max 3 per email per 24h)
 
