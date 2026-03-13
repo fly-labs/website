@@ -107,6 +107,95 @@
   .card-playful {
     @apply bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-[color,background-color,border-color,box-shadow] duration-300 hover:border-primary/40;
   }
+
+  /* Tier-S design system additions */
+
+  /* Hero glow: radial gradient behind hero text */
+  .hero-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .dark .hero-glow { opacity: 0.2; }
+
+  .hero-glow-primary {
+    background: hsl(var(--primary));
+  }
+  .hero-glow-secondary {
+    background: hsl(var(--secondary));
+  }
+  .hero-glow-accent {
+    background: hsl(var(--accent));
+  }
+
+  /* Gradient text for emphasis */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow border card (Linear-style) */
+  .card-glow {
+    position: relative;
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .card-glow:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 24px -6px hsl(var(--primary) / 0.1);
+  }
+  .dark .card-glow:hover {
+    box-shadow: 0 0 32px -6px hsl(var(--primary) / 0.15);
+  }
+
+  /* Bento featured card (larger) */
+  .card-bento-featured {
+    grid-column: span 2;
+  }
+  @media (max-width: 640px) {
+    .card-bento-featured {
+      grid-column: span 1;
+    }
+  }
+
+  /* Stat counter pill */
+  .stat-pill {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold;
+    background: hsl(var(--muted));
+    border: 1px solid hsl(var(--border));
+  }
+  .dark .stat-pill {
+    background: hsl(var(--muted) / 0.5);
+    border-color: hsl(var(--border) / 0.6);
+  }
+
+  /* Section divider with subtle glow */
+  .section-glow-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.3), transparent);
+    border: none;
+  }
+
+  /* Glassmorphism card */
+  .glass-card {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+    border-radius: var(--radius);
+  }
+  .dark .glass-card {
+    background: hsl(var(--card) / 0.4);
+  }
 }
 
 /* GeometricBackground CSS animations (GPU-composited, no React re-renders) */

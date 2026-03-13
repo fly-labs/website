@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, Terminal, ChevronDown } from 'lucide-react';
+import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, Terminal, ChevronDown, Zap, Sparkles } from 'lucide-react';
 import { GitHubHeatmap } from '@/components/GitHubHeatmap.jsx';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { SOURCE_COUNT, FRAMEWORK_COUNT, PROMPT_COUNT, CATEGORY_COUNT } from '@/lib/data/siteStats.js';
+import supabase from '@/lib/supabaseClient.js';
 
 const socials = [
   { href: 'mailto:luiz@flylabs.fun', icon: Mail, label: 'Email', color: 'text-primary' },
@@ -20,11 +21,23 @@ const socials = [
 ];
 
 const AboutPage = () => {
+  const [ideaCount, setIdeaCount] = useState(null);
+
+  useEffect(() => {
+    supabase
+      .from('ideas')
+      .select('id', { count: 'exact', head: true })
+      .eq('approved', true)
+      .then(({ count }) => {
+        if (count != null) setIdeaCount(count);
+      });
+  }, []);
+
   return (
     <PageLayout
       seo={{
-        title: "About Luiz Alves - Builder & Creator at Fly Labs",
-        description: "Meet Luiz Alves. Finance background, vibe builder. AI tools, templates, and open source experiments at Fly Labs.",
+        title: "About Luiz Alves - Vibe Builder at Fly Labs",
+        description: "Finance background, vibe builder. I build digital assets with AI on nights and weekends. Tools, templates, and open source experiments at Fly Labs.",
         keywords: "Luiz Alves, indie maker, AI builder, open source, tools, templates, vibe building",
         url: "https://flylabs.fun/about",
         schema: {
@@ -51,7 +64,7 @@ const AboutPage = () => {
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center mb-20"
         >
           <div className="flex justify-center">
@@ -97,12 +110,12 @@ const AboutPage = () => {
           </div>
         </motion.section>
 
-        {/* Pull quote */}
+        {/* Pull quote: forward-looking, different from hero */}
         <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-5xl mx-auto mb-16">
-          <div className="rounded-xl border border-border/60 bg-card/50 p-6 md:p-8">
+          <div className="glass-card p-6 md:p-8">
             <blockquote className="border-l-4 border-primary pl-6">
               <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
-                I'm not trying to prove anything. I'm just building things I find interesting and sharing the process.
+                I want to see what happens when one person builds in public, gives everything away, and lets the work speak for itself.
               </p>
             </blockquote>
           </div>
@@ -137,16 +150,23 @@ const AboutPage = () => {
             </div>
           </motion.section>
 
-          {/* Stats strip */}
+          {/* Live numbers */}
           <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 py-4 text-sm font-semibold text-muted-foreground/70">
-              <span>{SOURCE_COUNT} idea sources</span>
-              <span className="hidden sm:inline text-border">|</span>
-              <span>{FRAMEWORK_COUNT} scoring frameworks</span>
-              <span className="hidden sm:inline text-border">|</span>
-              <span>{PROMPT_COUNT} prompts</span>
-              <span className="hidden sm:inline text-border">|</span>
-              <span>100% open source</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { value: ideaCount, label: 'Ideas scored', icon: Zap, color: 'text-primary' },
+                { value: SOURCE_COUNT, label: 'Data sources', icon: Users, color: 'text-secondary' },
+                { value: PROMPT_COUNT, label: 'AI prompts', icon: Sparkles, color: 'text-accent' },
+                { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', icon: Terminal, color: 'text-primary' },
+              ].map((stat) => (
+                <div key={stat.label} className="glass-card p-4 text-center">
+                  <stat.icon className={`w-4 h-4 ${stat.color} mx-auto mb-2`} />
+                  <div className="text-2xl md:text-3xl font-black text-foreground">
+                    {stat.value != null ? stat.value.toLocaleString() : '...'}
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground mt-1">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -164,6 +184,7 @@ const AboutPage = () => {
 
           {/* Closing */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
+            <div className="section-glow-divider mb-12" />
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-8">
               <p>
                 Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, poke around.
@@ -175,20 +196,18 @@ const AboutPage = () => {
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <Link
                 to="/explore"
-                className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:brightness-110 transition-[filter,transform] duration-150 active:translate-y-0.5"
               >
                 Explore The Lab <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
               <span className="hidden sm:inline text-muted-foreground">or</span>
-              <a
-                href="https://falacomigo.substack.com"
-                target="_blank"
-                rel="noreferrer"
+              <Link
+                to="/newsletter"
                 className="inline-flex items-center text-sm font-semibold text-primary hover:underline"
                 onClick={() => trackEvent('newsletter_click', { location: 'about_bottom' })}
               >
-                Subscribe to the newsletter <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </a>
+                Read the newsletter <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              </Link>
             </div>
           </motion.section>
 
