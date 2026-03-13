@@ -8,7 +8,7 @@ import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { SOURCE_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
+import { SOURCE_COUNT, FRAMEWORK_COUNT, PROMPT_COUNT, CATEGORY_COUNT } from '@/lib/data/siteStats.js';
 
 const socials = [
   { href: 'mailto:luiz@flylabs.fun', icon: Mail, label: 'Email', color: 'text-primary' },
@@ -147,6 +147,7 @@ const AboutPage = () => {
                 { text: 'Library - writing the first ebooks', link: '/library' },
                 { text: 'Micro Tools - building the first batch', link: '/microsaas' },
                 { text: `Idea Lab - ${SOURCE_COUNT} sources, ${FRAMEWORK_COUNT} AI frameworks, market validated`, link: '/ideas' },
+                { text: `Prompt Library - ${PROMPT_COUNT} prompts across ${CATEGORY_COUNT} categories, copy-paste ready`, link: '/prompts' },
               ].map((item) => (
                 <li key={item.text}>
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">

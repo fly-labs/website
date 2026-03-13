@@ -619,11 +619,6 @@ const PromptsPage = () => {
                               <span className="font-semibold text-foreground truncate">
                                 {prompt.title}
                               </span>
-                              {prompt.author && (
-                                <span className="hidden md:inline text-[10px] font-semibold text-muted-foreground/50 shrink-0">
-                                  by {prompt.author}
-                                </span>
-                              )}
                               {prompt.tools && (
                                 <span className="hidden lg:inline text-[10px] font-semibold text-fuchsia-500/50 shrink-0">
                                   {prompt.tools.join(' + ')}
@@ -685,16 +680,11 @@ const PromptsPage = () => {
                                 className="overflow-hidden"
                               >
                                 <div className="px-4 md:px-5 pb-5 pt-1">
-                                  {/* Description + author */}
+                                  {/* Description */}
                                   <div className="pl-0 sm:pl-[52px] mb-4">
                                     <p className="text-sm text-muted-foreground font-medium">
                                       {prompt.description}
                                     </p>
-                                    {prompt.author && (
-                                      <p className="text-xs font-semibold text-muted-foreground/40 mt-1">
-                                        Inspired by {prompt.author}
-                                      </p>
-                                    )}
                                     {prompt.tools && (
                                       <div className="flex items-center gap-1.5 mt-1.5">
                                         <span className="text-[10px] font-semibold text-muted-foreground/40">Tools:</span>

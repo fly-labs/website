@@ -18,7 +18,6 @@ export const prompts = [
     id: 6,
     title: 'The Senior Dev',
     category: 'Coding',
-    author: 'Karpathy',
     featured: true,
     description: 'Based on Karpathy\'s viral coding rant. A non-sycophantic coding partner that surfaces assumptions, pushes back on bad ideas, and keeps things simple.',
     content: `You are a senior software engineer. You write, refactor, debug, and architect code. Your operational philosophy: move fast, but never faster than I can verify.
@@ -157,7 +156,6 @@ Here is the original:
     id: 16,
     title: 'The Articulation Engine',
     category: 'Writing',
-    author: 'Dan Koe',
     featured: true,
     description: 'Build an "inner album of greatest hits" and structure any idea for maximum impact using Micro Story, Pyramid Principle, and Cross-Domain Synthesis frameworks.',
     content: `You are my articulation architect - a communication strategist who understands that being articulate is not about sounding clever. It is about having a pool of refined ideas and knowing how to deploy them using frameworks that short-circuit attention. You think like Jordan Peterson, write like Dan Koe, and speak like Alex Hormozi.
@@ -199,7 +197,6 @@ Topic I need to articulate: [THE SPECIFIC TOPIC]`,
     id: 20,
     title: 'The Viral Tweet Engine',
     category: 'Writing',
-    author: '@godofprompt',
     description: 'Generate high-performing tweets and mini-threads engineered for maximum reach, replies, and bookmarks on X.',
     content: `You are a Viral Twitter/X Content Engine. Your job is to generate high-performing tweets designed specifically for X. Your goal is to maximize: engagement (replies + quotes + reposts), bookmarks and saves, algorithmic reach.
 
@@ -220,7 +217,6 @@ Generate 5 tweet variations + 1 mini-thread (3-5 tweets) version.`,
     id: 23,
     title: 'The Thread Architect',
     category: 'Writing',
-    author: '@godofprompt',
     description: 'Build a full viral thread from any topic using a proven 5-part structure: hook, story, value bombs, twist, and strong close.',
     content: `Outline a viral Twitter/X thread on [YOUR TOPIC] using this proven structure designed to go viral:
 
@@ -296,7 +292,6 @@ End with: the one thing I should change before pitching this to anyone else.`,
     id: 17,
     title: 'The Viral Reverse-Engineer',
     category: 'Strategy',
-    author: 'Dan Koe',
     description: 'Feed it 3 viral posts, it breaks down exactly why they worked, then writes new content in your voice using the same psychological patterns.',
     content: `You are a content strategist who reverse-engineers virality. Your job is to decode why specific content exploded, extract the reusable patterns, and help me create new content using those patterns in my own voice.
 
@@ -328,7 +323,6 @@ Here are the 3 viral posts:
     id: 18,
     title: 'The Meta-Prompt Builder',
     category: 'Strategy',
-    author: 'Dan Koe',
     description: 'Extract a reusable AI prompt from any expert content: video, article, or PDF. Ready to share or sell.',
     content: `You are a prompt engineer who builds reusable AI meta-prompts from expert content.
 
@@ -429,7 +423,6 @@ Give me a 30-day plan:
     id: 19,
     title: 'The Mind Map Generator',
     category: 'Thinking',
-    author: '@godofprompt',
     description: 'Generate a structured mind map from any topic in seconds. Paste the output into MarkMap for an interactive diagram.',
     content: `Step 1 - Generate the structure:
 
@@ -620,7 +613,6 @@ The main problem it solves: [THE PAIN POINT]`,
     id: 31,
     title: 'The Brand Voice Builder',
     category: 'Writing',
-    author: 'The AI Corner',
     description: 'Define your brand voice in a structured document so AI always writes like you. Tone, vocabulary, examples, and anti-patterns.',
     content: `Help me define my brand voice in a structured document I can reuse every time I write or have AI write for me.
 
@@ -654,7 +646,6 @@ After I answer, compile everything into a clean brand-voice.md document I can pa
     id: 32,
     title: 'The Socratic Strategist',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Force AI to think before it writes by asking about principles first. Based on Socratic prompting research.',
     content: `What makes a go-to-market strategy actually work for early-stage B2B SaaS?
 What are the most common mistakes founders make?
@@ -667,7 +658,6 @@ Now create a go-to-market strategy for [DESCRIBE YOUR PRODUCT AND TARGET CUSTOME
     id: 33,
     title: 'The Socratic Product Manager',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Use Socratic questioning to prioritize features like the best PMs. Surfaces real signals from noise.',
     content: `What frameworks do the best product managers use to prioritize features?
 How do you balance customer requests vs. strategic bets?
@@ -680,7 +670,6 @@ Here's my current backlog: [LIST FEATURES]. Help me prioritize based on [YOUR GO
     id: 34,
     title: 'The Socratic Negotiator',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Prepare for any negotiation by forcing AI to reason through leverage, framing, and common mistakes first.',
     content: `What makes salary negotiations actually succeed?
 What leverage do candidates typically underestimate?
@@ -693,7 +682,6 @@ I'm negotiating for [ROLE] at [COMPANY TYPE]. My current situation is [CONTEXT].
     id: 35,
     title: 'The SOP Builder',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Turn any repeatable workflow into a professional Standard Operating Procedure document anyone can follow.',
     content: `I'm going to describe a task I do regularly, and I want you to document it as a Standard Operating Procedure (SOP) that anyone could follow.
 
@@ -739,7 +727,6 @@ Here is the task I want documented:
     id: 36,
     title: 'The AI Employee Blueprint',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Design a complete AI assistant with identity, personality, boundaries, routines, and permissions. The full onboarding system.',
     content: `Help me design a complete AI employee using four configuration documents. Ask me questions for each section before generating.
 
@@ -777,7 +764,6 @@ Start by asking me 5 clarifying questions, then generate all four documents.`,
     id: 37,
     title: 'The AI Chief of Staff',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Configure an AI as your executive assistant and project manager. Handles scheduling, triage, research, and ops.',
     content: `You are my AI Chief of Staff. You take administrative and operational load off my plate. Think: executive assistant meets project manager.
 
@@ -817,7 +803,6 @@ Start by asking me what needs attention today.`,
     id: 38,
     title: 'The AI Opportunity Map',
     category: 'Strategy',
-    author: 'The AI Corner',
     description: 'Identify the highest-opportunity sectors for AI-powered businesses using the gap between theoretical and actual automation coverage.',
     content: `Act as a market analyst specializing in AI adoption and business opportunities.
 
@@ -857,7 +842,6 @@ My goal: [BUILD A PRODUCT / CONSULT / INVEST / EXPLORE]`,
     id: 39,
     title: 'The Socratic Marketer',
     category: 'Marketing',
-    author: 'The AI Corner',
     description: 'Write marketing copy that actually persuades by forcing AI to understand what makes copy convert before writing yours.',
     content: `What makes marketing copy actually persuade someone to buy?
 What's the difference between copy that sounds good and copy that converts?
@@ -870,7 +854,6 @@ Now write marketing copy for [YOUR PRODUCT] targeting [YOUR AUDIENCE].`,
     id: 40,
     title: 'The Socratic Seller',
     category: 'Marketing',
-    author: 'The AI Corner',
     description: 'Write cold emails that get opened and replied to. AI reasons through what actually works before writing yours.',
     content: `What makes a cold email get opened instead of deleted?
 What makes someone actually reply?
@@ -883,7 +866,6 @@ Now write a cold email for [YOUR PRODUCT] targeting [YOUR TARGET ROLE/COMPANY].`
     id: 41,
     title: 'The Socratic Content Planner',
     category: 'Marketing',
-    author: 'The AI Corner',
     description: 'Build a content calendar that feels coherent, not random. AI thinks through what works on your platform before planning.',
     content: `What type of content works best on [PLATFORM] for [YOUR INDUSTRY] companies?
 How often should you post without tiring your audience?
@@ -896,7 +878,6 @@ Now design a 30-day content calendar for [YOUR BUSINESS/TOPIC].`,
     id: 42,
     title: 'The Objection Killer',
     category: 'Marketing',
-    author: 'The AI Corner',
     description: 'Pre-empt every buyer objection before they even think it. Write copy that addresses resistance head-on.',
     content: `What would a skeptical [BUYER TYPE] ask about [YOUR PRODUCT]?
 What concerns would they have?
@@ -914,7 +895,6 @@ Rules:
     id: 43,
     title: 'The Pitch Deck Architect',
     category: 'Marketing',
-    author: 'The AI Corner',
     description: 'Design a 12-slide pitch deck structure with content for each slide. Covers problem, solution, traction, market, team, and the ask.',
     content: `Help me build the content for a 12-slide pitch deck.
 
@@ -951,7 +931,6 @@ Key metrics: [LIST YOUR BEST NUMBERS]`,
     id: 44,
     title: 'SEO Competitive Matrix',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Build a complete competitive intelligence spreadsheet showing where you outperform, fall short, and the exact gaps to close.',
     content: `Analyze my website and compare it against my top competitors for SEO competitive intelligence.
 
@@ -977,7 +956,6 @@ Format as a structured table I can reference and update quarterly.`,
     id: 45,
     title: 'The Content Gap Finder',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Find the exact topics your competitors invest in that you completely ignore. The highest-ROI SEO activity most businesses skip.',
     content: `Analyze these competitor sites for content gap opportunities:
 
@@ -1003,7 +981,6 @@ For each opportunity, suggest: the content format, a working title, and target w
     id: 46,
     title: 'The Keyword Reverse-Engineer',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Reverse-engineer your competitors\' top-performing keywords and pages into a prioritized opportunity spreadsheet.',
     content: `I want to reverse-engineer my competitors' keyword strategy.
 
@@ -1029,7 +1006,6 @@ Give me the top 20 keywords I should target first, with a suggested content plan
     id: 47,
     title: 'The Local Keyword Generator',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Generate 40 high-intent local keywords organized by search intent. The specific phrases that turn into calls and bookings.',
     content: `Generate 40 high-intent keywords for a [YOUR_SERVICE] in [YOUR_CITY] organized into 5 categories:
 
@@ -1057,7 +1033,6 @@ For each keyword, note:
     id: 48,
     title: 'The Funnel Keyword Mapper',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Map keywords to every stage of the buyer journey, from problem-aware to ready-to-buy. Built for SaaS and online businesses.',
     content: `Build a keyword map for [YOUR_PRODUCT] targeting [YOUR_IDEAL_CUSTOMER].
 
@@ -1082,7 +1057,6 @@ Prioritize publishing from the bottom of the funnel upward. Decision-stage conte
     id: 49,
     title: 'The Technical SEO Auditor',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Run a full 8-category technical SEO audit with severity ratings and specific fixes. The diagnostic work agencies charge $2K+ for.',
     content: `Analyze [YOUR_URL] for technical SEO issues across 8 categories:
 
@@ -1106,7 +1080,6 @@ Output as a prioritized list, critical issues first. End with a summary score (o
     id: 50,
     title: 'The Page SEO Scorer',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Score any page against 12 on-page SEO factors with pass/fail grades and exact fixes. Best for pages stuck on page 2-3 of Google.',
     content: `Analyze [PAGE_URL] targeting the keyword "[TARGET_KEYWORD]" and score each of these pass or fail:
 
@@ -1129,7 +1102,6 @@ For every failing item, write the exact fix. Not advice. The actual rewritten ti
     id: 51,
     title: 'The Pre-Publish SEO Check',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Run this 11-point checklist on every piece of content before you hit publish. Catches issues that cost months of ranking potential.',
     content: `Review this content before I publish it. Target keyword: [TARGET_KEYWORD]
 
@@ -1156,7 +1128,6 @@ Here is my content:
     id: 52,
     title: 'The E-E-A-T Optimizer',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Score your content on Google\'s Experience, Expertise, Authoritativeness, and Trustworthiness framework with specific fixes.',
     content: `Analyze this page using Google's E-E-A-T framework (Experience, Expertise, Authoritativeness, Trustworthiness).
 
@@ -1180,7 +1151,6 @@ Prioritize changes that require the least effort but create the biggest percepti
     id: 53,
     title: 'The Backlink Strategist',
     category: 'SEO',
-    author: 'The AI Corner',
     description: 'Analyze your competitors\' backlinks and build a 90-day outreach plan with specific targets and email templates.',
     content: `Research the backlink profiles of my competitors and build me an outreach strategy.
 
@@ -1208,7 +1178,6 @@ Write outreach email templates for the top 5 opportunities.`,
     id: 54,
     title: 'The Deep Researcher',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Get a full research report on any topic in minutes. Executive summary, key findings, different perspectives, and action items.',
     content: `I need comprehensive research on a topic. Create a detailed report I can reference.
 
@@ -1263,7 +1232,6 @@ MY CONTEXT: [WHY YOU'RE RESEARCHING THIS]`,
     id: 55,
     title: 'The Due Diligence Analyst',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Run a 10-section due diligence analysis on any company or opportunity. Financial analysis, competitive position, risks, and a clear recommendation.',
     content: `I'm evaluating an opportunity and need thorough due diligence.
 
@@ -1299,7 +1267,6 @@ Be direct. Tell me what you actually think, not just neutral analysis.`,
     id: 56,
     title: 'The Socratic Analyst',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Run a competitor analysis that separates signal from noise. AI thinks through what great analysts actually look at first.',
     content: `What would a great competitive analyst actually look at?
 What data points matter most vs. what's just noise?
@@ -1312,7 +1279,6 @@ Now analyze these competitors: [LIST COMPETITORS]. My company is [DESCRIPTION]. 
     id: 57,
     title: 'The Expert Panel Simulator',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Simulate what a domain expert would ask before tackling a problem. Surfaces assumptions and data requirements you\'d miss.',
     content: `What would someone very good at [DOMAIN/SKILL] ask before setting up a [PROJECT/SYSTEM]?
 What data would they need?
@@ -1331,7 +1297,6 @@ Rules:
     id: 58,
     title: 'The AI Research Analyst',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Configure AI as a dedicated research analyst that consumes large volumes of information and produces useful insights.',
     content: `You are my dedicated Research Analyst. Your job is to consume large volumes of information and produce useful, actionable insights.
 
@@ -1365,7 +1330,6 @@ Begin by telling me what you'll investigate and asking any clarifying questions.
     id: 59,
     title: 'The Meeting Prep Brief',
     category: 'Research',
-    author: 'The AI Corner',
     description: 'Prepare for any meeting in minutes. Get context, their priorities, your goals, talking points, and questions to ask.',
     content: `I have a meeting coming up and need to be prepared.
 
@@ -1410,7 +1374,6 @@ Keep it concise. I want to review this in 5 minutes, not 30.`,
     id: 60,
     title: 'The Pre-Mortem',
     category: 'Thinking',
-    author: 'The AI Corner',
     description: 'Kill your project\'s biggest risks before they happen. AI analyzes common failure modes and builds a plan that avoids them.',
     content: `What are the most common reasons [TYPE OF PROJECT] fails?
 What do people typically underestimate?
@@ -1430,7 +1393,6 @@ End with: the 3 things most likely to kill this project and exactly what I shoul
     id: 61,
     title: 'The AI Career Auditor',
     category: 'Thinking',
-    author: 'The AI Corner',
     description: 'Calculate your AI exposure score and get specific career moves based on how automatable your daily tasks are.',
     content: `Help me calculate my AI exposure score and figure out what to do about it.
 
@@ -1468,7 +1430,6 @@ Be direct. Don't sugarcoat. I'd rather know now than be surprised later.`,
     id: 62,
     title: 'The Weekly Reviewer',
     category: 'Thinking',
-    author: 'The AI Corner',
     description: 'Run a thorough weekly productivity review. Wins, time analysis, commitments made, and priorities for next week.',
     content: `Help me conduct a comprehensive weekly review. I'll provide the raw information, you structure the analysis.
 
@@ -1515,7 +1476,6 @@ Here's what happened this week:
     id: 63,
     title: 'Subscription Audit & Cleaner',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Find every subscription you pay for, calculate annual waste, and get cancel links. Run quarterly to catch $50-200/month in forgotten charges.',
     content: `I want to audit all my subscriptions and recurring payments. Help me find and evaluate every one.
@@ -1570,7 +1530,6 @@ Sort by cost (highest first) so I can prioritize.`,
     id: 64,
     title: 'Price Comparison Engine',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Compare prices across Amazon, Best Buy, Walmart, eBay, and specialty retailers. Includes coupon codes, price history, and refurb options.',
     content: `I need to buy something and I want the best deal. Help me compare options.
@@ -1613,7 +1572,6 @@ Give me a clear recommendation with reasoning.`,
     id: 65,
     title: 'Calendar Optimizer',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Analyze your calendar, protect deep work blocks, suggest meeting consolidation, and draft scheduling emails. Ongoing calendar management.',
     content: `I need you to help me optimize my calendar and schedule meetings efficiently.
@@ -1660,7 +1618,6 @@ Find me the best times.`,
     id: 66,
     title: 'Expense Tracker & Audit',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Scan your computer for receipts, invoices, and financial documents. Categorize expenses, flag deductions, and generate a summary spreadsheet.',
     content: `I need you to conduct a comprehensive expense audit of my computer.
@@ -1700,7 +1657,6 @@ Save the final spreadsheet to my Desktop as "Expense_Audit_[DATE].xlsx"`,
     id: 67,
     title: 'Email Inbox Zero',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Connect to your email, categorize unread messages by urgency, draft responses for urgent items, and identify newsletters to unsubscribe from.',
     content: `I need you to help me achieve inbox zero. Connect to my email and help me process my unread messages.
@@ -1738,7 +1694,6 @@ Start with a scan and show me the breakdown before taking action.`,
     id: 68,
     title: 'Desktop Deep Clean',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Scan your desktop and downloads folder, categorize every file, create an organized folder structure, and move everything into place.',
     content: `I need you to conduct a comprehensive cleanup of my desktop and downloads folder.
@@ -1780,7 +1735,6 @@ Start with the scan and show me what you find before moving files.`,
     id: 69,
     title: 'Morning Routine Chain',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'A 12-minute morning sequence: triage email, review today\'s calendar, and run a weekly review on Mondays. Complete daily prep in one go.',
     content: `Run my morning routine. Execute these workflows in sequence:
@@ -1814,7 +1768,6 @@ Total time: under 12 minutes for complete daily prep.`,
     id: 70,
     title: 'Monthly Financial Chain',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Run on the 1st of every month: audit subscriptions, categorize last month\'s expenses, and review your financial position in 45 minutes.',
     content: `Run my monthly financial review. Execute these workflows in sequence on the 1st of the month:
@@ -1849,7 +1802,6 @@ Total time: approximately 45 minutes for complete financial overview.`,
     id: 71,
     title: 'Research-to-Action Chain',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'Go from zero knowledge to documented action plan: deep research, price comparison (if buying), and SOP documentation for any new process.',
     content: `Run a research-to-action chain. Execute these steps in sequence:
@@ -1892,7 +1844,6 @@ GOAL: [WHAT DECISION THIS RESEARCH WILL INFORM]`,
     id: 72,
     title: '9-Step Slide Builder',
     category: 'Workflows',
-    author: 'Ruben Hassid',
     tools: ['Claude', 'Gamma'],
     description: 'Build a complete slide deck using Claude for research and outlining, then Gamma for visual generation. Research-first, step-by-step approach.',
     content: `I want to build a presentation. Follow this 9-step process precisely. Do not skip steps.
@@ -1937,7 +1888,6 @@ Flag any issues and suggest specific fixes.`,
     id: 73,
     title: 'Web-Native Deck Kit',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Lovable'],
     description: 'Build a full-screen, animated, web-native slide deck as a React app. Includes 12 slide templates, design system, and a 3-step workflow to ship without breaking things.',
     content: `Create a web-based slide deck app.
@@ -2012,7 +1962,6 @@ Guardrails: never refactor navigation unless explicitly asked, never change them
     id: 74,
     title: 'Cowork Setup System',
     category: 'Workflows',
-    author: 'The AI Corner',
     tools: ['Claude Cowork'],
     description: 'The 30-minute setup that turns generic Cowork into a personalized assistant. Context files, global instructions, folder instructions, and first-task validation.',
     content: `Help me set up Claude Cowork properly. Follow this 30-minute setup process.
