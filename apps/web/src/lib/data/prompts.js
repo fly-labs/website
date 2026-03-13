@@ -128,7 +128,7 @@ Rules:
 - Use short paragraphs and line breaks for readability
 - End with a clear takeaway or call to action
 - Match the tone of the platform (professional for LinkedIn, punchy for Twitter, etc.)
-- No filler, no fluff, no "let's dive in"
+- No filler, no filler phrases like "let's dive in"
 
 Here are my rough notes:
 [PASTE NOTES]`,
@@ -138,7 +138,7 @@ Here are my rough notes:
     title: 'The Conversion Copywriter',
     category: 'Writing',
     description: 'Rewrite any landing page, email, or pitch to actually convert. Uses proven frameworks like PAS and AIDA.',
-    content: `You are a world-class copywriter. Rewrite this to convert better using proven frameworks (PAS, AIDA, or BAB, whichever fits best).
+    content: `You are an experienced direct-response copywriter. Rewrite this to convert better using proven frameworks (PAS, AIDA, or BAB, whichever fits best).
 
 Make it punchy, concise, and persuasive. Every line should move the reader closer to action.
 
@@ -226,7 +226,7 @@ Generate 5 tweet variations + 1 mini-thread (3-5 tweets) version.`,
 4. Counterintuitive twist or "what most people get wrong"
 5. Strong close: question + call to bookmark/reply/share + subtle self-promo if relevant
 
-Voice: experienced, slightly opinionated, zero fluff. Use line breaks, emojis sparingly.
+Voice: experienced, slightly opinionated, every word earns its place. Use line breaks, emojis sparingly.
 
 Topic: [YOUR TOPIC]`,
   },
@@ -267,8 +267,8 @@ Rules: treat me as the product owner. Do not overwhelm me with jargon. Push back
     id: 13,
     title: 'The Investor Teardown',
     category: 'Strategy',
-    description: 'Get your startup idea ripped apart before you waste months building it. Brutal, honest, useful.',
-    content: `You are a brutally honest investor evaluating a pitch. No fluff, no encouragement for the sake of it, just real feedback.
+    description: 'Get your startup idea ripped apart before you waste months building it.',
+    content: `You are an investor who tells founders what they need to hear, not what they want to hear. Real feedback only.
 
 My pitch: [DESCRIBE YOUR STARTUP IDEA]
 
@@ -441,8 +441,8 @@ Example:
     id: 21,
     title: 'The Life Reset',
     category: 'Thinking',
-    description: 'Feel stuck? This interactive prompt asks 7 piercing questions that cut through denial, then gives you a brutally honest diagnosis and a 30-day micro-experiment plan.',
-    content: `I want to make meaningful changes in my life but feel stuck. Act as the most brutally honest, no-BS life coach who accepts zero excuses.
+    description: 'Feel stuck? This interactive prompt asks 7 piercing questions that cut through denial, then gives you an honest diagnosis and a 30-day micro-experiment plan.',
+    content: `I want to make meaningful changes in my life but feel stuck. Act as the most honest, direct life coach who accepts zero excuses.
 
 Ask me ONLY 7 sharp, piercing questions - one at a time - that cut through denial and force clarity. After I answer all 7, give me:
 
@@ -622,7 +622,7 @@ Walk me through each section and ask me questions before filling it in:
 How do I sound? Direct? Warm? Analytical? Playful? Describe the overall feel.
 
 ## What I Sound Like
-Specific descriptions. Example: "Short sentences. No fluff. Talks like a smart friend, not a professor."
+Specific descriptions. Example: "Short sentences. Every word earns its place. Talks like a smart friend, not a professor."
 
 ## What I Never Sound Like
 What feels wrong? Example: "Corporate speak. Buzzwords. Motivational poster energy."
@@ -1219,7 +1219,7 @@ Write outreach email templates for the top 5 opportunities.`,
     title: 'The Deep Researcher',
     category: 'Research',
     description: 'Get a full research report on any topic in minutes. Executive summary, key findings, different perspectives, and action items.',
-    content: `I need comprehensive research on a topic. Create a detailed report I can reference.
+    content: `I need thorough research on a topic. Create a detailed report I can reference.
 
 TOPIC: [YOUR TOPIC]
 RESEARCH DEPTH: [Quick overview - 1 page / Standard - 3-5 pages / Deep dive - 10+ pages]
@@ -1471,7 +1471,7 @@ Be direct. Don't sugarcoat. I'd rather know now than be surprised later.`,
     title: 'The Weekly Reviewer',
     category: 'Thinking',
     description: 'Run a thorough weekly productivity review. Wins, time analysis, commitments made, and priorities for next week.',
-    content: `Help me conduct a comprehensive weekly review. I'll provide the raw information, you structure the analysis.
+    content: `Help me conduct a thorough weekly review. I'll provide the raw information, you structure the analysis.
 
 Review these areas:
 
@@ -1660,7 +1660,7 @@ Find me the best times.`,
     category: 'Workflows',
     tools: ['Claude Cowork'],
     description: 'Scan your computer for receipts, invoices, and financial documents. Categorize expenses, flag deductions, and generate a summary spreadsheet.',
-    content: `I need you to conduct a comprehensive expense audit of my computer.
+    content: `I need you to conduct a full expense audit of my computer.
 
 1. SEARCH for financial documents:
    - Look in Desktop, Downloads, Documents, and any folder named "Receipts," "Expenses," "Finance," or "Taxes"
@@ -1736,7 +1736,7 @@ Start with a scan and show me the breakdown before taking action.`,
     category: 'Workflows',
     tools: ['Claude Cowork'],
     description: 'Scan your desktop and downloads folder, categorize every file, create an organized folder structure, and move everything into place.',
-    content: `I need you to conduct a comprehensive cleanup of my desktop and downloads folder.
+    content: `I need you to conduct a full cleanup of my desktop and downloads folder.
 
 Here's what I want you to do:
 
@@ -1847,7 +1847,7 @@ Total time: approximately 45 minutes for complete financial overview.`,
     content: `Run a research-to-action chain. Execute these steps in sequence:
 
 STEP 1: DEEP RESEARCH (15 min)
-Research [TOPIC/OPPORTUNITY/PRODUCT CATEGORY] comprehensively.
+Research [TOPIC/OPPORTUNITY/PRODUCT CATEGORY] thoroughly.
 Structure findings as:
 - Executive summary (3-5 bullet points)
 - Key findings organized by theme
@@ -2018,7 +2018,7 @@ FILE 1: about-me.md
 
 FILE 2: brand-voice.md
 - Tone: [How I sound: direct, warm, analytical, etc.]
-- What I Sound Like: [Specific descriptions: "Short sentences. No fluff."]
+- What I Sound Like: [Specific descriptions: "Short sentences. Every word earns its place."]
 - What I Never Sound Like: [What feels wrong: "Corporate speak. Buzzwords."]
 - Words I Use: [My vocabulary and phrases]
 - Words I Avoid: [Off-brand terms]
