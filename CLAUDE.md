@@ -82,7 +82,7 @@ apps/web/
 │       ├── IdeaSubmissionPage.jsx # Idea Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
 │       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
-│       ├── AboutPage.jsx         # Conversational intro, pull quote, GitHub heatmap, current focus, social links
+│       ├── AboutPage.jsx         # 5-act visual journey: hero, manifesto, story beat cards, by-the-numbers stats + GitHub heatmap, closing CTA
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
 │       ├── PromptsPage.jsx       # Hybrid: 5 public / full library for members (vote, comment, copy, suggest)

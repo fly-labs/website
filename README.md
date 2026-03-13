@@ -167,7 +167,7 @@ apps/web/
 | `/ideas` | Idea Lab (AI-scored, validated, paginated, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scoring, market evidence, vote, share) | Public |
 | `/newsletter` | Newsletter (Substack RSS) | Public |
-| `/about` | About (conversational intro, pull quote, GitHub heatmap, current focus) | Public |
+| `/about` | About (5-act visual journey: manifesto, story beat cards, stats + GitHub heatmap, closing CTA) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
 | `/scoring` | Scoring Frameworks (Fly Labs Method + Hormozi + Dan Koe + Okamoto + Validation) | Public |
