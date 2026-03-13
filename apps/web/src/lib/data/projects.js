@@ -1,9 +1,6 @@
 import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
-
-// Can't import from siteStats.js (circular dep), so define locally.
-// Keep in sync with siteStats.js FRAMEWORK_COUNT.
-const FRAMEWORK_COUNT = 4;
+import { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 
 export const categories = ['All', 'Business', 'Tools', 'Learn'];
 
