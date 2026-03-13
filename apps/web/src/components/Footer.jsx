@@ -59,7 +59,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-between gap-2 text-sm text-muted-foreground font-medium">
-          <span>&copy; {new Date().getFullYear()} Fly Labs. Tools, templates, and ideas for business and learning.</span>
+          <span>&copy; {new Date().getFullYear()} Fly Labs. The vibe building hub.</span>
           <a
             href="https://claude.ai"
             target="_blank"

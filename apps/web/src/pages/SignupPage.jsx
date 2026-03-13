@@ -6,6 +6,7 @@ import { Loader2, Mail, Lock, ShieldCheck, Sparkles, Code, LayoutTemplate } from
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { GoogleIcon } from '@/components/GoogleIcon.jsx';
+import { PROMPT_COUNT } from '@/lib/data/siteStats.js';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
@@ -83,15 +84,15 @@ const SignupPage = () => {
           <div className="flex flex-col gap-2 mb-6 p-4 rounded-xl bg-muted/50 border border-border">
             <div className="flex items-center gap-3 text-sm">
               <Sparkles className="w-4 h-4 text-primary shrink-0" />
-              <span className="font-medium">AI prompts that ship code faster</span>
+              <span className="font-medium">{PROMPT_COUNT} AI prompts, copy-paste ready</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <LayoutTemplate className="w-4 h-4 text-secondary shrink-0" />
-              <span className="font-medium">Ready-made Notion systems</span>
+              <span className="font-medium">Notion templates that actually save time</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Code className="w-4 h-4 text-blue-500 shrink-0" />
-              <span className="font-medium">First access to new tools</span>
+              <span className="font-medium">Early access to everything we ship</span>
             </div>
           </div>
 

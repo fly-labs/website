@@ -149,7 +149,7 @@ const ProfilePage = () => {
               </AvatarFallback>
             </Avatar>
             <h1 className="text-2xl font-black tracking-tight">Your Profile</h1>
-            <p className="text-muted-foreground font-medium mt-1 text-sm">All fields are optional.</p>
+            <p className="text-muted-foreground font-medium mt-1 text-sm">Fill in what you want, skip what you don't.</p>
 
             {/* Completeness indicator */}
             <div className="w-full mt-4">

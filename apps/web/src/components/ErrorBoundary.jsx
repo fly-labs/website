@@ -23,7 +23,7 @@ export class ErrorBoundary extends React.Component {
           <div className="max-w-md w-full text-center bg-card border border-border rounded-3xl p-10 shadow-xl">
             <h1 className="text-3xl font-black tracking-tight mb-3">Something went wrong</h1>
             <p className="text-muted-foreground font-medium mb-8">
-              Try refreshing the page. If the problem persists, let me know.
+              Try refreshing the page. If the problem persists, reach out at flylabs.fun/about.
             </p>
             <button
               onClick={() => { window.location.href = '/'; }}

@@ -1,6 +1,10 @@
 import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 
+// Can't import from siteStats.js (circular dep), so define locally.
+// Keep in sync with siteStats.js FRAMEWORK_COUNT.
+const FRAMEWORK_COUNT = 4;
+
 export const categories = ['All', 'Business', 'Tools', 'Learn'];
 
 
@@ -104,7 +108,7 @@ export const projects = [
   },
   {
     title: 'Idea Lab',
-    description: `The hardest part of building is knowing what to build. This system pulls real problems from ${SOURCE_COUNT} sources, scores them with 4 AI frameworks, and validates against real market conversations. The best ones get built.`,
+    description: `Pulls real problems from ${SOURCE_COUNT} sources, scores them with ${FRAMEWORK_COUNT} AI frameworks, and validates against real conversations. The best ones get built.`,
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

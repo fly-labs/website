@@ -10,6 +10,7 @@ import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 
 import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
+import { EXPERT_FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
@@ -727,12 +728,9 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      The hardest part of building is knowing what to build. Most people grab the first
-                      idea that excites them and start coding. Six months later they've built something
-                      nobody wants. This system fixes that. We pull real problems from {SOURCE_COUNT} sources daily,
-                      score each one through the Fly Labs Method and 3 expert frameworks, then validate
-                      top ideas against real conversations on X and Reddit. You get a verdict: build it,
-                      validate first, or move on.
+                      We pull real problems from {SOURCE_COUNT} sources daily, score each one through the Fly Labs
+                      Method and {EXPERT_FRAMEWORK_COUNT} expert frameworks, then validate top ideas against real conversations
+                      on X and Reddit. Each idea gets a verdict: build it, validate first, or move on.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

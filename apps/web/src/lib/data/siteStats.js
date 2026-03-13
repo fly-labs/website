@@ -1,0 +1,27 @@
+import { prompts } from '@/lib/data/prompts.js';
+import { SOURCE_COUNT } from '@/lib/data/ideas.js';
+import { books } from '@/lib/data/library.js';
+import { projects } from '@/lib/data/projects.js';
+
+// Computed from data arrays (auto-sync)
+export const PROMPT_COUNT = prompts.length;
+export const PROMPT_CATEGORIES = [...new Set(prompts.map(p => p.category))];
+export const CATEGORY_COUNT = PROMPT_CATEGORIES.length;
+export const CATEGORY_LIST = PROMPT_CATEGORIES.join(', ');
+export const BOOK_COUNT = books.filter(b => b.status === 'available').length;
+export const TEMPLATE_COUNT = projects.filter(p => ['Live', 'Beta'].includes(p.status) && p.type !== 'Newsletter' && p.type !== 'Ebooks' && p.type !== 'Ideas').length;
+
+// Re-export for convenience
+export { SOURCE_COUNT };
+
+// Architectural constants (update when codebase changes)
+// These describe the codebase itself and can't be auto-computed at runtime.
+// Centralized here so there's ONE place to update.
+export const ROUTE_COUNT = 18;
+export const SCRIPT_COUNT = 10;
+export const GA4_EVENT_COUNT = 24;
+export const DB_TABLE_COUNT = 6;
+export const RPC_COUNT = 6;
+export const WORKFLOW_COUNT = 3;
+export const FRAMEWORK_COUNT = 4;
+export const EXPERT_FRAMEWORK_COUNT = 3; // Hormozi, Dan Koe, Okamoto

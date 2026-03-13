@@ -76,7 +76,7 @@ Used by: [what consumes it]
     id: 2,
     title: 'The Vibe Check',
     category: 'Writing',
-    description: 'Turn boring copy into something people actually want to read.',
+    description: 'Paste your copy and get honest feedback on what lands, what drags, and what to cut.',
     content: 'Rewrite the following text to sound more conversational, authentic, and engaging. Remove corporate jargon and buzzwords. Make it sound like a knowledgeable friend explaining it to you over coffee.',
   },
   {
@@ -329,7 +329,7 @@ Here are the 3 viral posts:
     title: 'The Meta-Prompt Builder',
     category: 'Strategy',
     author: 'Dan Koe',
-    description: 'Turn any expert content (video, article, PDF) into a reusable AI prompt you can share or sell.',
+    description: 'Extract a reusable AI prompt from any expert content: video, article, or PDF. Ready to share or sell.',
     content: `You are a prompt engineer who builds reusable AI meta-prompts from expert content.
 
 I will give you source material (a transcript, article, PDF summary, or set of notes from an expert). Your job is to extract the expert's frameworks, mental models, and decision-making patterns, then package them into a standalone prompt that anyone can paste into an AI and get expert-level output.
@@ -410,7 +410,7 @@ Here is my idea:
     id: 15,
     title: 'The 30-Day Strategist',
     category: 'Thinking',
-    description: 'Turn any goal into a week-by-week action plan with specific milestones and daily habits.',
+    description: 'Give it a goal. Get back a week-by-week action plan with milestones and daily habits.',
     content: `I need a personal strategy to achieve a specific goal.
 
 My goal: [YOUR GOAL]
@@ -430,7 +430,7 @@ Give me a 30-day plan:
     title: 'The Mind Map Generator',
     category: 'Thinking',
     author: '@godofprompt',
-    description: 'Turn any topic into a structured mind map in seconds. Paste the markdown output into MarkMap to get an interactive visual diagram.',
+    description: 'Generate a structured mind map from any topic in seconds. Paste the output into MarkMap for an interactive diagram.',
     content: `Step 1 - Generate the structure:
 
 Create a mind map of [YOUR TOPIC]. List topics as central ideas, main branches, and sub-branches.
@@ -549,7 +549,7 @@ My offer (if any): [WHAT YOU SELL OR WANT TO PROMOTE]`,
     id: 28,
     title: 'The Audience Monetizer',
     category: 'Marketing',
-    description: 'Turn followers into paying customers. Get a monetization plan with offer ideas, pricing, and content angles that convert.',
+    description: 'Get a monetization plan for your audience: offer ideas, pricing, and content angles that actually convert.',
     content: `Help me turn my followers into paying customers.
 
 Review my current situation and build a monetization plan:
@@ -1181,7 +1181,7 @@ Prioritize changes that require the least effort but create the biggest percepti
     title: 'The Backlink Strategist',
     category: 'SEO',
     author: 'The AI Corner',
-    description: 'Turn your competitors\' backlink profiles into a 90-day outreach plan with specific targets and email templates.',
+    description: 'Analyze your competitors\' backlinks and build a 90-day outreach plan with specific targets and email templates.',
     content: `Research the backlink profiles of my competitors and build me an outreach strategy.
 
 COMPETITORS: [COMP1_URL], [COMP2_URL], [COMP3_URL]
@@ -1209,7 +1209,7 @@ Write outreach email templates for the top 5 opportunities.`,
     title: 'The Deep Researcher',
     category: 'Research',
     author: 'The AI Corner',
-    description: 'Get a comprehensive research report on any topic in minutes. Executive summary, key findings, different perspectives, and action items.',
+    description: 'Get a full research report on any topic in minutes. Executive summary, key findings, different perspectives, and action items.',
     content: `I need comprehensive research on a topic. Create a detailed report I can reference.
 
 TOPIC: [YOUR TOPIC]
@@ -1469,7 +1469,7 @@ Be direct. Don't sugarcoat. I'd rather know now than be surprised later.`,
     title: 'The Weekly Reviewer',
     category: 'Thinking',
     author: 'The AI Corner',
-    description: 'Run a comprehensive weekly productivity review. Wins, time analysis, commitments made, and priorities for next week.',
+    description: 'Run a thorough weekly productivity review. Wins, time analysis, commitments made, and priorities for next week.',
     content: `Help me conduct a comprehensive weekly review. I'll provide the raw information, you structure the analysis.
 
 Review these areas:

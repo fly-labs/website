@@ -79,7 +79,7 @@ const OnePageBusinessPlanPage = () => {
               One-Page <span className="text-primary">Business Plan</span>
             </h1>
             <p className="text-xl text-muted-foreground font-bold leading-relaxed max-w-2xl">
-              You don't need a 30-page document. You need clarity. Answer five questions and you'll know more about your business than most founders do after months of planning.
+              Five questions. That's it. Answer them and you'll know more about your business than most founders do after months of planning.
             </p>
           </motion.div>
 
@@ -127,7 +127,7 @@ const OnePageBusinessPlanPage = () => {
           >
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">This template is being built</h2>
             <p className="text-muted-foreground font-medium mb-8 max-w-lg mx-auto">
-              I'm still crafting this Notion template to make sure it's actually useful. Subscribe to the newsletter to get notified when it drops.
+              I'm testing this on real ideas before shipping it. Subscribe to the newsletter and I'll let you know when it's ready.
             </p>
             <span className="inline-flex items-center gap-2 h-12 px-6 md:h-14 md:px-8 rounded-xl bg-muted text-muted-foreground text-base md:text-lg font-semibold border border-border cursor-default">
               <Clock className="w-5 h-5" /> Coming Soon

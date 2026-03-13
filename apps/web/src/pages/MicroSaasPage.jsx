@@ -71,7 +71,7 @@ const MicroSaasPage = () => {
     <PageLayout
       seo={{
         title: "Micro Tools - Small Apps That Solve One Problem",
-        description: "Small, focused tools that solve one problem really well. No bloat, no sign-ups, no nonsense. Join the waitlist for upcoming micro tools from Fly Labs.",
+        description: "Small, focused tools that solve one problem really well. Open them, use them, done. Join the waitlist for upcoming micro tools from Fly Labs.",
         keywords: "micro tools, small apps, AI tools, automation, no-code tools, indie maker, waitlist",
         url: "https://flylabs.fun/microsaas",
       }}
@@ -111,7 +111,7 @@ const MicroSaasPage = () => {
               transition={{ delay: 0.2 }}
               className="text-xl md:text-2xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed"
             >
-              Small, focused tools that solve one problem really well. No bloat, no sign-ups, no nonsense.
+              Small, focused tools that solve one problem really well. Open them, use them, done.
             </motion.p>
           </div>
 
@@ -124,8 +124,8 @@ const MicroSaasPage = () => {
           >
             {[
               { icon: Zap, label: 'Fast and focused', sublabel: 'One tool, one job, done right' },
-              { icon: Wrench, label: 'Built from real needs', sublabel: 'Not another bloated app' },
-              { icon: Layers, label: 'Free to use', sublabel: 'No accounts, no paywalls' },
+              { icon: Wrench, label: 'Built from real needs', sublabel: 'Each one solves a specific problem' },
+              { icon: Layers, label: 'Free to use', sublabel: 'Open and ready, always' },
             ].map((item, i) => (
               <motion.div
                 key={item.label}

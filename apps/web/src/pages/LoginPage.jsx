@@ -105,7 +105,7 @@ const LoginPage = () => {
         <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-black tracking-tight">Welcome Back</h1>
-            <p className="text-muted-foreground font-medium mt-2">Log in to access your tools.</p>
+            <p className="text-muted-foreground font-medium mt-2">Pick up where you left off.</p>
           </div>
 
           {/* Google OAuth first, lowest friction */}

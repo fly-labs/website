@@ -10,17 +10,21 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { SOURCE_COUNT } from '@/lib/data/ideas.js';
+import {
+  SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, CATEGORY_LIST,
+  ROUTE_COUNT, SCRIPT_COUNT, GA4_EVENT_COUNT, DB_TABLE_COUNT,
+  RPC_COUNT, WORKFLOW_COUNT, FRAMEWORK_COUNT,
+} from '@/lib/data/siteStats.js';
 
 const GITHUB_URL = 'https://github.com/fly-labs/website';
 
 const heroStats = [
-  { label: 'Routes', value: '18' },
-  { label: 'Data Sources', value: '9' },
-  { label: 'AI Frameworks', value: '4' },
-  { label: 'Scripts', value: '10' },
-  { label: 'GA4 Events', value: '24' },
-  { label: 'DB Tables', value: '6' },
+  { label: 'Routes', value: String(ROUTE_COUNT) },
+  { label: 'Data Sources', value: String(SOURCE_COUNT) },
+  { label: 'AI Frameworks', value: String(FRAMEWORK_COUNT) },
+  { label: 'Scripts', value: String(SCRIPT_COUNT) },
+  { label: 'GA4 Events', value: String(GA4_EVENT_COUNT) },
+  { label: 'DB Tables', value: String(DB_TABLE_COUNT) },
 ];
 
 const platformSections = [
@@ -28,8 +32,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Idea Lab',
     route: '/ideas',
-    desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across 4 frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
-    highlights: [`${SOURCE_COUNT} sources`, '4 AI frameworks', 'Market validation'],
+    desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across ${FRAMEWORK_COUNT} frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
+    highlights: [`${SOURCE_COUNT} sources`, `${FRAMEWORK_COUNT} AI frameworks`, 'Market validation'],
     icon: Lightbulb,
     color: 'border-primary',
   },
@@ -38,7 +42,7 @@ const platformSections = [
     title: 'Scoring Frameworks',
     route: '/scoring',
     desc: 'The Fly Labs Method (40% weight) plus Hormozi, Dan Koe, and Okamoto as expert perspectives (20% each). Per-pillar reasoning. Composite score. One verdict.',
-    highlights: ['4 frameworks', 'Per-pillar reasoning', 'Weighted synthesis'],
+    highlights: [`${FRAMEWORK_COUNT} frameworks`, 'Per-pillar reasoning', 'Weighted synthesis'],
     icon: BarChart3,
     color: 'border-secondary',
   },
@@ -46,8 +50,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Prompt Library',
     route: '/prompts',
-    desc: '30 prompts across Coding, Writing, Strategy, Marketing, and Thinking. 5 free for everyone, full library for members. Community voting, comments, and suggestions.',
-    highlights: ['30 prompts', '5 categories', 'Voting + comments'],
+    desc: `${PROMPT_COUNT} prompts across ${CATEGORY_LIST}. 5 free for everyone, full library for members. Community voting, comments, and suggestions.`,
+    highlights: [`${PROMPT_COUNT} prompts`, `${CATEGORY_COUNT} categories`, 'Voting + comments'],
     icon: Sparkles,
     color: 'border-accent',
   },
@@ -81,18 +85,18 @@ const platformSections = [
 ];
 
 const stackItems = [
-  { name: 'Claude Sonnet 4', icon: Brain, desc: 'AI scoring engine. 4 frameworks, per-pillar reasoning, verdicts.', color: 'border-accent' },
+  { name: 'Claude Sonnet 4', icon: Brain, desc: `AI scoring engine. ${FRAMEWORK_COUNT} frameworks, per-pillar reasoning, verdicts.`, color: 'border-accent' },
   { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
-  { name: 'Supabase', icon: Database, desc: 'PostgreSQL + Auth + RLS. 6 tables, 6 RPCs.', color: 'border-secondary' },
-  { name: 'GitHub Actions', icon: GitBranch, desc: '2 workflows. Sync + enrich daily, auto-deploy on push.', color: 'border-accent' },
-  { name: 'React 18', icon: Code, desc: 'UI framework. 18 lazy-loaded routes. JSX, no TypeScript.', color: 'border-primary' },
+  { name: 'Supabase', icon: Database, desc: `PostgreSQL + Auth + RLS. ${DB_TABLE_COUNT} tables, ${RPC_COUNT} RPCs.`, color: 'border-secondary' },
+  { name: 'GitHub Actions', icon: GitBranch, desc: `${WORKFLOW_COUNT} workflows. Sync + enrich daily, auto-deploy on push.`, color: 'border-accent' },
+  { name: 'React 18', icon: Code, desc: `UI framework. ${ROUTE_COUNT} lazy-loaded routes. JSX, no TypeScript.`, color: 'border-primary' },
   { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Vendor/motion/supabase chunking.', color: 'border-secondary' },
   { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first with HSL theming. Light and dark mode.', color: 'border-accent' },
   { name: 'shadcn/ui', icon: Layers, desc: 'Radix primitives with CVA variants.', color: 'border-primary' },
   { name: 'React Router v7', icon: Navigation, desc: 'Client-side SPA. URL state persistence for filters.', color: 'border-secondary' },
   { name: 'Framer Motion 11', icon: Sparkles, desc: 'Scroll-triggered animations. No layout thrashing.', color: 'border-accent' },
   { name: 'Lucide React', icon: Smile, desc: 'Tree-shakeable icon library.', color: 'border-primary' },
-  { name: 'Google Analytics 4', icon: BarChart3, desc: '24 custom events. User properties. Debug mode in dev.', color: 'border-secondary' },
+  { name: 'Google Analytics 4', icon: BarChart3, desc: `${GA4_EVENT_COUNT} custom events. User properties. Debug mode in dev.`, color: 'border-secondary' },
   { name: 'react-helmet-async', icon: Globe, desc: 'SEO meta tags, Open Graph, JSON-LD schemas.', color: 'border-accent' },
   { name: 'Vercel', icon: Rocket, desc: 'Push to main, deployed in seconds.', color: 'border-primary' },
 ];
@@ -134,22 +138,22 @@ const folderTree = `src/
     Header.jsx      # Sticky nav, blur backdrop
     PageLayout.jsx  # SEO + Header + Footer + ScrollProgress
     AuthModal.jsx   # Login/signup (tabs, Google OAuth)
-  pages/            # 18 routes, one file each
+  pages/            # ${ROUTE_COUNT} routes, one file each
   hooks/
     useIdeaFilters.js  # Server-side pagination, URL state, 7 filter dimensions
   lib/
     data/           # projects, prompts, ideas, library
-    analytics.js    # GA4 helpers (24 events)
+    analytics.js    # GA4 helpers (${GA4_EVENT_COUNT} events)
     supabaseClient.js
   contexts/         # Auth (Supabase) + Theme (dark/light)
-scripts/            # 10 scripts (7 sync, 1 score, 1 enrich, 1 cleanup)
-.github/workflows/  # 3 workflows (sync, enrich, CI)`;
+scripts/            # ${SCRIPT_COUNT} scripts
+.github/workflows/  # ${WORKFLOW_COUNT} workflows`;
 
 const dbHighlights = [
   { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), enrichment (validation evidence, competitors), meta (YC failure analysis).', icon: Layers },
   { title: 'Materialized Columns', desc: 'verdict, confidence, composite_score. Written by scripts, used for server-side filtering.', icon: Zap },
   { title: 'Row Level Security', desc: 'Every table has RLS. Public read for approved ideas, auth-gated writes.', icon: ShieldCheck },
-  { title: '6 RPCs', desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
+  { title: `${RPC_COUNT} RPCs`, desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
 ];
 
 const securityItems = [
@@ -195,7 +199,7 @@ const WebsiteBlueprintPage = () => {
     <PageLayout
       seo={{
         title: "Website Blueprint - Full Stack Architecture with AI Scoring Pipeline",
-        description: "How flylabs.fun was built. 18 routes, 10 scripts, 9 data sources, 4 AI scoring frameworks, 3 automated workflows. React, Supabase, Claude AI, Grok. Open source.",
+        description: `How flylabs.fun was built. ${ROUTE_COUNT} routes, ${SCRIPT_COUNT} scripts, ${SOURCE_COUNT} data sources, ${FRAMEWORK_COUNT} AI scoring frameworks, ${WORKFLOW_COUNT} automated workflows. React, Supabase, Claude AI, Grok. Open source.`,
         keywords: "website blueprint, React SPA, open source, Supabase, AI scoring, data pipeline, Claude AI, Grok, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",
         schema: [
@@ -235,7 +239,7 @@ const WebsiteBlueprintPage = () => {
                 Website <span className="text-primary">Blueprint</span>
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
-                18 routes, 10 scripts, 3 automated workflows, 9 data sources, 4 AI frameworks. Built by one person. Open source.
+                {ROUTE_COUNT} routes, {SCRIPT_COUNT} scripts, {WORKFLOW_COUNT} automated workflows, {SOURCE_COUNT} data sources, {FRAMEWORK_COUNT} AI frameworks. Built by one person. Open source.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <a
@@ -287,7 +291,7 @@ const WebsiteBlueprintPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                I open-sourced this because I wish someone had shown me how a real site is built when I was starting out. Not a tutorial. Not a course. Just the actual code, the actual decisions, and the actual trade-offs. Fork it, break it, make it yours.
+                I open-sourced this because I wish someone had shown me how a real site is built when I was starting out. The actual code, the actual decisions, and the actual trade-offs. Fork it, break it, make it yours.
               </p>
             </div>
           </motion.div>
@@ -552,7 +556,7 @@ const WebsiteBlueprintPage = () => {
                 The Database
               </h2>
               <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
-                6 tables, 6 RPCs, Row Level Security on everything. 30+ columns on the ideas table alone.
+                {DB_TABLE_COUNT} tables, {RPC_COUNT} RPCs, Row Level Security on everything. 30+ columns on the ideas table alone.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -663,22 +667,17 @@ const WebsiteBlueprintPage = () => {
             </div>
           </motion.div>
 
-          {/* Section 10: What would this cost? */}
+          {/* Section 10: Fully open source */}
           <motion.div
             {...fadeUp}
             className="bg-primary/5 border border-primary/20 rounded-3xl p-8 md:p-12 text-center mb-24"
           >
             <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-6">
-              What would this cost?
+              Fully open source
             </h2>
-            <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto mb-8">
-              A React SPA with auth, AI scoring pipeline, 9-source data sync, market validation, community features, 3 automated workflows, analytics, SEO, dark mode, and responsive design? Agencies charge $2,000+ for this kind of setup. I'm giving it away. Fork it, clone it, make it yours.
+            <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto mb-4">
+              The whole thing is live if you want to poke around. Fork it, clone it, make it yours. MIT License.
             </p>
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="line-through text-muted-foreground text-xl font-medium">$2,000+</span>
-              <span className="text-primary font-black text-3xl">Free</span>
-            </div>
-            <p className="text-sm text-muted-foreground font-medium">MIT License. Do whatever you want with it.</p>
           </motion.div>
 
           {/* Section 11: CTA Footer */}

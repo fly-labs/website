@@ -35,14 +35,14 @@ const NewsletterPage = () => {
     <PageLayout
       seo={{
         title: "Fala Comigo! | Vibe Building in Public",
-        description: "Vibe building in public. Follow along as I build digital assets in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way.",
+        description: "Vibe building in public. Follow along as I build projects in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way.",
         keywords: "newsletter, vibe building, building in public, AI, digital assets, Luiz Alves, CFA, falacomigo, Substack",
         url: "https://flylabs.fun/newsletter",
         schema: {
           "@context": "https://schema.org",
           "@type": "Blog",
           "name": "Fala Comigo!",
-          "description": "Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building digital assets with AI.",
+          "description": "Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building projects with AI.",
           "url": "https://falacomigo.substack.com",
           "author": { "@type": "Person", "name": "Luiz Alves" },
         },
@@ -65,7 +65,7 @@ const NewsletterPage = () => {
             Fala <span className="text-primary">Comigo!</span>
           </h1>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-8">
-            Vibe building in public. Follow along as I build digital assets in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way. In English and Portuguese. Always free.
+            Vibe building in public. Follow along as I build projects in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way. In English and Portuguese. Always free.
           </p>
           <a
             href="https://falacomigo.substack.com"

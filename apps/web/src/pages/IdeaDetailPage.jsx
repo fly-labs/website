@@ -9,6 +9,7 @@ import supabase from '@/lib/supabaseClient.js';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
+import { FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 import { getScoreTier, ScoreBar, verdictStyles, confidenceColors, FRAMEWORK_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 
@@ -253,7 +254,7 @@ const IdeaDetailPage = () => {
               </div>
             ) : (
               <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
-                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on 4 AI frameworks + real market evidence</p>
+                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on {FRAMEWORK_COUNT} AI frameworks + real market evidence</p>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
                   {synthesis?.composite_score != null && (
@@ -460,8 +461,8 @@ const IdeaDetailPage = () => {
                   </summary>
                   <div className="mt-3 space-y-3 text-sm text-muted-foreground leading-relaxed">
                     <p>
-                      Each idea is scored by <strong className="text-foreground">4 AI frameworks</strong>: Fly Labs Method (40% weight),
-                      Hormozi (20%), Dan Koe (20%), and Okamoto (20%). The composite score synthesizes all four into a
+                      Each idea is scored by <strong className="text-foreground">{FRAMEWORK_COUNT} AI frameworks</strong> that weigh problem quality,
+                      monetization potential, audience fit, and solo-builder viability. The composite score synthesizes into a
                       BUILD / VALIDATE / SKIP verdict.
                     </p>
                     <p className="text-muted-foreground/60">

@@ -17,7 +17,7 @@ const pillars = [
   {
     title: 'Prompts',
     icon: Sparkles,
-    description: 'Copy-paste AI prompts for coding, writing, and thinking. Built from real workflows, not generic templates.',
+    description: 'Copy-paste AI prompts for coding, writing, and thinking. Built from real workflows I actually use.',
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     link: '/prompts',
@@ -39,7 +39,7 @@ const pillars = [
   {
     title: 'Micro Tools',
     icon: Code,
-    description: 'Small, focused apps that do one thing really well. No bloat, no sign-ups, no nonsense.',
+    description: 'Small, focused apps that do one thing really well. Open them, use them, done.',
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10',
     link: '/microsaas',

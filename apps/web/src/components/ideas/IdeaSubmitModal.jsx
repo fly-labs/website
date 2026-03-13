@@ -1,9 +1,11 @@
 
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Send, ArrowRight, X, Loader2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
 import { categories, industries, frequencyOptions, formSteps } from '@/lib/data/ideas.js';
+import { FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 
 const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onStepChange, onSubmit, isSubmitting, toast }) => {
   const modalRef = useRef(null);
@@ -89,13 +91,11 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent/5 border border-accent/10 mb-4">
               <Zap className="w-4 h-4 text-accent shrink-0" />
               <p className="text-xs text-muted-foreground">
-                Your idea will be scored by AI using the{' '}
-                <span className="font-semibold text-foreground">Fly Labs Method</span> +{' '}
-                <span className="font-semibold text-foreground">Hormozi</span>,{' '}
-                <span className="font-semibold text-foreground">Dan Koe</span>, and{' '}
-                <span className="font-semibold text-foreground">Okamoto</span> frameworks,
+                Your idea will be scored by AI using{' '}
+                <span className="font-semibold text-foreground">{FRAMEWORK_COUNT} frameworks</span>,
                 then given a BUILD / VALIDATE / SKIP verdict with reasoning.
-                Top ideas get validated against real conversations on X and Reddit.
+                Top ideas get validated against real conversations on X and Reddit.{' '}
+                <Link to="/scoring" className="text-accent hover:underline font-medium">See how scoring works</Link>
               </p>
             </div>
 

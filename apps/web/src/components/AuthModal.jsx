@@ -129,7 +129,7 @@ export const AuthModal = () => {
             <ShieldCheck className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-2xl font-black tracking-tight">Unlock this tool</h2>
-          <p className="text-muted-foreground text-sm mt-1">Create a free account to access prompts, templates, and tools.</p>
+          <p className="text-muted-foreground text-sm mt-1">Create a free account to unlock the full library.</p>
         </div>
 
         <Tabs defaultValue="login" className="w-full">

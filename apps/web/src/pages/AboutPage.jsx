@@ -8,7 +8,7 @@ import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { SOURCE_COUNT } from '@/lib/data/ideas.js';
+import { SOURCE_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 
 const socials = [
   { href: 'mailto:luiz@flylabs.fun', icon: Mail, label: 'Email', color: 'text-primary' },
@@ -17,32 +17,6 @@ const socials = [
   { href: 'https://x.com/alvesluizc', icon: XIcon, label: 'X', color: 'text-foreground', external: true },
   { href: 'https://youtube.com/@falacomigoyt', icon: Youtube, label: 'YouTube', color: 'text-[#FF0000]', external: true },
   { href: 'https://br.linkedin.com/in/alvesluizc', icon: Linkedin, label: 'LinkedIn', color: 'text-[#0A66C2]', external: true },
-];
-
-const milestones = [
-  {
-    phase: 'The spark',
-    title: 'A watch, a database, and zero solutions',
-    description: 'I wanted to sync my Garmin watch data into Notion. Nothing existed. So I built it, put it on GitHub, and people actually started using it.',
-    link: { label: 'See the integration', to: '/templates/garmin-to-notion' },
-  },
-  {
-    phase: 'The pattern',
-    title: 'If I have the problem, someone else does too',
-    description: "That tiny moment changed something. If I have a problem, chances are someone else has the same one. And if I can build the solution, why not share it?",
-  },
-  {
-    phase: 'The lab',
-    title: 'A home for tools, templates, and experiments',
-    description: 'So I built a home for all of it. Tools, templates, experiments. Open, free, and built with the same energy: solve a real problem, share it openly.',
-    link: { label: 'See everything', to: '/explore' },
-  },
-  {
-    phase: 'Right now',
-    title: 'AI scores ideas, the community votes, the best get built',
-    description: 'New ideas come from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, the YC Graveyard, and the community. AI scores them with 4 frameworks (the Fly Labs Method + 3 expert perspectives), validates against real conversations, and maps the competitive landscape. The best ones get built.',
-    link: { label: 'Browse the idea lab', to: '/ideas' },
-  },
 ];
 
 const AboutPage = () => {
@@ -96,7 +70,7 @@ const AboutPage = () => {
               Nobody asked me to build any of this. I did it anyway, for fun.
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-6">
-              I'm Luiz Alves. Over a decade in finance, and somehow I ended up building tools with AI on weekends. All open source.
+              I'm Luiz Alves. Over a decade in finance. I build things with AI on nights and weekends because it's fun. Everything here is open source.
             </p>
             <div className="flex flex-wrap gap-2 mb-6">
               {socials.map((s) => (
@@ -127,7 +101,7 @@ const AboutPage = () => {
         <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="max-w-5xl mx-auto mb-20">
           <blockquote className="border-l-4 border-primary pl-6">
             <p className="text-xl md:text-2xl font-black text-foreground leading-snug">
-              You start with a real problem, usually your own. You build something small. You share it with the world.
+              I'm not trying to prove anything. I'm just building things I find interesting and sharing the process.
             </p>
           </blockquote>
         </motion.div>
@@ -135,31 +109,21 @@ const AboutPage = () => {
         {/* Story blocks */}
         <div className="max-w-5xl mx-auto space-y-20">
 
-          {/* Journey Timeline */}
+          {/* The story */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-8">The journey</h2>
-            <div className="relative">
-              <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
-              <div className="space-y-8">
-                {milestones.map((m, i) => (
-                  <motion.div
-                    key={m.phase}
-                    {...fadeUp}
-                    transition={{ duration: 0.3, delay: i * 0.08 }}
-                    className="relative pl-8"
-                  >
-                    <div className={`absolute left-0 top-1.5 w-[15px] h-[15px] rounded-full border-2 border-primary ${i === milestones.length - 1 ? 'bg-primary' : 'bg-background'}`} />
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">{m.phase}</p>
-                    <h3 className="text-lg font-bold text-foreground mb-2">{m.title}</h3>
-                    <p className="text-base text-muted-foreground font-medium leading-relaxed">{m.description}</p>
-                    {m.link && (
-                      <Link to={m.link.to} className="inline-flex items-center text-sm font-semibold text-primary hover:underline mt-2">
-                        {m.link.label} <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                      </Link>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
+            <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
+              <p>
+                I work in finance. Have for over a decade. It's a serious job and I take it seriously. But somewhere along the way I started playing with AI tools, and I realized I could actually build things. Real things. Apps, templates, automated pipelines. With zero engineering background.
+              </p>
+              <p>
+                The first time I shipped something and a stranger used it, something clicked. I wasn't thinking about a business. I was just curious: what else can I build? What other problems can I solve? That curiosity turned into weekends and late nights in front of the screen, and honestly, it doesn't feel like work.
+              </p>
+              <p>
+                I call it vibe building. Andrej Karpathy called the coding part vibe coding. I think the whole thing is bigger than code. You find a real problem, you build a solution, you share it openly. One person can now do what used to require a team. That feels like a shift worth paying attention to.
+              </p>
+              <p>
+                I share what I'm building, what I think is working, and what I'd do differently. Tomorrow I might reevaluate. I might be wrong about some of this. But I'd rather say what I actually think than perform certainty I don't have.
+              </p>
             </div>
           </motion.section>
 
@@ -182,7 +146,7 @@ const AboutPage = () => {
               {[
                 { text: 'Library - writing the first ebooks', link: '/library' },
                 { text: 'Micro Tools - building the first batch', link: '/microsaas' },
-                { text: `Idea Lab - ${SOURCE_COUNT} sources, Fly Labs Method + 3 expert frameworks, market validated`, link: '/ideas' },
+                { text: `Idea Lab - ${SOURCE_COUNT} sources, ${FRAMEWORK_COUNT} AI frameworks, market validated`, link: '/ideas' },
               ].map((item) => (
                 <li key={item.text}>
                   <Link to={item.link} className="inline-flex items-center text-base md:text-lg text-muted-foreground font-medium hover:text-primary transition-colors">
@@ -195,31 +159,15 @@ const AboutPage = () => {
             </ul>
           </motion.section>
 
-          {/* The approach */}
-          <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">The approach</h2>
-            <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
-              <p>
-                AI and no-code changed everything. What used to take a team and months of work, one person can now ship in a weekend. You've probably heard of <span className="text-primary font-bold">vibe coding</span> - Andrej Karpathy's concept of fully giving in to AI-assisted development. There's also vibe marketing, vibe design, entire workflows being reimagined.
-              </p>
-              <p>
-                <span className="text-primary font-bold">Vibe building</span> is the natural extension of all of that. It's the whole picture. No investors, no pitch decks, no growth-at-all-costs pressure. Just you, your curiosity, and the joy of making something useful.
-              </p>
-              <p>
-                Every project teaches you something you didn't expect. One day you're learning APIs, the next you're figuring out how to write copy that actually connects with people. It compounds in ways you can't predict, and honestly, it doesn't feel like work at all.
-              </p>
-            </div>
-          </motion.section>
-
           {/* What Fly Labs is + Closing */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
             <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">What is Fly Labs</h2>
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-8">
               <p>
-                Fly Labs is where all of that lives. The tools I build for myself, the templates I wish existed, the experiments that might go somewhere or might just be fun to try. Everything here is open, free, and built with the same energy: solve a real problem, learn along the way, share it openly.
+                Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, poke around.
               </p>
               <p className="text-foreground font-bold text-lg md:text-xl">
-                If you've ever had an idea stuck in your head and wondered "what if I just built it?"... you're in the right place.
+                Come build something.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-3">

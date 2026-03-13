@@ -89,7 +89,7 @@ const LaunchChecklistPage = () => {
             <div>
               <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">Builder's Note</p>
               <p className="text-muted-foreground leading-relaxed">
-                Most people don't fail at launching. They fail at knowing what to do next. This checklist exists because I needed it myself. It turns the chaos of "I have an idea" into a clear sequence of steps. Nothing fancy, just the stuff that actually matters.
+                This checklist exists because I needed it myself. It turns the chaos of "I have an idea" into a clear sequence of steps. Nothing fancy, just the stuff that actually matters.
               </p>
             </div>
           </motion.div>
@@ -131,7 +131,7 @@ const LaunchChecklistPage = () => {
           >
             <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4">This template is being built</h2>
             <p className="text-muted-foreground font-medium mb-8 max-w-lg mx-auto">
-              I'm still crafting this Notion template to make sure it's actually useful. Subscribe to the newsletter to get notified when it drops.
+              I'm road-testing each phase on a live project before releasing it. The newsletter is the best way to know when it ships.
             </p>
             <span className="inline-flex items-center gap-2 h-12 px-6 md:h-14 md:px-8 rounded-xl bg-muted text-muted-foreground text-base md:text-lg font-semibold border border-border cursor-default">
               <Clock className="w-5 h-5" /> Coming Soon
