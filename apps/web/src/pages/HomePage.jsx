@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
-import { fadeUp } from '@/lib/animations.js';
+import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
 import { books } from '@/lib/data/library.js';
@@ -112,10 +112,6 @@ const HomePage = () => {
 
       {/* ==================== HERO ==================== */}
       <section className="relative pt-28 sm:pt-36 md:pt-44 pb-16 md:pb-24 px-6 overflow-hidden">
-        {/* Glow effects */}
-        <div className="hero-glow hero-glow-primary" style={{ top: '-10%', left: '20%' }} />
-        <div className="hero-glow hero-glow-accent" style={{ top: '10%', right: '15%' }} />
-
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -147,16 +143,12 @@ const HomePage = () => {
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-foreground leading-[1.05] mb-6">
-            Find a real problem.
-            <br />
-            Build the solution.
-            <br />
-            <span className="text-gradient-primary">Share everything.</span>
+            The vibe building hub.
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            The vibe building hub: tools, templates, and an AI-scored idea pipeline for one-person builders. Everything is free and open source.
+            I build tools for one-person builders and give them away. AI-scored ideas, prompts, templates, open source everything. Come poke around.
           </p>
 
           {/* CTA */}
@@ -173,14 +165,11 @@ const HomePage = () => {
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               onClick={() => trackEvent('cta_click', { cta: 'explore', location: 'home_hero' })}
             >
-              See everything I've built
+              See what I've built
             </Link>
           </div>
         </motion.div>
       </section>
-
-      {/* ==================== GLOW DIVIDER ==================== */}
-      <div className="section-glow-divider max-w-4xl mx-auto" />
 
       {/* ==================== PILLARS (Bento Grid) ==================== */}
       <section className="py-16 md:py-24 px-6">
@@ -191,23 +180,25 @@ const HomePage = () => {
             className="mb-10"
           >
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              What you'll find here
+              Everything in the lab
             </h2>
             <p className="text-muted-foreground font-medium max-w-xl">
               Every project started as a real need. Built from scratch with AI, shared with everyone.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pillars.map((pillar, i) => {
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            {...staggerContainer}
+          >
+            {pillars.map((pillar) => {
               const stat = pillar.title === 'Idea Lab' && ideaCount != null
                 ? `${ideaCount} ideas scored`
                 : pillar.stat;
               return (
                 <motion.div
                   key={pillar.title}
-                  {...fadeUp}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
+                  {...staggerItem}
                   className={pillar.featured ? 'card-bento-featured' : ''}
                 >
                   <Link
@@ -247,7 +238,7 @@ const HomePage = () => {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -263,17 +254,16 @@ const HomePage = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-4" {...staggerContainer}>
             {[
               { step: '01', title: 'Ideation', desc: 'Real problems from Reddit, X, Product Hunt, GitHub, and more. AI scores them across four frameworks. You pick the best ones.', color: 'text-primary' },
               { step: '02', title: 'Build', desc: 'Pick your tools, ship fast, document what breaks. One person with AI can build what used to require a team.', color: 'text-secondary' },
               { step: '03', title: 'Share', desc: 'Open source the code, write about the process, put it out there. Feedback from real people sharpens everything.', color: 'text-accent' },
               { step: '04', title: 'Compound', desc: 'Skills stack, tools compound, each project sharpens the next. The loop is the edge.', color: 'text-primary' },
-            ].map((item, i) => (
+            ].map((item) => (
               <motion.div
                 key={item.step}
-                {...fadeUp}
-                transition={{ duration: 0.3, delay: i * 0.06 }}
+                {...staggerItem}
                 className="glass-card p-6"
               >
                 <span className={`text-xs font-black uppercase tracking-widest ${item.color} mb-3 block`}>
@@ -283,17 +273,12 @@ const HomePage = () => {
                 <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ==================== GLOW DIVIDER ==================== */}
-      <div className="section-glow-divider max-w-4xl mx-auto" />
-
       {/* ==================== CLOSING ==================== */}
       <section className="relative py-20 md:py-28 px-6 overflow-hidden">
-        <div className="hero-glow hero-glow-primary" style={{ bottom: '-20%', left: '30%' }} />
-
         <motion.div
           {...fadeUp}
           transition={{ duration: 0.5 }}

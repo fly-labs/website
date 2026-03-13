@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, Terminal, ChevronDown, Zap, Sparkles } from 'lucide-react';
+import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, Terminal, ChevronDown, Zap, Sparkles, Users } from 'lucide-react';
 import { GitHubHeatmap } from '@/components/GitHubHeatmap.jsx';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
@@ -184,7 +184,7 @@ const AboutPage = () => {
 
           {/* Closing */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <div className="section-glow-divider mb-12" />
+            <div className="border-t border-border/50 mb-12" />
             <div className="space-y-5 text-base md:text-lg text-muted-foreground font-medium leading-relaxed mb-8">
               <p>
                 Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, poke around.
