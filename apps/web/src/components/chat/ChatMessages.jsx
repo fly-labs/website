@@ -6,19 +6,19 @@ export function ChatMessages({ messages, isStreaming }) {
   const containerRef = useRef(null);
   const [userScrolled, setUserScrolled] = useState(false);
 
-  const scrollToBottom = useCallback(() => {
+  const scrollToBottom = useCallback((smooth = false) => {
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: smooth ? 'smooth' : 'instant',
       });
     }
   }, []);
 
-  // Auto-scroll on new messages
+  // Auto-scroll on new messages (instant during streaming to avoid jank)
   useEffect(() => {
     if (!userScrolled) {
-      scrollToBottom();
+      scrollToBottom(false);
     }
   }, [messages, userScrolled, scrollToBottom]);
 
@@ -53,7 +53,7 @@ export function ChatMessages({ messages, isStreaming }) {
       {/* Scroll to bottom FAB */}
       {userScrolled && (
         <button
-          onClick={() => { scrollToBottom(); setUserScrolled(false); }}
+          onClick={() => { scrollToBottom(true); setUserScrolled(false); }}
           className="absolute bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-card border border-border shadow-lg flex items-center justify-center hover:bg-muted transition-colors z-10"
           aria-label="Scroll to bottom"
         >

@@ -29,11 +29,13 @@ export default async function handler(req, res) {
   } else if (req.method === 'POST') {
     // Create new conversation
     const { title } = req.body || {};
+    // Strip HTML from title and truncate
+    const cleanTitle = ((title || 'New conversation') + '').replace(/<[^>]*>/g, '').trim().slice(0, 200) || 'New conversation';
     const { data, error } = await supabase
       .from('conversations')
       .insert({
         user_id: user.id,
-        title: (title || 'New conversation').slice(0, 200),
+        title: cleanTitle,
       })
       .select('id, title, created_at')
       .single();
@@ -47,8 +49,8 @@ export default async function handler(req, res) {
   } else if (req.method === 'DELETE') {
     // Soft-delete conversation
     const { id } = req.body || {};
-    if (!id) {
-      return res.status(400).json({ error: 'Conversation ID required' });
+    if (!id || typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id)) {
+      return res.status(400).json({ error: 'Valid conversation ID required' });
     }
 
     const { error } = await supabase

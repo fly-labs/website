@@ -34,7 +34,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
   const hasText = text.trim().length > 0;
 
   return (
-    <div className="border-t border-border/50 bg-background px-4 sm:px-6 py-3">
+    <div className="border-t border-border/50 bg-background px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
       <div className="max-w-2xl mx-auto space-y-2">
         {/* Message counter */}
         {showCounter && (
@@ -77,7 +77,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
             {isStreaming ? (
               <button
                 onClick={onStop}
-                className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+                className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
                 aria-label="Stop generating"
               >
                 <Square className="w-3.5 h-3.5" />
@@ -87,7 +87,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
                 onClick={handleSubmit}
                 disabled={!hasText || disabled}
                 className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center transition-colors',
+                  'w-9 h-9 rounded-lg flex items-center justify-center transition-colors',
                   hasText && !disabled
                     ? 'bg-primary text-primary-foreground hover:brightness-110'
                     : 'bg-muted/60 text-muted-foreground/40 cursor-default'

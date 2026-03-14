@@ -86,7 +86,7 @@ export default function CoachPage() {
         noindex
       />
 
-      <div className="h-screen flex flex-col bg-background">
+      <div className="h-dvh flex flex-col bg-background">
         <Header />
 
         <div className="flex-1 flex overflow-hidden relative">
@@ -146,7 +146,7 @@ export default function CoachPage() {
                   {lastFailedMessage && (
                     <button
                       onClick={retryLastMessage}
-                      className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium transition-colors"
+                      className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium transition-colors p-2 -m-1"
                     >
                       <RotateCcw className="w-3 h-3" />
                       Retry
@@ -154,7 +154,7 @@ export default function CoachPage() {
                   )}
                   <button
                     onClick={clearError}
-                    className="text-red-400/50 hover:text-red-400 transition-colors p-1"
+                    className="text-red-400/50 hover:text-red-400 transition-colors p-2 -m-1"
                     aria-label="Dismiss error"
                   >
                     <X className="w-3.5 h-3.5" />

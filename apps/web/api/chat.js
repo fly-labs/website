@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
 import { buildSystemPrompt, findSimilarIdeas } from './lib/coach-prompt.js';
+import { prompts as promptLibrary } from '../src/lib/data/prompts.js';
 
 export const config = {
   maxDuration: 60,
@@ -28,6 +29,41 @@ function checkRateLimit(userId) {
 
 function stripHtml(str) {
   return str.replace(/<[^>]*>/g, '').trim();
+}
+
+/**
+ * Find prompts relevant to the user's message
+ * Returns up to 3 full prompts for deep context, plus the catalog summary
+ */
+function findRelevantPrompts(message) {
+  const lower = message.toLowerCase();
+  const words = lower.replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+
+  // Score each prompt by keyword relevance
+  const scored = promptLibrary.map(p => {
+    const titleLower = p.title.toLowerCase();
+    const descLower = p.description.toLowerCase();
+    const catLower = p.category.toLowerCase();
+    let score = 0;
+
+    for (const w of words) {
+      if (titleLower.includes(w)) score += 3;
+      if (descLower.includes(w)) score += 2;
+      if (catLower.includes(w)) score += 2;
+    }
+
+    // Boost if user mentions the exact category
+    if (lower.includes(catLower)) score += 5;
+    // Boost if user mentions "prompt" related terms
+    if (lower.includes('prompt') || lower.includes('template')) score += 1;
+
+    return { ...p, relevance: score };
+  })
+    .filter(p => p.relevance > 0)
+    .sort((a, b) => b.relevance - a.relevance)
+    .slice(0, 3);
+
+  return scored;
 }
 
 export default async function handler(req, res) {
@@ -116,8 +152,15 @@ export default async function handler(req, res) {
     }
   }
 
-  // Build system prompt
-  const systemPrompt = buildSystemPrompt({ similarIdeas });
+  // Find relevant prompts from our library
+  const relevantPrompts = findRelevantPrompts(cleanMessage);
+
+  // Build system prompt with full knowledge base
+  const systemPrompt = buildSystemPrompt({
+    similarIdeas,
+    relevantPrompts,
+    promptCatalog: promptLibrary,
+  });
 
   // Build messages array
   const messages = (history || []).map(m => ({
@@ -192,12 +235,12 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('FlyBot API error:', err?.status, err?.error?.type, err?.message);
 
-    // If no chunks were sent, clean up the orphan user message
-    if (!fullResponse && userMsg?.id) {
+    // Always clean up the orphan user message on error
+    if (userMsg?.id) {
       await supabase.from('messages').delete().eq('id', userMsg.id);
     }
 
-    // Send specific error based on error type
+    // Send specific error with conversation_id so client can track it
     let errorMessage = 'Connection hiccup. Try again.';
     if (err?.error?.type === 'invalid_request_error') {
       errorMessage = "I couldn't process that. Try rephrasing.";
@@ -205,7 +248,11 @@ export default async function handler(req, res) {
       errorMessage = "I'm a bit overloaded right now. Give me a sec and try again.";
     }
 
-    res.write(`data: ${JSON.stringify({ type: 'error', message: errorMessage })}\n\n`);
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      message: errorMessage,
+      conversation_id: convId,
+    })}\n\n`);
   }
 
   res.end();

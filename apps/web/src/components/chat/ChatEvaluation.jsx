@@ -34,7 +34,7 @@ export function ChatEvaluation({ evaluation }) {
       initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.25 }}
-      className="rounded-xl border border-border/60 bg-card p-5 max-w-sm shadow-sm"
+      className="rounded-xl border border-border/60 bg-card p-4 sm:p-5 max-w-full sm:max-w-sm shadow-sm"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-4">

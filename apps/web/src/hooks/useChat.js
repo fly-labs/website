@@ -104,20 +104,27 @@ export function useChat() {
       },
       onError: (data) => {
         setIsStreaming(false);
+
         if (data.error === 'limit_reached') {
           setLimitReached(true);
           setMessageCount(data.message_count || 5);
-          // Remove both placeholder messages
+          // Remove both placeholder messages in a single filter
           setMessages(prev => prev.filter(m => m.id !== assistantId && m.id !== userMsg.id));
         } else {
-          // Remove the empty assistant placeholder (don't show error as a message)
-          setMessages(prev => prev.filter(m => m.id !== assistantId));
-          // Also remove the optimistic user message (server cleaned up the orphan)
-          setMessages(prev => prev.filter(m => m.id !== userMsg.id));
-          // Set error state separately
+          // Remove both optimistic messages (server cleaned up orphan DB records)
+          setMessages(prev => prev.filter(m => m.id !== assistantId && m.id !== userMsg.id));
+          // Set error state separately for the error banner
           setError(data.message || data.error || 'Something went wrong');
           // Save the failed message text for retry
           setLastFailedMessage(text);
+
+          // Track conversation_id from error event so retries go to the right conversation
+          if (data.conversation_id && !activeConversationId) {
+            setActiveConversationId(data.conversation_id);
+          }
+
+          // Refresh conversations so the new conversation appears in sidebar
+          fetchConversations();
         }
       },
     });

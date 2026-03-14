@@ -4,6 +4,34 @@ import { Bot } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { ChatEvaluation } from '@/components/chat/ChatEvaluation.jsx';
 
+/**
+ * Escape HTML entities to prevent XSS when using dangerouslySetInnerHTML
+ */
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
+ * Validate URL - only allow http/https protocols
+ */
+function isSafeUrl(url) {
+  try {
+    const parsed = new URL(url, 'https://flylabs.fun');
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Render markdown for assistant messages only.
+ * HTML is escaped BEFORE markdown patterns are applied to prevent XSS.
+ */
 function renderMarkdown(text) {
   const clean = text.replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '').trim();
   if (!clean) return null;
@@ -27,10 +55,18 @@ function renderMarkdown(text) {
       );
     }
     return part.split('\n').map((line, j) => {
-      let processed = line;
+      // Escape HTML FIRST to prevent injection
+      let processed = escapeHtml(line);
+      // Then apply markdown patterns on the escaped text
       processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>');
       processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline underline-offset-2">$1</a>');
+      // Links: validate URL before creating anchor
+      processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
+        if (isSafeUrl(url)) {
+          return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline underline-offset-2">${label}</a>`;
+        }
+        return label;
+      });
 
       return (
         <React.Fragment key={`${i}-${j}`}>
@@ -40,6 +76,18 @@ function renderMarkdown(text) {
       );
     });
   });
+}
+
+/**
+ * Render user message as plain text (no markdown, no innerHTML)
+ */
+function renderUserText(text) {
+  return text.split('\n').map((line, i) => (
+    <React.Fragment key={i}>
+      {i > 0 && <br />}
+      {line}
+    </React.Fragment>
+  ));
 }
 
 function TypingIndicator() {
@@ -74,7 +122,7 @@ export function ChatMessage({ message, isStreaming }) {
         isUser ? 'bg-transparent' : 'bg-muted/30'
       )}
     >
-      <div className="max-w-2xl mx-auto flex gap-4">
+      <div className="max-w-2xl mx-auto flex gap-3 sm:gap-4">
         {/* Avatar */}
         <div className="flex-shrink-0 pt-0.5">
           {isUser ? (
@@ -99,9 +147,11 @@ export function ChatMessage({ message, isStreaming }) {
           </p>
 
           {/* Message body */}
-          <div className="text-[14px] leading-[1.7] text-foreground/90">
+          <div className="text-[14px] leading-[1.7] text-foreground/90 break-words">
             {isEmpty ? (
               <TypingIndicator />
+            ) : isUser ? (
+              renderUserText(message.content)
             ) : (
               renderMarkdown(message.content)
             )}
