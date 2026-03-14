@@ -187,6 +187,8 @@ const IdeasAnalyticsPage = () => {
         }
 
         const total = ideas.length;
+        const scored = ideas.filter(i => i.composite_score != null && i.composite_score > 0);
+        const scoredCount = scored.length;
 
         // Verdicts
         const verdictCounts = { BUILD: 0, VALIDATE_FIRST: 0, SKIP: 0 };
@@ -222,15 +224,13 @@ const IdeasAnalyticsPage = () => {
           })
           .sort((a, b) => b.value - a.value);
 
-        // Source quality (avg composite by source)
+        // Source quality (avg composite by source, scored ideas only)
         const sourceScores = {};
-        ideas.forEach(i => {
+        scored.forEach(i => {
           const s = i.source || 'community';
-          if (i.composite_score != null) {
-            if (!sourceScores[s]) sourceScores[s] = { sum: 0, count: 0 };
-            sourceScores[s].sum += i.composite_score;
-            sourceScores[s].count++;
-          }
+          if (!sourceScores[s]) sourceScores[s] = { sum: 0, count: 0 };
+          sourceScores[s].sum += i.composite_score;
+          sourceScores[s].count++;
         });
         const sourceQualityData = Object.entries(sourceScores)
           .map(([name, { sum, count }]) => ({
@@ -249,11 +249,9 @@ const IdeasAnalyticsPage = () => {
           { range: '60-79', min: 60, max: 79, count: 0, label: 'Strong' },
           { range: '80-100', min: 80, max: 100, count: 0, label: 'Exceptional' },
         ];
-        ideas.forEach(i => {
-          if (i.composite_score != null) {
-            const bucket = scoreBuckets.find(b => i.composite_score >= b.min && i.composite_score <= b.max);
-            if (bucket) bucket.count++;
-          }
+        scored.forEach(i => {
+          const bucket = scoreBuckets.find(b => i.composite_score >= b.min && i.composite_score <= b.max);
+          if (bucket) bucket.count++;
         });
 
         // Top industries
@@ -278,10 +276,10 @@ const IdeasAnalyticsPage = () => {
           .map(([name, value]) => ({ name, value }))
           .sort((a, b) => b.value - a.value);
 
-        // Timeline (weekly)
+        // Timeline (weekly, by created_at = when idea entered the system)
         const weeklyMap = {};
         ideas.forEach(i => {
-          const d = new Date(i.published_at || i.created_at);
+          const d = new Date(i.created_at);
           const weekStart = new Date(d);
           weekStart.setDate(d.getDate() - d.getDay());
           const key = weekStart.toISOString().slice(0, 10);
@@ -340,18 +338,17 @@ const IdeasAnalyticsPage = () => {
           }))
           .sort((a, b) => b.buildRate - a.buildRate);
 
-        // Day-of-week activity
+        // Day-of-week activity (by created_at = when pipeline ingested)
         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         const dayActivity = [0, 0, 0, 0, 0, 0, 0];
         ideas.forEach(i => {
-          const d = new Date(i.published_at || i.created_at);
+          const d = new Date(i.created_at);
           dayActivity[d.getDay()]++;
         });
         const dayData = dayNames.map((name, i) => ({ day: name, count: dayActivity[i] }));
         const maxDayCount = Math.max(...dayActivity);
 
-        // Computed stats
-        const scored = ideas.filter(i => i.composite_score != null);
+        // Computed stats (scored already filtered above)
         const avgComposite = scored.length > 0 ? Math.round(scored.reduce((a, i) => a + i.composite_score, 0) / scored.length) : 0;
         const totalVotes = ideas.reduce((a, i) => a + (i.votes || 0), 0);
         const activeSources = Object.keys(sourceCounts).length;
@@ -369,13 +366,33 @@ const IdeasAnalyticsPage = () => {
         const topCategory = categoryData[0];
         // Highest score
         const maxScore = scored.length > 0 ? Math.max(...scored.map(i => i.composite_score)) : 0;
+        // Best BUILD idea
+        const bestBuild = ideas.filter(i => i.verdict === 'BUILD').sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0))[0];
         // Ideas added this week
         const now = new Date();
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const thisWeek = ideas.filter(i => new Date(i.created_at) >= weekAgo).length;
 
+        // Verdict over time (weekly, stacked)
+        const verdictTimeMap = {};
+        ideas.forEach(i => {
+          if (!i.verdict) return;
+          const d = new Date(i.created_at);
+          const weekStart = new Date(d);
+          weekStart.setDate(d.getDate() - d.getDay());
+          const key = weekStart.toISOString().slice(0, 10);
+          if (!verdictTimeMap[key]) verdictTimeMap[key] = { BUILD: 0, VALIDATE_FIRST: 0, SKIP: 0 };
+          if (verdictTimeMap[key][i.verdict] !== undefined) verdictTimeMap[key][i.verdict]++;
+        });
+        const verdictTimeData = Object.keys(verdictTimeMap).sort().map(week => ({
+          week: new Date(week).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          BUILD: verdictTimeMap[week].BUILD,
+          VALIDATE: verdictTimeMap[week].VALIDATE_FIRST,
+          SKIP: verdictTimeMap[week].SKIP,
+        }));
+
         setStats({
-          total, avgComposite, totalVotes, activeSources,
+          total, scoredCount, avgComposite, totalVotes, activeSources,
           buildCount: verdictCounts.BUILD, buildRate,
           verdictData, noVerdict, withVerdict,
           sourceData, sourceQualityData,
@@ -383,8 +400,9 @@ const IdeasAnalyticsPage = () => {
           timelineData, radarData,
           confidenceCounts,
           sourceVerdictData, dayData, maxDayCount,
+          verdictTimeData,
           topSource, bestQualitySource, topIndustry, topCategory,
-          maxScore, thisWeek,
+          maxScore, bestBuild, thisWeek,
         });
       } catch (err) {
         console.error('Analytics load error:', err);
@@ -424,11 +442,12 @@ const IdeasAnalyticsPage = () => {
       });
     }
 
-    if (stats.maxScore > 0) {
+    if (stats.scoredCount > 0 && stats.total > stats.scoredCount) {
+      const scoredPct = Math.round((stats.scoredCount / stats.total) * 100);
       list.push({
         icon: Lightbulb,
         color: 'primary',
-        text: `The highest composite score in the lab is ${stats.maxScore}/100. ${stats.maxScore >= 80 ? 'Someone should build that.' : stats.maxScore >= 60 ? 'Strong potential, needs validation.' : 'Room to grow.'}`,
+        text: `${stats.scoredCount} of ${stats.total} ideas have been scored (${scoredPct}%). The rest are waiting in the queue.`,
       });
     }
 
@@ -437,6 +456,14 @@ const IdeasAnalyticsPage = () => {
         icon: Zap,
         color: 'secondary',
         text: `${stats.thisWeek} new idea${stats.thisWeek > 1 ? 's' : ''} added in the last 7 days. The pipeline keeps growing.`,
+      });
+    }
+
+    if (stats.maxScore > 0) {
+      list.push({
+        icon: Lightbulb,
+        color: 'primary',
+        text: `Top score: ${stats.maxScore}/100. ${stats.maxScore >= 80 ? 'Someone should build that.' : stats.maxScore >= 60 ? 'Strong potential.' : 'Room to grow.'}`,
       });
     }
 
@@ -513,16 +540,16 @@ const IdeasAnalyticsPage = () => {
           {...staggerContainer}
         >
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.total} label="Ideas scored" icon={Zap} color="text-primary" />
+            <AnimatedStat value={stats.total} label="Total ideas" icon={Layers} color="text-accent" />
+          </motion.div>
+          <motion.div {...staggerItem}>
+            <AnimatedStat value={stats.scoredCount} label="Ideas scored" icon={Zap} color="text-primary" />
           </motion.div>
           <motion.div {...staggerItem}>
             <AnimatedStat value={stats.buildCount} label="Verdict: BUILD" icon={Target} color="text-primary" />
           </motion.div>
           <motion.div {...staggerItem}>
             <AnimatedStat value={stats.avgComposite} suffix="/100" label="Avg composite" icon={TrendingUp} color="text-secondary" />
-          </motion.div>
-          <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.activeSources} label="Active sources" icon={Layers} color="text-accent" />
           </motion.div>
         </motion.div>
 
@@ -534,7 +561,7 @@ const IdeasAnalyticsPage = () => {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
               {...staggerContainer}
             >
-              {insights.slice(0, 3).map((insight, i) => (
+              {insights.slice(0, 5).map((insight, i) => (
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
@@ -881,40 +908,56 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Category Breakdown */}
-          <ChartCard
-            title="Idea types"
-            subtitle="What kind of things people want built"
-            className="md:col-span-2"
-          >
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {stats.categoryData.map((cat) => {
-                const total = stats.categoryData.reduce((a, c) => a + c.value, 0);
-                const pct = total > 0 ? Math.round((cat.value / total) * 100) : 0;
-                return (
-                  <div
-                    key={cat.name}
-                    className="glass-card px-4 py-3 border border-border rounded-xl text-center min-w-[80px] flex-1"
-                  >
-                    <div className="text-lg sm:text-xl font-black text-foreground tabular-nums">{cat.value}</div>
-                    <div className="text-[11px] text-muted-foreground font-medium">{cat.name}</div>
-                    <div className="text-[10px] text-muted-foreground/60 mt-0.5">{pct}%</div>
-                  </div>
-                );
-              })}
-            </div>
-          </ChartCard>
+          {/* Verdict Over Time */}
+          {stats.verdictTimeData && stats.verdictTimeData.length > 1 && (
+            <ChartCard
+              title="Verdicts over time"
+              subtitle="How the pipeline judges ideas week by week"
+              className="md:col-span-2"
+              doodle={LightbulbDoodle}
+              doodleClass="top-3 right-3"
+            >
+              <div className="h-48 sm:h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={stats.verdictTimeData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis
+                      dataKey="week"
+                      tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
+                      interval="preserveStartEnd"
+                    />
+                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={28} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <Bar dataKey="BUILD" stackId="verdict" fill={VERDICT_COLORS.BUILD} radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="VALIDATE" stackId="verdict" fill={VERDICT_COLORS.VALIDATE_FIRST} radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="SKIP" stackId="verdict" fill={VERDICT_COLORS.SKIP} radius={[2, 2, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex justify-center gap-4 mt-2">
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="w-2.5 h-2.5 rounded-sm" style={{ background: VERDICT_COLORS.BUILD }} /> BUILD
+                </span>
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="w-2.5 h-2.5 rounded-sm" style={{ background: VERDICT_COLORS.VALIDATE_FIRST }} /> VALIDATE
+                </span>
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="w-2.5 h-2.5 rounded-sm" style={{ background: VERDICT_COLORS.SKIP }} /> SKIP
+                </span>
+              </div>
+            </ChartCard>
+          )}
 
         </motion.div>
 
         {/* ── More insights (if we have them) ── */}
-        {insights.length > 3 && (
+        {insights.length > 5 && (
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 gap-3"
               {...staggerContainer}
             >
-              {insights.slice(3).map((insight, i) => (
+              {insights.slice(5).map((insight, i) => (
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
