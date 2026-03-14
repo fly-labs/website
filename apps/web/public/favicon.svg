@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#1a1a1a"/>
+  <!-- Face outline (slightly imperfect, hand-drawn feel) -->
+  <path d="M13 5 C6 5 2 10 2 16 C2 23 6 27 13 27 C20 27 24 23 24 16 C24 9 20 5 13 5 Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Eyes -->
+  <circle cx="10" cy="14" r="1.6" fill="white"/>
+  <circle cx="17" cy="14" r="1.6" fill="white"/>
+  <!-- Smile (asymmetrical) -->
+  <path d="M8 19 Q12 23 18 18" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <!-- Bubblegum -->
+  <circle cx="24" cy="20" r="7.5" fill="#FF69B4" stroke="white" stroke-width="1"/>
+  <!-- Bubblegum highlight -->
+  <path d="M21 16 Q23 14 26 15" stroke="#FFB6C1" stroke-width="1" stroke-linecap="round" fill="none"/>
+</svg>
