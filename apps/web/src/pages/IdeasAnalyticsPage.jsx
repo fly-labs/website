@@ -101,6 +101,12 @@ const StarDoodle = ({ className }) => (
   </svg>
 );
 
+// ── Y-axis number formatter ──
+const formatAxisNumber = (v) => {
+  if (v >= 1000) return `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`;
+  return v.toLocaleString();
+};
+
 // ── Custom tooltip ──
 const ChartTooltip = ({ active, payload, label, formatter }) => {
   if (!active || !payload?.length) return null;
@@ -222,13 +228,32 @@ const IdeasAnalyticsPage = () => {
   useEffect(() => {
     async function load() {
       try {
-        const { data: ideas } = await supabase
-          .from('ideas')
-          .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at, published_at, updated_at')
-          .eq('approved', true)
-          .range(0, 9999);
+        // Paginate to bypass Supabase PostgREST max_rows (default 1000)
+        const PAGE_SIZE = 1000;
+        let ideas = [];
+        let page = 0;
+        let hasMore = true;
 
-        if (!ideas || ideas.length === 0) {
+        while (hasMore) {
+          const from = page * PAGE_SIZE;
+          const to = from + PAGE_SIZE - 1;
+          const { data, error } = await supabase
+            .from('ideas')
+            .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at, published_at, updated_at')
+            .eq('approved', true)
+            .range(from, to);
+
+          if (error) { console.error('Supabase fetch error:', error); break; }
+          if (data && data.length > 0) {
+            ideas = ideas.concat(data);
+            hasMore = data.length === PAGE_SIZE;
+            page++;
+          } else {
+            hasMore = false;
+          }
+        }
+
+        if (ideas.length === 0) {
           setLoading(false);
           return;
         }
@@ -768,15 +793,15 @@ const IdeasAnalyticsPage = () => {
             <div className="h-48 sm:h-56">
               <ResponsiveContainer width="100%" height="100%">
                 {growthView === 'weekly' ? (
-                  <BarChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                  <BarChart data={stats.timelineData} margin={{ left: 0, right: 4, top: 8, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
-                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
-                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={40} tickFormatter={formatAxisNumber} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value.toLocaleString()}`} />} />
                     <Bar dataKey="added" name="Added this week" fill={COLORS.accent} radius={[3, 3, 0, 0]} barSize={12} />
                   </BarChart>
                 ) : growthView === 'cumulative' ? (
-                  <AreaChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                  <AreaChart data={stats.timelineData} margin={{ left: 0, right: 4, top: 8, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3} />
@@ -785,12 +810,12 @@ const IdeasAnalyticsPage = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
-                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
-                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={40} tickFormatter={formatAxisNumber} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value.toLocaleString()}`} />} />
                     <Area type="monotone" dataKey="total" name="Total ideas" stroke={COLORS.primary} fill="url(#gradientArea)" strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }} />
                   </AreaChart>
                 ) : (
-                  <ComposedChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                  <ComposedChart data={stats.timelineData} margin={{ left: 0, right: 0, top: 8, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gradientAreaCombo" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.15} />
@@ -799,9 +824,9 @@ const IdeasAnalyticsPage = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
-                    <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
-                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
-                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={40} tickFormatter={formatAxisNumber} label={{ value: 'Weekly', angle: -90, position: 'insideLeft', style: { fontSize: 9, fill: 'hsl(var(--muted-foreground))' } }} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={40} tickFormatter={formatAxisNumber} label={{ value: 'Total', angle: 90, position: 'insideRight', style: { fontSize: 9, fill: 'hsl(var(--muted-foreground))' } }} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value.toLocaleString()}`} />} />
                     <Bar yAxisId="left" dataKey="added" name="Added this week" fill={COLORS.accent} radius={[3, 3, 0, 0]} barSize={10} opacity={0.7} />
                     <Area yAxisId="right" type="monotone" dataKey="total" name="Total ideas" stroke={COLORS.primary} fill="url(#gradientAreaCombo)" strokeWidth={2} dot={false} />
                   </ComposedChart>
@@ -958,8 +983,8 @@ const IdeasAnalyticsPage = () => {
                     <YAxis
                       tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                       allowDecimals={false}
-                      width={36}
-                      tickFormatter={(v) => v.toLocaleString()}
+                      width={40}
+                      tickFormatter={formatAxisNumber}
                     />
                     <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value} ideas`} />} />
                     <Bar dataKey="BUILD" name="BUILD" stackId="verdict" fill={VERDICT_COLORS.BUILD} radius={[0, 0, 0, 0]} />
