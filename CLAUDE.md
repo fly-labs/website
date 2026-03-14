@@ -58,11 +58,20 @@ apps/web/
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
 │   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, verdictStyles, confidenceColors)
 │   │       └── SourceBadge.jsx    # Shared source link badge (used in IdeaCard + IdeaDetailPage)
+│   │   └── chat/            # FlyBot chat components
+│   │       ├── ChatMessages.jsx  # Scrollable message list, auto-scroll, typing indicator
+│   │       ├── ChatMessage.jsx   # Message bubble with markdown rendering + ChatEvaluation
+│   │       ├── ChatInput.jsx     # Textarea + send button, message counter progress bar
+│   │       ├── ChatEvaluation.jsx # Rich score card (reuses ScoreUtils)
+│   │       ├── ChatSidebar.jsx   # Conversation list, new chat, mobile slide-in
+│   │       ├── ChatEmpty.jsx     # Landing with suggested prompt chips
+│   │       └── ChatLimitReached.jsx # Email capture waitlist
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
 │   │   ├── useIdeaFilters.js # Server-side paginated filter hook (Supabase queries, URL state, 7 filter dimensions, cascading counts)
+│   │   ├── useChat.js        # FlyBot chat state (messages, streaming, conversations, message count/limit)
 │   │   └── use-toast.js
 │   ├── lib/
 │   │   ├── data/
@@ -77,6 +86,7 @@ apps/web/
 │   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, staggerContainer + staggerItem)
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
+│   │   ├── chatApi.js       # FlyBot API client (streamChat SSE, listConversations, createConversation, deleteConversation, loadMessages, joinFlyBotWaitlist)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, how it works, newsletter preview, narrative closing)
@@ -97,8 +107,15 @@ apps/web/
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ScoringFrameworksPage.jsx # Public - Fly Labs Method + Hormozi + Dan Koe + Okamoto scoring + Validation Layer explained
 │       ├── LibraryPage.jsx         # Public - free ebooks with topic filter and waitlist
+│       ├── CoachPage.jsx          # Protected - FlyBot chat interface (sidebar + chat area, URL param ?c=)
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
+├── api/                         # Vercel Serverless Functions (Node.js, server-side)
+│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Opus, JWT auth, rate limit, message count)
+│   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
+│   └── lib/
+│       ├── auth.js              # Supabase JWT verification, admin email check
+│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context)
 ├── public/
 │   ├── images/luiz-alves.png
 │   ├── robots.txt
@@ -131,14 +148,15 @@ apps/web/
 | `/templates/website-blueprint` | WebsiteBlueprintPage | Public |
 | `/templates/launch-checklist` | LaunchChecklistPage | Public (coming soon) |
 | `/templates/one-page-business-plan` | OnePageBusinessPlanPage | Public (coming soon) |
+| `/coach` | CoachPage | Protected (noindex) |
 | `/profile` | ProfilePage | Protected |
 
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
-- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist
+- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist
 - **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github/yc), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized weighted avg), published_at (original publication date), meta (JSONB, source-specific context, e.g. YC failure_analysis), created_at, updated_at (auto-updated via trigger)
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h. RLS enabled with honeypot defense in `log_idea_submission` RPC
-- **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`
+- **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
 - **Scripts:** `scripts/score-ideas.mjs` (Claude Sonnet-powered Fly Labs Method + Hormozi + Dan Koe + Okamoto scoring with per-pillar reasoning + synthesis verdict, weights: 40% Fly Labs + 20% Hormozi + 20% Koe + 20% Okamoto, passes YC meta context when available), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold). Also: `scripts/clean-titles.mjs` (one-time DB cleanup to strip source prefixes like "Show HN:", "[Feature Request]" from idea titles). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`
 - **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
@@ -222,6 +240,9 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `library_filter_change` | LibraryPage | `topic` |
 | `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
 | `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
+| `flybot_message_sent` | CoachPage | `conversation_id`, `message_length` |
+| `flybot_prompt_clicked` | CoachPage | `prompt` |
+| `flybot_waitlist_joined` | ChatLimitReached | `message_count` |
 
 ## Environment Variables
 ```

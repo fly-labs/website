@@ -35,6 +35,7 @@ const MicroSaasPage = lazy(() => import('@/pages/MicroSaasPage.jsx'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage.jsx'));
 const ScoringFrameworksPage = lazy(() => import('@/pages/ScoringFrameworksPage.jsx'));
 const LibraryPage = lazy(() => import('@/pages/LibraryPage.jsx'));
+const CoachPage = lazy(() => import('@/pages/CoachPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
 const PageFallback = () => (
@@ -78,6 +79,7 @@ const AnimatedRoutes = () => {
         <Route path="/templates/launch-checklist" element={<LaunchChecklistPage />} />
         <Route path="/templates/one-page-business-plan" element={<OnePageBusinessPlanPage />} />
         <Route path="/microsaas" element={<MicroSaasPage />} />
+        <Route path="/coach" element={<ProtectedRoute><CoachPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
         {/* 404 */}

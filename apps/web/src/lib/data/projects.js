@@ -1,4 +1,4 @@
-import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen } from 'lucide-react';
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen, Bot } from 'lucide-react';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 
@@ -102,6 +102,18 @@ export const projects = [
     status: 'Live',
     category: 'Learn',
 
+  },
+  {
+    title: 'FlyBot',
+    description: 'Your vibe building coach. Scores ideas, helps write content, applies the finance brain to your decisions. A real conversation, not a chatbot.',
+    icon: Bot,
+    link: '/coach',
+    color: 'text-accent',
+    bgColor: 'bg-accent/10',
+    type: 'AI',
+    status: 'Beta',
+    category: 'Tools',
+    isGated: true,
   },
   {
     title: 'Idea Lab',

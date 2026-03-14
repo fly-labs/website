@@ -20,10 +20,10 @@ export { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 // Architectural constants (update when codebase changes)
 // These describe the codebase itself and can't be auto-computed at runtime.
 // Centralized here so there's ONE place to update.
-export const ROUTE_COUNT = 19;
+export const ROUTE_COUNT = 22;
 export const SCRIPT_COUNT = 10;
-export const GA4_EVENT_COUNT = 24;
-export const DB_TABLE_COUNT = 6;
-export const RPC_COUNT = 6;
+export const GA4_EVENT_COUNT = 26;
+export const DB_TABLE_COUNT = 9;
+export const RPC_COUNT = 7;
 export const WORKFLOW_COUNT = 3;
 export const EXPERT_FRAMEWORK_COUNT = 3; // Hormozi, Dan Koe, Okamoto
