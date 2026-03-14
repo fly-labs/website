@@ -151,7 +151,7 @@ const IdeaDetailPage = () => {
 
   const validation = idea.enrichment?.validation;
   const competitors = idea.enrichment?.competitors;
-  const relevanceDot = { high: 'bg-primary', medium: 'bg-yellow-500', low: 'bg-muted-foreground/40' };
+  const relevanceDot = { high: 'bg-primary', medium: 'bg-amber-500', low: 'bg-muted-foreground/40' };
 
   const toggleExpanded = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -337,10 +337,10 @@ const IdeaDetailPage = () => {
             const fa = idea.meta.failure_analysis;
             return (
               <section>
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-5 space-y-3">
+                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 space-y-3">
                   <div className="flex items-center gap-2">
-                    <Archive className="w-4 h-4 text-amber-600" />
-                    <h4 className="font-bold text-amber-600 text-sm">YC Graveyard</h4>
+                    <Archive className="w-4 h-4 text-amber-500" />
+                    <h4 className="font-bold text-amber-500 text-sm">YC Graveyard</h4>
                   </div>
                   {fa.original_one_liner && (
                     <p className="text-sm text-muted-foreground italic">"{fa.original_one_liner}"</p>
@@ -386,7 +386,7 @@ const IdeaDetailPage = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackEvent('outbound_click', { link_url: 'startups.rip', link_label: `${fa.company_name} post-mortem`, location: 'idea_detail' })}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 hover:underline transition-colors pt-1"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 hover:underline transition-colors pt-1"
                     >
                       Read full post-mortem on startups.rip <ExternalLink className="w-3 h-3" />
                     </a>
@@ -550,7 +550,7 @@ const IdeaDetailPage = () => {
                           <p className="text-xs font-medium text-muted-foreground/60 mb-2">Frustration Language</p>
                           <div className="flex flex-wrap gap-1.5">
                             {v.frustration_language.map((phrase, i) => (
-                              <span key={i} className="bg-yellow-500/10 text-yellow-600 text-xs rounded-full px-2 py-0.5">{phrase}</span>
+                              <span key={i} className="bg-amber-500/10 text-amber-500 text-xs rounded-full px-2 py-0.5">{phrase}</span>
                             ))}
                           </div>
                         </div>
@@ -591,7 +591,7 @@ const IdeaDetailPage = () => {
                           <ul className="space-y-1">
                             {v.unmet_needs.map((n, i) => (
                               <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
-                                <span className="w-1 h-1 rounded-full bg-yellow-500 shrink-0" />
+                                <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
                                 {n}
                               </li>
                             ))}
@@ -613,7 +613,7 @@ const IdeaDetailPage = () => {
                       {c.products?.length > 0 && (
                         <div className="space-y-3">
                           {c.products.map((p, i) => (
-                            <div key={i} className="border-l-2 border-yellow-500 pl-3 space-y-1 min-w-0">
+                            <div key={i} className="border-l-2 border-amber-500 pl-3 space-y-1 min-w-0">
                               <div className="flex items-center justify-between gap-2 min-w-0">
                                 <span className="text-sm font-bold truncate">{p.name}</span>
                                 {p.pricing && <span className="text-xs text-muted-foreground">{p.pricing}</span>}
@@ -629,7 +629,7 @@ const IdeaDetailPage = () => {
                                   ))}
                                 </ul>
                               )}
-                              {p.gap && <p className="text-xs text-yellow-600 font-medium">Gap: {p.gap}</p>}
+                              {p.gap && <p className="text-xs text-amber-500 font-medium">Gap: {p.gap}</p>}
                             </div>
                           ))}
                         </div>
@@ -644,7 +644,7 @@ const IdeaDetailPage = () => {
 
                 {/* Validation summary */}
                 {idea.enrichment?.summary && (
-                  <p className="text-sm text-muted-foreground italic border-l-2 border-yellow-500 pl-3">
+                  <p className="text-sm text-muted-foreground italic border-l-2 border-amber-500 pl-3">
                     {idea.enrichment.summary}
                   </p>
                 )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Bot } from 'lucide-react';
 import { SEO } from '@/components/SEO.jsx';
 import Header from '@/components/Header.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
@@ -37,12 +37,10 @@ export default function CoachPage() {
     stopStreaming,
   } = useChat();
 
-  // Load conversations on mount
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
 
-  // Handle URL param for conversation
   useEffect(() => {
     const convId = searchParams.get('c');
     if (convId && convId !== activeConversationId) {
@@ -50,7 +48,6 @@ export default function CoachPage() {
     }
   }, [searchParams, activeConversationId, loadConversation]);
 
-  // Update URL when conversation changes
   useEffect(() => {
     if (activeConversationId) {
       setSearchParams({ c: activeConversationId }, { replace: true });
@@ -86,10 +83,10 @@ export default function CoachPage() {
         noindex
       />
 
-      <div className="h-screen flex flex-col">
+      <div className="h-screen flex flex-col bg-background">
         <Header />
 
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden relative">
           {/* Sidebar */}
           <ChatSidebar
             conversations={conversations}
@@ -105,22 +102,27 @@ export default function CoachPage() {
           />
 
           {/* Chat area */}
-          <div className="flex-1 flex flex-col min-w-0">
-            {/* Mobile header */}
-            <div className="sm:hidden flex items-center gap-2 px-4 py-2 border-b">
+          <div className="flex-1 flex flex-col min-w-0 bg-background">
+            {/* Mobile header bar */}
+            <div className="sm:hidden flex items-center gap-3 px-4 py-3 border-b bg-card/50 backdrop-blur-sm">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                className="p-2 -ml-1 rounded-lg hover:bg-muted/50 transition-colors"
                 aria-label="Open sidebar"
               >
                 <Menu className="w-5 h-5" />
               </button>
-              <span className="text-sm font-medium truncate">
-                {activeConversationId
-                  ? conversations.find(c => c.id === activeConversationId)?.title || 'Chat'
-                  : 'FlyBot'
-                }
-              </span>
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <span className="text-sm font-medium truncate">
+                  {activeConversationId
+                    ? conversations.find(c => c.id === activeConversationId)?.title || 'FlyBot'
+                    : 'FlyBot'
+                  }
+                </span>
+              </div>
             </div>
 
             {/* Content */}
@@ -134,7 +136,7 @@ export default function CoachPage() {
 
             {/* Error */}
             {error && (
-              <div className="px-4 py-2 text-xs text-red-500 text-center">
+              <div className="px-4 py-2 text-xs text-red-500 text-center bg-red-500/5">
                 {error}
               </div>
             )}

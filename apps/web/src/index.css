@@ -82,6 +82,26 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
+  /* Scrollbar styling for dark mode */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-extrabold;
     letter-spacing: -0.02em;
@@ -157,6 +177,16 @@
     background: hsl(var(--card) / 0.4);
   }
 }
+
+/* FlyBot typing indicator */
+@keyframes flybot-typing {
+  0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { scrollbar-width: none; }
 
 /* GeometricBackground CSS animations (GPU-composited, no React re-renders) */
 @keyframes geo-float-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }

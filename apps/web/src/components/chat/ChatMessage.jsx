@@ -1,41 +1,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Bot } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { ChatEvaluation } from '@/components/chat/ChatEvaluation.jsx';
 
 function renderMarkdown(text) {
-  // Strip evaluation tags from display
   const clean = text.replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '').trim();
+  if (!clean) return null;
 
-  // Split by code blocks first
   const parts = clean.split(/(```[\s\S]*?```|`[^`]+`)/g);
 
   return parts.map((part, i) => {
     if (part.startsWith('```')) {
       const content = part.replace(/^```\w*\n?/, '').replace(/\n?```$/, '');
       return (
-        <pre key={i} className="bg-muted/50 rounded-lg p-3 my-2 overflow-x-auto text-sm">
+        <pre key={i} className="bg-background/60 rounded-lg p-3 my-3 overflow-x-auto text-[13px] leading-relaxed border border-border/50">
           <code>{content}</code>
         </pre>
       );
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={i} className="bg-muted/50 rounded px-1.5 py-0.5 text-sm">
+        <code key={i} className="bg-background/60 border border-border/40 rounded px-1.5 py-0.5 text-[13px] font-mono">
           {part.slice(1, -1)}
         </code>
       );
     }
-    // Process inline markdown
     return part.split('\n').map((line, j) => {
       let processed = line;
-      // Bold
-      processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      // Italic
+      processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>');
       processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      // Links
-      processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary underline underline-offset-2">$1</a>');
+      processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline underline-offset-2">$1</a>');
 
       return (
         <React.Fragment key={`${i}-${j}`}>
@@ -47,54 +42,78 @@ function renderMarkdown(text) {
   });
 }
 
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-1.5 py-1 px-1">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="w-2 h-2 bg-muted-foreground/40 rounded-full"
+          style={{
+            animation: 'flybot-typing 1.4s ease-in-out infinite',
+            animationDelay: `${i * 0.2}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function ChatMessage({ message, isStreaming }) {
   const isUser = message.role === 'user';
   const hasEvaluation = message.metadata?.evaluation;
+  const isEmpty = !message.content && isStreaming;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      className={cn('flex gap-3 px-4 py-3', isUser && 'flex-row-reverse')}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+      className={cn(
+        'group px-4 sm:px-6 py-4',
+        isUser ? 'bg-transparent' : 'bg-muted/30'
+      )}
     >
-      <div
-        className={cn(
-          'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center',
-          isUser
-            ? 'bg-primary/10 text-primary'
-            : 'bg-accent/10 text-accent-foreground'
-        )}
-      >
-        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-      </div>
-
-      <div className={cn('flex-1 min-w-0', isUser ? 'text-right' : '')}>
-        <div
-          className={cn(
-            'inline-block rounded-2xl px-4 py-2.5 max-w-[85%] text-sm leading-relaxed',
-            isUser
-              ? 'bg-primary text-primary-foreground rounded-br-md'
-              : 'bg-muted/50 text-foreground rounded-bl-md'
+      <div className="max-w-2xl mx-auto flex gap-4">
+        {/* Avatar */}
+        <div className="flex-shrink-0 pt-0.5">
+          {isUser ? (
+            <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold">
+              U
+            </div>
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-card border border-border flex items-center justify-center">
+              <Bot className="w-4 h-4 text-primary" />
+            </div>
           )}
-        >
-          <div className={cn('prose prose-sm max-w-none', isUser ? 'text-primary-foreground' : '')}>
-            {renderMarkdown(message.content)}
-            {isStreaming && !message.content && (
-              <span className="inline-flex gap-1 py-1">
-                <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" />
-                <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-              </span>
-            )}
-          </div>
         </div>
 
-        {hasEvaluation && (
-          <div className="mt-3">
-            <ChatEvaluation evaluation={message.metadata.evaluation} />
+        {/* Content */}
+        <div className="flex-1 min-w-0 space-y-1">
+          {/* Name */}
+          <p className={cn(
+            'text-xs font-semibold',
+            isUser ? 'text-foreground' : 'text-primary'
+          )}>
+            {isUser ? 'You' : 'FlyBot'}
+          </p>
+
+          {/* Message body */}
+          <div className="text-[14px] leading-[1.7] text-foreground/90">
+            {isEmpty ? (
+              <TypingIndicator />
+            ) : (
+              renderMarkdown(message.content)
+            )}
           </div>
-        )}
+
+          {/* Evaluation card */}
+          {hasEvaluation && (
+            <div className="pt-2">
+              <ChatEvaluation evaluation={message.metadata.evaluation} />
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

@@ -1,59 +1,49 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Sparkles } from 'lucide-react';
+import { Bot, ArrowRight } from 'lucide-react';
 
 const SUGGESTED_PROMPTS = [
-  'Evaluate my business idea',
-  'Help me write a Substack Note',
-  'What makes a good vibe building project?',
-  'Help me craft a title for my article',
-  'Apply the finance brain to my decision',
-  'Compare ideas in your database',
+  { text: 'Evaluate my business idea', icon: '/' },
+  { text: 'Help me write a Substack Note', icon: '/' },
+  { text: 'What makes a good vibe building project?', icon: '/' },
+  { text: 'Help me craft a title for my article', icon: '/' },
+  { text: 'Apply the finance brain to my decision', icon: '/' },
+  { text: 'Compare ideas in your database', icon: '/' },
 ];
 
 export function ChatEmpty({ onPromptClick }) {
   return (
-    <div className="flex-1 flex items-center justify-center p-4">
-      <div className="max-w-md text-center">
+    <div className="flex-1 flex items-center justify-center p-6">
+      <div className="max-w-lg w-full">
+        {/* Logo + title */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-          className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="text-center mb-10"
         >
-          <Bot className="w-8 h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 mb-5">
+            <Bot className="w-7 h-7 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2 tracking-tight">How can I help?</h1>
+          <p className="text-sm text-muted-foreground/60 leading-relaxed max-w-xs mx-auto">
+            Idea scoring, content strategy, copywriting, marketing, the finance brain. Your move.
+          </p>
         </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-xl font-semibold mb-2"
-        >
-          FlyBot
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="text-sm text-muted-foreground mb-6 leading-relaxed"
-        >
-          Your vibe building coach. Idea scoring, content strategy, copywriting, marketing, finance brain. Throw something at me.
-        </motion.p>
-
-        <div className="flex flex-wrap justify-center gap-2">
+        {/* Prompt grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {SUGGESTED_PROMPTS.map((prompt, i) => (
             <motion.button
-              key={prompt}
+              key={prompt.text}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.05 }}
-              onClick={() => onPromptClick(prompt)}
-              className="px-3 py-2 rounded-full border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-primary/5 transition-colors"
+              transition={{ delay: 0.15 + i * 0.04, duration: 0.3 }}
+              onClick={() => onPromptClick(prompt.text)}
+              className="group flex items-center gap-3 px-4 py-3 rounded-xl border border-border/50 text-left text-[13px] text-muted-foreground hover:text-foreground hover:border-primary/20 hover:bg-primary/5 transition-colors"
             >
-              <Sparkles className="w-3 h-3 inline-block mr-1.5 opacity-50" />
-              {prompt}
+              <span className="flex-1">{prompt.text}</span>
+              <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-40 group-hover:translate-x-0 transition-all" />
             </motion.button>
           ))}
         </div>

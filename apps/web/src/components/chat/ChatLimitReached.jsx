@@ -9,7 +9,7 @@ import { trackEvent } from '@/lib/analytics.js';
 export function ChatLimitReached({ messageCount }) {
   const { currentUser } = useAuth();
   const [email, setEmail] = useState(currentUser?.email || '');
-  const [status, setStatus] = useState('idle'); // idle, loading, done, error
+  const [status, setStatus] = useState('idle');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,14 +30,14 @@ export function ChatLimitReached({ messageCount }) {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 flex items-center justify-center p-4"
+        className="flex-1 flex items-center justify-center p-6"
       >
-        <div className="text-center max-w-sm">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-3">
-            <Check className="w-6 h-6 text-primary" />
+        <div className="text-center max-w-xs">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 border border-primary/20 mb-4">
+            <Check className="w-5 h-5 text-primary" />
           </div>
-          <h3 className="font-semibold mb-1">You're on the list</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="font-semibold mb-1.5">You're on the list</h3>
+          <p className="text-sm text-muted-foreground/70 leading-relaxed">
             I'll let you know when unlimited access opens up. Thanks for chatting.
           </p>
         </div>
@@ -49,14 +49,14 @@ export function ChatLimitReached({ messageCount }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex-1 flex items-center justify-center p-4"
+      className="flex-1 flex items-center justify-center p-6"
     >
       <div className="text-center max-w-sm">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 mb-3">
-          <Mail className="w-6 h-6 text-amber-500" />
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 mb-4">
+          <Mail className="w-5 h-5 text-amber-500" />
         </div>
-        <h3 className="font-semibold mb-1">That's your 5 free messages</h3>
-        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+        <h3 className="font-semibold mb-1.5">That's your 5 free messages</h3>
+        <p className="text-sm text-muted-foreground/70 mb-5 leading-relaxed">
           I enjoyed this. Want to keep going? Leave your email and I'll let you know when unlimited access opens up.
         </p>
 
@@ -66,12 +66,12 @@ export function ChatLimitReached({ messageCount }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
-            className="flex-1 rounded-lg border bg-muted/30 px-3 py-2 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 rounded-lg border border-border/60 bg-card/50 px-3 py-2.5 text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 transition-[border-color,box-shadow]"
           />
           <button
             type="submit"
             disabled={!isValidEmail(email) || status === 'loading'}
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           >
             {status === 'loading' ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -82,7 +82,7 @@ export function ChatLimitReached({ messageCount }) {
         </form>
 
         {status === 'error' && (
-          <p className="text-xs text-red-500 mt-2">Something went wrong. Try again.</p>
+          <p className="text-xs text-red-500 mt-3">Something went wrong. Try again.</p>
         )}
       </div>
     </motion.div>
