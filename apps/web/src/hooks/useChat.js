@@ -7,10 +7,16 @@ export function useChat() {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
+  const [lastFailedMessage, setLastFailedMessage] = useState(null);
   const [messageCount, setMessageCount] = useState(0);
   const [messageLimit, setMessageLimit] = useState(5);
   const [limitReached, setLimitReached] = useState(false);
   const abortRef = useRef(null);
+
+  const clearError = useCallback(() => {
+    setError(null);
+    setLastFailedMessage(null);
+  }, []);
 
   const fetchConversations = useCallback(async () => {
     try {
@@ -24,6 +30,7 @@ export function useChat() {
   const loadConversation = useCallback(async (conversationId) => {
     try {
       setError(null);
+      setLastFailedMessage(null);
       const msgs = await loadMessages(conversationId);
       setMessages(msgs);
       setActiveConversationId(conversationId);
@@ -36,12 +43,14 @@ export function useChat() {
     setMessages([]);
     setActiveConversationId(null);
     setError(null);
+    setLastFailedMessage(null);
   }, []);
 
   const sendMessage = useCallback(async (text) => {
     if (isStreaming || !text.trim()) return;
 
     setError(null);
+    setLastFailedMessage(null);
     setIsStreaming(true);
 
     // Optimistically add user message
@@ -98,26 +107,29 @@ export function useChat() {
         if (data.error === 'limit_reached') {
           setLimitReached(true);
           setMessageCount(data.message_count || 5);
-          // Remove the empty assistant placeholder
-          setMessages(prev => prev.filter(m => m.id !== assistantId));
-          // Also remove the optimistic user message
-          setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+          // Remove both placeholder messages
+          setMessages(prev => prev.filter(m => m.id !== assistantId && m.id !== userMsg.id));
         } else {
+          // Remove the empty assistant placeholder (don't show error as a message)
+          setMessages(prev => prev.filter(m => m.id !== assistantId));
+          // Also remove the optimistic user message (server cleaned up the orphan)
+          setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+          // Set error state separately
           setError(data.message || data.error || 'Something went wrong');
-          // Update assistant message with error
-          setMessages(prev =>
-            prev.map(m =>
-              m.id === assistantId
-                ? { ...m, content: 'Something went wrong. Try again.' }
-                : m
-            )
-          );
+          // Save the failed message text for retry
+          setLastFailedMessage(text);
         }
       },
     });
 
     abortRef.current = abort;
   }, [isStreaming, activeConversationId, fetchConversations]);
+
+  const retryLastMessage = useCallback(() => {
+    if (lastFailedMessage) {
+      sendMessage(lastFailedMessage);
+    }
+  }, [lastFailedMessage, sendMessage]);
 
   const removeConversation = useCallback(async (id) => {
     try {
@@ -144,6 +156,7 @@ export function useChat() {
     activeConversationId,
     isStreaming,
     error,
+    lastFailedMessage,
     messageCount,
     messageLimit,
     limitReached,
@@ -153,5 +166,7 @@ export function useChat() {
     fetchConversations,
     removeConversation,
     stopStreaming,
+    retryLastMessage,
+    clearError,
   };
 }

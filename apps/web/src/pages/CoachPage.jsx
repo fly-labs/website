@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Menu, Bot } from 'lucide-react';
+import { Menu, Bot, AlertCircle, X, RotateCcw } from 'lucide-react';
 import { SEO } from '@/components/SEO.jsx';
 import Header from '@/components/Header.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
@@ -26,6 +26,7 @@ export default function CoachPage() {
     activeConversationId,
     isStreaming,
     error,
+    lastFailedMessage,
     messageCount,
     messageLimit,
     limitReached,
@@ -35,6 +36,8 @@ export default function CoachPage() {
     fetchConversations,
     removeConversation,
     stopStreaming,
+    retryLastMessage,
+    clearError,
   } = useChat();
 
   useEffect(() => {
@@ -134,10 +137,29 @@ export default function CoachPage() {
               <ChatEmpty onPromptClick={handlePromptClick} />
             )}
 
-            {/* Error */}
+            {/* Error banner */}
             {error && (
-              <div className="px-4 py-2 text-xs text-red-500 text-center bg-red-500/5">
-                {error}
+              <div className="mx-4 sm:mx-6 mb-2">
+                <div className="max-w-2xl mx-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm">
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <span className="flex-1 text-red-400">{error}</span>
+                  {lastFailedMessage && (
+                    <button
+                      onClick={retryLastMessage}
+                      className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 font-medium transition-colors"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      Retry
+                    </button>
+                  )}
+                  <button
+                    onClick={clearError}
+                    className="text-red-400/50 hover:text-red-400 transition-colors p-1"
+                    aria-label="Dismiss error"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             )}
 

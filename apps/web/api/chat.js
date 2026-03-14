@@ -89,12 +89,12 @@ export default async function handler(req, res) {
     convId = conv.id;
   }
 
-  // Save user message
-  await supabase.from('messages').insert({
+  // Save user message (keep ID for rollback on error)
+  const { data: userMsg } = await supabase.from('messages').insert({
     conversation_id: convId,
     role: 'user',
     content: cleanMessage,
-  });
+  }).select('id').single();
 
   // Load conversation history (last 20 messages)
   const { data: history } = await supabase
@@ -142,7 +142,7 @@ export default async function handler(req, res) {
   try {
     const stream = anthropic.messages.stream({
       model,
-      max_tokens: 2048,
+      max_tokens: 1024,
       system: systemPrompt,
       messages,
     });
@@ -190,7 +190,22 @@ export default async function handler(req, res) {
     })}\n\n`);
 
   } catch (err) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Something went wrong. Try again.' })}\n\n`);
+    console.error('FlyBot API error:', err?.status, err?.error?.type, err?.message);
+
+    // If no chunks were sent, clean up the orphan user message
+    if (!fullResponse && userMsg?.id) {
+      await supabase.from('messages').delete().eq('id', userMsg.id);
+    }
+
+    // Send specific error based on error type
+    let errorMessage = 'Connection hiccup. Try again.';
+    if (err?.error?.type === 'invalid_request_error') {
+      errorMessage = "I couldn't process that. Try rephrasing.";
+    } else if (err?.status === 529 || err?.error?.type === 'overloaded_error') {
+      errorMessage = "I'm a bit overloaded right now. Give me a sec and try again.";
+    }
+
+    res.write(`data: ${JSON.stringify({ type: 'error', message: errorMessage })}\n\n`);
   }
 
   res.end();
