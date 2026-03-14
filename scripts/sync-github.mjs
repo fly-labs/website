@@ -20,7 +20,7 @@ const anthropic = ANTHROPIC_API_KEY ? new Anthropic({ apiKey: ANTHROPIC_API_KEY 
 
 const AI_BATCH_SIZE = 15;
 const REQUEST_DELAY = 2000; // GitHub API: be polite
-const MAX_RESULTS_PER_QUERY = 30;
+const MAX_RESULTS_PER_QUERY = 50;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -48,42 +48,81 @@ const EXCLUDED_REPOS = new Set([
   'spring-projects/spring-boot', 'pallets/flask',
   // Package managers / build tools
   'npm/cli', 'yarnpkg/yarn', 'pnpm/pnpm', 'webpack/webpack',
-  // Misc mega-repos from first run
+  // Misc mega-repos
   'springfox/springfox', 'debug-js/debug',
   'git-lfs/git-lfs', 'argoproj/argo-cd', 'cilium/cilium',
   'firebase/firebase-js-sdk', 'firebase/firebase-tools',
   'bluesky-social/social-app', 'coldfix/udiskie',
   'joeyespo/grip', 'hashicorp/nomad',
   'django-oauth/django-oauth-toolkit',
+  // Cloud/platform SDKs
+  'aws/aws-sdk', 'azure/azure-sdk', 'googleapis/google-cloud-node',
+  // Browsers
+  'nicothin/chromium', 'nicothin/nicothin.github.io',
+  // Databases
+  'postgres/postgres', 'mysql/mysql-server', 'mongodb/mongo',
+  // Mobile
+  'react-native-community/react-native', 'nicothin/nicothin.github.io',
 ]);
 
-// 6 search queries targeting pain points in issues
-// No label filters (most repos don't use standardized labels)
-// Mega-repo exclusion + strict AI filter do the quality work
-// Rotate 2 per daily run (same pattern as sync-x.mjs)
+// 8 search queries targeting cross-project pain and purchase intent
+// Rotate 4 per daily run (doubled from 2)
 const SEARCH_QUERIES = [
-  '"I wish there was" OR "would pay for" OR "willing to pay"',
-  '"pain point" OR "workaround" OR "no good solution"',
-  '"need a tool" OR "looking for a solution" OR "looking for a way"',
-  '"missing feature" OR "no way to" OR "impossible to"',
-  '"manually" OR "time-consuming" OR "tedious" OR "repetitive"',
-  '"better alternative" OR "alternative to" OR "replacement for"',
+  '"looking for alternative" OR "alternative to" OR "switch from"',
+  '"would pay for" OR "willing to pay" OR "shut up and take my money"',
+  '"no good solution" OR "nothing exists" OR "no tool for this"',
+  '"workaround" OR "hacky solution" OR "duct tape"',
+  '"wish there was a tool" OR "wish there was a service" OR "wish someone would build"',
+  '"need a SaaS" OR "need an API" OR "need a platform"',
+  '"automate" OR "manually every" OR "waste hours"',
+  '"open source alternative" OR "self-hosted alternative" OR "free alternative"',
 ];
 
 function getRotatedQueries() {
   const dayOfYear = Math.floor(
     (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
   );
-  const startIndex = (dayOfYear * 2) % SEARCH_QUERIES.length;
+  const startIndex = (dayOfYear * 4) % SEARCH_QUERIES.length;
   return [
     SEARCH_QUERIES[startIndex],
     SEARCH_QUERIES[(startIndex + 1) % SEARCH_QUERIES.length],
+    SEARCH_QUERIES[(startIndex + 2) % SEARCH_QUERIES.length],
+    SEARCH_QUERIES[(startIndex + 3) % SEARCH_QUERIES.length],
   ];
 }
 
-async function searchIssues(query) {
+// Pre-AI keyword scoring (like Reddit's keyword scoring)
+// Filters out bug reports and internal feature requests before expensive AI calls
+const POSITIVE_KEYWORDS = [
+  'pay', 'alternative', 'saas', 'tool', 'solution', 'automate',
+  'api', 'integrate', 'self-hosted', 'platform', 'pricing', 'subscription',
+  'standalone', 'product', 'service', 'marketplace', 'workflow',
+];
+const NEGATIVE_KEYWORDS = [
+  'bug', 'crash', 'error', 'typo', 'docs', 'ci', 'build fail',
+  'regression', 'merge conflict', 'deploy', 'lint', 'deprecat',
+  'breaking change', 'test fail', 'segfault', 'memory leak',
+];
+
+function keywordScore(issue) {
+  const text = `${issue.title} ${(issue.body || '').slice(0, 500)}`.toLowerCase();
+  let score = 0;
+  for (const kw of POSITIVE_KEYWORDS) {
+    if (text.includes(kw)) score += 1;
+  }
+  for (const kw of NEGATIVE_KEYWORDS) {
+    if (text.includes(kw)) score -= 1;
+  }
+  return score;
+}
+
+async function searchGitHub(query, type = 'issue') {
+  const qualifier = type === 'discussion'
+    ? ' type:discussion'
+    : ' is:issue is:open';
+
   const url = `https://api.github.com/search/issues?q=${encodeURIComponent(
-    query + ' is:issue is:open'
+    query + qualifier
   )}&sort=reactions&order=desc&per_page=${MAX_RESULTS_PER_QUERY}`;
 
   const headers = {
@@ -98,7 +137,12 @@ async function searchIssues(query) {
 
   if (!res.ok) {
     if (res.status === 403) {
-      console.warn('GitHub API rate limit reached. Try setting GITHUB_TOKEN for higher limits.');
+      console.warn(`GitHub API rate limit reached (${type}). Try setting GITHUB_TOKEN for higher limits.`);
+      return [];
+    }
+    if (res.status === 422) {
+      // GitHub returns 422 for unsupported search qualifiers (e.g., type:discussion)
+      console.warn(`  Search qualifier not supported for ${type}, skipping.`);
       return [];
     }
     throw new Error(`GitHub API error ${res.status}: ${res.statusText}`);
@@ -134,7 +178,7 @@ async function aiBatchFilter(issues) {
         max_tokens: 1500,
         system: `You are a STRICT filter for an idea lab that surfaces real business opportunities. Be very selective (reject 70%+).
 
-For each GitHub issue, determine:
+For each GitHub issue/discussion, determine:
 - is_real_problem (boolean): TRUE ONLY if this describes a problem that someone could build a STANDALONE product, tool, or SaaS to solve AND people would pay for it. The problem must exist beyond the specific repo.
 - category (Tool/Template/Prompt/Article/Other): What type of solution would address this?
 - reason (string): One sentence explaining your decision
@@ -162,7 +206,7 @@ Return ONLY valid JSON (no markdown, no code fences):
         messages: [
           {
             role: 'user',
-            content: `Evaluate these ${batch.length} GitHub issues:\n\n${issuesText}`,
+            content: `Evaluate these ${batch.length} GitHub issues/discussions:\n\n${issuesText}`,
           },
         ],
       });
@@ -244,7 +288,7 @@ function transformIssue(issue) {
   const repoFullName = issue.repository_url?.split('/').slice(-2).join('/') || null;
 
   return {
-    idea_title: issue.title.replace(/^\[(?:Feature Request|Enhancement|Bug|Help Wanted|RFC)\]\s*/i, '').replace(/^(?:Feature Request|Enhancement):\s*/i, '').slice(0, 200),
+    idea_title: issue.title.replace(/^\[(?:Feature Request|Enhancement|Bug|Help Wanted|RFC|Discussion)\]\s*/i, '').replace(/^(?:Feature Request|Enhancement|Discussion):\s*/i, '').slice(0, 200),
     idea_description: issue.body ? issue.body.replace(/<[^>]+>/g, '').slice(0, 2000) : null,
     category,
     industry: detectIndustry(issue),
@@ -286,49 +330,66 @@ async function syncToSupabase(ideas) {
 async function main() {
   try {
     const queries = getRotatedQueries();
-    console.log(`Running GitHub Issues sync with ${queries.length} search queries...`);
+    console.log(`Running GitHub sync with ${queries.length} search queries (Issues + Discussions)...`);
     if (GITHUB_TOKEN) {
       console.log('GitHub token detected (5,000 req/hr)');
     } else {
       console.log('No GitHub token (60 req/hr). Set GITHUB_TOKEN for higher limits.');
     }
 
-    const allIssues = new Map(); // Dedup by issue ID
+    const allItems = new Map(); // Dedup by issue/discussion ID
 
     for (let i = 0; i < queries.length; i++) {
-      console.log(`\nSearch ${i + 1}: ${queries[i].slice(0, 80)}...`);
-      const issues = await searchIssues(queries[i]);
-      console.log(`  Found ${issues.length} issues`);
+      console.log(`\nQuery ${i + 1}/${queries.length}: ${queries[i].slice(0, 80)}...`);
 
-      for (const issue of issues) {
+      // Search Issues
+      const issues = await searchGitHub(queries[i], 'issue');
+      console.log(`  Issues: ${issues.length} results`);
+      await sleep(REQUEST_DELAY);
+
+      // Search Discussions (same query, different type)
+      const discussions = await searchGitHub(queries[i], 'discussion');
+      console.log(`  Discussions: ${discussions.length} results`);
+
+      const combined = [...issues, ...discussions];
+
+      let skippedPR = 0, skippedRepo = 0, skippedReactions = 0, skippedAge = 0, skippedKeyword = 0;
+
+      for (const item of combined) {
         // Skip PRs
-        if (issue.pull_request) continue;
+        if (item.pull_request) { skippedPR++; continue; }
 
         // Skip mega-repos (produce IDE wishlists, not business opportunities)
-        const repoFullName = issue.repository_url?.split('/').slice(-2).join('/');
-        if (repoFullName && EXCLUDED_REPOS.has(repoFullName)) continue;
+        const repoFullName = item.repository_url?.split('/').slice(-2).join('/');
+        if (repoFullName && EXCLUDED_REPOS.has(repoFullName)) { skippedRepo++; continue; }
 
-        // Hard filters: enough engagement to signal real demand
-        if ((issue.reactions?.total_count || 0) < 5) continue;
-        if ((issue.comments || 0) < 3) continue;
+        // Hard filters: enough engagement to signal real demand (lowered from 5 to 3)
+        if ((item.reactions?.total_count || 0) < 3) { skippedReactions++; continue; }
+        if ((item.comments || 0) < 2) { skippedReactions++; continue; }
 
         // Skip very old issues (> 5 years) - stale problems
-        const issueAge = Date.now() - new Date(issue.created_at).getTime();
-        if (issueAge > 5 * 365 * 86400000) continue;
+        const itemAge = Date.now() - new Date(item.created_at).getTime();
+        if (itemAge > 5 * 365 * 86400000) { skippedAge++; continue; }
 
-        if (!allIssues.has(issue.id)) {
-          allIssues.set(issue.id, issue);
+        // Pre-AI keyword scoring (like Reddit's keyword scoring)
+        const kwScore = keywordScore(item);
+        if (kwScore < 1) { skippedKeyword++; continue; }
+
+        if (!allItems.has(item.id)) {
+          allItems.set(item.id, item);
         }
       }
+
+      console.log(`  Hard filter: +${combined.length - skippedPR - skippedRepo - skippedReactions - skippedAge - skippedKeyword} passed (PR:${skippedPR} repo:${skippedRepo} engagement:${skippedReactions} age:${skippedAge} keyword:${skippedKeyword} skipped)`);
 
       if (i < queries.length - 1) await sleep(REQUEST_DELAY);
     }
 
-    const dedupedIssues = Array.from(allIssues.values());
-    console.log(`\n${dedupedIssues.length} unique issues passed hard filters`);
+    const dedupedItems = Array.from(allItems.values());
+    console.log(`\n${dedupedItems.length} unique items passed hard filters + keyword scoring`);
 
-    if (dedupedIssues.length === 0) {
-      console.log('No issues found. Done.');
+    if (dedupedItems.length === 0) {
+      console.log('No items found. Done.');
       return;
     }
 
@@ -336,13 +397,13 @@ async function main() {
     if (anthropic) {
       console.log('Running AI quality filter...');
     }
-    const aiFiltered = await aiBatchFilter(dedupedIssues);
-    const qualityIssues = aiFiltered.filter((i) => i._ai?.is_real_problem !== false);
-    const rejected = aiFiltered.length - qualityIssues.length;
+    const aiFiltered = await aiBatchFilter(dedupedItems);
+    const qualityItems = aiFiltered.filter((i) => i._ai?.is_real_problem !== false);
+    const rejected = aiFiltered.length - qualityItems.length;
     if (rejected > 0)
-      console.log(`AI filter: ${rejected} issues rejected, ${qualityIssues.length} passed`);
+      console.log(`AI filter: ${rejected} rejected, ${qualityItems.length} passed`);
 
-    const ideas = qualityIssues.map(transformIssue);
+    const ideas = qualityItems.map(transformIssue);
 
     // Dedup by external_id
     const unique = new Map();
