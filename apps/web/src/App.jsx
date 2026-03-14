@@ -27,6 +27,7 @@ const OnePageBusinessPlanPage = lazy(() => import('@/pages/OnePageBusinessPlanPa
 const NewsletterPage = lazy(() => import('@/pages/NewsletterPage.jsx'));
 const IdeaSubmissionPage = lazy(() => import('@/pages/IdeaSubmissionPage.jsx'));
 const IdeaDetailPage = lazy(() => import('@/pages/IdeaDetailPage.jsx'));
+const IdeasAnalyticsPage = lazy(() => import('@/pages/IdeasAnalyticsPage.jsx'));
 const AboutPage = lazy(() => import('@/pages/AboutPage.jsx'));
 const LoginPage = lazy(() => import('@/pages/LoginPage.jsx'));
 const SignupPage = lazy(() => import('@/pages/SignupPage.jsx'));
@@ -59,6 +60,7 @@ const AnimatedRoutes = () => {
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/ideas/analytics" element={<IdeasAnalyticsPage />} />
         <Route path="/ideas/:id" element={<IdeaDetailPage />} />
         <Route path="/ideas" element={<IdeaSubmissionPage />} />
         <Route path="/newsletter" element={<NewsletterPage />} />

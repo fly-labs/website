@@ -18,6 +18,7 @@ npm run lint     # ESLint (quiet mode)
 - **Components:** shadcn/ui pattern (Radix UI primitives + CVA variants) in `components/ui/`
 - **Routing:** React Router DOM v7 (client-side SPA)
 - **Animation:** Framer Motion 11
+- **Charts:** Recharts (lazy-loaded, separate vendor chunk)
 - **Icons:** Lucide React
 - **Backend:** Supabase (PostgreSQL + Auth + Storage)
 - **Auth:** Email/password + Google OAuth via Supabase
@@ -75,13 +76,15 @@ apps/web/
 │   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, staggerContainer + staggerItem)
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
+│   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
-│       ├── NewsletterPage.jsx    # Substack RSS feed + subscribe CTA
+│       ├── IdeasAnalyticsPage.jsx # Idea Lab analytics dashboard (recharts: verdict donut, source breakdown, score histogram, framework radar, timeline, top industries, source quality)
+│       ├── NewsletterPage.jsx    # Substack archive API feed + engagement metrics + Notes section + subscribe CTA
 │       ├── AboutPage.jsx         # 5-act visual journey: hero, manifesto, story beat cards, by-the-numbers stats + GitHub heatmap, closing CTA
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
@@ -100,7 +103,7 @@ apps/web/
 │   ├── images/luiz-alves.png
 │   ├── robots.txt
 │   └── sitemap.xml
-├── vite.config.js           # Port 3001, @ alias -> ./src, vendor/motion/supabase chunking
+├── vite.config.js           # Port 3001, @ alias -> ./src, vendor/motion/supabase/recharts chunking
 ├── tailwind.config.js       # Design tokens, dark mode: 'class', tailwindcss-animate plugin
 ├── components.json          # shadcn/ui: new-york style, JSX, lucide icons
 ├── vercel.json              # SPA rewrites + security headers (CSP, HSTS, COOP, Permissions-Policy)
@@ -114,6 +117,7 @@ apps/web/
 | `/explore` | ExplorePage | Public |
 | `/ideas` | IdeaSubmissionPage | Public |
 | `/ideas/:id` | IdeaDetailPage | Public |
+| `/ideas/analytics` | IdeasAnalyticsPage | Public (noindex) |
 | `/newsletter` | NewsletterPage | Public |
 | `/about` | AboutPage | Public |
 | `/login` | LoginPage | Public |

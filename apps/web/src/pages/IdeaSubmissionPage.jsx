@@ -325,6 +325,8 @@ const IdeaSubmissionPage = () => {
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
                 {globalCount ? `${globalCount} real problems from ${SOURCE_COUNT} sources` : `Real problems from ${SOURCE_COUNT} sources`}, scored by AI daily.
+                {' '}
+                <Link to="/ideas/analytics" className="text-primary hover:underline">See analytics</Link>
               </p>
             </motion.div>
 
