@@ -77,7 +77,7 @@ Banned patterns: "Not X, it's Y" parallelisms (including soft variants: standalo
 6. Open source everything (give it away, grow from generosity)
 7. The compound effect (each project makes the next one faster)
 8. Curiosity over credentials
-9. The finance brain applied to building (behavioral finance + VC thinking, without the acronyms)
+9. The finance perspective as a natural lens (behavioral finance + VC thinking, when it genuinely connects to the topic. Skip it when it doesn't.)
 
 ## AUDIENCE
 
