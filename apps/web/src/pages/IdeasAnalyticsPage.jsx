@@ -1,18 +1,19 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import supabase from '@/lib/supabaseClient.js';
 import { sourceOptions } from '@/lib/data/ideas.js';
-import { cn } from '@/lib/utils.js';
+import { cn, timeAgo } from '@/lib/utils.js';
+import { verdictStyles, getScoreTier } from '@/components/ideas/ScoreUtils.jsx';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   AreaChart, Area,
-  RadarChart, PolarGrid, PolarAngleAxis, Radar,
+  ComposedChart, Line,
 } from 'recharts';
 
 // ── Chart color palette (matches design system) ──
@@ -42,6 +43,13 @@ const SOURCE_COLORS = {
   hackernews: COLORS.amber,
   github: COLORS.indigo,
   yc: COLORS.red,
+};
+
+const FRAMEWORK_COLORS = {
+  'Fly Labs': COLORS.primary,
+  'Hormozi': COLORS.amber,
+  'Koe': COLORS.accent,
+  'Okamoto': COLORS.secondary,
 };
 
 // Short labels for mobile
@@ -157,7 +165,7 @@ const ChartCard = ({ title, subtitle, children, className, doodle: Doodle, doodl
 );
 
 // ── Insight card ──
-const InsightCard = ({ icon: Icon, color, text }) => (
+const InsightCard = ({ icon: Icon, color, text, link }) => (
   <motion.div
     {...staggerItem}
     className="glass-card p-4 border border-border rounded-xl flex items-start gap-3"
@@ -165,21 +173,60 @@ const InsightCard = ({ icon: Icon, color, text }) => (
     <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", color === 'primary' ? 'bg-primary/10' : color === 'secondary' ? 'bg-secondary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-muted')}>
       <Icon className={cn("w-4 h-4", color === 'primary' ? 'text-primary' : color === 'secondary' ? 'text-secondary' : color === 'accent' ? 'text-accent' : 'text-foreground')} />
     </div>
-    <p className="text-sm text-foreground leading-relaxed">{text}</p>
+    <div className="flex-1 min-w-0">
+      <p className="text-sm text-foreground leading-relaxed">{text}</p>
+      {link && (
+        <Link to={link} className="text-xs text-primary hover:underline mt-1 inline-flex items-center gap-1">
+          View idea <ExternalLink className="w-3 h-3" />
+        </Link>
+      )}
+    </div>
   </motion.div>
 );
+
+// ── Recently Scored Card ──
+const RecentIdeaRow = ({ idea }) => {
+  const sourceLabel = sourceOptions.find(s => s.value === idea.source)?.label || idea.source;
+  const vs = idea.verdict && verdictStyles[idea.verdict];
+
+  return (
+    <Link
+      to={`/ideas/${idea.id}`}
+      className="flex items-center gap-3 sm:gap-4 py-3 border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors -mx-2 px-2 rounded-lg"
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground truncate">{idea.idea_title || 'Untitled'}</p>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-[11px] text-muted-foreground">{sourceLabel}</span>
+          <span className="text-[11px] text-muted-foreground/50">·</span>
+          <span className="text-[11px] text-muted-foreground">{timeAgo(idea.updated_at || idea.created_at)}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <span className="text-xs font-bold text-foreground tabular-nums">{idea.composite_score}</span>
+        {vs && (
+          <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", vs.bg, vs.text)}>
+            {idea.verdict === 'VALIDATE_FIRST' ? 'VALIDATE' : idea.verdict}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+};
 
 const IdeasAnalyticsPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
+  const [growthView, setGrowthView] = useState('combo'); // 'combo' | 'cumulative' | 'weekly'
 
   useEffect(() => {
     async function load() {
       try {
         const { data: ideas } = await supabase
           .from('ideas')
-          .select('id, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at, published_at')
-          .eq('approved', true);
+          .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at, published_at, updated_at')
+          .eq('approved', true)
+          .range(0, 9999);
 
         if (!ideas || ideas.length === 0) {
           setLoading(false);
@@ -266,16 +313,6 @@ const IdeasAnalyticsPage = () => {
           .sort((a, b) => b.value - a.value)
           .slice(0, 10);
 
-        // Categories
-        const categoryCounts = {};
-        ideas.forEach(i => {
-          const c = i.category || 'Other';
-          categoryCounts[c] = (categoryCounts[c] || 0) + 1;
-        });
-        const categoryData = Object.entries(categoryCounts)
-          .map(([name, value]) => ({ name, value }))
-          .sort((a, b) => b.value - a.value);
-
         // Timeline (weekly, by created_at = when idea entered the system)
         const weeklyMap = {};
         ideas.forEach(i => {
@@ -296,7 +333,7 @@ const IdeasAnalyticsPage = () => {
           };
         });
 
-        // Framework radar
+        // Framework averages (for horizontal bar chart)
         const fwSums = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0 };
         const fwCounts = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0 };
         ideas.forEach(i => {
@@ -305,11 +342,11 @@ const IdeasAnalyticsPage = () => {
           if (i.koe_score != null) { fwSums.koe += i.koe_score; fwCounts.koe++; }
           if (i.okamoto_score != null) { fwSums.okamoto += i.okamoto_score; fwCounts.okamoto++; }
         });
-        const radarData = [
-          { framework: 'Fly Labs', score: fwCounts.flylabs > 0 ? Math.round(fwSums.flylabs / fwCounts.flylabs) : 0, full: 'Fly Labs Method' },
-          { framework: 'Hormozi', score: fwCounts.hormozi > 0 ? Math.round(fwSums.hormozi / fwCounts.hormozi) : 0, full: 'Hormozi Score' },
-          { framework: 'Koe', score: fwCounts.koe > 0 ? Math.round(fwSums.koe / fwCounts.koe) : 0, full: 'Dan Koe Score' },
-          { framework: 'Okamoto', score: fwCounts.okamoto > 0 ? Math.round(fwSums.okamoto / fwCounts.okamoto) : 0, full: 'Okamoto Score' },
+        const frameworkData = [
+          { framework: 'Fly Labs', score: fwCounts.flylabs > 0 ? Math.round(fwSums.flylabs / fwCounts.flylabs) : 0, full: 'Fly Labs Method (40%)', fill: FRAMEWORK_COLORS['Fly Labs'] },
+          { framework: 'Hormozi', score: fwCounts.hormozi > 0 ? Math.round(fwSums.hormozi / fwCounts.hormozi) : 0, full: 'Hormozi Value Equation (20%)', fill: FRAMEWORK_COLORS['Hormozi'] },
+          { framework: 'Koe', score: fwCounts.koe > 0 ? Math.round(fwSums.koe / fwCounts.koe) : 0, full: 'Dan Koe Filter (20%)', fill: FRAMEWORK_COLORS['Koe'] },
+          { framework: 'Okamoto', score: fwCounts.okamoto > 0 ? Math.round(fwSums.okamoto / fwCounts.okamoto) : 0, full: 'Okamoto MicroSaaS (20%)', fill: FRAMEWORK_COLORS['Okamoto'] },
         ];
 
         // Confidence
@@ -338,17 +375,7 @@ const IdeasAnalyticsPage = () => {
           }))
           .sort((a, b) => b.buildRate - a.buildRate);
 
-        // Day-of-week activity (by created_at = when pipeline ingested)
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const dayActivity = [0, 0, 0, 0, 0, 0, 0];
-        ideas.forEach(i => {
-          const d = new Date(i.created_at);
-          dayActivity[d.getDay()]++;
-        });
-        const dayData = dayNames.map((name, i) => ({ day: name, count: dayActivity[i] }));
-        const maxDayCount = Math.max(...dayActivity);
-
-        // Computed stats (scored already filtered above)
+        // Computed stats
         const avgComposite = scored.length > 0 ? Math.round(scored.reduce((a, i) => a + i.composite_score, 0) / scored.length) : 0;
         const totalVotes = ideas.reduce((a, i) => a + (i.votes || 0), 0);
         const activeSources = Object.keys(sourceCounts).length;
@@ -362,10 +389,8 @@ const IdeasAnalyticsPage = () => {
         const bestQualitySource = sourceQualityData[0];
         // Top industry
         const topIndustry = industryData[0];
-        // Most common category
-        const topCategory = categoryData[0];
-        // Highest score
-        const maxScore = scored.length > 0 ? Math.max(...scored.map(i => i.composite_score)) : 0;
+        // Highest score idea (with title and link)
+        const topScoredIdea = scored.sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0))[0];
         // Best BUILD idea
         const bestBuild = ideas.filter(i => i.verdict === 'BUILD').sort((a, b) => (b.composite_score || 0) - (a.composite_score || 0))[0];
         // Ideas added this week
@@ -373,7 +398,12 @@ const IdeasAnalyticsPage = () => {
         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const thisWeek = ideas.filter(i => new Date(i.created_at) >= weekAgo).length;
 
-        // Verdict over time (weekly, stacked)
+        // Recently scored ideas (5 most recent with scores)
+        const recentlyScored = scored
+          .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+          .slice(0, 5);
+
+        // Verdict over time (weekly, stacked, last 12 weeks only)
         const verdictTimeMap = {};
         ideas.forEach(i => {
           if (!i.verdict) return;
@@ -384,11 +414,14 @@ const IdeasAnalyticsPage = () => {
           if (!verdictTimeMap[key]) verdictTimeMap[key] = { BUILD: 0, VALIDATE_FIRST: 0, SKIP: 0 };
           if (verdictTimeMap[key][i.verdict] !== undefined) verdictTimeMap[key][i.verdict]++;
         });
-        const verdictTimeData = Object.keys(verdictTimeMap).sort().map(week => ({
+        const allVerdictWeeks = Object.keys(verdictTimeMap).sort();
+        const recentVerdictWeeks = allVerdictWeeks.slice(-12);
+        const verdictTimeData = recentVerdictWeeks.map(week => ({
           week: new Date(week).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
           BUILD: verdictTimeMap[week].BUILD,
           VALIDATE: verdictTimeMap[week].VALIDATE_FIRST,
           SKIP: verdictTimeMap[week].SKIP,
+          total: verdictTimeMap[week].BUILD + verdictTimeMap[week].VALIDATE_FIRST + verdictTimeMap[week].SKIP,
         }));
 
         setStats({
@@ -396,13 +429,14 @@ const IdeasAnalyticsPage = () => {
           buildCount: verdictCounts.BUILD, buildRate,
           verdictData, noVerdict, withVerdict,
           sourceData, sourceQualityData,
-          scoreBuckets, industryData, categoryData,
-          timelineData, radarData,
+          scoreBuckets, industryData,
+          timelineData, frameworkData,
           confidenceCounts,
-          sourceVerdictData, dayData, maxDayCount,
+          sourceVerdictData,
           verdictTimeData,
-          topSource, bestQualitySource, topIndustry, topCategory,
-          maxScore, bestBuild, thisWeek,
+          topSource, bestQualitySource, topIndustry,
+          topScoredIdea, bestBuild, thisWeek,
+          recentlyScored,
         });
       } catch (err) {
         console.error('Analytics load error:', err);
@@ -426,6 +460,16 @@ const IdeasAnalyticsPage = () => {
       });
     }
 
+    if (stats.topScoredIdea) {
+      const src = sourceOptions.find(s => s.value === stats.topScoredIdea.source)?.label || stats.topScoredIdea.source;
+      list.push({
+        icon: Lightbulb,
+        color: 'primary',
+        text: `Top score: ${stats.topScoredIdea.composite_score}/100. "${stats.topScoredIdea.idea_title}" from ${src}.`,
+        link: `/ideas/${stats.topScoredIdea.id}`,
+      });
+    }
+
     if (stats.bestQualitySource) {
       list.push({
         icon: TrendingUp,
@@ -442,15 +486,6 @@ const IdeasAnalyticsPage = () => {
       });
     }
 
-    if (stats.scoredCount > 0 && stats.total > stats.scoredCount) {
-      const scoredPct = Math.round((stats.scoredCount / stats.total) * 100);
-      list.push({
-        icon: Lightbulb,
-        color: 'primary',
-        text: `${stats.scoredCount} of ${stats.total} ideas have been scored (${scoredPct}%). The rest are waiting in the queue.`,
-      });
-    }
-
     if (stats.thisWeek > 0) {
       list.push({
         icon: Zap,
@@ -459,11 +494,12 @@ const IdeasAnalyticsPage = () => {
       });
     }
 
-    if (stats.maxScore > 0) {
+    if (stats.scoredCount > 0 && stats.total > stats.scoredCount) {
+      const scoredPct = Math.round((stats.scoredCount / stats.total) * 100);
       list.push({
-        icon: Lightbulb,
-        color: 'primary',
-        text: `Top score: ${stats.maxScore}/100. ${stats.maxScore >= 80 ? 'Someone should build that.' : stats.maxScore >= 60 ? 'Strong potential.' : 'Room to grow.'}`,
+        icon: Layers,
+        color: 'accent',
+        text: `${stats.scoredCount} of ${stats.total} ideas scored (${scoredPct}%). The rest are waiting in the queue.`,
       });
     }
 
@@ -561,7 +597,7 @@ const IdeasAnalyticsPage = () => {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
               {...staggerContainer}
             >
-              {insights.slice(0, 5).map((insight, i) => (
+              {insights.slice(0, 6).map((insight, i) => (
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
@@ -675,77 +711,101 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Framework Radar */}
+          {/* Framework Averages (horizontal bar chart) */}
           <ChartCard
             title="Framework averages"
             subtitle="How the four scoring brains compare"
             doodle={FlaskDoodle}
             doodleClass="top-3 right-3"
           >
-            <div className="h-48 sm:h-52 flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={stats.radarData} cx="50%" cy="50%" outerRadius="65%">
-                  <PolarGrid stroke="hsl(var(--border))" />
-                  <PolarAngleAxis
-                    dataKey="framework"
-                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                  />
-                  <Radar
-                    name="Avg Score"
-                    dataKey="score"
-                    stroke={COLORS.indigo}
-                    fill={COLORS.indigo}
-                    fillOpacity={0.2}
-                    strokeWidth={2}
-                  />
-                  <Tooltip content={<ChartTooltip formatter={(e) => `Avg: ${e.value}/100`} />} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-            {/* Score labels below radar */}
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2">
-              {stats.radarData.map((fw) => (
-                <span key={fw.framework} className="text-[11px] text-muted-foreground">
-                  {fw.framework}: <span className="font-semibold text-foreground">{fw.score}</span>
-                </span>
+            <div className="space-y-3 sm:space-y-4 pt-1">
+              {stats.frameworkData.map((fw) => (
+                <div key={fw.framework}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: fw.fill }} />
+                      <span className="text-xs font-medium text-foreground">{fw.full}</span>
+                    </div>
+                    <span className="text-sm font-bold text-foreground tabular-nums">{fw.score}<span className="text-[10px] text-muted-foreground font-normal">/100</span></span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-muted/50 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ width: `${fw.score}%`, background: fw.fill }}
+                    />
+                  </div>
+                </div>
               ))}
             </div>
           </ChartCard>
 
-          {/* Ideas Timeline (full width) */}
+          {/* Ideas Timeline (full width) - ComposedChart with toggle */}
           <ChartCard
             title="Growth over time"
-            subtitle="Cumulative ideas added to the lab"
+            subtitle="How the lab is growing week by week"
             className="md:col-span-2"
           >
+            <div className="flex items-center gap-1.5 mb-3">
+              {[
+                { key: 'combo', label: 'Combined' },
+                { key: 'cumulative', label: 'Cumulative' },
+                { key: 'weekly', label: 'Weekly' },
+              ].map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => setGrowthView(opt.key)}
+                  className={cn(
+                    "text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors",
+                    growthView === opt.key
+                      ? "bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
             <div className="h-48 sm:h-56">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                  <XAxis
-                    dataKey="week"
-                    tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
-                  <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
-                  <Area
-                    type="monotone"
-                    dataKey="total"
-                    name="Total ideas"
-                    stroke={COLORS.primary}
-                    fill="url(#gradientArea)"
-                    strokeWidth={2.5}
-                    dot={false}
-                    activeDot={{ r: 4, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }}
-                  />
-                </AreaChart>
+                {growthView === 'weekly' ? (
+                  <BarChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <Bar dataKey="added" name="Added this week" fill={COLORS.accent} radius={[3, 3, 0, 0]} barSize={12} />
+                  </BarChart>
+                ) : growthView === 'cumulative' ? (
+                  <AreaChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="gradientArea" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
+                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <Area type="monotone" dataKey="total" name="Total ideas" stroke={COLORS.primary} fill="url(#gradientArea)" strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: COLORS.primary, fill: 'hsl(var(--background))' }} />
+                  </AreaChart>
+                ) : (
+                  <ComposedChart data={stats.timelineData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="gradientAreaCombo" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.15} />
+                        <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                    <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} interval="preserveStartEnd" />
+                    <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={32} />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
+                    <Bar yAxisId="left" dataKey="added" name="Added this week" fill={COLORS.accent} radius={[3, 3, 0, 0]} barSize={10} opacity={0.7} />
+                    <Area yAxisId="right" type="monotone" dataKey="total" name="Total ideas" stroke={COLORS.primary} fill="url(#gradientAreaCombo)" strokeWidth={2} dot={false} />
+                  </ComposedChart>
+                )}
               </ResponsiveContainer>
             </div>
           </ChartCard>
@@ -824,40 +884,6 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Day of Week Activity */}
-          <ChartCard
-            title="When ideas arrive"
-            subtitle="Day of the week distribution"
-            className="md:col-span-2"
-          >
-            <div className="flex items-end justify-between gap-1.5 sm:gap-3 h-28 sm:h-36 px-1">
-              {stats.dayData.map((d) => {
-                const intensity = stats.maxDayCount > 0 ? d.count / stats.maxDayCount : 0;
-                const height = Math.max(8, intensity * 100);
-                return (
-                  <div key={d.day} className="flex flex-col items-center flex-1 gap-1.5">
-                    <span className="text-[11px] font-bold text-foreground tabular-nums">{d.count}</span>
-                    <div
-                      className="w-full rounded-t-md transition-all duration-500"
-                      style={{
-                        height: `${height}%`,
-                        background: intensity > 0.7
-                          ? COLORS.primary
-                          : intensity > 0.4
-                            ? `hsl(142, 60%, 50%)`
-                            : intensity > 0
-                              ? `hsl(142, 40%, 60%)`
-                              : 'hsl(var(--muted))',
-                        opacity: intensity > 0 ? 0.6 + intensity * 0.4 : 0.3,
-                      }}
-                    />
-                    <span className="text-[10px] sm:text-[11px] text-muted-foreground font-medium">{d.day}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </ChartCard>
-
           {/* Top Industries */}
           <ChartCard
             title="Top industries"
@@ -908,29 +934,37 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Verdict Over Time */}
+          {/* Verdict Over Time (last 12 weeks) */}
           {stats.verdictTimeData && stats.verdictTimeData.length > 1 && (
             <ChartCard
               title="Verdicts over time"
-              subtitle="How the pipeline judges ideas week by week"
+              subtitle="How the pipeline judges ideas, last 12 weeks"
               className="md:col-span-2"
               doodle={LightbulbDoodle}
               doodleClass="top-3 right-3"
             >
               <div className="h-48 sm:h-56">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats.verdictTimeData} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                  <BarChart data={stats.verdictTimeData} margin={{ left: -8, right: 4, top: 8, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis
                       dataKey="week"
                       tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
-                      interval="preserveStartEnd"
+                      interval={0}
+                      angle={-30}
+                      textAnchor="end"
+                      height={40}
                     />
-                    <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={28} />
-                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value}`} />} />
-                    <Bar dataKey="BUILD" stackId="verdict" fill={VERDICT_COLORS.BUILD} radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="VALIDATE" stackId="verdict" fill={VERDICT_COLORS.VALIDATE_FIRST} radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="SKIP" stackId="verdict" fill={VERDICT_COLORS.SKIP} radius={[2, 2, 0, 0]} />
+                    <YAxis
+                      tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                      allowDecimals={false}
+                      width={36}
+                      tickFormatter={(v) => v.toLocaleString()}
+                    />
+                    <Tooltip content={<ChartTooltip formatter={(e) => `${e.name}: ${e.value} ideas`} />} />
+                    <Bar dataKey="BUILD" name="BUILD" stackId="verdict" fill={VERDICT_COLORS.BUILD} radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="VALIDATE" name="VALIDATE" stackId="verdict" fill={VERDICT_COLORS.VALIDATE_FIRST} radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="SKIP" name="SKIP" stackId="verdict" fill={VERDICT_COLORS.SKIP} radius={[2, 2, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -950,17 +984,22 @@ const IdeasAnalyticsPage = () => {
 
         </motion.div>
 
-        {/* ── More insights (if we have them) ── */}
-        {insights.length > 5 && (
+        {/* ── Recently Scored ── */}
+        {stats.recentlyScored && stats.recentlyScored.length > 0 && (
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-              {...staggerContainer}
-            >
-              {insights.slice(5).map((insight, i) => (
-                <InsightCard key={i} {...insight} />
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary flex items-center gap-2">
+                <Clock className="w-4 h-4" /> Recently scored
+              </h2>
+              <Link to="/ideas" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                View all
+              </Link>
+            </div>
+            <div className="card-glow p-4 sm:p-5">
+              {stats.recentlyScored.map((idea) => (
+                <RecentIdeaRow key={idea.id} idea={idea} />
               ))}
-            </motion.div>
+            </div>
           </motion.div>
         )}
 
