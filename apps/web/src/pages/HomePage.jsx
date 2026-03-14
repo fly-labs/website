@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap, Heart, MessageCircle, Repeat2, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -10,6 +10,7 @@ import { books } from '@/lib/data/library.js';
 import { SOURCE_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 import supabase from '@/lib/supabaseClient.js';
 import { cn } from '@/lib/utils.js';
+import { fetchArticles } from '@/lib/substackApi.js';
 
 const availableBookCount = books.filter((b) => b.status === 'available').length;
 
@@ -89,6 +90,7 @@ const AnimatedNumber = ({ value, suffix = '' }) => {
 
 const HomePage = () => {
   const [ideaCount, setIdeaCount] = useState(null);
+  const [articles, setArticles] = useState(null);
 
   useEffect(() => {
     supabase
@@ -98,6 +100,10 @@ const HomePage = () => {
       .then(({ count }) => {
         if (count != null) setIdeaCount(count);
       });
+
+    fetchArticles(3).then((data) => {
+      if (data) setArticles(data.slice(0, 3));
+    }).catch(() => {});
   }, []);
 
   return (
@@ -276,6 +282,101 @@ const HomePage = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* ==================== NEWSLETTER ==================== */}
+      {articles && articles.length > 0 && (
+        <section className="py-10 md:py-14 px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              {...fadeUp}
+              transition={{ duration: 0.5 }}
+              className="mb-10"
+            >
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
+                From the newsletter
+              </h2>
+              <p className="text-muted-foreground font-medium max-w-xl">
+                I write about what I build, what breaks, and what I learn along the way. Always free.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
+              {...staggerContainer}
+            >
+              {articles.map((article) => {
+                const hasEngagement = article.reactions > 0;
+                return (
+                  <motion.a
+                    key={article.id}
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Read "${article.title}" on Substack (opens in new tab)`}
+                    onClick={() => trackEvent('article_click', { article_title: article.title, location: 'home_newsletter' })}
+                    {...staggerItem}
+                    className="card-glow group flex flex-col overflow-hidden"
+                  >
+                    {article.coverImage && (
+                      <div className="aspect-video overflow-hidden bg-muted">
+                        <img
+                          src={article.coverImage}
+                          alt={article.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5 flex flex-col flex-grow">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                        <span>{new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                        {article.readTime > 0 && (
+                          <span className="inline-flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {article.readTime} min
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-3 flex-grow">
+                        {article.title}
+                      </h3>
+                      {hasEngagement && (
+                        <div className="inline-flex items-center gap-3 text-xs text-muted-foreground">
+                          {article.reactions > 0 && (
+                            <span className="inline-flex items-center gap-1">
+                              <Heart className="w-3 h-3" /> {article.reactions}
+                            </span>
+                          )}
+                          {article.comments > 0 && (
+                            <span className="inline-flex items-center gap-1">
+                              <MessageCircle className="w-3 h-3" /> {article.comments}
+                            </span>
+                          )}
+                          {article.restacks > 0 && (
+                            <span className="inline-flex items-center gap-1">
+                              <Repeat2 className="w-3 h-3" /> {article.restacks}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </motion.a>
+                );
+              })}
+            </motion.div>
+
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
+              <Link
+                to="/newsletter"
+                className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => trackEvent('newsletter_click', { location: 'home_newsletter' })}
+              >
+                See all editions <ArrowRight className="w-4 h-4 ml-1" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ==================== CLOSING ==================== */}
       <section className="relative py-14 md:py-20 px-6 overflow-hidden">
