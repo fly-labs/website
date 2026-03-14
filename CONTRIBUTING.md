@@ -22,9 +22,11 @@ npm run dev  # http://localhost:3001
 
 - JSX only, no TypeScript
 - Tailwind CSS for styling, use `cn()` for conditional classes
+- Recharts for data visualizations (lazy-loaded, separate vendor chunk)
 - No gradient text effects, no glow orbs
 - Mobile-first responsive design (test at 375px)
 - No `transition-all` on tappable elements
+- Include `.jsx` extension in all imports
 
 ## Reporting bugs
 

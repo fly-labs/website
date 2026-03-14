@@ -79,7 +79,7 @@ apps/web/
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
-│       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, social proof strip, narrative closing)
+│       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, how it works, newsletter preview, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
@@ -199,8 +199,8 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `idea_submitted` | IdeaSubmissionPage, PromptsPage | `category`, `prompt_category` (PromptsPage only) |
 | `idea_voted` | IdeaSubmissionPage | `idea_id`, `idea_title`, `category` |
 | `waitlist_joined` | MicroSaasPage | `source` |
-| `newsletter_click` | NewsletterPage, AboutPage, HomePage | `location` |
-| `article_click` | NewsletterPage | `article_title`, `location` |
+| `newsletter_click` | NewsletterPage, AboutPage, HomePage (closing + newsletter section) | `location` |
+| `article_click` | NewsletterPage, HomePage | `article_title`, `location` |
 | `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage, NewsletterPage, IdeaSubmissionPage | `link_url`, `link_label`, `location` |
 | `cta_click` | HomePage, PromptsPage | `cta`, `location` |
 | `project_click` | ExplorePage | `project`, `category` |

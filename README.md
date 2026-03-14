@@ -19,7 +19,8 @@ This platform changes every week. New prompts, new ideas scored, new tools shipp
 - **Idea Lab** - The engine of the whole platform. Real problems scraped daily from [ProblemHunt](https://problemhunt.pro), Reddit, Product Hunt, X, Hacker News, GitHub Issues, and the YC Graveyard, plus community submissions. Every idea is scored by AI using four frameworks (the Fly Labs Method for solo builders + Hormozi, Dan Koe, and Okamoto as expert lenses), then the top ones are validated against live conversations on X and Reddit. The result: a BUILD, VALIDATE_FIRST, or SKIP verdict with per-pillar reasoning, confidence scoring, and competitive intelligence. Card and table views, full-text search, seven-dimension filtering, trending badges, and a multi-step submit form. New ideas flow in automatically via GitHub Actions.
 - **Scoring Frameworks** - The full methodology behind the AI scoring: Fly Labs Method (Problem Clarity, Solution Gap, Willingness to Act, Buildability) plus three expert perspectives (Hormozi's $100M evaluation, Dan Koe's one-person business lens, Okamoto's MicroSaaS validation) and a validation layer that checks ideas against real-world evidence.
 - **Library** - Ebooks built from study notes. AI, business, mindset, and everything in between. New titles added as they're written. Topic filtering and waitlist for upcoming books.
-- **Newsletter** - RSS-powered feed from the [Fala Comigo](https://falacomigo.substack.com) Substack. The story behind the building.
+- **Newsletter** - Powered by the Substack archive API (with rss2json fallback). Shows engagement metrics (reactions, comments, restacks), read time, and a Notes redirect section. The 3 latest articles also appear on the homepage.
+- **Idea Lab Analytics** - Interactive dashboard at `/ideas/analytics` with recharts visualizations: verdict donut, source breakdown, score histogram, framework radar, growth timeline, source x verdict heatmap, day-of-week activity, top industries, source quality, and auto-generated key insights. Designed for screenshot-worthy Notes content.
 - **Micro Tools** - Small, focused apps that do one thing well. Waitlist open, first batch in progress.
 - **Templates** - Systems and blueprints built for real use:
   - Garmin to Notion Sync - auto-sync health data to Notion (live, open source)
@@ -37,6 +38,7 @@ This platform changes every week. New prompts, new ideas scored, new tools shipp
 | Components | shadcn/ui pattern (Radix UI + CVA) |
 | Routing | React Router DOM v7 |
 | Animation | Framer Motion 11 (fadeUp, fadeIn, scaleIn, stagger) |
+| Charts | Recharts (lazy-loaded, separate vendor chunk) |
 | Icons | Lucide React |
 | Backend | Supabase (PostgreSQL + Auth + Storage) |
 | Auth | Email/password + Google OAuth |
@@ -151,10 +153,11 @@ apps/web/
 │   │   ├── analytics.js      # GA4 helpers (trackPageView, trackEvent, setUserProperties, setUserId)
 │   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, stagger)
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
+│   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # Route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # 21 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
-├── vite.config.js            # Port 3001, @ alias, vendor chunking
+├── vite.config.js            # Port 3001, @ alias, vendor/motion/supabase/recharts chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
 ├── components.json           # shadcn/ui config
 └── vercel.json               # SPA rewrites + security headers (CSP, HSTS, COOP)
@@ -164,11 +167,12 @@ apps/web/
 
 | Path | Page | Access |
 |------|------|--------|
-| `/` | Home (hero, value pillars, narrative closing) | Public |
+| `/` | Home (hero, value pillars, newsletter preview, narrative closing) | Public |
 | `/explore` | Explore (category filter: Business, Tools, Learn) | Public |
 | `/ideas` | Idea Lab (AI-scored, validated, paginated, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scoring, market evidence, vote, share) | Public |
-| `/newsletter` | Newsletter (Substack RSS) | Public |
+| `/ideas/analytics` | Idea Lab analytics dashboard (recharts, noindex) | Public |
+| `/newsletter` | Newsletter (Substack archive API + engagement metrics) | Public |
 | `/about` | About (5-act visual journey: manifesto, story beat cards, stats + GitHub heatmap, closing CTA) | Public |
 | `/login` | Login | Public |
 | `/signup` | Signup | Public |
