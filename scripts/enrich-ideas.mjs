@@ -394,8 +394,10 @@ async function synthesizeEvidence(idea, xEvidence, xCompetitors, redditPosts) {
         ? 'Evidence comes primarily from Reddit. X search was unavailable.'
         : 'Limited evidence available from both sources. Be conservative with scoring.';
 
-  // Pass score_breakdown if available for cross-referencing
-  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nFly Labs Method: ${idea.flylabs_score || idea.score_breakdown.flylabs?.total || 'N/A'}/100\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}` : '';
+  // Pass score_breakdown if available for cross-referencing (including buildability for the gate)
+  const buildabilityScore = idea.score_breakdown?.flylabs?.buildability?.score;
+  const buildabilityReasoning = idea.score_breakdown?.flylabs?.buildability?.reasoning;
+  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nFly Labs Method: ${idea.flylabs_score || idea.score_breakdown.flylabs?.total || 'N/A'}/100\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}${buildabilityScore != null ? `\nBuildability Score: ${buildabilityScore}/20${buildabilityScore < 10 ? ' (BELOW MINIMUM for BUILD verdict)' : ''}` : ''}${buildabilityReasoning ? `\nBuildability Reasoning: ${buildabilityReasoning}` : ''}` : '';
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
@@ -416,7 +418,7 @@ Confidence rules:
 - low: < 5 pieces of evidence total
 
 For the verdict, cross-reference the framework scores (if provided) with the market evidence to give the most informed recommendation possible. This verdict supersedes the scoring-only verdict because it has real market evidence.
-- BUILD: Strong market evidence confirms framework scores. Real people are experiencing this pain and willing to pay.
+- BUILD: Strong market evidence confirms framework scores. Real people are experiencing this pain and willing to pay. IMPORTANT: If the Fly Labs buildability score is below 10/20, the verdict CANNOT be BUILD regardless of market evidence. Strong demand for something a solo builder cannot ship is a trap, not an opportunity. Downgrade to VALIDATE_FIRST.
 - VALIDATE_FIRST: Some evidence exists but gaps remain. Need more data before committing.
 - SKIP: Weak or contradicting evidence. The market signal does not support the idea.
 
@@ -564,12 +566,32 @@ async function main() {
 
     if (result) {
       const validationScore = result.validation?.strength || 0;
+      let enrichmentVerdict = result.verdict?.recommendation || null;
+
+      // Server-side buildability gate: enrichment cannot override to BUILD if buildability < 10
+      const buildability = idea.score_breakdown?.flylabs?.buildability?.score;
+      if (enrichmentVerdict === 'BUILD' && buildability != null && buildability < 10) {
+        console.log(`  Buildability gate: ${buildability}/20 too low, overriding enrichment BUILD → VALIDATE_FIRST`);
+        enrichmentVerdict = 'VALIDATE_FIRST';
+        result.verdict.recommendation = 'VALIDATE_FIRST';
+        result.verdict.buildability_override = true;
+        result.verdict.original_recommendation = 'BUILD';
+        result.verdict.override_reason = `Buildability ${buildability}/20 below minimum threshold of 10 for solo builder`;
+      }
+
+      // Audit trail: track if enrichment changed the scoring verdict
+      const scoringVerdict = idea.score_breakdown?.synthesis?.verdict;
+      if (scoringVerdict && enrichmentVerdict && scoringVerdict !== enrichmentVerdict) {
+        result.verdict.previous_verdict = scoringVerdict;
+        result.verdict.verdict_changed = true;
+      }
+
       const { error: updateErr } = await supabase
         .from('ideas')
         .update({
           enrichment: result,
           validation_score: validationScore,
-          verdict: result.verdict?.recommendation || null,
+          verdict: enrichmentVerdict,
           confidence: result.validation?.confidence || null,
         })
         .eq('id', idea.id);

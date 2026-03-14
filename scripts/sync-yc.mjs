@@ -140,6 +140,7 @@ REJECT (is_viable = false) if:
 - Needs massive data or infrastructure a solo builder can't access
 - The one-liner is missing or too vague to assess
 - The idea only makes sense at massive scale (millions of users needed)
+- Team size was 20+ people AND the problem inherently requires complex infrastructure, ops, or coordination that a solo builder cannot replicate with AI tools. Large teams are a strong signal the problem needs significant resources. Be extra skeptical when team_size > 15.
 
 Be selective. Only pass ideas where a solo builder with Claude/Cursor/no-code could realistically ship a lean v1.
 

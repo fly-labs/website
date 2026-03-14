@@ -81,8 +81,8 @@ Provide per-dimension reasoning (one sentence each explaining the score).
 **Synthesis** - After scoring all four frameworks, cross-reference them and produce a final verdict:
 - composite_score: weighted average (40% flylabs + 20% hormozi + 20% koe + 20% okamoto)
 - verdict rules:
-  - BUILD: composite >= 70 AND flylabs >= 60 AND no single framework below 30. Strong signal across all lenses.
-  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or any framework below 30. Promising but has gaps.
+  - BUILD: composite >= 70 AND flylabs >= 60 AND flylabs buildability >= 10/20 AND no single framework below 30. Strong signal across all lenses. If buildability < 10, the idea requires too large a team or too much infrastructure for a solo builder, so downgrade to VALIDATE_FIRST regardless of other scores.
+  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or buildability < 10 or any framework below 30. Promising but has gaps.
   - SKIP: composite < 45. Not viable for a solo builder right now.
 
 IMPORTANT: For each pillar, include a "reasoning" string (one sentence explaining the score). For each framework, include a "reasoning" string (2-3 sentences on what drives the score up and what holds it back).
@@ -162,6 +162,9 @@ async function scoreIdea(idea) {
     if (fa.what_changed) parts.push(`What changed since: ${fa.what_changed}`);
     if (fa.rebuild_angle) parts.push(`Solo builder angle: ${fa.rebuild_angle}`);
     if (fa.original_one_liner) parts.push(`Original pitch: "${fa.original_one_liner}"`);
+    if (fa.team_size && fa.team_size > 10) {
+      parts.push(`\nWARNING: This startup had ${fa.team_size} employees. A large team suggests the problem may require significant engineering, ops, or infrastructure that a solo builder cannot replicate. Score buildability accordingly. Be skeptical of solo feasibility for problems that needed 10+ people to attempt.`);
+    }
     parts.push('Score this idea in its CURRENT context. The YC failure provides useful signal about risks and timing.');
   }
 
@@ -198,6 +201,25 @@ async function scoreIdea(idea) {
       if (parsed.synthesis?.verdict && !VALID_VERDICTS.includes(parsed.synthesis.verdict)) {
         console.warn(`  Invalid verdict "${parsed.synthesis.verdict}", falling back to VALIDATE_FIRST`);
         parsed.synthesis.verdict = 'VALIDATE_FIRST';
+      }
+
+      // Server-side buildability gate: BUILD requires buildability >= 10/20
+      if (parsed.synthesis?.verdict === 'BUILD') {
+        const buildability = parsed.flylabs?.buildability?.score;
+        if (buildability != null && buildability < 10) {
+          console.warn(`  Buildability gate: ${buildability}/20 too low for BUILD, downgrading to VALIDATE_FIRST`);
+          parsed.synthesis.verdict = 'VALIDATE_FIRST';
+        }
+      }
+
+      // Server-side YC team-size gate: large teams + low buildability = not solo-buildable
+      if (parsed.synthesis?.verdict === 'BUILD' && idea.source === 'yc') {
+        const teamSize = idea.meta?.failure_analysis?.team_size;
+        const buildability = parsed.flylabs?.buildability?.score;
+        if (teamSize && teamSize > 10 && buildability != null && buildability < 12) {
+          console.warn(`  YC team-size gate: team of ${teamSize} with buildability ${buildability}/20, downgrading to VALIDATE_FIRST`);
+          parsed.synthesis.verdict = 'VALIDATE_FIRST';
+        }
       }
 
       // Recompute composite to verify AI math
