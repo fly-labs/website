@@ -111,7 +111,7 @@ const HomePage = () => {
     >
 
       {/* ==================== HERO ==================== */}
-      <section className="relative pt-28 sm:pt-36 md:pt-44 pb-16 md:pb-24 px-6 overflow-hidden">
+      <section className="relative pt-24 sm:pt-32 md:pt-36 pb-12 md:pb-16 px-6 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -172,7 +172,7 @@ const HomePage = () => {
       </section>
 
       {/* ==================== PILLARS (Bento Grid) ==================== */}
-      <section className="py-16 md:py-24 px-6">
+      <section className="py-10 md:py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             {...fadeUp}
@@ -243,7 +243,7 @@ const HomePage = () => {
       </section>
 
       {/* ==================== HOW IT WORKS ==================== */}
-      <section className="py-16 md:py-24 px-6">
+      <section className="py-10 md:py-14 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
@@ -278,7 +278,7 @@ const HomePage = () => {
       </section>
 
       {/* ==================== CLOSING ==================== */}
-      <section className="relative py-20 md:py-28 px-6 overflow-hidden">
+      <section className="relative py-14 md:py-20 px-6 overflow-hidden">
         <motion.div
           {...fadeUp}
           transition={{ duration: 0.5 }}
