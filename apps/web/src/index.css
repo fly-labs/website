@@ -159,17 +159,17 @@
 }
 
 /* GeometricBackground CSS animations (GPU-composited, no React re-renders) */
-@keyframes geo-float-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@keyframes geo-float-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-@keyframes geo-float-3 { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+@keyframes geo-float-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes geo-float-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+@keyframes geo-float-3 { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(12px); } }
 @keyframes geo-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes geo-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(8px, -6px); } }
+@keyframes geo-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(12px, -10px); } }
 
-.geo-float-1 { animation: geo-float-1 30s ease-in-out infinite; }
-.geo-float-2 { animation: geo-float-2 34s ease-in-out infinite; }
-.geo-float-3 { animation: geo-float-3 28s ease-in-out infinite; }
-.geo-spin { animation: geo-spin 40s linear infinite; }
-.geo-drift { animation: geo-drift 32s ease-in-out infinite; }
+.geo-float-1 { animation: geo-float-1 26s ease-in-out infinite; }
+.geo-float-2 { animation: geo-float-2 30s ease-in-out infinite; }
+.geo-float-3 { animation: geo-float-3 24s ease-in-out infinite; }
+.geo-spin { animation: geo-spin 50s linear infinite; }
+.geo-drift { animation: geo-drift 28s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

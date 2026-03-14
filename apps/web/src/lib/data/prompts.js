@@ -83,7 +83,7 @@ Used by: [what consumes it]
     title: 'The Hook Machine',
     category: 'Writing',
     featured: true,
-    description: 'Generate scroll-stopping opening hooks for any platform. From the creator who hit 2.2M views in 30 days with faceless content.',
+    description: 'Generate scroll-stopping opening hooks for any platform. 10 variations per topic, engineered to stop the scroll.',
     content: `Write 10 opening hooks for content about [TOPIC] that immediately stop scrolling.
 
 Rules:
@@ -364,7 +364,7 @@ Target user of this prompt: [WHO WILL USE IT AND FOR WHAT]`,
     title: 'The Meta-Cognitive Reasoner',
     category: 'Thinking',
     featured: true,
-    description: 'MIT-inspired self-checking framework. AI scores its own confidence and retries weak reasoning. Outperforms basic prompting on complex problems.',
+    description: 'Self-checking reasoning framework. AI scores its own confidence and retries weak reasoning before giving you a final answer.',
     content: `Adopt the role of a Meta-Cognitive Reasoning Expert.
 
 For every complex problem:
@@ -458,7 +458,7 @@ Start with question 1 now.`,
     title: 'The Future Self Letter',
     category: 'Thinking',
     featured: true,
-    description: 'Get a letter from your future self who achieved everything you secretly want. Thousands shared screenshots of the output.',
+    description: 'Get a letter from your future self who achieved everything you secretly want. Surprisingly emotional output.',
     content: `Pretend you are me, 5 years into the future. I have achieved everything I secretly want but never admit out loud.
 
 Write a letter from Future Me to Current Me. Include:
@@ -686,7 +686,7 @@ Review the output before finalizing and ensure no banned patterns appear.`,
     id: 32,
     title: 'The Socratic Strategist',
     category: 'Strategy',
-    description: 'Force AI to think before it writes by asking about principles first. Based on Socratic prompting research.',
+    description: 'Force AI to think before it writes by asking about principles first. The questions do the heavy lifting.',
     content: `What makes a go-to-market strategy actually work for early-stage B2B SaaS?
 What are the most common mistakes founders make?
 What channels tend to work best when you have limited budget?
