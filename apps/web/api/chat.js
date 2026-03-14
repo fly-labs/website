@@ -199,8 +199,15 @@ export default async function handler(req, res) {
       }
     }
 
+    // Fallback if model returned empty response (can happen with off-topic refusals)
+    if (!fullResponse.trim()) {
+      fullResponse = "That's outside my zone. I'm tuned for business ideas, content strategy, and building decisions. But if there's a building angle in there, I'm game.";
+      res.write(`data: ${JSON.stringify({ type: 'chunk', content: fullResponse })}\n\n`);
+    }
+
     // Parse evaluation metadata if present
     const evalMatch = fullResponse.match(/<evaluation>([\s\S]*?)<\/evaluation>/);
+
     if (evalMatch) {
       try {
         metadata = { evaluation: JSON.parse(evalMatch[1].trim()) };
