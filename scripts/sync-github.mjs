@@ -91,8 +91,9 @@ function getRotatedQueries() {
   ];
 }
 
-// Pre-AI keyword scoring (like Reddit's keyword scoring)
-// Filters out bug reports and internal feature requests before expensive AI calls
+// Pre-AI keyword scoring: only reject obvious noise (bug reports, CI issues)
+// Our search queries already target purchase intent, so we don't require positive matches.
+// Threshold: score < 0 means more noise signals than value signals, reject it.
 const POSITIVE_KEYWORDS = [
   'pay', 'alternative', 'saas', 'tool', 'solution', 'automate',
   'api', 'integrate', 'self-hosted', 'platform', 'pricing', 'subscription',
@@ -363,17 +364,17 @@ async function main() {
         const repoFullName = item.repository_url?.split('/').slice(-2).join('/');
         if (repoFullName && EXCLUDED_REPOS.has(repoFullName)) { skippedRepo++; continue; }
 
-        // Hard filters: enough engagement to signal real demand (lowered from 5 to 3)
+        // Hard filters: minimal engagement to signal real demand
         if ((item.reactions?.total_count || 0) < 3) { skippedReactions++; continue; }
-        if ((item.comments || 0) < 2) { skippedReactions++; continue; }
+        if ((item.comments || 0) < 1) { skippedReactions++; continue; }
 
         // Skip very old issues (> 5 years) - stale problems
         const itemAge = Date.now() - new Date(item.created_at).getTime();
         if (itemAge > 5 * 365 * 86400000) { skippedAge++; continue; }
 
-        // Pre-AI keyword scoring (like Reddit's keyword scoring)
+        // Pre-AI keyword scoring: reject only when noise signals outweigh value signals
         const kwScore = keywordScore(item);
-        if (kwScore < 1) { skippedKeyword++; continue; }
+        if (kwScore < 0) { skippedKeyword++; continue; }
 
         if (!allItems.has(item.id)) {
           allItems.set(item.id, item);
