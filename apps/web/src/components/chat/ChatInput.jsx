@@ -104,11 +104,9 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
         </div>
 
         {/* Footer text */}
-        {!compact && (
-          <p className="text-[10px] text-muted-foreground/30 text-center">
-            FlyBot can make mistakes. Verify important information.
-          </p>
-        )}
+        <p className="text-[10px] text-muted-foreground/30 text-center">
+          FlyBot is in beta and can make mistakes.
+        </p>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Bot, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
+import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
 
 const SUGGESTED_PROMPTS = [
   'I have a business idea. Score it.',
@@ -22,7 +23,7 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
   const prompts = compact ? COMPACT_PROMPTS : SUGGESTED_PROMPTS;
 
   return (
-    <div className="flex-1 flex items-center justify-center p-6">
+    <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
       <div className={compact ? 'max-w-sm w-full' : 'max-w-lg w-full'}>
         {/* Logo + title */}
         <motion.div
@@ -90,6 +91,16 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             </motion.button>
           ))}
         </div>
+
+        {/* Disclosure */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
+          className="text-center"
+        >
+          <FlyBotDisclosure compact={compact} />
+        </motion.div>
       </div>
     </div>
   );

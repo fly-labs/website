@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn } from 'lucide-react';
+import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn, Info } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { ChatMessages } from '@/components/chat/ChatMessages.jsx';
