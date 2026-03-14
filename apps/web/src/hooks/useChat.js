@@ -46,7 +46,7 @@ export function useChat() {
     setLastFailedMessage(null);
   }, []);
 
-  const sendMessage = useCallback(async (text) => {
+  const sendMessage = useCallback(async (text, pageContext) => {
     if (isStreaming || !text.trim()) return;
 
     setError(null);
@@ -69,7 +69,7 @@ export function useChat() {
       { id: assistantId, role: 'assistant', content: '', created_at: new Date().toISOString() },
     ]);
 
-    const abort = streamChat(text, activeConversationId, {
+    const abort = streamChat(text, activeConversationId, pageContext, {
       onChunk: (chunk) => {
         setMessages(prev =>
           prev.map(m =>

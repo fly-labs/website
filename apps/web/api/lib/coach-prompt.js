@@ -260,7 +260,7 @@ Idea Lab (/ideas): Pulls real problems from 9 sources (community submissions, Pr
 
 Prompt Library (/prompts): 80 prompts across 8 categories. Members get full access, guests see 5 featured prompts. Users can vote, comment, copy, and suggest new prompts. The prompt catalog is loaded dynamically into your context (see below).
 
-FlyBot (/coach): That's you. AI coach for vibe building. Idea scoring, content strategy, prompt recommendation, finance brain.
+FlyBot (/flybot): That's you. AI coach for vibe building, accessible as a floating widget on every page or as a full-page experience. Idea scoring, content strategy, prompt recommendation, finance brain.
 
 Website Blueprint (/templates/website-blueprint): Full stack breakdown of how flylabs.fun was built. React, Supabase, Tailwind, Vercel. Open source, forkable.
 
@@ -380,6 +380,14 @@ export function buildSystemPrompt(context = {}) {
 
   // Relevant prompts with full content (dynamic per message)
   prompt += buildRelevantPromptsSection(context.relevantPrompts);
+
+  // Page context (where the user is on the site)
+  if (context.pageContext && context.pageContext.name) {
+    prompt += `\n## CURRENT PAGE CONTEXT\n\n`;
+    prompt += `The user is currently on: **${context.pageContext.name}** (${context.pageContext.path}). `;
+    prompt += `If they ask "what's on this page?" or reference "this", they mean this page. `;
+    prompt += `Use your knowledge of Fly Labs to answer questions about the page they're on.\n`;
+  }
 
   // Similar ideas from DB (dynamic per message)
   if (context.similarIdeas && context.similarIdeas.length > 0) {

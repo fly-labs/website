@@ -18,20 +18,25 @@ async function getAuthHeaders() {
  * @param {function} onError - Called on error
  * @returns {function} abort function
  */
-export function streamChat(message, conversationId, { onChunk, onDone, onError }) {
+export function streamChat(message, conversationId, pageContext, { onChunk, onDone, onError }) {
   const controller = new AbortController();
 
   (async () => {
     try {
       const headers = await getAuthHeaders();
 
+      const body = {
+        message,
+        conversation_id: conversationId,
+      };
+      if (pageContext) {
+        body.page_context = pageContext;
+      }
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          message,
-          conversation_id: conversationId,
-        }),
+        body: JSON.stringify(body),
         signal: controller.signal,
       });
 

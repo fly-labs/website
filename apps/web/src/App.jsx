@@ -1,13 +1,15 @@
 import React, { Suspense, lazy, useEffect } from 'react';
-import { Route, Routes, BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { Route, Routes, Navigate, BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
+import { ChatProvider } from '@/contexts/ChatContext.jsx';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import ScrollToTop from '@/components/ScrollToTop.jsx';
 import GridBackground from '@/components/GridBackground.jsx';
 import { ProtectedRoute } from '@/components/ProtectedRoute.jsx';
+import { FlyBotWidget } from '@/components/flybot/FlyBotWidget.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { Loader2 } from 'lucide-react';
@@ -35,7 +37,7 @@ const MicroSaasPage = lazy(() => import('@/pages/MicroSaasPage.jsx'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage.jsx'));
 const ScoringFrameworksPage = lazy(() => import('@/pages/ScoringFrameworksPage.jsx'));
 const LibraryPage = lazy(() => import('@/pages/LibraryPage.jsx'));
-const CoachPage = lazy(() => import('@/pages/CoachPage.jsx'));
+const FlyBotPage = lazy(() => import('@/pages/FlyBotPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
 const PageFallback = () => (
@@ -79,7 +81,8 @@ const AnimatedRoutes = () => {
         <Route path="/templates/launch-checklist" element={<LaunchChecklistPage />} />
         <Route path="/templates/one-page-business-plan" element={<OnePageBusinessPlanPage />} />
         <Route path="/microsaas" element={<MicroSaasPage />} />
-        <Route path="/coach" element={<ProtectedRoute><CoachPage /></ProtectedRoute>} />
+        <Route path="/flybot" element={<ProtectedRoute><FlyBotPage /></ProtectedRoute>} />
+        <Route path="/coach" element={<Navigate to="/flybot" replace />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
         {/* 404 */}
@@ -95,16 +98,19 @@ function App() {
         <AuthProvider>
           <Router>
             <ErrorBoundary>
-              <ScrollToTop />
-              <PageTracker />
-              <GridBackground />
+              <ChatProvider>
+                <ScrollToTop />
+                <PageTracker />
+                <GridBackground />
 
-              <Suspense fallback={<PageFallback />}>
-                <AnimatedRoutes />
-              </Suspense>
-              <Toaster position="bottom-right" richColors closeButton duration={4000} />
-              <Analytics />
-              <SpeedInsights />
+                <Suspense fallback={<PageFallback />}>
+                  <AnimatedRoutes />
+                </Suspense>
+                <FlyBotWidget />
+                <Toaster position="bottom-right" richColors closeButton duration={4000} />
+                <Analytics />
+                <SpeedInsights />
+              </ChatProvider>
             </ErrorBoundary>
           </Router>
         </AuthProvider>

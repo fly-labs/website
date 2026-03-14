@@ -184,6 +184,19 @@
   30% { opacity: 1; transform: scale(1); }
 }
 
+/* FlyBot trigger pulse glow */
+@keyframes flybot-pulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(var(--glow-primary), 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(var(--glow-primary), 0.35); }
+}
+.flybot-trigger-pulse { animation: flybot-pulse 3s ease-in-out infinite; }
+
+@keyframes flybot-pulse-amber {
+  0%, 100% { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3); }
+}
+.flybot-trigger-amber { animation: flybot-pulse-amber 3s ease-in-out infinite; }
+
 /* Hide scrollbar utility */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { scrollbar-width: none; }

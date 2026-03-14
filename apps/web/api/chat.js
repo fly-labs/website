@@ -85,7 +85,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests. Wait a minute.' });
   }
 
-  const { message, conversation_id } = req.body;
+  const { message, conversation_id, page_context } = req.body;
 
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required' });
@@ -160,6 +160,7 @@ export default async function handler(req, res) {
     similarIdeas,
     relevantPrompts,
     promptCatalog: promptLibrary,
+    pageContext: page_context,
   });
 
   // Build messages array

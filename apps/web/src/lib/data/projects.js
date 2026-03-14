@@ -107,7 +107,7 @@ export const projects = [
     title: 'FlyBot',
     description: 'Your vibe building coach. Scores ideas, helps write content, applies the finance brain to your decisions. A real conversation, not a chatbot.',
     icon: Bot,
-    link: '/coach',
+    link: '/flybot',
     color: 'text-accent',
     bgColor: 'bg-accent/10',
     type: 'AI',

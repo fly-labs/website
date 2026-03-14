@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Square } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 
-export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount, messageLimit }) {
+export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount, messageLimit, compact = false }) {
   const [text, setText] = useState('');
   const textareaRef = useRef(null);
 
@@ -34,8 +34,11 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
   const hasText = text.trim().length > 0;
 
   return (
-    <div className="border-t border-border/50 bg-background px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-      <div className="max-w-2xl mx-auto space-y-2">
+    <div className={cn(
+      'border-t border-border/50 bg-background',
+      compact ? 'px-3 py-2' : 'px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]'
+    )}>
+      <div className={cn(compact ? 'space-y-1.5' : 'max-w-2xl mx-auto space-y-2')}>
         {/* Message counter */}
         {showCounter && (
           <div className="flex items-center justify-center gap-2">
@@ -101,9 +104,11 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
         </div>
 
         {/* Footer text */}
-        <p className="text-[10px] text-muted-foreground/30 text-center">
-          FlyBot can make mistakes. Verify important information.
-        </p>
+        {!compact && (
+          <p className="text-[10px] text-muted-foreground/30 text-center">
+            FlyBot can make mistakes. Verify important information.
+          </p>
+        )}
       </div>
     </div>
   );

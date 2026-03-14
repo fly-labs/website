@@ -65,9 +65,14 @@ apps/web/
 │   │       ├── ChatEvaluation.jsx # Rich score card (reuses ScoreUtils)
 │   │       ├── ChatSidebar.jsx   # Conversation list, new chat, mobile slide-in
 │   │       ├── ChatEmpty.jsx     # Landing with suggested prompt chips
-│   │       └── ChatLimitReached.jsx # Email capture waitlist
+│   │       └── ChatLimitReached.jsx # Email capture waitlist with waitlist count
+│   │   └── flybot/          # FlyBot site-wide widget components
+│   │       ├── FlyBotWidget.jsx  # Orchestrator: trigger + lazy panel, hidden on /flybot
+│   │       ├── FlyBotTrigger.jsx # Floating action button (bottom-right, Cmd+K, pulse glow)
+│   │       └── FlyBotPanel.jsx   # Slide-in chat panel (right panel desktop, bottom sheet mobile)
 │   ├── contexts/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
+│   │   ├── ChatContext.jsx   # App-wide chat state (wraps useChat, widget open/close, page context, lazy init)
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
 │   │   ├── useIdeaFilters.js # Server-side paginated filter hook (Supabase queries, URL state, 7 filter dimensions, cascading counts)
@@ -107,7 +112,7 @@ apps/web/
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ScoringFrameworksPage.jsx # Public - Fly Labs Method + Hormozi + Dan Koe + Okamoto scoring + Validation Layer explained
 │       ├── LibraryPage.jsx         # Public - free ebooks with topic filter and waitlist
-│       ├── CoachPage.jsx          # Protected - FlyBot chat interface (sidebar + chat area, URL param ?c=)
+│       ├── FlyBotPage.jsx         # Protected - FlyBot full-page chat (sidebar + chat area, URL param ?c=)
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── api/                         # Vercel Serverless Functions (Node.js, server-side)
@@ -115,7 +120,7 @@ apps/web/
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
 │   └── lib/
 │       ├── auth.js              # Supabase JWT verification, admin email check
-│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context)
+│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context + page context)
 ├── public/
 │   ├── images/luiz-alves.png
 │   ├── robots.txt
@@ -148,7 +153,8 @@ apps/web/
 | `/templates/website-blueprint` | WebsiteBlueprintPage | Public |
 | `/templates/launch-checklist` | LaunchChecklistPage | Public (coming soon) |
 | `/templates/one-page-business-plan` | OnePageBusinessPlanPage | Public (coming soon) |
-| `/coach` | CoachPage | Protected (noindex) |
+| `/flybot` | FlyBotPage | Protected (noindex) |
+| `/coach` | Redirects to `/flybot` | - |
 | `/profile` | ProfilePage | Protected |
 
 ## Supabase
@@ -240,8 +246,8 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `library_filter_change` | LibraryPage | `topic` |
 | `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
 | `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
-| `flybot_message_sent` | CoachPage | `conversation_id`, `message_length` |
-| `flybot_prompt_clicked` | CoachPage | `prompt` |
+| `flybot_message_sent` | FlyBotPage, FlyBotPanel | `conversation_id`, `message_length`, `source` (widget/full_page) |
+| `flybot_prompt_clicked` | FlyBotPage, FlyBotPanel | `prompt`, `source` |
 | `flybot_waitlist_joined` | ChatLimitReached | `message_count` |
 
 ## Environment Variables

@@ -4,7 +4,7 @@ import { Menu, Bot, AlertCircle, X, RotateCcw } from 'lucide-react';
 import { SEO } from '@/components/SEO.jsx';
 import Header from '@/components/Header.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
-import { useChat } from '@/hooks/useChat.js';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { ChatMessages } from '@/components/chat/ChatMessages.jsx';
 import { ChatInput } from '@/components/chat/ChatInput.jsx';
 import { ChatSidebar } from '@/components/chat/ChatSidebar.jsx';
@@ -14,7 +14,7 @@ import { trackEvent } from '@/lib/analytics.js';
 
 const ADMIN_EMAIL = 'alvesluiz7@icloud.com';
 
-export default function CoachPage() {
+export default function FlyBotPage() {
   const { currentUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,11 +38,13 @@ export default function CoachPage() {
     stopStreaming,
     retryLastMessage,
     clearError,
-  } = useChat();
+    initChat,
+    currentPageContext,
+  } = useChatContext();
 
   useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
+    initChat();
+  }, [initChat]);
 
   useEffect(() => {
     const convId = searchParams.get('c');
@@ -63,12 +65,13 @@ export default function CoachPage() {
     trackEvent('flybot_message_sent', {
       conversation_id: activeConversationId,
       message_length: text.length,
+      source: 'full_page',
     });
-    sendMessage(text);
-  }, [sendMessage, activeConversationId]);
+    sendMessage(text, currentPageContext);
+  }, [sendMessage, activeConversationId, currentPageContext]);
 
   const handlePromptClick = useCallback((prompt) => {
-    trackEvent('flybot_prompt_clicked', { prompt });
+    trackEvent('flybot_prompt_clicked', { prompt, source: 'full_page' });
     handleSend(prompt);
   }, [handleSend]);
 

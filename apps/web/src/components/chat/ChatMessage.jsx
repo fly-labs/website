@@ -107,7 +107,7 @@ function TypingIndicator() {
   );
 }
 
-export function ChatMessage({ message, isStreaming }) {
+export function ChatMessage({ message, isStreaming, compact = false }) {
   const isUser = message.role === 'user';
   const hasEvaluation = message.metadata?.evaluation;
   const isEmpty = !message.content && isStreaming;
@@ -118,36 +118,46 @@ export function ChatMessage({ message, isStreaming }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.15, ease: 'easeOut' }}
       className={cn(
-        'group px-4 sm:px-6 py-4',
+        'group',
+        compact ? 'px-3 py-2.5' : 'px-4 sm:px-6 py-4',
         isUser ? 'bg-transparent' : 'bg-muted/30'
       )}
     >
-      <div className="max-w-2xl mx-auto flex gap-3 sm:gap-4">
-        {/* Avatar */}
-        <div className="flex-shrink-0 pt-0.5">
-          {isUser ? (
-            <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold">
-              U
-            </div>
-          ) : (
-            <div className="w-7 h-7 rounded-full bg-card border border-border flex items-center justify-center">
-              <Bot className="w-4 h-4 text-primary" />
-            </div>
-          )}
-        </div>
+      <div className={cn(
+        'flex',
+        compact ? 'gap-2' : 'max-w-2xl mx-auto gap-3 sm:gap-4'
+      )}>
+        {/* Avatar (hidden in compact) */}
+        {!compact && (
+          <div className="flex-shrink-0 pt-0.5">
+            {isUser ? (
+              <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-semibold">
+                U
+              </div>
+            ) : (
+              <div className="w-7 h-7 rounded-full bg-card border border-border flex items-center justify-center">
+                <Bot className="w-4 h-4 text-primary" />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 min-w-0 space-y-1">
           {/* Name */}
           <p className={cn(
-            'text-xs font-semibold',
+            'font-semibold',
+            compact ? 'text-[10px]' : 'text-xs',
             isUser ? 'text-foreground' : 'text-primary'
           )}>
             {isUser ? 'You' : 'FlyBot'}
           </p>
 
           {/* Message body */}
-          <div className="text-[14px] leading-[1.7] text-foreground/90 break-words">
+          <div className={cn(
+            'text-foreground/90 break-words',
+            compact ? 'text-[13px] leading-[1.6]' : 'text-[14px] leading-[1.7]'
+          )}>
             {isEmpty ? (
               <TypingIndicator />
             ) : isUser ? (
