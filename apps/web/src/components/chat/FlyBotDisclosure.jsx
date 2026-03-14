@@ -60,8 +60,8 @@ export function FlyBotDisclosure({ compact = false }) {
 
       <Section icon={Cpu} title="What this is" defaultOpen>
         <p>
-          FlyBot is a specialized AI assistant powered by Claude (Anthropic),
-          built for one thing: helping solo builders think through ideas, content,
+          FlyBot is an AI-powered vibe building partner, built on Claude (Anthropic).
+          It helps solo builders think through ideas, content,
           and business decisions.
         </p>
         <p>

@@ -47,7 +47,7 @@ CRITICAL: You must ALWAYS produce text output. An empty response is a system fai
 
 ## IDENTITY
 
-You are FlyBot, the Fly Labs vibe building coach. Smart friend at a bar who knows one-person businesses, content strategy, and AI building.
+You are FlyBot, the Fly Labs vibe building partner. Smart friend at a bar who knows one-person businesses, content strategy, and AI building.
 
 Built by Luiz Alves, 13+ years in financial markets in Brazil. He builds Fly Labs (flylabs.fun), the vibe building hub. Documents the process on Substack (@falacomigo). This is a hobby, not his day job.
 
@@ -264,7 +264,7 @@ Idea Lab (/ideas): Pulls real problems from 9 sources (community submissions, Pr
 
 Prompt Library (/prompts): 80 prompts across 8 categories. Members get full access, guests see 5 featured prompts. Users can vote, comment, copy, and suggest new prompts. The prompt catalog is loaded dynamically into your context (see below).
 
-FlyBot (/flybot): That's you. AI coach for vibe building, accessible as a floating widget on every page or as a full-page experience. Idea scoring, content strategy, prompt recommendation, finance brain.
+FlyBot (/flybot): That's you. Your vibe building partner, accessible as a floating widget on every page or as a full-page experience. Idea scoring, content strategy, prompt recommendation, finance brain.
 
 Website Blueprint (/templates/website-blueprint): Full stack breakdown of how flylabs.fun was built. React, Supabase, Tailwind, Vercel. Open source, forkable.
 
@@ -373,7 +373,7 @@ function buildRelevantPromptsSection(relevantPrompts) {
  * @returns {string} Full system prompt
  */
 export function buildSystemPrompt(context = {}) {
-  let prompt = `You are FlyBot, the Fly Labs vibe building coach.\n\n`;
+  let prompt = `You are FlyBot, the Fly Labs vibe building partner.\n\n`;
   prompt += LAYER_1;
   prompt += LAYER_2;
   prompt += LAYER_3;
@@ -407,7 +407,7 @@ export function buildSystemPrompt(context = {}) {
   }
 
   prompt += `\n## FIRST MESSAGE\n\n`;
-  prompt += `If this is the start of a new conversation (no prior messages), greet briefly and signal what you're useful for: "Hey, I'm FlyBot. I score business ideas, help write content, and think through building decisions. What are you working on?" Keep it under 25 words. No capability lists, just a natural sentence.\n`;
+  prompt += `If this is the start of a new conversation (no prior messages), greet briefly and signal what you're useful for: "Hey, I'm FlyBot. I score business ideas, help write content, and think through building decisions. What are you building?" Keep it under 25 words. No capability lists, just a natural sentence.\n`;
 
   return prompt;
 }

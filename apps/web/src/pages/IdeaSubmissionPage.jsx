@@ -325,9 +325,15 @@ const IdeaSubmissionPage = () => {
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
                 {globalCount ? `${globalCount} real problems from ${SOURCE_COUNT} sources` : `Real problems from ${SOURCE_COUNT} sources`}, scored by AI daily.
-                {' '}
-                <Link to="/ideas/analytics" className="text-primary hover:underline">See analytics</Link>
               </p>
+              <Link
+                to="/ideas/analytics"
+                className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-colors"
+              >
+                <Activity className="w-3.5 h-3.5" />
+                Live analytics: verdicts, sources, scoring patterns, industry trends
+                <ArrowRight className="w-3 h-3" />
+              </Link>
             </motion.div>
 
             {/* Toolbar */}

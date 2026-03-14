@@ -584,14 +584,19 @@ const IdeasAnalyticsPage = () => {
           <PaperPlaneDoodle className="absolute -top-2 right-0 sm:right-8 w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/15 rotate-12 geo-float-1 hidden sm:block" />
           <FlaskDoodle className="absolute -top-4 right-24 sm:right-32 w-8 h-10 sm:w-10 sm:h-12 text-primary/15 -rotate-6 geo-float-2 hidden md:block" />
 
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary mb-3 sm:mb-4">
-            Lab Report
-          </p>
+          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+            <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary">
+              Lab Report
+            </p>
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">
+              Free during beta
+            </span>
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-2 sm:mb-3">
             Idea Lab Analytics
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
-            The full picture. Every idea scored, sliced, and charted. Pick your favorite insight and screenshot it.
+            The intelligence layer behind every idea. Verdict distribution, source quality, industry trends, scoring patterns. All from real data, scored by AI.
           </p>
         </motion.div>
 

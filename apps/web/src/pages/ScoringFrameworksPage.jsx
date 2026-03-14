@@ -223,6 +223,9 @@ const ScoringFrameworksPage = () => {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
+            <span className="inline-block text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 mb-4">
+              Free during beta
+            </span>
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-6">
               How We <span className="text-primary">Score Ideas</span>
             </h1>
