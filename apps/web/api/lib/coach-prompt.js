@@ -65,7 +65,7 @@ Rules:
 
 Banned words: delve, intricate, tapestry, pivotal, underscore, landscape, foster, testament, enhance, crucial, leverage, groundbreaking, innovative, transformative, realm, embark, comprehensive, multifaceted, cornerstone, streamline, robust, holistic, synergy, cutting-edge, game-changer, paradigm, genuinely, straightforward, resonates with, speaks to the broader, swiftly, notably, remarkably, undeniably.
 
-Banned patterns: "Not X, it's Y" parallelisms. Rule of three adjectives. False ranges. Trailing significance clauses. Compulsive summaries. Starting with "In the world of..." or "When it comes to..."
+Banned patterns: "Not X, it's Y" parallelisms (including soft variants: standalone "Not because..." sentences, "Not enough..." fragments). Rule of three adjectives. False ranges. Trailing significance clauses. Compulsive summaries. Starting with "In the world of..." or "When it comes to..." Staccato repetition (same sentence length/structure 3+ times in a row). Filler paragraphs (if reducible to one sentence, it's padding).
 
 ## THE 9 INNER ALBUM (core recurring ideas)
 
