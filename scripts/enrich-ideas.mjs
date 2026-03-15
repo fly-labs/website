@@ -568,6 +568,27 @@ async function main() {
       const validationScore = result.validation?.strength || 0;
       let enrichmentVerdict = result.verdict?.recommendation || null;
 
+      // Post-enrichment saturation cap: 5+ named competitors caps verdict at VALIDATE_FIRST
+      const competitorCount = result.competitors?.products?.length || 0;
+      if (competitorCount >= 5 && enrichmentVerdict === 'BUILD') {
+        console.log(`  Saturation cap: ${competitorCount} competitors found, overriding BUILD → VALIDATE_FIRST`);
+        enrichmentVerdict = 'VALIDATE_FIRST';
+        result.verdict.recommendation = 'VALIDATE_FIRST';
+        result.verdict.saturation_override = true;
+        result.verdict.competitor_count = competitorCount;
+        result.verdict.original_recommendation = result.verdict.original_recommendation || 'BUILD';
+        result.verdict.override_reason = `${competitorCount} established competitors found in market research`;
+      }
+      // Store competitor count for frontend display
+      if (result.competitors) {
+        result.competitors.competitor_count = competitorCount;
+      }
+      // Boost confidence for underserved markets (0-1 competitors)
+      if (competitorCount <= 1 && result.validation) {
+        result.validation.confidence = 'high';
+        result.validation.underserved_market = true;
+      }
+
       // Server-side buildability gate: enrichment cannot override to BUILD if buildability < 10
       const buildability = idea.score_breakdown?.flylabs?.buildability?.score;
       if (enrichmentVerdict === 'BUILD' && buildability != null && buildability < 10) {

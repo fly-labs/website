@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Archive, ExternalLink, Share2 } from 'lucide-react';
+import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Archive, ExternalLink, Share2, AlertTriangle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -254,6 +254,46 @@ const IdeaDetailPage = () => {
             )}
           </div>
 
+          {/* ─── Quick Read ─── */}
+          {(() => {
+            const thePain = synthesis?.the_pain || synthesis?.one_liner || idea.idea_description || idea.score_breakdown?.flylabs?.problem_clarity?.reasoning;
+            const theGap = synthesis?.the_gap || idea.score_breakdown?.flylabs?.solution_gap?.reasoning || competitors?.market_gap;
+            const buildAngle = synthesis?.build_angle || competitors?.differentiation_angle || synthesis?.next_steps?.[0] || idea.score_breakdown?.flylabs?.buildability?.reasoning;
+            const hasQuickRead = thePain || theGap || buildAngle;
+
+            if (!hasQuickRead) return null;
+
+            return (
+              <section className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Quick Read</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {thePain && (
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">The Pain</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{thePain}</p>
+                    </div>
+                  )}
+                  {theGap && (
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">The Gap</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{theGap}</p>
+                    </div>
+                  )}
+                  {buildAngle && (
+                    <div className="space-y-1.5">
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-primary">What to Build</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{buildAngle}</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            );
+          })()}
+
           {/* ─── Verdict ─── */}
           <section>
             <div className="flex items-center gap-3 mb-4">
@@ -268,53 +308,84 @@ const IdeaDetailPage = () => {
                 <p className="text-sm text-muted-foreground font-medium">Scores and verdict pending. New ideas are scored daily.</p>
               </div>
             ) : (
-              <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
-                <p className="text-[11px] text-muted-foreground/60 font-medium">Based on {FRAMEWORK_COUNT} AI frameworks + real market evidence</p>
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
-                  {synthesis?.composite_score != null && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground/60">Composite</span>
-                      <span className={`text-lg font-black tabular-nums ${vs.text}`}>{synthesis.composite_score}</span>
-                      <span className="text-xs text-muted-foreground/60">/100</span>
+              <div className="space-y-4">
+                {/* Verdict box: clean and punchy */}
+                <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
+                      {enrichVerdict?.confidence && (
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[enrichVerdict.confidence] || confidenceColors.medium}`}>
+                          {enrichVerdict.confidence} confidence
+                        </span>
+                      )}
                     </div>
+                    {synthesis?.composite_score != null && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground/60">Composite</span>
+                        <span className={`text-lg font-black tabular-nums ${vs.text}`}>{synthesis.composite_score}</span>
+                        <span className="text-xs text-muted-foreground/60">/100</span>
+                      </div>
+                    )}
+                  </div>
+                  {(enrichVerdict?.reasoning || synthesis?.reasoning) && (
+                    <p className="text-sm text-muted-foreground">{enrichVerdict?.reasoning || synthesis?.reasoning}</p>
+                  )}
+                  {/* Competitor warning badge */}
+                  {(() => {
+                    const compCount = idea.enrichment?.competitors?.competitor_count || idea.enrichment?.competitors?.products?.length;
+                    if (compCount == null) return null;
+                    if (compCount >= 5) {
+                      return (
+                        <div className="flex items-center gap-2 text-xs font-medium text-amber-500">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          Crowded market: {compCount} known competitors
+                        </div>
+                      );
+                    }
+                    if (compCount <= 1) {
+                      return (
+                        <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Underserved market
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                  {/* Saturation cap notice */}
+                  {synthesis?.saturation_capped && (
+                    <p className="text-xs text-amber-500/80">Score capped due to market saturation. Real problem, crowded space.</p>
                   )}
                 </div>
-                {synthesis?.one_liner && <p className="text-sm text-foreground font-medium">{synthesis.one_liner}</p>}
-                {(enrichVerdict?.reasoning || synthesis?.reasoning) && (
-                  <p className="text-sm text-muted-foreground italic">{enrichVerdict?.reasoning || synthesis?.reasoning}</p>
-                )}
-                {/* Distribution insight from Okamoto */}
-                {(() => {
-                  const distChannel = idea.score_breakdown?.okamoto?.distribution_channel;
-                  if (!distChannel?.reasoning) return null;
-                  const distScore = distChannel.score || 0;
-                  const distColor = distScore >= 15 ? 'text-primary' : distScore >= 8 ? 'text-amber-500' : 'text-red-500';
-                  return (
-                    <p className={`text-xs ${distColor}`}>
-                      <span className="font-medium">Distribution:</span> {distChannel.reasoning}
-                    </p>
-                  );
-                })()}
-                {enrichVerdict?.confidence && (
-                  <span className={`text-xs font-medium ${confidenceColors[enrichVerdict.confidence] || confidenceColors.medium}`}>
-                    {enrichVerdict.confidence} confidence (market-validated)
-                  </span>
-                )}
-                {synthesis?.strengths?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {synthesis.strengths.map((s, i) => (
-                      <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>
-                    ))}
+
+                {/* Strengths & Risks: compact grid below verdict */}
+                {(synthesis?.strengths?.length > 0 || synthesis?.risks?.length > 0) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {synthesis?.strengths?.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-xs font-medium text-muted-foreground/60">Strengths</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {synthesis.strengths.map((s, i) => (
+                            <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {synthesis?.risks?.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-xs font-medium text-muted-foreground/60">Risks</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {synthesis.risks.map((r, i) => (
+                            <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">{r}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
-                {synthesis?.risks?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {synthesis.risks.map((r, i) => (
-                      <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">{r}</span>
-                    ))}
-                  </div>
-                )}
+
+                {/* Next Steps */}
                 {synthesis?.next_steps?.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-muted-foreground/60 mb-1.5">Next Steps</p>

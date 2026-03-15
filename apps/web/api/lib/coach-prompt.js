@@ -489,8 +489,20 @@ export function buildSystemPrompt(context = {}) {
     if (a.topIdeas.length > 0) {
       prompt += `\nHighest-scoring ideas right now:\n`;
       for (const idea of a.topIdeas) {
-        prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (${idea.composite_score}, ${idea.verdict}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}\n`;
+        const synthesis = idea.score_breakdown?.synthesis;
+        const thePain = synthesis?.the_pain;
+        const theGap = synthesis?.the_gap;
+        const buildAngle = synthesis?.build_angle;
+        prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (${idea.composite_score}, ${idea.verdict}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}`;
+        if (thePain) prompt += `\n  Pain: ${sanitizeForPrompt(thePain)}`;
+        if (theGap) prompt += `\n  Gap: ${sanitizeForPrompt(theGap)}`;
+        if (buildAngle) prompt += `\n  Build angle: ${sanitizeForPrompt(buildAngle)}`;
+        if (synthesis?.saturation_capped) prompt += `\n  ⚠ Score capped (crowded market)`;
+        const compCount = idea.enrichment?.competitors?.competitor_count || idea.enrichment?.competitors?.products?.length;
+        if (compCount >= 5) prompt += `\n  ⚠ ${compCount} known competitors`;
+        prompt += `\n`;
       }
+      prompt += `When sharing top ideas, lead with the_pain and build_angle if available. These tell the builder exactly what to do.\n`;
     }
     prompt += `\nGrowth: ${a.growth.last7} new ideas in the last 7 days`;
     if (a.growth.prior7 > 0) {
@@ -675,11 +687,17 @@ export async function fetchIdeaAnalytics(supabase) {
       else scoreBuckets['85-100']++;
     }
 
-    // Top 5 highest-scoring ideas (exclude null titles)
-    const topIdeas = scored
+    // Top 5 highest-scoring ideas (with full breakdown for new synthesis fields)
+    const topIdeaIds = scored
       .filter(i => i.idea_title)
       .sort((a, b) => Number(b.composite_score) - Number(a.composite_score))
-      .slice(0, 5);
+      .slice(0, 5)
+      .map(i => i.id);
+    const { data: topIdeasFull } = await supabase
+      .from('ideas')
+      .select('id, idea_title, composite_score, verdict, industry, source, score_breakdown, enrichment')
+      .in('id', topIdeaIds);
+    const topIdeas = (topIdeasFull || []).sort((a, b) => Number(b.composite_score) - Number(a.composite_score));
 
     // Best source by avg score
     const sourceQuality = Object.entries(sourceStats)

@@ -8,7 +8,6 @@ config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../apps/web/.en
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const MAX_IDEAS_PER_RUN = 25;
 const BATCH_SIZE = 10;
 const BATCH_DELAY_MS = 1000;
 const MAX_RETRIES = 2;
@@ -22,6 +21,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
 const scoreAll = process.argv.includes('--all');
+const backfill = process.argv.includes('--backfill');
+const MAX_IDEAS_PER_RUN = backfill ? 500 : 25;
+const MODEL = backfill ? 'claude-haiku-4-5-20251001' : 'claude-sonnet-4-20250514';
+
+if (backfill) {
+  console.log(`Backfill mode: using ${MODEL} (cheaper), ${MAX_IDEAS_PER_RUN} ideas per run`);
+}
 
 const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using four frameworks, provide per-pillar reasoning, and synthesize a final verdict. Return ONLY valid JSON.
 
@@ -34,10 +40,10 @@ The 4 questions every vibe builder should ask before building:
    - Specificity (0-10): Is it concrete enough to build a targeted solution? "Communication is hard" scores low. "Remote teams waste 30 min/day switching between chat and project management tools" scores high.
    - Severity (0-10): How painful? Daily frustration (10) vs mild annual inconvenience (2). Consider frequency, time wasted, money lost, emotional impact.
 
-2. Solution Gap (25pts): Is there ROOM for something new?
-   - Alternative Quality (0-10): How good are existing solutions? If current tools handle 90% of the need, score low. If people are using spreadsheets and duct tape, score high.
-   - Addressable Complaints (0-8): Are there specific, fixable weaknesses in current solutions? Generic "it's expensive" scores low. "Zapier breaks when webhooks timeout and there's no retry logic" scores high.
-   - Whitespace (0-7): Is there market space for a new entrant? Consider positioning gaps, underserved segments, pricing tiers nobody occupies.
+2. Solution Gap (25pts): Is there ROOM for something new, or is this a commodity market?
+   - Alternative Quality (0-8): How good are existing solutions? CRITICAL: also consider how MANY serious alternatives exist. If 10+ funded competitors address this problem (even poorly), cap this score at 4. A crowded market of mediocre tools is still a crowded market. If people are using spreadsheets and duct tape with no dedicated tools, score 7-8.
+   - Addressable Complaints (0-8): Are there specific, BUILDABLE weaknesses in current solutions? Generic complaints score low: "it's expensive" = 2 max, "bad UX" = 2 max. Specific buildable gaps score high: "Zapier breaks when webhooks timeout and there's no retry logic" = 7-8. The complaint must point to something a solo builder can actually fix. Vague frustration is not a gap.
+   - Whitespace (0-9): Is there a specific, narrow angle nobody occupies? "Better UI" is NOT whitespace (every competitor claims better UI, score 0-2). "Designed specifically for solo consultants who use Notion as their backend" IS whitespace (narrow, defensible). If the idea title could describe 10 different existing products, whitespace is 0-2. True whitespace requires a specific audience + specific workflow + specific integration that incumbents ignore.
 
 3. Willingness to Act (25pts): Would people actually DO something?
    - Switching Motivation (0-10): Is the pain strong enough to overcome inertia? People hate switching tools. The problem must be painful enough to justify the effort.
@@ -80,7 +86,8 @@ Provide per-dimension reasoning (one sentence each explaining the score).
 - Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
 **Synthesis** - After scoring all four frameworks, cross-reference them and produce a final verdict:
 - composite_score: weighted average (40% flylabs + 20% hormozi + 20% koe + 20% okamoto)
-- verdict rules:
+- SATURATION CAP: If this idea describes a problem addressed by 5+ well-known products or funded competitors, cap composite at 65 max and verdict at VALIDATE_FIRST regardless of framework scores. A real problem in a crowded market is not a BUILD for a solo builder. Apply this cap BEFORE the verdict rules below.
+- verdict rules (after saturation cap):
   - BUILD: composite >= 70 AND flylabs >= 60 AND flylabs buildability >= 10/20 AND no single framework below 30. Strong signal across all lenses. If buildability < 10, the idea requires too large a team or too much infrastructure for a solo builder, so downgrade to VALIDATE_FIRST regardless of other scores.
   - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or buildability < 10 or any framework below 30. Promising but has gaps.
   - SKIP: composite < 45. Not viable for a solo builder right now.
@@ -92,7 +99,7 @@ Return ONLY this JSON structure (no markdown, no code fences):
   "flylabs": {
     "total": <number 0-100>,
     "problem_clarity": { "score": <0-30>, "max": 30, "existence": <0-10>, "specificity": <0-10>, "severity": <0-10>, "reasoning": "..." },
-    "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-10>, "addressable_complaints": <0-8>, "whitespace": <0-7>, "reasoning": "..." },
+    "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-8>, "addressable_complaints": <0-8>, "whitespace": <0-9>, "reasoning": "..." },
     "willingness": { "score": <0-25>, "max": 25, "switching_motivation": <0-10>, "payment_signals": <0-8>, "urgency": <0-7>, "reasoning": "..." },
     "buildability": { "score": <0-20>, "max": 20, "solo_feasibility": <0-8>, "speed_to_market": <0-7>, "compound_value": <0-5>, "reasoning": "..." },
     "summary": "<one-line>",
@@ -134,7 +141,11 @@ Return ONLY this JSON structure (no markdown, no code fences):
   "synthesis": {
     "verdict": "<BUILD|VALIDATE_FIRST|SKIP>",
     "composite_score": <number 0-100>,
-    "one_liner": "<One sentence: what this idea is and whether a solo builder should pursue it>",
+    "one_liner": "<One sentence that tells a builder EXACTLY what they'd build and who it's for. Not a verdict summary. Example: 'A Slack bot that auto-archives channels with no activity for 30 days, sold to IT admins at mid-size companies.' Specific enough to start building from this sentence.>",
+    "the_pain": "<One sentence describing the specific, felt pain. Quote real language if possible. Example: 'Teams waste 20+ minutes per day scrolling past dead channels looking for the active ones.' If unclear, write what you can infer from the idea.>",
+    "the_gap": "<One sentence describing what current solutions miss. Example: 'Slack's native archiving requires manual admin work and has no automation rules.' Be specific about WHAT is missing, not just that something is missing.>",
+    "build_angle": "<One sentence describing the specific, defensible angle for a solo builder. Example: 'A lightweight Slack app (not a full platform) that just does auto-archiving with simple rules, priced at $5/team/month.' Include the format, the narrow scope, and the pricing position.>",
+    "saturation_capped": <boolean, true if saturation cap was applied>,
     "strengths": ["strength 1", "strength 2"],
     "risks": ["risk 1", "risk 2"],
     "next_steps": ["step 1", "step 2", "step 3"],
@@ -173,8 +184,8 @@ async function scoreIdea(idea) {
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
+        model: MODEL,
+        max_tokens: backfill ? 6000 : 4000,
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
       });
@@ -183,6 +194,11 @@ async function scoreIdea(idea) {
       if (text.startsWith('```')) {
         text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
       }
+      // Extract first complete JSON object (Haiku sometimes adds text after the JSON)
+      const jsonStart = text.indexOf('{');
+      if (jsonStart > 0) text = text.slice(jsonStart);
+      const lastBrace = text.lastIndexOf('}');
+      if (lastBrace > 0 && lastBrace < text.length - 1) text = text.slice(0, lastBrace + 1);
       const parsed = JSON.parse(text);
 
       if (typeof parsed.flylabs?.total !== 'number' || typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {
@@ -210,6 +226,16 @@ async function scoreIdea(idea) {
           console.warn(`  Buildability gate: ${buildability}/20 too low for BUILD, downgrading to VALIDATE_FIRST`);
           parsed.synthesis.verdict = 'VALIDATE_FIRST';
         }
+      }
+
+      // Server-side saturation cap: crowded markets cap at VALIDATE_FIRST
+      if (parsed.synthesis?.saturation_capped && parsed.synthesis?.verdict === 'BUILD') {
+        console.warn(`  Saturation cap: AI flagged crowded market but gave BUILD, downgrading to VALIDATE_FIRST`);
+        parsed.synthesis.verdict = 'VALIDATE_FIRST';
+      }
+      if (parsed.synthesis?.saturation_capped && parsed.synthesis?.composite_score > 65) {
+        console.warn(`  Saturation cap: capping composite from ${parsed.synthesis.composite_score} to 65`);
+        parsed.synthesis.composite_score = 65;
       }
 
       // Server-side YC team-size gate: large teams + low buildability = not solo-buildable
@@ -254,10 +280,18 @@ function sleep(ms) {
 }
 
 async function main() {
-  // Fetch ideas to score: missing ANY of the 4 scores, or --all to re-score everything
+  // Fetch ideas to score
+  // --all: re-score everything (or filtered by --backfill which skips SKIPs)
+  // default: only ideas missing any score
   let ideas = [];
   if (scoreAll) {
-    const { data, error } = await supabase.from('ideas').select('*').eq('approved', true).limit(MAX_IDEAS_PER_RUN);
+    let query = supabase.from('ideas').select('*').eq('approved', true);
+    // In backfill mode, skip SKIP ideas (they're already SKIP, no point re-scoring)
+    if (backfill) {
+      query = query.in('verdict', ['BUILD', 'VALIDATE_FIRST']);
+    }
+    query = query.limit(MAX_IDEAS_PER_RUN);
+    const { data, error } = await query;
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
   } else {

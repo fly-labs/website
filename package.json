@@ -27,6 +27,7 @@
     "sync:github": "node scripts/sync-github.mjs",
     "sync:yc": "node scripts/sync-yc.mjs",
     "score": "node scripts/score-ideas.mjs",
+    "score:backfill": "node scripts/score-ideas.mjs --all --backfill",
     "enrich": "node scripts/enrich-ideas.mjs",
     "setup:music": "node --env-file=apps/web/.env scripts/setup-music.mjs"
   },

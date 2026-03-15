@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, GitCompare } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare, AlertTriangle } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -221,7 +221,7 @@ const RecentIdeaRow = ({ idea }) => {
   );
 };
 
-// ── Delta badge for momentum indicators ──
+// ── Delta Badge ──
 const DeltaBadge = ({ value }) => {
   if (value == null || value === 0) return <span className="text-[10px] text-muted-foreground/60">no change</span>;
   const positive = value > 0;
@@ -236,8 +236,8 @@ const DeltaBadge = ({ value }) => {
 const IdeasAnalyticsPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
-  const [growthView, setGrowthView] = useState('combo'); // 'combo' | 'cumulative' | 'weekly'
-  const [leaderboardTab, setLeaderboardTab] = useState('top'); // 'top' | 'gems'
+  const [growthView, setGrowthView] = useState('combo');
+  const [leaderboardTab, setLeaderboardTab] = useState('top');
 
   useEffect(() => {
     async function load() {
@@ -463,7 +463,7 @@ const IdeasAnalyticsPage = () => {
           total: verdictTimeMap[week].BUILD + verdictTimeMap[week].VALIDATE_FIRST + verdictTimeMap[week].SKIP,
         }));
 
-        // ── Top 10 Leaderboard ──
+        // ── NEW: Top 10 Leaderboard ──
         const leaderboard = ideas
           .filter(i => i.verdict === 'BUILD' && i.composite_score != null)
           .sort((a, b) => b.composite_score - a.composite_score)
@@ -475,7 +475,6 @@ const IdeasAnalyticsPage = () => {
             source: i.source, industry: i.industry, votes: i.votes || 0,
           }));
 
-        // ── Hidden Gems (high score, low votes) ──
         const hiddenGems = ideas
           .filter(i => i.composite_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP')
           .sort((a, b) => b.composite_score - a.composite_score)
@@ -485,9 +484,9 @@ const IdeasAnalyticsPage = () => {
             votes: i.votes || 0, source: i.source, verdict: i.verdict,
           }));
 
-        // ── Industry Intelligence ──
-        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+        // ── NEW: Industry Intelligence ──
+        const oneWeekAgo = new Date(now.getTime() - 7 * 86400000);
+        const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000);
 
         const industryIntelMap = {};
         ideas.forEach(i => {
@@ -514,15 +513,15 @@ const IdeasAnalyticsPage = () => {
           .filter(([, v]) => v.count >= 3)
           .map(([name, v]) => {
             const avgScore = v.scoreCount > 0 ? Math.round(v.scoreSum / v.scoreCount) : 0;
-            const buildRateInd = v.verdictCount > 0 ? Math.round((v.buildCount / v.verdictCount) * 100) : 0;
-            const bestSrc = Object.entries(v.sourceCounts).sort((a, b) => b[1] - a[1])[0];
+            const indBuildRate = v.verdictCount > 0 ? Math.round((v.buildCount / v.verdictCount) * 100) : 0;
+            const bestSource = Object.entries(v.sourceCounts).sort((a, b) => b[1] - a[1])[0];
             const wowDelta = v.lastWeek > 0
               ? Math.round(((v.thisWeek - v.lastWeek) / v.lastWeek) * 100)
               : (v.thisWeek > 0 ? 100 : 0);
-            const opportunityScore = Math.round(avgScore * 0.4 + buildRateInd * 0.4 + Math.min(Math.max(wowDelta, -50), 50) * 0.2);
+            const opportunityScore = Math.round(avgScore * 0.4 + indBuildRate * 0.4 + Math.min(Math.max(wowDelta, -50), 50) * 0.2);
             return {
-              name: name.replace(/_/g, ' '), count: v.count, avgScore, buildRate: buildRateInd,
-              bestSource: bestSrc ? (sourceOptions.find(s => s.value === bestSrc[0])?.label || bestSrc[0]) : '-',
+              name: name.replace(/_/g, ' '), count: v.count, avgScore, buildRate: indBuildRate,
+              bestSource: bestSource ? (sourceOptions.find(s => s.value === bestSource[0])?.label || bestSource[0]) : '-',
               thisWeek: v.thisWeek, wowDelta,
               trend: wowDelta > 10 ? 'up' : wowDelta < -10 ? 'down' : 'flat',
               opportunityScore, builds: v.buildCount,
@@ -530,7 +529,7 @@ const IdeasAnalyticsPage = () => {
           })
           .sort((a, b) => b.opportunityScore - a.opportunityScore);
 
-        // ── Framework Disagreements ──
+        // ── NEW: Framework Disagreement ──
         const disagreements = scored
           .map(i => {
             const fwScores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score].filter(s => s != null);
@@ -541,6 +540,8 @@ const IdeasAnalyticsPage = () => {
             const sortedFw = Object.entries(fwMap).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
             return {
               id: i.id, title: i.idea_title, composite: i.composite_score,
+              flylabs: i.flylabs_score, hormozi: i.hormozi_score,
+              koe: i.koe_score, okamoto: i.okamoto_score,
               spread, highest: sortedFw[0], lowest: sortedFw[sortedFw.length - 1], verdict: i.verdict,
             };
           })
@@ -548,7 +549,7 @@ const IdeasAnalyticsPage = () => {
           .sort((a, b) => b.spread - a.spread)
           .slice(0, 8);
 
-        // ── Source Momentum ──
+        // ── NEW: Momentum ──
         const sourceMomentum = {};
         ideas.forEach(i => {
           const s = i.source || 'community';
@@ -566,14 +567,14 @@ const IdeasAnalyticsPage = () => {
           .filter(s => s.thisWeek > 0 || s.lastWeek > 0)
           .sort((a, b) => b.delta - a.delta);
 
-        // ── Score Trend (rolling 4-week avg) ──
+        // Rolling 4-week score trend
         const weeklyAvgScores = [];
         for (let w = 0; w < 4; w++) {
-          const wEnd = new Date(now.getTime() - w * 7 * 24 * 60 * 60 * 1000);
-          const wStart = new Date(wEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+          const wEnd = new Date(now.getTime() - w * 7 * 86400000);
+          const wStart = new Date(wEnd.getTime() - 7 * 86400000);
           const wIdeas = scored.filter(i => { const d = new Date(i.created_at); return d >= wStart && d < wEnd; });
           weeklyAvgScores.unshift({
-            avg: wIdeas.length > 0 ? Math.round(wIdeas.reduce((a, ii) => a + ii.composite_score, 0) / wIdeas.length) : null,
+            avg: wIdeas.length > 0 ? Math.round(wIdeas.reduce((a, i) => a + i.composite_score, 0) / wIdeas.length) : null,
           });
         }
         const validWeekAvgs = weeklyAvgScores.filter(w => w.avg != null);
@@ -581,12 +582,12 @@ const IdeasAnalyticsPage = () => {
         const currentWeekAvg = weeklyAvgScores[weeklyAvgScores.length - 1]?.avg || 0;
         const scoreTrend = rollingAvg > 0 ? Math.round(((currentWeekAvg - rollingAvg) / rollingAvg) * 100) : 0;
 
-        // ── Pipeline Velocity ──
+        // Pipeline velocity
         const pipelineThisWeek = ideas.filter(i => new Date(i.created_at) >= oneWeekAgo).length;
         const pipelineLastWeek = ideas.filter(i => { const d = new Date(i.created_at); return d >= twoWeeksAgo && d < oneWeekAgo; }).length;
         const pipelineDelta = pipelineLastWeek > 0 ? Math.round(((pipelineThisWeek - pipelineLastWeek) / pipelineLastWeek) * 100) : 0;
 
-        // ── Framework Correlation ──
+        // ── NEW: Framework Correlation ──
         const frameworkPairs = [
           ['flylabs', 'hormozi', 'FL + H'], ['flylabs', 'koe', 'FL + K'],
           ['flylabs', 'okamoto', 'FL + O'], ['hormozi', 'koe', 'H + K'],
@@ -601,9 +602,9 @@ const IdeasAnalyticsPage = () => {
           const medB = scoresB[Math.floor(scoresB.length / 2)];
           const agree = both.filter(i => (i[`${a}_score`] >= medA && i[`${b}_score`] >= medB) || (i[`${a}_score`] < medA && i[`${b}_score`] < medB)).length;
           return { label, agreement: Math.round((agree / both.length) * 100), count: both.length };
-        }).sort((aa, bb) => bb.agreement - aa.agreement);
+        }).sort((a, b) => b.agreement - a.agreement);
 
-        // ── Opportunity Map ──
+        // ── NEW: Opportunity Map ──
         const oppFiltered = industryIntelData.filter(ind => ind.count >= 3 && ind.avgScore > 0);
         const medianCount = oppFiltered.length > 0 ? oppFiltered.map(i => i.count).sort((a, b) => a - b)[Math.floor(oppFiltered.length / 2)] : 0;
         const medianBuildRate = oppFiltered.length > 0 ? oppFiltered.map(i => i.buildRate).sort((a, b) => a - b)[Math.floor(oppFiltered.length / 2)] : 0;
@@ -641,7 +642,7 @@ const IdeasAnalyticsPage = () => {
     load();
   }, []);
 
-  // Generate smart insights with cross-dimensional intelligence
+  // Generate smart insights (upgraded with cross-dimensional analysis)
   const insights = useMemo(() => {
     if (!stats) return [];
     const list = [];
@@ -650,50 +651,54 @@ const IdeasAnalyticsPage = () => {
     if (stats.sourceQualityData?.length >= 2) {
       const best = stats.sourceQualityData[0];
       const worst = stats.sourceQualityData[stats.sourceQualityData.length - 1];
-      const diff = best.avg - worst.avg;
-      if (diff > 5) {
-        list.push({
-          icon: TrendingUp, color: 'secondary',
-          text: `${best.name} ideas score ${diff} points higher than ${worst.name} on average. Quality varies dramatically by source.`,
-        });
-      }
+      const gap = best.avg - worst.avg;
+      list.push({
+        icon: TrendingUp,
+        color: 'secondary',
+        text: `${best.name} leads in quality (avg ${best.avg}/100) while ${worst.name} trails at ${worst.avg}/100. That ${gap}-point gap is real signal for where to look first.`,
+      });
     }
 
     // 2. Top opportunity industry
     if (stats.industryIntelData?.length > 0) {
-      const topInd = stats.industryIntelData[0];
+      const top = stats.industryIntelData[0];
       list.push({
-        icon: Target, color: 'primary',
-        text: `${topInd.name} has the highest opportunity score: ${topInd.buildRate}% BUILD rate across ${topInd.count} ideas, best source is ${topInd.bestSource}.`,
+        icon: Lightbulb,
+        color: 'primary',
+        text: `${top.name} is the top opportunity right now: ${top.buildRate}% BUILD rate, avg score ${top.avgScore}/100, best fed by ${top.bestSource}. ${top.count} ideas and counting.`,
       });
     }
 
     // 3. Score trend
-    if (stats.scoreTrend !== 0 && stats.scoreTrend != null) {
-      const direction = stats.scoreTrend > 0 ? 'climbing' : 'dropping';
+    if (stats.scoreTrend != null && stats.currentWeekAvg > 0) {
+      const direction = stats.scoreTrend > 5 ? 'climbing' : stats.scoreTrend < -5 ? 'dropping' : 'holding steady';
       list.push({
-        icon: TrendingUp, color: stats.scoreTrend > 0 ? 'primary' : 'accent',
-        text: `Average score is ${direction} ${Math.abs(stats.scoreTrend)}% vs the 4-week rolling average. ${stats.scoreTrend > 0 ? 'Pipeline quality is improving.' : 'More volume coming in, raw quality diluting slightly.'}`,
+        icon: TrendingUp,
+        color: stats.scoreTrend > 5 ? 'primary' : stats.scoreTrend < -5 ? 'accent' : 'secondary',
+        text: `Idea quality is ${direction}. This week's average is ${stats.currentWeekAvg}/100 vs the 4-week rolling avg of ${stats.rollingAvg}. ${stats.scoreTrend > 5 ? 'The pipeline is getting sharper.' : stats.scoreTrend < -5 ? 'More noise entering the funnel.' : 'Consistent quality.'}`,
       });
     }
 
     // 4. Framework disagreement highlight
     if (stats.disagreements?.length > 0) {
-      const maxD = stats.disagreements[0];
+      const top = stats.disagreements[0];
       list.push({
-        icon: GitCompare, color: 'accent',
-        text: `"${maxD.title}" has a ${maxD.spread}-point spread. ${maxD.highest[0]} scores ${maxD.highest[1]}, ${maxD.lowest[0]} only ${maxD.lowest[1]}. The experts can't agree.`,
-        link: `/ideas/${maxD.id}`,
+        icon: GitCompare,
+        color: 'accent',
+        text: `Biggest expert split: "${top.title}" where ${top.highest[0]} scores ${top.highest[1]} but ${top.lowest[0]} gives it ${top.lowest[1]}. A ${top.spread}-point gap. Worth a closer look.`,
+        link: `/ideas/${top.id}`,
       });
     }
 
     // 5. Source momentum
     if (stats.sourceMomentumData?.length > 0) {
-      const accelerating = stats.sourceMomentumData.filter(s => s.delta > 20);
+      const accelerating = stats.sourceMomentumData.filter(s => s.delta > 0);
       if (accelerating.length > 0) {
+        const names = accelerating.slice(0, 3).map(s => s.source).join(', ');
         list.push({
-          icon: Zap, color: 'secondary',
-          text: `${accelerating.map(s => s.source).join(' and ')} ${accelerating.length > 1 ? 'are' : 'is'} accelerating this week (${accelerating.map(s => `+${s.delta}%`).join(', ')}).`,
+          icon: Zap,
+          color: 'secondary',
+          text: `Sources picking up speed this week: ${names}. ${accelerating.length > 1 ? 'Multiple channels heating up.' : `${accelerating[0].source} is surging with ${accelerating[0].thisWeek} new ideas.`}`,
         });
       }
     }
@@ -702,8 +707,9 @@ const IdeasAnalyticsPage = () => {
     if (stats.hiddenGems?.length > 0) {
       const gem = stats.hiddenGems[0];
       list.push({
-        icon: Gem, color: 'primary',
-        text: `Hidden gem: "${gem.title}" scores ${gem.composite}/100 but has only ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. Nobody's noticed it yet.`,
+        icon: Gem,
+        color: 'accent',
+        text: `Hidden gem: "${gem.title}" scored ${gem.composite}/100 but only has ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. High quality, low visibility.`,
         link: `/ideas/${gem.id}`,
       });
     }
@@ -711,24 +717,38 @@ const IdeasAnalyticsPage = () => {
     // 7. BUILD rate analysis
     if (stats.buildRate > 0) {
       list.push({
-        icon: Target, color: 'primary',
-        text: `${stats.buildRate}% of scored ideas get a BUILD verdict. ${stats.buildRate > 30 ? 'The pipeline is quality-rich.' : stats.buildRate > 15 ? 'Most ideas need more validation.' : 'The AI is ruthless. Only the strongest survive.'}`,
+        icon: Target,
+        color: 'primary',
+        text: `${stats.buildRate}% of scored ideas get a BUILD verdict. ${stats.buildRate > 30 ? 'The pipeline is quality-rich.' : stats.buildRate > 15 ? 'Most ideas need more validation before building.' : 'The scoring is ruthless. Only the strongest survive.'}`,
       });
     }
 
-    // 8. Framework correlation
-    if (stats.correlationData?.length > 0) {
-      const mostAligned = stats.correlationData[0];
-      const leastAligned = stats.correlationData[stats.correlationData.length - 1];
-      if (mostAligned.agreement - leastAligned.agreement > 10) {
+    // 8. Market saturation insight
+    if (stats.leaderboard?.length > 0) {
+      // Check if BUILD ideas have enrichment competitor data by looking at avg scores
+      // Since we don't have enrichment data in the analytics query, use a proxy:
+      // if BUILD rate is high AND average scores are moderate, flag potential saturation
+      if (stats.buildRate > 25 && stats.avgComposite < 70) {
         list.push({
-          icon: Layers, color: 'accent',
-          text: `${mostAligned.label} agree ${mostAligned.agreement}% of the time. ${leastAligned.label} only ${leastAligned.agreement}%. Different lenses, different conclusions.`,
+          icon: AlertTriangle,
+          color: 'accent',
+          text: `${stats.buildRate}% BUILD rate with a ${stats.avgComposite} avg composite. The scoring may be finding real problems in crowded markets. Check individual ideas for competitor counts before building.`,
         });
       }
     }
 
-    return list.slice(0, 8);
+    // 9. Framework correlation insight
+    if (stats.correlationData?.length > 0) {
+      const most = stats.correlationData[0];
+      const least = stats.correlationData[stats.correlationData.length - 1];
+      list.push({
+        icon: Layers,
+        color: 'secondary',
+        text: `${most.label} agree ${most.agreement}% of the time (most aligned). ${least.label} only agree ${least.agreement}% (most independent). Disagreement between frameworks reveals ideas worth debating.`,
+      });
+    }
+
+    return list;
   }, [stats]);
 
   if (loading) {
@@ -756,7 +776,7 @@ const IdeasAnalyticsPage = () => {
     <PageLayout
       seo={{
         title: "Idea Lab Analytics | Fly Labs",
-        description: "Business intelligence dashboard. Momentum tracking, opportunity map, industry intelligence, framework analysis, hidden gems. Real-time analytics from AI-scored ideas.",
+        description: "Live analytics from the Idea Lab. Score distributions, source breakdown, verdict analysis, and framework comparison across all scored ideas.",
         url: "https://flylabs.fun/ideas/analytics",
         noindex: true,
       }}
@@ -796,7 +816,7 @@ const IdeasAnalyticsPage = () => {
             Idea Lab Analytics
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
-            Momentum tracking, opportunity mapping, framework disagreements, industry intelligence, hidden gems. Real-time business intelligence from {stats.total} ideas scored by AI.
+            The intelligence layer behind every idea. Verdict distribution, source quality, industry trends, scoring patterns. All from real data, scored by AI.
           </p>
         </motion.div>
 
@@ -824,7 +844,7 @@ const IdeasAnalyticsPage = () => {
           <motion.div {...staggerItem}>
             <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
               <ArrowUpRight className="w-4 h-4 text-primary mb-1.5" />
-              <p className="text-base sm:text-xl font-black text-foreground leading-tight truncate">
+              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight">
                 {stats.sourceMomentumData?.[0]?.source || '-'}
               </p>
               <DeltaBadge value={stats.sourceMomentumData?.[0]?.delta} />
@@ -870,7 +890,7 @@ const IdeasAnalyticsPage = () => {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
               {...staggerContainer}
             >
-              {insights.slice(0, 6).map((insight, i) => (
+              {insights.slice(0, 8).map((insight, i) => (
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
@@ -927,21 +947,18 @@ const IdeasAnalyticsPage = () => {
                 </table>
               ) : (
                 <div className="p-4 sm:p-5 space-y-3">
-                  {stats.hiddenGems?.length > 0 ? stats.hiddenGems.map(gem => {
-                    const srcLabel = sourceOptions.find(s => s.value === gem.source)?.label || gem.source;
-                    return (
-                      <Link key={gem.id} to={`/ideas/${gem.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-2 px-2 py-2 rounded-lg transition-colors">
-                        <Gem className="w-4 h-4 text-accent shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{gem.title}</p>
-                          <p className="text-[11px] text-muted-foreground">{gem.composite}/100 · {gem.votes} vote{gem.votes !== 1 ? 's' : ''} · {srcLabel}</p>
-                        </div>
-                        <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", gem.verdict === 'BUILD' ? 'bg-primary/10 text-primary' : 'bg-amber-500/10 text-amber-600')}>
-                          {gem.verdict === 'VALIDATE_FIRST' ? 'VALIDATE' : gem.verdict}
-                        </span>
-                      </Link>
-                    );
-                  }) : <p className="text-sm text-muted-foreground text-center py-4">No hidden gems yet. High-scoring ideas with low visibility will appear here.</p>}
+                  {stats.hiddenGems?.length > 0 ? stats.hiddenGems.map(gem => (
+                    <Link key={gem.id} to={`/ideas/${gem.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-2 px-2 py-2 rounded-lg transition-colors">
+                      <Gem className="w-4 h-4 text-accent shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{gem.title}</p>
+                        <p className="text-[11px] text-muted-foreground">{gem.composite}/100 · {gem.votes} vote{gem.votes !== 1 ? 's' : ''}</p>
+                      </div>
+                      <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", gem.verdict === 'BUILD' ? 'bg-primary/10 text-primary' : 'bg-amber-500/10 text-amber-600')}>
+                        {gem.verdict === 'VALIDATE_FIRST' ? 'VALIDATE' : gem.verdict}
+                      </span>
+                    </Link>
+                  )) : <p className="text-sm text-muted-foreground text-center py-4">No hidden gems yet. High-scoring ideas with low visibility will appear here.</p>}
                 </div>
               )}
             </div>
@@ -1055,7 +1072,7 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Framework Averages (horizontal bar chart) */}
+          {/* Framework Averages */}
           <ChartCard
             title="Framework averages"
             subtitle="How the four scoring brains compare"
@@ -1130,7 +1147,7 @@ const IdeasAnalyticsPage = () => {
             </ChartCard>
           )}
 
-          {/* Ideas Timeline (full width) - ComposedChart with toggle */}
+          {/* Growth Over Time */}
           <ChartCard
             title="Growth over time"
             subtitle="How the lab is growing week by week"
@@ -1327,7 +1344,7 @@ const IdeasAnalyticsPage = () => {
 
           {/* Industry Intelligence Matrix */}
           {stats.industryIntelData?.length > 0 && (
-            <ChartCard title="Industry intelligence" subtitle="Ranked by opportunity score (avg quality + BUILD rate + momentum)" className="md:col-span-2" doodle={LightbulbDoodle}>
+            <ChartCard title="Industry intelligence" subtitle="Opportunity score = avg quality + BUILD rate + momentum" className="md:col-span-2" doodle={LightbulbDoodle}>
               <div className="overflow-x-auto -mx-1">
                 <table className="w-full text-xs">
                   <thead>
@@ -1361,7 +1378,7 @@ const IdeasAnalyticsPage = () => {
             </ChartCard>
           )}
 
-          {/* Opportunity Map */}
+          {/* Opportunity Map (Scatter) */}
           {stats.opportunityMapData?.length > 3 && (
             <ChartCard title="Opportunity map" subtitle="Industry volume vs BUILD rate. Top-right = stars. Top-left = niche gold." className="md:col-span-2" doodle={StarDoodle}>
               <div className="h-56 sm:h-64">
@@ -1406,7 +1423,7 @@ const IdeasAnalyticsPage = () => {
             </ChartCard>
           )}
 
-          {/* Verdict Over Time (last 12 weeks) */}
+          {/* Verdict Over Time */}
           {stats.verdictTimeData && stats.verdictTimeData.length > 1 && (
             <ChartCard
               title="Verdicts over time"
