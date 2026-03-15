@@ -1,18 +1,19 @@
 /**
  * Music Setup Script
  *
- * Uploads MP3 files from scripts/music/ to Supabase Storage (public bucket),
- * then auto-generates apps/web/src/lib/data/tracks.js with track metadata.
+ * Uploads MP3 files from scripts/music/{vibe}/ subfolders to Supabase Storage
+ * (public bucket), then auto-generates apps/web/src/lib/data/tracks.js with
+ * vibe-based track metadata.
  *
  * Usage:
- *   1. Place CC0/royalty-free MP3s in scripts/music/
+ *   1. Place CC0/royalty-free MP3s in scripts/music/{ideate,build,create,study}/
  *   2. Run: npm run setup:music
  *
  * Reads SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY from apps/web/.env
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'fs';
 import { join, basename, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -50,10 +51,18 @@ const BUCKET = 'music';
 const MUSIC_DIR = join(__dirname, 'music');
 const TRACKS_OUTPUT = join(__dirname, '..', 'apps', 'web', 'src', 'lib', 'data', 'tracks.js');
 
+const VIBE_CONFIG = [
+  { id: 'ideate', name: 'Ideate', description: 'Brainstorm mode. Upbeat beats to spark ideas.', icon: 'Lightbulb' },
+  { id: 'build', name: 'Build', description: 'Flow state. Driving rhythms for deep work.', icon: 'Hammer' },
+  { id: 'create', name: 'Create', description: 'Cozy vibes. Warm beats for writing and creating.', icon: 'PenLine' },
+  { id: 'study', name: 'Study', description: 'Focus mode. Calm sounds for reading and learning.', icon: 'BookOpen' },
+];
+
+const MAX_TOTAL_SIZE_MB = 500;
+
 /**
- * Parse a filename like "01-chill-lofi-beats-artist-name.mp3" into title + artist
+ * Parse a filename like "01-chill-lofi-beats--artist-name.mp3" into title + artist
  * Convention: number-title-words--artist-words.mp3 (double dash separates artist)
- * Fallback: everything is the title, artist is "Unknown"
  */
 function toTitleCase(str) {
   const minor = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'for', 'in', 'on', 'at', 'to', 'by', 'of', 'with']);
@@ -89,22 +98,64 @@ async function main() {
   // Check music directory exists
   if (!existsSync(MUSIC_DIR)) {
     console.error(`No scripts/music/ directory found.`);
-    console.error(`Create it and add CC0/royalty-free MP3 files:`);
-    console.error(`  mkdir -p scripts/music`);
+    console.error(`Create it with vibe subfolders and add CC0/royalty-free MP3 files:`);
+    console.error(`  mkdir -p scripts/music/{ideate,build,create,study}`);
     console.error(`  # Add MP3 files named like: 01-track-title--artist-name.mp3`);
     process.exit(1);
   }
 
-  const files = readdirSync(MUSIC_DIR)
-    .filter(f => f.endsWith('.mp3'))
-    .sort();
+  // Detect mode: subfolder-based (new) or flat (legacy)
+  const hasSubfolders = VIBE_CONFIG.some(v => {
+    const dir = join(MUSIC_DIR, v.id);
+    return existsSync(dir) && statSync(dir).isDirectory();
+  });
 
-  if (files.length === 0) {
-    console.error('No MP3 files found in scripts/music/');
+  if (!hasSubfolders) {
+    // Legacy flat mode: check for MP3s directly in music/
+    const flatFiles = readdirSync(MUSIC_DIR).filter(f => f.endsWith('.mp3'));
+    if (flatFiles.length > 0) {
+      console.error('Found MP3 files in scripts/music/ but no vibe subfolders.');
+      console.error('Move tracks into subfolders: scripts/music/{ideate,build,create,study}/');
+      console.error('Example: mv scripts/music/01-track.mp3 scripts/music/build/01-track.mp3');
+      process.exit(1);
+    }
+    console.error('No vibe subfolders found in scripts/music/.');
+    console.error('Create them: mkdir -p scripts/music/{ideate,build,create,study}');
     process.exit(1);
   }
 
-  console.log(`Found ${files.length} tracks in scripts/music/`);
+  // Calculate total size before uploading
+  let totalBytes = 0;
+  const vibeFiles = {};
+
+  for (const vibe of VIBE_CONFIG) {
+    const vibeDir = join(MUSIC_DIR, vibe.id);
+    if (!existsSync(vibeDir)) {
+      vibeFiles[vibe.id] = [];
+      continue;
+    }
+    const files = readdirSync(vibeDir).filter(f => f.endsWith('.mp3')).sort();
+    vibeFiles[vibe.id] = files;
+    for (const file of files) {
+      totalBytes += statSync(join(vibeDir, file)).size;
+    }
+  }
+
+  const totalMB = totalBytes / (1024 * 1024);
+  console.log(`Total size: ${totalMB.toFixed(1)}MB`);
+
+  if (totalMB > MAX_TOTAL_SIZE_MB) {
+    console.error(`Total size ${totalMB.toFixed(1)}MB exceeds ${MAX_TOTAL_SIZE_MB}MB limit.`);
+    process.exit(1);
+  }
+
+  const totalTracks = Object.values(vibeFiles).reduce((sum, files) => sum + files.length, 0);
+  if (totalTracks === 0) {
+    console.error('No MP3 files found in any vibe subfolder.');
+    process.exit(1);
+  }
+
+  console.log(`Found ${totalTracks} tracks across ${VIBE_CONFIG.length} vibes`);
 
   // Create bucket (ignore error if exists)
   const { error: bucketError } = await supabase.storage.createBucket(BUCKET, {
@@ -118,59 +169,107 @@ async function main() {
   }
   console.log(`Bucket "${BUCKET}" ready`);
 
-  const tracks = [];
+  // Clean up old flat-structure files (files at root, not in subfolders)
+  console.log('\nCleaning up old flat-structure files...');
+  const { data: existingFiles } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
+  if (existingFiles) {
+    const rootFiles = existingFiles.filter(f => f.name?.endsWith('.mp3'));
+    if (rootFiles.length > 0) {
+      const filesToDelete = rootFiles.map(f => f.name);
+      const { error: deleteError } = await supabase.storage.from(BUCKET).remove(filesToDelete);
+      if (deleteError) {
+        console.warn(`  Warning: could not delete old files: ${deleteError.message}`);
+      } else {
+        console.log(`  Removed ${filesToDelete.length} old flat-structure files`);
+      }
+    } else {
+      console.log('  No old files to clean up');
+    }
+  }
 
-  for (const file of files) {
-    const filePath = join(MUSIC_DIR, file);
-    const fileBuffer = readFileSync(filePath);
-    const { title, artist } = parseFilename(file);
+  const vibesData = [];
 
-    console.log(`  Uploading: ${file} (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB)`);
-
-    // Upload (upsert to handle re-runs)
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET)
-      .upload(file, fileBuffer, {
-        contentType: 'audio/mpeg',
-        upsert: true,
-      });
-
-    if (uploadError) {
-      console.error(`  Failed to upload ${file}:`, uploadError.message);
+  for (const vibe of VIBE_CONFIG) {
+    const files = vibeFiles[vibe.id];
+    if (files.length === 0) {
+      console.log(`\n[${vibe.name}] No tracks found, skipping`);
       continue;
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(file);
-    const publicUrl = urlData.publicUrl;
+    console.log(`\n[${vibe.name}] Uploading ${files.length} tracks...`);
+    const vibeTracks = [];
 
-    tracks.push({
-      id: file.replace('.mp3', ''),
-      title,
-      artist,
-      src: publicUrl,
-    });
+    for (const file of files) {
+      const filePath = join(MUSIC_DIR, vibe.id, file);
+      const fileBuffer = readFileSync(filePath);
+      const { title, artist } = parseFilename(file);
+      const storagePath = `${vibe.id}/${file}`;
+
+      console.log(`  Uploading: ${storagePath} (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB)`);
+
+      // Upload (upsert to handle re-runs)
+      const { error: uploadError } = await supabase.storage
+        .from(BUCKET)
+        .upload(storagePath, fileBuffer, {
+          contentType: 'audio/mpeg',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error(`  Failed to upload ${storagePath}:`, uploadError.message);
+        continue;
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
+      const publicUrl = urlData.publicUrl;
+
+      vibeTracks.push({
+        id: `${vibe.id}-${file.replace('.mp3', '')}`,
+        title,
+        artist,
+        src: publicUrl,
+      });
+    }
+
+    if (vibeTracks.length > 0) {
+      vibesData.push({
+        id: vibe.id,
+        name: vibe.name,
+        description: vibe.description,
+        icon: vibe.icon,
+        tracks: vibeTracks,
+      });
+    }
   }
 
-  if (tracks.length === 0) {
-    console.error('No tracks were uploaded successfully.');
+  if (vibesData.length === 0) {
+    console.error('\nNo tracks were uploaded successfully.');
     process.exit(1);
   }
 
   // Generate tracks.js
+  const totalUploaded = vibesData.reduce((sum, v) => sum + v.tracks.length, 0);
   const tracksContent = `/**
  * Track data for the Vibe Coding music player.
  * Auto-generated by scripts/setup-music.mjs
- * ${tracks.length} tracks from Supabase Storage (public bucket)
+ *
+ * ${vibesData.length} vibe modes, ${totalUploaded} tracks total.
+ * All tracks are CC0/royalty-free (no attribution required).
  */
 
-export const tracks = ${JSON.stringify(tracks, null, 2)};
+export const vibes = ${JSON.stringify(vibesData, null, 2)};
 
+// Backward compat: flat array of all tracks
+export const tracks = vibes.flatMap(v => v.tracks);
 export const TRACK_COUNT = tracks.length;
+export const VIBE_COUNT = vibes.length;
 `;
 
   writeFileSync(TRACKS_OUTPUT, tracksContent, 'utf-8');
-  console.log(`\nGenerated ${TRACKS_OUTPUT} with ${tracks.length} tracks`);
+  console.log(`\nGenerated ${TRACKS_OUTPUT}`);
+  console.log(`  ${vibesData.length} vibes, ${totalUploaded} tracks total`);
+  console.log(`  Total size: ${totalMB.toFixed(1)}MB`);
   console.log('Done! Run npm run dev to test the player.');
 }
 

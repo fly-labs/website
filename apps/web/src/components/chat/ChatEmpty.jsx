@@ -10,13 +10,13 @@ const SUGGESTED_PROMPTS = [
   'What are the highest-scoring ideas right now?',
   'Which industries are trending this week?',
   'Am I falling for sunk cost on this project?',
-  'Play some lofi and let\'s build.',
+  'Set the vibe and let\'s build.',
 ];
 
 const COMPACT_PROMPTS = [
   'Score my business idea',
   'Show me BUILD ideas from Reddit',
-  'Play some lofi',
+  'Set the vibe',
 ];
 
 export function ChatEmpty({ onPromptClick, compact = false }) {

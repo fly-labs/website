@@ -225,7 +225,7 @@ const AboutPage = () => {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground">Focus Music</p>
-                      <p className="text-xs text-muted-foreground leading-snug mt-0.5">About an hour of curated lofi beats, free. FlyBot controls it: "play something while I work."</p>
+                      <p className="text-xs text-muted-foreground leading-snug mt-0.5">Four mood playlists. Pick your vibe: brainstorm, build, write, or study. Over ninety minutes of curated lofi, free.</p>
                     </div>
                   </div>
                 </div>
@@ -386,7 +386,7 @@ const AboutPage = () => {
                 { value: PROMPT_COUNT, label: 'AI prompts', icon: Sparkles, color: 'text-accent' },
                 { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', icon: Brain, color: 'text-primary' },
                 { value: CATEGORY_COUNT, label: 'Prompt categories', icon: Terminal, color: 'text-secondary' },
-                { value: TRACK_COUNT, label: 'Focus tracks', icon: Music, color: 'text-accent' },
+                { value: TRACK_COUNT, label: 'Lofi tracks', icon: Music, color: 'text-accent' },
               ].map((stat) => (
                 <motion.div key={stat.label} {...staggerItem} className="glass-card p-4 text-center">
                   <stat.icon className={`w-4 h-4 ${stat.color} mx-auto mb-2`} />

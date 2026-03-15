@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { tracks } from '@/lib/data/tracks.js';
+import { vibes, tracks } from '@/lib/data/tracks.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 const MusicContext = createContext(null);
@@ -19,9 +19,20 @@ function generateShuffleOrder(length) {
   return order;
 }
 
+function getInitialVibe() {
+  if (typeof window === 'undefined') return vibes[0];
+  const savedId = localStorage.getItem('flylab-music-vibe');
+  if (savedId) {
+    const found = vibes.find(v => v.id === savedId);
+    if (found) return found;
+  }
+  return vibes[0];
+}
+
 export function MusicProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [currentVibe, setCurrentVibeState] = useState(getInitialVibe);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [volume, setVolumeState] = useState(() => {
     if (typeof window === 'undefined') return 0.5;
@@ -32,7 +43,7 @@ export function MusicProvider({ children }) {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isShuffle] = useState(true);
-  const [shuffleOrder] = useState(() => generateShuffleOrder(tracks.length));
+  const [shuffleOrder, setShuffleOrder] = useState(() => generateShuffleOrder(currentVibe.tracks.length));
   const [pendingPlay, setPendingPlay] = useState(false);
   const [trackTransition, setTrackTransition] = useState(false);
 
@@ -54,39 +65,78 @@ export function MusicProvider({ children }) {
   // Keep ref in sync for use in non-reactive callbacks
   isPlayingRef.current = isPlaying;
 
+  // Active tracks from current vibe
+  const vibeTracks = currentVibe.tracks;
+  const vibeTrackCount = vibeTracks.length;
+
   // Resolve the actual track index through shuffle mapping
   const getActualIndex = useCallback((idx) => {
     if (isShuffle && shuffleOrder.length > 0) {
       return shuffleOrder[idx % shuffleOrder.length];
     }
-    return idx % tracks.length;
-  }, [isShuffle, shuffleOrder]);
+    return idx % vibeTrackCount;
+  }, [isShuffle, shuffleOrder, vibeTrackCount]);
 
-  const currentTrack = tracks.length > 0 ? tracks[getActualIndex(currentTrackIndex)] : null;
+  const currentTrack = vibeTrackCount > 0 ? vibeTracks[getActualIndex(currentTrackIndex)] : null;
 
   // Load a track into the audio element by playlist index
   const loadTrack = useCallback((index) => {
     const audio = audioRef.current;
-    if (!audio || tracks.length === 0) return;
+    if (!audio || vibeTrackCount === 0) return;
     const actualIdx = isShuffle && shuffleOrder.length > 0
       ? shuffleOrder[index % shuffleOrder.length]
-      : index % tracks.length;
-    const track = tracks[actualIdx];
+      : index % vibeTrackCount;
+    const track = vibeTracks[actualIdx];
     if (!track) return;
     audio.src = track.src;
     audio.load();
-  }, [isShuffle, shuffleOrder]);
+  }, [isShuffle, shuffleOrder, vibeTracks, vibeTrackCount]);
 
-  // Advance to next track (stable ref to avoid stale closures)
+  // Advance to next track (loop within current vibe)
   const advanceTrack = useCallback(() => {
     setTrackTransition(true);
     setTimeout(() => setTrackTransition(false), 300);
 
     setCurrentTrackIndex(prevIdx => {
-      const nextIdx = (prevIdx + 1) % tracks.length;
+      const nextIdx = (prevIdx + 1) % vibeTrackCount;
       return nextIdx;
     });
-  }, []);
+  }, [vibeTrackCount]);
+
+  // Switch vibe
+  const setVibe = useCallback((vibeId) => {
+    const vibe = vibes.find(v => v.id === vibeId);
+    if (!vibe) return;
+
+    setCurrentVibeState(vibe);
+    localStorage.setItem('flylab-music-vibe', vibeId);
+
+    // Reset track index and generate new shuffle order for the new vibe
+    setCurrentTrackIndex(0);
+    setShuffleOrder(generateShuffleOrder(vibe.tracks.length));
+
+    // Load first track of new vibe
+    const audio = audioRef.current;
+    if (audio && vibe.tracks.length > 0) {
+      const newShuffleOrder = generateShuffleOrder(vibe.tracks.length);
+      setShuffleOrder(newShuffleOrder);
+      const firstTrack = vibe.tracks[isShuffle ? newShuffleOrder[0] : 0];
+      if (firstTrack) {
+        audio.src = firstTrack.src;
+        audio.load();
+
+        if (isPlayingRef.current) {
+          const onCanPlay = () => {
+            audio.play().catch(() => {});
+            audio.removeEventListener('canplay', onCanPlay);
+          };
+          audio.addEventListener('canplay', onCanPlay);
+        }
+      }
+    }
+
+    trackEvent('music_vibe_changed', { vibe: vibeId });
+  }, [isShuffle]);
 
   // Load + autoplay when currentTrackIndex changes (driven by state, not side effects in updaters)
   const prevTrackIndexRef = useRef(currentTrackIndex);
@@ -108,7 +158,7 @@ export function MusicProvider({ children }) {
 
   // Initialize Audio element once
   useEffect(() => {
-    if (tracks.length === 0) return;
+    if (vibeTrackCount === 0) return;
     const audio = new Audio();
     audio.preload = 'metadata';
     audio.volume = volume;
@@ -125,8 +175,8 @@ export function MusicProvider({ children }) {
     const onError = () => {
       const idx = isShuffle && shuffleOrder.length > 0
         ? shuffleOrder[currentTrackIndex % shuffleOrder.length]
-        : currentTrackIndex % tracks.length;
-      const failedTrack = tracks[idx];
+        : currentTrackIndex % vibeTrackCount;
+      const failedTrack = vibeTracks[idx];
       if (failedTrack) {
         setTrackError(failedTrack.title);
         setTimeout(() => setTrackError(null), 3000);
@@ -170,7 +220,7 @@ export function MusicProvider({ children }) {
 
   const play = useCallback(async () => {
     const audio = audioRef.current;
-    if (!audio || tracks.length === 0) return;
+    if (!audio || vibeTrackCount === 0) return;
 
     // Load track if not loaded yet
     if (!audio.src || audio.src === window.location.href) {
@@ -188,11 +238,12 @@ export function MusicProvider({ children }) {
       await audio.play();
       setIsPlaying(true);
       setPendingPlay(false);
-      const track = tracks[getActualIndex(currentTrackIndex)];
+      const track = vibeTracks[getActualIndex(currentTrackIndex)];
       if (track) {
         trackEvent('music_track_played', {
           track_title: track.title,
           track_artist: track.artist,
+          vibe: currentVibe.id,
           source: playSourceRef.current,
         });
       }
@@ -202,7 +253,7 @@ export function MusicProvider({ children }) {
         setIsPanelOpen(true);
       }
     }
-  }, [currentTrackIndex, loadTrack, initAudioContext, getActualIndex]);
+  }, [currentTrackIndex, loadTrack, initAudioContext, getActualIndex, vibeTracks, vibeTrackCount, currentVibe.id]);
 
   const pause = useCallback(() => {
     audioRef.current?.pause();
@@ -239,8 +290,8 @@ export function MusicProvider({ children }) {
     }
     setTrackTransition(true);
     setTimeout(() => setTrackTransition(false), 300);
-    setCurrentTrackIndex(idx => (idx === 0 ? tracks.length - 1 : idx - 1));
-  }, [currentTrack]);
+    setCurrentTrackIndex(idx => (idx === 0 ? vibeTrackCount - 1 : idx - 1));
+  }, [currentTrack, vibeTrackCount]);
 
   const setVolume = useCallback((v) => {
     const clamped = Math.max(0, Math.min(1, v));
@@ -259,8 +310,17 @@ export function MusicProvider({ children }) {
   const closePanel = useCallback(() => setIsPanelOpen(false), []);
   const togglePanel = useCallback(() => setIsPanelOpen(p => !p), []);
 
-  const playFromFlyBot = useCallback(() => {
+  const playFromFlyBot = useCallback((vibeId) => {
     playSourceRef.current = 'flybot';
+    if (vibeId) {
+      const vibe = vibes.find(v => v.id === vibeId);
+      if (vibe) {
+        setCurrentVibeState(vibe);
+        localStorage.setItem('flylab-music-vibe', vibeId);
+        setCurrentTrackIndex(0);
+        setShuffleOrder(generateShuffleOrder(vibe.tracks.length));
+      }
+    }
     setIsPanelOpen(true);
     play();
   }, [play]);
@@ -269,7 +329,8 @@ export function MusicProvider({ children }) {
   useEffect(() => {
     const handler = (e) => {
       const action = e.detail?.action;
-      if (action === 'play') playFromFlyBot();
+      const vibe = e.detail?.vibe;
+      if (action === 'play') playFromFlyBot(vibe);
       else if (action === 'pause') pause();
       else if (action === 'open') openPanel();
     };
@@ -284,20 +345,22 @@ export function MusicProvider({ children }) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: currentTrack.title,
       artist: currentTrack.artist,
-      album: 'Fly Labs Vibe Coding',
+      album: `Fly Labs — ${currentVibe.name}`,
     });
 
     navigator.mediaSession.setActionHandler('play', play);
     navigator.mediaSession.setActionHandler('pause', pause);
     navigator.mediaSession.setActionHandler('nexttrack', next);
     navigator.mediaSession.setActionHandler('previoustrack', prev);
-  }, [currentTrack, play, pause, next, prev]);
+  }, [currentTrack, currentVibe.name, play, pause, next, prev]);
 
   const value = useMemo(() => ({
     isPlaying,
     isPanelOpen,
     currentTrackIndex,
     currentTrack,
+    currentVibe,
+    vibes,
     volume,
     progress,
     duration,
@@ -308,8 +371,9 @@ export function MusicProvider({ children }) {
     trackError,
     isIOSDevice,
     analyserRef,
-    hasTracks: tracks.length > 0,
-    trackCount: tracks.length,
+    hasTracks: vibeTrackCount > 0,
+    trackCount: vibeTrackCount,
+    totalTrackCount: tracks.length,
     play,
     pause,
     togglePlay,
@@ -317,15 +381,16 @@ export function MusicProvider({ children }) {
     prev,
     setVolume,
     seekTo,
+    setVibe,
     openPanel,
     closePanel,
     togglePanel,
     playFromFlyBot,
   }), [
-    isPlaying, isPanelOpen, currentTrackIndex, currentTrack, volume,
-    progress, duration, currentTime, isShuffle, pendingPlay, trackTransition,
-    trackError, isIOSDevice,
-    play, pause, togglePlay, next, prev, setVolume, seekTo,
+    isPlaying, isPanelOpen, currentTrackIndex, currentTrack, currentVibe,
+    volume, progress, duration, currentTime, isShuffle, pendingPlay, trackTransition,
+    trackError, isIOSDevice, vibeTrackCount,
+    play, pause, togglePlay, next, prev, setVolume, seekTo, setVibe,
     openPanel, closePanel, togglePanel, playFromFlyBot,
   ]);
 

@@ -1,8 +1,15 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Volume1, X } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Volume1, X, Lightbulb, Hammer, PenLine, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { useMusic } from '@/contexts/MusicContext.jsx';
+
+const VIBE_ICONS = {
+  Lightbulb,
+  Hammer,
+  PenLine,
+  BookOpen,
+};
 
 function formatTime(seconds, showDash = false) {
   if (!seconds || !isFinite(seconds)) return showDash ? '--:--' : '0:00';
@@ -254,10 +261,41 @@ function ProgressBar({ progress, duration, currentTime, onSeek }) {
   );
 }
 
+// Vibe selector pills
+function VibeSelector({ vibes, currentVibe, onSelect }) {
+  return (
+    <div className="grid grid-cols-4 gap-1.5 mb-3">
+      {vibes.map((vibe) => {
+        const Icon = VIBE_ICONS[vibe.icon] || Lightbulb;
+        const isActive = vibe.id === currentVibe.id;
+        return (
+          <button
+            key={vibe.id}
+            onClick={() => onSelect(vibe.id)}
+            className={cn(
+              'flex flex-col items-center gap-1 py-2 px-1 rounded-xl text-[10px] font-medium transition-colors',
+              isActive
+                ? 'bg-accent/15 text-accent border border-accent/30'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-transparent'
+            )}
+            aria-label={`${vibe.name} mode`}
+            title={vibe.description}
+          >
+            <Icon className="w-3.5 h-3.5" />
+            <span>{vibe.name}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MusicPanel({ isOpen, onClose }) {
   const {
     isPlaying,
     currentTrack,
+    currentVibe,
+    vibes,
     volume,
     progress,
     duration,
@@ -274,6 +312,7 @@ export function MusicPanel({ isOpen, onClose }) {
     prev,
     setVolume,
     seekTo,
+    setVibe,
   } = useMusic();
 
   const panelRef = useRef(null);
@@ -359,6 +398,9 @@ export function MusicPanel({ isOpen, onClose }) {
               <X className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Vibe Selector */}
+          <VibeSelector vibes={vibes} currentVibe={currentVibe} onSelect={setVibe} />
 
           {!currentTrack ? (
             <p className="text-xs text-muted-foreground text-center py-4">
@@ -504,7 +546,7 @@ export function MusicPanel({ isOpen, onClose }) {
                   {currentTrackIndex + 1} / {trackCount}
                 </span>
                 <span className="text-[10px] text-muted-foreground/50">
-                  lofi beats
+                  {currentVibe.name} mode
                 </span>
               </div>
             </>
