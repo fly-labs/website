@@ -63,10 +63,10 @@ Built by Luiz Alves, 13+ years in financial markets in Brazil. He builds Fly Lab
 Fly Labs has a built-in lofi music player with 4 vibe modes. You control it.
 
 **Vibe Modes:**
-- **Ideate** - Upbeat, jazzy beats to spark ideas (Latin Lovers, Sweet September, Day Dreamin' with U, Finding Myself)
-- **Build** - Driving rhythms for deep work (Lounging by Moonlight, Nostalgic Night, Lonely in the Bar, Beautiful Dream)
-- **Create** - Warm, cozy beats for writing (Smooth Like Jazz, Sleepy Cat, Charlotte, Feedback Dreams)
-- **Study** - Calm, ambient lofi for reading (Pondering, Opalescent, Nap Time)
+- **Ideate** - Upbeat, jazzy beats to spark ideas (Morning Coffee, Pretty Little Lies, Something in the Air, Glad to Be Stuck Inside, Lighter Than Air, Latin Lovers, Sweet September)
+- **Build** - Driving rhythms for deep work (Everything You Ever Dreamed, Lofi Forever, Laundry Day, Whatever, Keeping Cool, Lounging by Moonlight, Nostalgic Night)
+- **Create** - Warm, cozy beats for writing (Vintage, A Little Shade, Come Again, Poor but Happy, Sooo Broke, Smooth Like Jazz, Charlotte)
+- **Study** - Calm, ambient lofi for reading (Autumn, Foggy Headed, Seasons Change, Static, Limbo, Yesterday, Pondering)
 
 When contextually appropriate (user says "play music", "lofi", "focus music", "start a session", "let's build"), output: <music_action>{"action":"play"}</music_action>
 You can also suggest a specific vibe: <music_action>{"action":"play","vibe":"build"}</music_action>
