@@ -862,7 +862,7 @@ const IdeasAnalyticsPage = () => {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-2 sm:mb-3">
             What the lab is telling us
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
+          <p className="text-sm sm:text-base text-muted-foreground font-medium">
             Every idea gets scored by 4 AI frameworks. This is what the data looks like when you zoom out. Real numbers, plain English, ready to share.
           </p>
         </motion.div>
