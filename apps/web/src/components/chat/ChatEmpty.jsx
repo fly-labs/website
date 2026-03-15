@@ -55,7 +55,7 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
           </p>
           {!compact && (
             <p className="text-xs text-muted-foreground/40 mt-2 max-w-sm mx-auto">
-              Not a general assistant. I don't do life coaching, investment advice, or homework.
+              Not a general assistant. I don't do personal coaching, investment advice, or homework.
             </p>
           )}
         </motion.div>

@@ -113,7 +113,6 @@ export const projects = [
     type: 'AI',
     status: 'Beta',
     category: 'Tools',
-    isGated: true,
   },
   {
     title: 'Idea Lab',

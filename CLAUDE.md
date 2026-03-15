@@ -46,7 +46,7 @@ apps/web/
 │   │   ├── ThemeToggle.jsx   # Dark/light switch
 │   │   ├── GoogleIcon.jsx    # Shared Google "G" SVG
 │   │   ├── XIcon.jsx         # X/Twitter icon
-│   │   ├── GeometricBackground.jsx  # Hand-drawn doodle background (15 SVGs: flask, beaker, atom, plane, bulb, DNA, test tube, code brackets, rocket, bar chart, gear, terminal, dollar, brain, compass)
+│   │   ├── GeometricBackground.jsx  # Hand-drawn doodle background (7 SVGs: flask, beaker, atom, plane, bulb, DNA, test tube)
 │   │   ├── GridBackground.jsx       # Subtle 32px graph-paper grid
 │   │   ├── GitHubHeatmap.jsx        # GitHub contribution heatmap (compact + full)
 │   │   ├── SmileLogo.jsx     # Animated brand logo
@@ -94,7 +94,7 @@ apps/web/
 │   │   ├── chatApi.js       # FlyBot API client (streamChat SSE, listConversations, createConversation, deleteConversation, loadMessages, joinFlyBotWaitlist)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
-│       ├── HomePage.jsx          # Brand landing (hero, 5 live-stat pillars, how it works, newsletter preview, narrative closing)
+│       ├── HomePage.jsx          # Brand landing (hero, 6 live-stat pillars incl. FlyBot, how it works, newsletter preview, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
 │       ├── IdeaSubmissionPage.jsx # Idea Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
@@ -112,6 +112,7 @@ apps/web/
 │       ├── MicroSaasPage.jsx       # Public with waitlist capture
 │       ├── ScoringFrameworksPage.jsx # Public - Fly Labs Method + Hormozi + Dan Koe + Okamoto scoring + Validation Layer explained
 │       ├── LibraryPage.jsx         # Public - free ebooks with topic filter and waitlist
+│       ├── FlyBotLandingPage.jsx   # Public - FlyBot landing page (hero, capabilities, how it works, example eval, stats, transparency, CTA)
 │       ├── FlyBotPage.jsx         # Protected - FlyBot full-page chat (sidebar + chat area, URL param ?c=)
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
@@ -153,7 +154,8 @@ apps/web/
 | `/templates/website-blueprint` | WebsiteBlueprintPage | Public |
 | `/templates/launch-checklist` | LaunchChecklistPage | Public (coming soon) |
 | `/templates/one-page-business-plan` | OnePageBusinessPlanPage | Public (coming soon) |
-| `/flybot` | FlyBotPage | Protected (noindex) |
+| `/flybot` | FlyBotLandingPage | Public |
+| `/flybot/chat` | FlyBotPage | Protected (noindex) |
 | `/coach` | Redirects to `/flybot` | - |
 | `/profile` | ProfilePage | Protected |
 

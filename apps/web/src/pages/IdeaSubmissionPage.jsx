@@ -304,7 +304,7 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems from Reddit, Hacker News, GitHub Issues, ProblemHunt, Product Hunt, X, and the community. Scored by 4 AI frameworks (Fly Labs Method + Hormozi, Dan Koe, Okamoto) with per-pillar reasoning, synthesized into BUILD/VALIDATE/SKIP verdicts, and validated against real market conversations with competitive intelligence.",
+          description: "Real problems from 9 sources, scored by 4 AI frameworks with BUILD/VALIDATE/SKIP verdicts. Validated against real market conversations.",
           keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
@@ -331,7 +331,8 @@ const IdeaSubmissionPage = () => {
                 className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-colors"
               >
                 <Activity className="w-3.5 h-3.5" />
-                Live analytics: verdicts, sources, scoring patterns, industry trends
+                <span className="sm:hidden">Live analytics</span>
+                <span className="hidden sm:inline">Live analytics: verdicts, sources, scoring patterns, industry trends</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </motion.div>

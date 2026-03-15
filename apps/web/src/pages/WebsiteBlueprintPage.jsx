@@ -74,6 +74,15 @@ const platformSections = [
     color: 'border-secondary',
   },
   {
+    stage: 'Building',
+    title: 'FlyBot',
+    route: '/flybot',
+    desc: `AI-powered vibe building partner. Scores ideas with ${FRAMEWORK_COUNT} frameworks, helps write content, applies behavioral finance to building decisions. Claude-powered, 5 free messages during beta.`,
+    highlights: ['AI partner', `${FRAMEWORK_COUNT} frameworks`, 'Beta'],
+    icon: Brain,
+    color: 'border-accent',
+  },
+  {
     stage: 'Compounding',
     title: 'Library',
     route: '/library',

@@ -27,6 +27,7 @@ This platform changes every week. New prompts, new ideas scored, new tools shipp
   - Website Blueprint - full stack breakdown of how this site was built (live, open source)
   - Launch Checklist - 4-phase Notion template based on The $100 Startup (coming soon)
   - One-Page Business Plan - 5-question Notion template based on The $100 Startup (coming soon)
+- **FlyBot** - AI-powered vibe building partner. Score ideas with 4 frameworks, write content, think through building decisions. Claude-powered, 5 free messages during beta. Public landing page at `/flybot`, protected chat at `/flybot/chat`.
 - **Member Profiles** - Auth-gated profiles with name, location, bio, and avatar
 
 ## Tech Stack
@@ -155,7 +156,7 @@ apps/web/
 │   │   ├── githubApi.js      # GitHub contribution API (localStorage cache, 1h TTL)
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, cache, 1h TTL)
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
-│   └── pages/                # 21 route pages (all lazy-loaded via React.lazy)
+│   └── pages/                # 23 route pages (all lazy-loaded via React.lazy)
 ├── public/                   # Static assets (sitemap, robots.txt, images)
 ├── vite.config.js            # Port 3001, @ alias, vendor/motion/supabase/recharts chunking
 ├── tailwind.config.js        # Design tokens, dark mode: 'class'
@@ -185,6 +186,9 @@ apps/web/
 | `/templates/website-blueprint` | Website Blueprint | Public |
 | `/templates/launch-checklist` | Launch Checklist (Notion) | Public (coming soon) |
 | `/templates/one-page-business-plan` | One-Page Business Plan (Notion) | Public (coming soon) |
+| `/flybot` | FlyBot landing page (capabilities, example eval, stats) | Public |
+| `/flybot/chat` | FlyBot full-page chat (sidebar, conversations) | Members only |
+| `/coach` | Redirect to `/flybot` | - |
 | `/profile` | User Profile | Members only |
 
 ## Supabase Setup
@@ -232,7 +236,7 @@ Deployed automatically via Vercel on push to `main`.
 
 ## Design Philosophy
 
-Hand-drawn lab doodles are the brand identity. The `GeometricBackground` component renders 15 SVG doodles (flasks, beakers, atoms, rockets, code brackets, bar charts, gears, and more) with subtle float/drift/spin animations at near-invisible opacity. Every page inherits this through `PageLayout`.
+Hand-drawn lab doodles are the brand identity. The `GeometricBackground` component renders 7 SVG doodles (flasks, beakers, atoms, paper planes, light bulbs, DNA helixes, and test tubes) with subtle float/drift/spin animations at near-invisible opacity. Every page inherits this through `PageLayout`.
 
 - **No gradient text, no glow orbs, no AI-looking effects.** Solid colors only for emphasis (`text-primary`).
 - **Clean dark theme** with warm background (`hsl(220 15% 6%)`), green/cyan/violet accent palette.

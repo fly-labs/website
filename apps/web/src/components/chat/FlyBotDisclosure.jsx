@@ -77,7 +77,7 @@ export function FlyBotDisclosure({ compact = false }) {
           concepts to building decisions.
         </p>
         <p>
-          It cannot help with: life coaching, therapy, investment recommendations,
+          It cannot help with: personal coaching, therapy, investment recommendations,
           medical or legal advice, general knowledge, or code debugging. Scores
           and verdicts are AI opinions, not guarantees.
         </p>

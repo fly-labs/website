@@ -584,7 +584,7 @@ const IdeasAnalyticsPage = () => {
           <PaperPlaneDoodle className="absolute -top-2 right-0 sm:right-8 w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground/15 rotate-12 geo-float-1 hidden sm:block" />
           <FlaskDoodle className="absolute -top-4 right-24 sm:right-32 w-8 h-10 sm:w-10 sm:h-12 text-primary/15 -rotate-6 geo-float-2 hidden md:block" />
 
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
+          <div className="flex flex-wrap items-center gap-3 mb-3 sm:mb-4">
             <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-primary">
               Lab Report
             </p>

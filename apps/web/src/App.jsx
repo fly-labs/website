@@ -37,6 +37,7 @@ const MicroSaasPage = lazy(() => import('@/pages/MicroSaasPage.jsx'));
 const ProfilePage = lazy(() => import('@/pages/ProfilePage.jsx'));
 const ScoringFrameworksPage = lazy(() => import('@/pages/ScoringFrameworksPage.jsx'));
 const LibraryPage = lazy(() => import('@/pages/LibraryPage.jsx'));
+const FlyBotLandingPage = lazy(() => import('@/pages/FlyBotLandingPage.jsx'));
 const FlyBotPage = lazy(() => import('@/pages/FlyBotPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
@@ -81,7 +82,8 @@ const AnimatedRoutes = () => {
         <Route path="/templates/launch-checklist" element={<LaunchChecklistPage />} />
         <Route path="/templates/one-page-business-plan" element={<OnePageBusinessPlanPage />} />
         <Route path="/microsaas" element={<MicroSaasPage />} />
-        <Route path="/flybot" element={<ProtectedRoute><FlyBotPage /></ProtectedRoute>} />
+        <Route path="/flybot" element={<FlyBotLandingPage />} />
+        <Route path="/flybot/chat" element={<ProtectedRoute><FlyBotPage /></ProtectedRoute>} />
         <Route path="/coach" element={<Navigate to="/flybot" replace />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 

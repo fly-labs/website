@@ -12,8 +12,8 @@ export function FlyBotWidget() {
   const { isWidgetOpen, toggleWidget, closeWidget, limitReached } = useChatContext();
   const [hasEverOpened, setHasEverOpened] = useState(false);
 
-  // Hide on the full-page FlyBot route
-  if (location.pathname === '/flybot') return null;
+  // Hide on the full-page FlyBot chat route
+  if (location.pathname === '/flybot/chat') return null;
 
   const handleToggle = () => {
     if (!hasEverOpened) setHasEverOpened(true);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap, Heart, MessageCircle, Repeat2, Clock } from 'lucide-react';
+import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap, Heart, MessageCircle, Repeat2, Clock, Bot } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -61,6 +61,15 @@ const pillars = [
     link: '/library',
     stat: availableBookCount > 0 ? `${availableBookCount} ebook${availableBookCount > 1 ? 's' : ''}` : 'Coming soon',
   },
+  {
+    title: 'FlyBot',
+    icon: Bot,
+    description: 'Your vibe building partner. Score ideas, write content, think through decisions. A real conversation, not a chatbot.',
+    color: 'text-accent',
+    bgColor: 'bg-accent/10',
+    link: '/flybot',
+    stat: 'Beta',
+  },
 ];
 
 const AnimatedNumber = ({ value, suffix = '' }) => {
@@ -110,7 +119,7 @@ const HomePage = () => {
     <PageLayout
       seo={{
         title: "Fly Labs | The Vibe Building Hub",
-        description: "Tools, templates, and ideas for one-person builders. AI-scored idea pipeline, prompt library, and open source templates. Built by one person with AI.",
+        description: "Tools, templates, and ideas for one-person builders. AI-scored idea pipeline, prompt library, open source templates. Built by one person with AI.",
         keywords: "vibe building, AI tools, idea validation, one person business, open source, indie maker, prompt library, build in public",
         url: "https://flylabs.fun",
       }}

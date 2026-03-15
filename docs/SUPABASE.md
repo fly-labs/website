@@ -23,6 +23,9 @@ Or apply manually in the [Supabase SQL Editor](https://supabase.com/dashboard/pr
 | `prompt_votes` | Upvotes on prompts (one per user per prompt) |
 | `prompt_comments` | Comments on prompts |
 | `waitlist` | Email capture for micro tools, library, and other features |
+| `conversations` | FlyBot chat conversations (soft delete) |
+| `messages` | FlyBot chat messages (user + assistant) |
+| `flybot_waitlist` | FlyBot beta waitlist (email capture after message limit) |
 
 ## Table Details
 
@@ -157,6 +160,41 @@ Email capture for various features (micro tools, library ebooks, future products
 | `source` | text | Feature identifier (e.g. `microsaas`, `library-ai-builders-toolkit`) |
 | `created_at` | timestamptz | Signup timestamp |
 
+### conversations
+
+FlyBot chat conversations. Soft delete via `deleted_at` column.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `user_id` | uuid | References `auth.users(id)` |
+| `title` | text | Auto-generated from first message |
+| `deleted_at` | timestamptz | Soft delete timestamp |
+| `created_at` | timestamptz | Conversation start time |
+
+### messages
+
+FlyBot chat messages (user and assistant roles).
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `conversation_id` | uuid | References `conversations(id)` |
+| `role` | text | 'user' or 'assistant' |
+| `content` | text | Message body |
+| `created_at` | timestamptz | Message timestamp |
+
+### flybot_waitlist
+
+Email capture for users who hit the FlyBot message limit during beta.
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid | PK |
+| `email` | text | User email |
+| `message_count` | integer | Messages sent before hitting limit |
+| `created_at` | timestamptz | Signup timestamp |
+
 ## RPCs
 
 | Function | Purpose | Auth |
@@ -167,6 +205,7 @@ Email capture for various features (micro tools, library ebooks, future products
 | `get_waitlist_count(p_source text)` | Returns subscriber count for a source (no email exposure) | Public |
 | `check_idea_rate_limit(p_email text)` | Returns count of submissions by this email in last 24h | Public |
 | `log_idea_submission(p_email text)` | Logs a submission for rate limiting. Includes honeypot defense | Public |
+| `get_user_message_count(p_user_id uuid)` | Returns FlyBot message count for a user | Authenticated |
 
 ## RLS Policies
 
@@ -188,6 +227,12 @@ All tables have RLS enabled.
 | `prompt_comments` | Delete own | Authenticated | `auth.uid() = user_id` |
 | `waitlist` | Insert | Anyone | All columns |
 | `waitlist` | No select | N/A | Use `get_waitlist_count` RPC for counts |
+| `conversations` | Select own | Authenticated | `auth.uid() = user_id AND deleted_at IS NULL` |
+| `conversations` | Insert own | Authenticated | `auth.uid() = user_id` |
+| `conversations` | Update own | Authenticated | `auth.uid() = user_id` |
+| `messages` | Select via conv | Authenticated | User owns the conversation |
+| `messages` | Insert via conv | Authenticated | User owns the conversation |
+| `flybot_waitlist` | Insert | Anyone | All columns |
 
 ## Scoring System
 

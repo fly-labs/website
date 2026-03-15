@@ -65,6 +65,8 @@ export const SEO = ({
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@alvesluizc" />
+      <meta name="twitter:creator" content="@alvesluizc" />
       <meta name="twitter:url" content={url} />
       <meta name="twitter:title" content={siteTitle} />
       <meta name="twitter:description" content={description} />

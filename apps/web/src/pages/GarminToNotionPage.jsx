@@ -15,6 +15,7 @@ const GarminToNotionPage = () => {
         description: "Automatically sync your Garmin health and fitness data to Notion. Free, open source automation. Track workouts, sleep, and activity in your Notion dashboard.",
         keywords: "Garmin Notion sync, Garmin automation, fitness tracking, Notion integration, health data, workout tracker",
         url: "https://flylabs.fun/templates/garmin-to-notion",
+        noindex: true,
         schema: [
           {
             "@context": "https://schema.org",

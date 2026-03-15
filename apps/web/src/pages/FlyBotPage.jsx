@@ -85,7 +85,7 @@ export default function FlyBotPage() {
     <>
       <SEO
         title="FlyBot - Your Vibe Building Partner | Fly Labs"
-        description="Your AI-powered vibe building partner. Idea scoring, content strategy, copywriting, marketing, and the finance brain. Built by Fly Labs."
+        description="Your AI-powered vibe building partner. Score ideas, write content, think through decisions. Built by Fly Labs."
         noindex
       />
 
@@ -113,7 +113,7 @@ export default function FlyBotPage() {
             <div className="sm:hidden flex items-center gap-3 px-4 py-3 border-b bg-card/50 backdrop-blur-sm">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="p-2 -ml-1 rounded-lg hover:bg-muted/50 transition-colors"
+                className="p-3 -ml-1 rounded-lg hover:bg-muted/50 transition-colors"
                 aria-label="Open sidebar"
               >
                 <Menu className="w-5 h-5" />

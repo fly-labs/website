@@ -65,6 +65,7 @@ const SignupPage = () => {
         description: "Create a free Fly Labs account to unlock the full AI prompt library, Notion templates, and micro tools. Sign up with email or Google in seconds.",
         keywords: "sign up, create account, free account, fly labs, join community",
         url: "https://flylabs.fun/signup",
+        noindex: true,
       }}
       className="flex items-center justify-center pt-24 pb-12 px-6"
     >

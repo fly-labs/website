@@ -99,7 +99,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
   const handleExpand = useCallback(() => {
     onClose();
     const params = activeConversationId ? `?c=${activeConversationId}` : '';
-    navigate(`/flybot${params}`);
+    navigate(`/flybot/chat${params}`);
   }, [onClose, navigate, activeConversationId]);
 
   const hasMessages = messages.length > 0;
