@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare, Megaphone } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -188,6 +188,16 @@ const InsightCard = ({ icon: Icon, color, text, link }) => (
         </Link>
       )}
     </div>
+  </motion.div>
+);
+
+// ── Content Hook card ──
+const ContentHookCard = ({ hook }) => (
+  <motion.div
+    {...staggerItem}
+    className="glass-card p-3 sm:p-4 border border-accent/20 bg-accent/5 rounded-xl"
+  >
+    <p className="text-sm font-medium text-foreground leading-snug">"{hook}"</p>
   </motion.div>
 );
 
@@ -623,66 +633,103 @@ const IdeasAnalyticsPage = () => {
     load();
   }, []);
 
-  // Generate insights: plain English, actionable, no jargon
+  // Generate content hooks: punchy one-liners ready for tweets, video titles, Note openers
+  const contentHooks = useMemo(() => {
+    if (!stats) return [];
+    const hooks = [];
+
+    // BUILD rate hook
+    if (stats.buildRate > 0 && stats.total > 0) {
+      hooks.push(`We scored ${stats.total.toLocaleString()} startup ideas with AI. Only ${stats.buildRate}% passed.`);
+    }
+
+    // Best source hook
+    if (stats.sourceQualityData?.length >= 2) {
+      const best = stats.sourceQualityData[0];
+      hooks.push(`${best.name} keeps surfacing the best raw problems. Average score: ${best.avg}/100.`);
+    }
+
+    // Top industry hook
+    if (stats.industryIntelData?.length > 0) {
+      const top = stats.industryIntelData[0];
+      hooks.push(`${top.name} is where the money problems live. ${top.buildRate}% BUILD rate, highest of any industry.`);
+    }
+
+    // Disagreement hook
+    if (stats.disagreements?.length > 0) {
+      const top = stats.disagreements[0];
+      hooks.push(`4 AI scoring frameworks looked at the same idea. One gave it ${top.highest[1]}. Another gave it ${top.lowest[1]}. Same idea.`);
+    }
+
+    // Volume hook
+    if (stats.pipelineThisWeek > 0 && stats.activeSources > 0) {
+      hooks.push(`${stats.pipelineThisWeek} new problems found this week from ${stats.activeSources} sources. The internet never stops complaining.`);
+    }
+
+    return hooks.slice(0, 4);
+  }, [stats]);
+
+  // Generate insights: bar talk, not data science. Each one should make you want to tweet it
   const insights = useMemo(() => {
     if (!stats) return [];
     const list = [];
 
-    // 1. Where to look: best source by quality
-    if (stats.sourceQualityData?.length >= 2) {
-      const best = stats.sourceQualityData[0];
-      const worst = stats.sourceQualityData[stats.sourceQualityData.length - 1];
+    // 1. The filter story
+    if (stats.buildRate >= 0 && stats.total > 0) {
+      const ratio = stats.withVerdict > 0 ? Math.round(stats.withVerdict / stats.buildCount) : 0;
       list.push({
         icon: Target,
         color: 'primary',
-        text: `If you're browsing for ideas, start with ${best.name}. Average score of ${best.avg}/100. ${worst.name} has the weakest ideas at ${worst.avg}.`,
+        text: ratio > 1
+          ? `Only 1 in ${ratio} ideas passes the BUILD test. ${stats.buildRate}% make it through. That's the filter doing its job.`
+          : `${stats.buildRate}% of ideas pass the BUILD test. The bar is where it should be.`,
       });
     }
 
-    // 2. Best industry to build in right now
+    // 2. Best source by quality
+    if (stats.sourceQualityData?.length >= 2) {
+      const best = stats.sourceQualityData[0];
+      const second = stats.sourceQualityData[1];
+      list.push({
+        icon: Target,
+        color: 'primary',
+        text: `${best.name} keeps surfacing the best raw problems. Average score ${best.avg}, highest of any source. ${second.name} is close behind at ${second.avg}.`,
+      });
+    }
+
+    // 3. Best industry right now
     if (stats.industryIntelData?.length > 0) {
       const top = stats.industryIntelData[0];
-      const second = stats.industryIntelData[1];
       list.push({
         icon: Lightbulb,
         color: 'primary',
-        text: `Best space to build in right now: ${top.name}. ${top.count} ideas, ${top.buildRate}% worth building.${second ? ` Runner-up: ${second.name}.` : ''}`,
+        text: `If you're looking for what to build, look at ${top.name}. ${top.count} ideas, ${top.buildRate}% worth building. That's the sweet spot.`,
       });
     }
 
-    // 3. Hidden gem: specific idea you should look at
+    // 4. Hidden gem callout
     if (stats.hiddenGems?.length > 0) {
       const gem = stats.hiddenGems[0];
       list.push({
         icon: Gem,
         color: 'accent',
-        text: `Nobody noticed this one: "${gem.title}" scored ${gem.composite}/100 but only ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. Worth a look.`,
+        text: `Nobody noticed this yet: "${gem.title}" scored ${gem.composite}/100 but has ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. High score, zero attention.`,
         link: `/ideas/${gem.id}`,
       });
     }
 
-    // 4. How selective the scoring is
-    if (stats.buildRate >= 0) {
-      const skipPct = stats.withVerdict > 0 ? Math.round(((stats.withVerdict - stats.buildCount) / stats.withVerdict) * 100) : 0;
-      list.push({
-        icon: Target,
-        color: stats.buildRate > 15 ? 'primary' : 'secondary',
-        text: `Only ${stats.buildRate}% of ideas pass the BUILD bar. ${skipPct}% get filtered out. The ones that survive are real opportunities, not just real problems.`,
-      });
-    }
-
-    // 5. Framework disagreement: the interesting debate
+    // 5. Expert fight
     if (stats.disagreements?.length > 0) {
       const top = stats.disagreements[0];
       list.push({
         icon: GitCompare,
         color: 'accent',
-        text: `Most debated idea: "${top.title}". ${top.highest[0]} scores it ${top.highest[1]}, ${top.lowest[0]} gives it ${top.lowest[1]}. That ${top.spread}-point gap means it's either genius or a trap.`,
+        text: `Biggest expert fight: "${top.title}". ${top.highest[0]} loves it (${top.highest[1]}), ${top.lowest[0]} hates it (${top.lowest[1]}). ${top.spread} points apart. That gap usually means something interesting.`,
         link: `/ideas/${top.id}`,
       });
     }
 
-    // 6. What's heating up this week
+    // 6. Source momentum
     if (stats.sourceMomentumData?.length > 0) {
       const accelerating = stats.sourceMomentumData.filter(s => s.delta > 20 && s.thisWeek >= 3);
       if (accelerating.length > 0) {
@@ -690,20 +737,57 @@ const IdeasAnalyticsPage = () => {
         list.push({
           icon: Zap,
           color: 'secondary',
-          text: `${top.source} is picking up steam: ${top.thisWeek} new ideas this week, up ${top.delta}% from last week.`,
+          text: `${top.source} is heating up. ${top.thisWeek} new ideas this week, up ${top.delta}% from last week. Something's happening over there.`,
         });
       }
     }
 
-    // 7. Quality trend: are we finding better stuff?
+    // 7. Quality trend
     if (stats.scoreTrend != null && stats.currentWeekAvg > 0) {
       if (Math.abs(stats.scoreTrend) > 5) {
         list.push({
           icon: TrendingUp,
           color: stats.scoreTrend > 0 ? 'primary' : 'accent',
           text: stats.scoreTrend > 0
-            ? `Quality is up ${stats.scoreTrend}% this week. Average score: ${stats.currentWeekAvg}/100. Better problems coming in.`
-            : `Quality dipped ${Math.abs(stats.scoreTrend)}% this week (avg ${stats.currentWeekAvg}/100). More volume, less signal.`,
+            ? `The problems are getting better. Quality up ${stats.scoreTrend}% this week, average score ${stats.currentWeekAvg}. Better sources or better timing, hard to tell.`
+            : `Quality dropped ${Math.abs(stats.scoreTrend)}% this week (avg ${stats.currentWeekAvg}). More volume, less signal. Happens in waves.`,
+        });
+      }
+    }
+
+    // 8. Source x Verdict cross: which source has highest BUILD rate
+    if (stats.sourceVerdictData?.length > 0) {
+      const topBuildSource = stats.sourceVerdictData[0];
+      if (topBuildSource.buildRate > 0) {
+        list.push({
+          icon: Target,
+          color: 'secondary',
+          text: `${topBuildSource.source} has the highest BUILD rate at ${topBuildSource.buildRate}%. Out of ${topBuildSource.total} scored ideas, ${topBuildSource.BUILD} made the cut.`,
+        });
+      }
+    }
+
+    // 9. Industry x Source cross-insight
+    if (stats.industryIntelData?.length >= 2) {
+      const rising = stats.industryIntelData.find(i => i.wowDelta > 30 && i.thisWeek >= 2);
+      if (rising) {
+        list.push({
+          icon: Zap,
+          color: 'primary',
+          text: `${rising.name} is surging. Up ${rising.wowDelta}% week over week, mostly from ${rising.bestSource}. Worth watching.`,
+        });
+      }
+    }
+
+    // 10. Framework spread insight
+    if (stats.frameworkData?.length >= 4) {
+      const sorted = [...stats.frameworkData].sort((a, b) => b.score - a.score);
+      const gap = sorted[0].score - sorted[sorted.length - 1].score;
+      if (gap > 10) {
+        list.push({
+          icon: GitCompare,
+          color: 'secondary',
+          text: `${sorted[0].framework} is the most generous scorer (avg ${sorted[0].score}). ${sorted[sorted.length - 1].framework} is the toughest (avg ${sorted[sorted.length - 1].score}). That ${gap}-point gap tells you each lens sees something different.`,
         });
       }
     }
@@ -773,10 +857,10 @@ const IdeasAnalyticsPage = () => {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-2 sm:mb-3">
-            Ideas Lab Analytics
+            What the lab is telling us
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
-            The intelligence layer behind every idea. Verdict distribution, source quality, industry trends, scoring patterns. All from real data, scored by AI.
+            Every idea gets scored by 4 AI frameworks. This is what the data looks like when you zoom out. Real numbers, plain English, ready to share.
           </p>
         </motion.div>
 
@@ -786,16 +870,16 @@ const IdeasAnalyticsPage = () => {
           {...staggerContainer}
         >
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.total} label="Total ideas" icon={Layers} color="text-accent" />
+            <AnimatedStat value={stats.total} label="Ideas in the lab" icon={Layers} color="text-accent" />
           </motion.div>
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.scoredCount} label="Ideas scored" icon={Zap} color="text-primary" />
+            <AnimatedStat value={stats.scoredCount} label="Scored by AI" icon={Zap} color="text-primary" />
           </motion.div>
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.buildCount} label="Verdict: BUILD" icon={Target} color="text-primary" />
+            <AnimatedStat value={stats.buildRate} suffix="%" label="Pass the BUILD test" icon={Target} color="text-primary" />
           </motion.div>
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.avgComposite} suffix="/100" label="Avg FL score" icon={TrendingUp} color="text-secondary" />
+            <AnimatedStat value={stats.avgComposite} suffix="/100" label="Avg score" icon={TrendingUp} color="text-secondary" />
           </motion.div>
         </motion.div>
 
@@ -808,7 +892,7 @@ const IdeasAnalyticsPage = () => {
                 {stats.sourceMomentumData?.[0]?.source || '-'}
               </p>
               <DeltaBadge value={stats.sourceMomentumData?.[0]?.delta} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Fastest source</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Hottest source</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
@@ -818,7 +902,7 @@ const IdeasAnalyticsPage = () => {
                 {stats.pipelineThisWeek}
               </p>
               <DeltaBadge value={stats.pipelineDelta} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Ideas this week</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">New this week</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
@@ -828,7 +912,7 @@ const IdeasAnalyticsPage = () => {
                 {stats.currentWeekAvg}<span className="text-sm text-muted-foreground font-normal">/100</span>
               </p>
               <DeltaBadge value={stats.scoreTrend} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Avg score this week</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Quality this week</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
@@ -837,20 +921,38 @@ const IdeasAnalyticsPage = () => {
               <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
                 {stats.disagreements?.length || 0}
               </p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Expert disagreements</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Experts disagree</p>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* ── Key Insights ── */}
+        {/* ── Content Hooks ── */}
+        {contentHooks.length > 0 && (
+          <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
+              <Megaphone className="w-4 h-4" /> Content hooks
+            </h2>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mb-4">Ready to tweet, say on camera, or drop into a Substack Note.</p>
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              {...staggerContainer}
+            >
+              {contentHooks.map((hook, i) => (
+                <ContentHookCard key={i} hook={hook} />
+              ))}
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* ── What the data says ── */}
         {insights.length > 0 && (
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
-            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Key insights</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">What the data says</h2>
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
               {...staggerContainer}
             >
-              {insights.slice(0, 8).map((insight, i) => (
+              {insights.slice(0, 10).map((insight, i) => (
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
@@ -862,11 +964,11 @@ const IdeasAnalyticsPage = () => {
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold uppercase tracking-widest text-primary flex items-center gap-2">
-                <Trophy className="w-4 h-4" /> {leaderboardTab === 'top' ? 'Top BUILD Ideas' : 'Hidden Gems'}
+                <Trophy className="w-4 h-4" /> {leaderboardTab === 'top' ? 'The top 10 right now' : 'Nobody noticed these yet'}
               </h2>
               <div className="flex items-center gap-1">
                 <button onClick={() => setLeaderboardTab('top')} className={cn("text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors", leaderboardTab === 'top' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground')}>Top 10</button>
-                <button onClick={() => setLeaderboardTab('gems')} className={cn("text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors", leaderboardTab === 'gems' ? 'bg-accent/15 text-accent' : 'text-muted-foreground hover:text-foreground')}>Hidden Gems</button>
+                <button onClick={() => setLeaderboardTab('gems')} className={cn("text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors", leaderboardTab === 'gems' ? 'bg-accent/15 text-accent' : 'text-muted-foreground hover:text-foreground')}>Hidden gems</button>
               </div>
             </div>
             <div className="card-glow overflow-x-auto">
@@ -933,8 +1035,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Verdict Distribution */}
           <ChartCard
-            title="Verdict distribution"
-            subtitle="What AI thinks you should do with these ideas"
+            title="What the lab decided"
+            subtitle="BUILD, VALIDATE, or SKIP. Here's how the ideas split."
             doodle={StarDoodle}
             doodleClass="top-3 right-3"
           >
@@ -977,8 +1079,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Source Breakdown */}
           <ChartCard
-            title="Where ideas come from"
-            subtitle={`${stats.activeSources} sources feeding the pipeline`}
+            title="Where the ideas come from"
+            subtitle={`${stats.activeSources} sources, constantly scanning`}
             doodle={PaperPlaneDoodle}
             doodleClass="top-3 right-3 rotate-[-20deg]"
           >
@@ -1006,8 +1108,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Score Distribution */}
           <ChartCard
-            title="Score distribution"
-            subtitle="How ideas fall across verdict zones (SKIP / VALIDATE / BUILD)"
+            title="How ideas scored"
+            subtitle="Three zones: SKIP, VALIDATE, BUILD. Most land in the middle."
             doodle={LightbulbDoodle}
             doodleClass="top-3 right-3"
           >
@@ -1034,8 +1136,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Framework Averages */}
           <ChartCard
-            title="Scoring averages"
-            subtitle="FL Method decides the verdict. Experts add perspective."
+            title="How scoring lenses compare"
+            subtitle="Fly Labs Method calls the verdict. The others weigh in."
             doodle={FlaskDoodle}
             doodleClass="top-3 right-3"
           >
@@ -1062,7 +1164,7 @@ const IdeasAnalyticsPage = () => {
 
           {/* Where Experts Disagree */}
           {stats.disagreements?.length > 0 && (
-            <ChartCard title="Where experts disagree" subtitle="Ideas where scoring frameworks gave wildly different scores (25+ point spread)" doodle={FlaskDoodle}>
+            <ChartCard title="Where the experts fight" subtitle="Same idea, wildly different scores. 25+ point spread between frameworks." doodle={FlaskDoodle}>
               <div className="space-y-2.5">
                 {stats.disagreements.slice(0, 5).map(d => (
                   <Link key={d.id} to={`/ideas/${d.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-1 px-1 py-2 rounded-lg transition-colors">
@@ -1083,8 +1185,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Growth Over Time */}
           <ChartCard
-            title="Growth over time"
-            subtitle="How the lab is growing week by week"
+            title="How the lab is growing"
+            subtitle="Week by week, the pipeline gets bigger"
             className="md:col-span-2"
           >
             <div className="flex items-center gap-1.5 mb-3">
@@ -1154,8 +1256,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Source x Verdict Heatmap */}
           <ChartCard
-            title="Source quality map"
-            subtitle="BUILD rate by source. Green = gold mine."
+            title="Where the BUILDs hide"
+            subtitle="BUILD rate by source. Higher means better signal."
             className="md:col-span-2"
             doodle={StarDoodle}
             doodleClass="top-3 right-3"
@@ -1228,8 +1330,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Top Industries */}
           <ChartCard
-            title="Top industries"
-            subtitle="Where the problems cluster"
+            title="Hot industries right now"
+            subtitle="Where the problems keep showing up"
           >
             <div className="space-y-2.5">
               {stats.industryData.map((ind, i) => {
@@ -1255,8 +1357,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Source Quality */}
           <ChartCard
-            title="Source quality"
-            subtitle="Average FL score by source"
+            title="Which sources bring the heat"
+            subtitle="Average score by source. Higher means better raw problems."
           >
             <div className="space-y-2.5">
               {stats.sourceQualityData.map((src) => (
@@ -1278,7 +1380,7 @@ const IdeasAnalyticsPage = () => {
 
           {/* Industry Intelligence Matrix */}
           {stats.industryIntelData?.length > 0 && (
-            <ChartCard title="Industry intelligence" subtitle="Ranked by avg score, BUILD rate, and weekly momentum" className="md:col-span-2" doodle={LightbulbDoodle}>
+            <ChartCard title="Industry breakdown" subtitle="Every industry ranked by score, BUILD rate, and momentum" className="md:col-span-2" doodle={LightbulbDoodle}>
               <div className="overflow-x-auto -mx-1">
                 <table className="w-full text-xs">
                   <thead>
@@ -1314,7 +1416,7 @@ const IdeasAnalyticsPage = () => {
 
           {/* Opportunity Map (Scatter) */}
           {stats.opportunityMapData?.length > 3 && (
-            <ChartCard title="Opportunity map" subtitle="Industry volume vs BUILD rate. Top-right = stars. Top-left = niche gold." className="md:col-span-2" doodle={StarDoodle}>
+            <ChartCard title="The opportunity map" subtitle="Volume vs BUILD rate. Top-right quadrant is where you want to be." className="md:col-span-2" doodle={StarDoodle}>
               <div className="h-56 sm:h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
@@ -1360,8 +1462,8 @@ const IdeasAnalyticsPage = () => {
           {/* Verdict Over Time */}
           {stats.verdictTimeData && stats.verdictTimeData.length > 1 && (
             <ChartCard
-              title="Verdicts over time"
-              subtitle="How the pipeline judges ideas, last 12 weeks"
+              title="How verdicts changed over time"
+              subtitle="Last 12 weeks. Watch the green bars."
               className="md:col-span-2"
               doodle={LightbulbDoodle}
               doodleClass="top-3 right-3"
@@ -1412,7 +1514,7 @@ const IdeasAnalyticsPage = () => {
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold uppercase tracking-widest text-primary flex items-center gap-2">
-                <Clock className="w-4 h-4" /> Recently scored
+                <Clock className="w-4 h-4" /> Just scored
               </h2>
               <Link to="/ideas" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                 View all
@@ -1434,7 +1536,7 @@ const IdeasAnalyticsPage = () => {
         >
           <LightbulbDoodle className="absolute left-1/2 -translate-x-1/2 -top-6 w-10 h-12 text-muted-foreground/10 geo-float-2" />
           <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-            Data updates every time an idea gets scored. All open source.
+            Numbers update every time an idea gets scored. All of this is open source.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
