@@ -96,6 +96,11 @@ export function FlyBotPanel({ isOpen, onClose }) {
     handleSend(prompt);
   }, [handleSend]);
 
+  const handleNavigate = useCallback((path) => {
+    onClose();
+    navigate(path);
+  }, [onClose, navigate]);
+
   const handleExpand = useCallback(() => {
     onClose();
     const params = activeConversationId ? `?c=${activeConversationId}` : '';
@@ -174,7 +179,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
             ) : limitReached ? (
               <ChatLimitReached messageCount={messageCount} compact />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} compact />
+              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} compact />
             )}

@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
-import { buildSystemPrompt, findSimilarIdeas, fetchIdeaAnalytics } from './lib/coach-prompt.js';
+import { buildSystemPrompt, findSimilarIdeas, fetchIdeaAnalytics, searchIdeas } from './lib/coach-prompt.js';
 import { prompts as promptLibrary } from '../src/lib/data/prompts.js';
 
 export const config = {
@@ -29,6 +29,44 @@ function checkRateLimit(userId) {
 
 function stripHtml(str) {
   return str.replace(/<[^>]*>/g, '').trim();
+}
+
+// Whitelist valid page names for page_context sanitization
+const VALID_PAGES = new Set([
+  'Home', 'Explore', 'Idea Lab', 'Idea Detail', 'Idea Lab Analytics',
+  'Newsletter', 'About', 'Scoring Frameworks', 'Library', 'Prompt Library',
+  'Templates', 'Website Blueprint', 'Garmin to Notion', 'Launch Checklist',
+  'One-Page Business Plan', 'Micro Tools', 'User Profile', 'FlyBot',
+]);
+
+/**
+ * Parse search intent from user message
+ */
+function parseSearchIntent(message) {
+  const lower = message.toLowerCase();
+  const filters = {};
+
+  // Source detection
+  if (lower.includes('reddit')) filters.source = 'reddit';
+  if (lower.includes('product hunt')) filters.source = 'producthunt';
+  if (lower.includes('hacker news') || lower.includes('hackernews')) filters.source = 'hackernews';
+  if (lower.includes('github')) filters.source = 'github';
+  if (lower.includes('yc') || lower.includes('graveyard')) filters.source = 'yc';
+  if (lower.includes('problemhunt')) filters.source = 'problemhunt';
+
+  // Verdict detection
+  if (/\bbuild\b/.test(lower) && !/building/.test(lower)) filters.verdict = 'BUILD';
+  if (/\bskip\b/.test(lower)) filters.verdict = 'SKIP';
+  if (/\bvalidate\b/.test(lower)) filters.verdict = 'VALIDATE_FIRST';
+
+  // Score threshold
+  const scoreMatch = lower.match(/(?:score|above|over)\s*(\d+)/);
+  if (scoreMatch) filters.min_score = parseInt(scoreMatch[1]);
+
+  const hasFilters = Object.keys(filters).length > 0;
+  const isSearch = hasFilters || /show me|find|search|list|what.*ideas|best ideas|top ideas|highest.scoring/.test(lower);
+
+  return isSearch ? filters : null;
 }
 
 /**
@@ -110,8 +148,22 @@ export default async function handler(req, res) {
     });
   }
 
-  // Ensure conversation exists
+  // Validate conversation ownership
   let convId = conversation_id;
+  if (convId) {
+    const { data: conv } = await supabase
+      .from('conversations')
+      .select('id')
+      .eq('id', convId)
+      .eq('user_id', user.id)
+      .is('deleted_at', null)
+      .single();
+    if (!conv) {
+      return res.status(403).json({ error: 'Conversation not found' });
+    }
+  }
+
+  // Ensure conversation exists
   if (!convId) {
     const { data: conv, error: convError } = await supabase
       .from('conversations')
@@ -140,16 +192,31 @@ export default async function handler(req, res) {
     .order('created_at', { ascending: true })
     .limit(20);
 
+  // Sanitize page_context: only allow whitelisted page names
+  let sanitizedPageContext = null;
+  if (page_context && page_context.name && VALID_PAGES.has(page_context.name)) {
+    sanitizedPageContext = {
+      name: page_context.name,
+      path: String(page_context.path || '').replace(/[<>{}]/g, '').slice(0, 100),
+    };
+  }
+
   // Find similar ideas if user might be describing one
   const ideaKeywords = ['idea', 'build', 'tool', 'app', 'project', 'product', 'saas', 'problem', 'solve', 'evaluate', 'score'];
   const mightBeIdea = ideaKeywords.some(k => cleanMessage.toLowerCase().includes(k));
 
-  // Run parallel: similar ideas + analytics + relevant prompts
-  const [similarIdeas, analytics] = await Promise.all([
+  // Detect search intent
+  const searchFilters = parseSearchIntent(cleanMessage);
+
+  // Run parallel: similar ideas + analytics + search results
+  const [similarIdeas, analytics, searchResults] = await Promise.all([
     mightBeIdea
       ? findSimilarIdeas(supabase, cleanMessage).catch(() => [])
       : Promise.resolve([]),
     fetchIdeaAnalytics(supabase),
+    searchFilters
+      ? searchIdeas(supabase, searchFilters).catch(() => [])
+      : Promise.resolve([]),
   ]);
 
   // Find relevant prompts from our library
@@ -160,8 +227,9 @@ export default async function handler(req, res) {
     similarIdeas,
     relevantPrompts,
     promptCatalog: promptLibrary,
-    pageContext: page_context,
+    pageContext: sanitizedPageContext,
     analytics,
+    searchResults,
   });
 
   // Build messages array

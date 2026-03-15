@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Menu, Bot, AlertCircle, X, RotateCcw } from 'lucide-react';
 import { SEO } from '@/components/SEO.jsx';
 import Header from '@/components/Header.jsx';
@@ -17,6 +17,7 @@ const ADMIN_EMAIL = 'alvesluiz7@icloud.com';
 export default function FlyBotPage() {
   const { currentUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isAdmin = currentUser?.email === ADMIN_EMAIL;
 
@@ -135,7 +136,7 @@ export default function FlyBotPage() {
             {limitReached ? (
               <ChatLimitReached messageCount={messageCount} />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} onNavigate={navigate} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} />
             )}

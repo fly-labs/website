@@ -63,6 +63,10 @@ function renderMarkdown(text) {
       // Links: validate URL before creating anchor
       processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
         if (isSafeUrl(url)) {
+          const isInternal = url.startsWith('/');
+          if (isInternal) {
+            return `<a href="${escapeHtml(url)}" data-internal="true" class="text-primary hover:underline underline-offset-2">${label}</a>`;
+          }
           return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline underline-offset-2">${label}</a>`;
         }
         return label;
@@ -107,10 +111,18 @@ function TypingIndicator() {
   );
 }
 
-export function ChatMessage({ message, isStreaming, compact = false }) {
+export function ChatMessage({ message, isStreaming, compact = false, onNavigate }) {
   const isUser = message.role === 'user';
   const hasEvaluation = message.metadata?.evaluation;
   const isEmpty = !message.content && isStreaming;
+
+  const handleClick = (e) => {
+    const anchor = e.target.closest('a[data-internal]');
+    if (anchor) {
+      e.preventDefault();
+      onNavigate?.(anchor.getAttribute('href'));
+    }
+  };
 
   return (
     <motion.div
@@ -122,6 +134,7 @@ export function ChatMessage({ message, isStreaming, compact = false }) {
         compact ? 'px-3 py-2.5' : 'px-4 sm:px-6 py-4',
         isUser ? 'bg-transparent' : 'bg-muted/30'
       )}
+      onClick={handleClick}
     >
       <div className={cn(
         'flex',
