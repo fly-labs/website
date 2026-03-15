@@ -4,6 +4,7 @@ import {
   ArrowLeft, Sparkles, Copy, Check, Search, ShieldCheck, X,
   ChevronUp, ChevronDown, MessageCircle, Flame, Send, Trash2,
   Lock, ArrowRight, LayoutTemplate, Code, Lightbulb, Loader2, CheckCircle2,
+  Bot,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { useToast } from '@/hooks/use-toast.js';
@@ -13,6 +14,7 @@ import { prompts } from '@/lib/data/prompts.js';
 import supabase from '@/lib/supabaseClient.js';
 import { timeAgo, isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
 
 const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'SEO', 'Research', 'Workflows', 'Thinking'];
 const SORT_OPTIONS = [
@@ -38,6 +40,7 @@ const lockedPreviewPrompts = prompts.filter(p => !p.featured).slice(0, 3);
 const PromptsPage = () => {
   const { toast } = useToast();
   const { currentUser, profile, isAuthenticated } = useAuth();
+  const { openWidget } = useChatContext();
 
   // UI state
   const [copiedId, setCopiedId] = useState(null);
@@ -388,7 +391,8 @@ const PromptsPage = () => {
     const matchesSearch = !q ||
       p.title.toLowerCase().includes(q) ||
       p.category.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q);
+      p.description.toLowerCase().includes(q) ||
+      p.content.toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
   }), [visiblePrompts, activeCategory, searchQuery]);
 
@@ -477,6 +481,26 @@ const PromptsPage = () => {
                 </button>
               )}
             </div>
+          )}
+
+          {/* FlyBot hint */}
+          {isAuthenticated && (
+            <button
+              onClick={() => {
+                openWidget();
+                trackEvent('cta_click', { cta: 'flybot_from_prompts', location: 'prompts_hint' });
+              }}
+              className="w-full mb-4 flex items-center gap-3 px-4 py-3 rounded-xl border border-secondary/20 bg-secondary/5 hover:bg-secondary/10 transition-colors text-left group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                <Bot className="w-4 h-4 text-secondary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">Not sure which prompt to use?</p>
+                <p className="text-xs text-muted-foreground">Ask FlyBot. It knows the full library and can recommend the right one for your situation.</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-secondary transition-colors shrink-0" />
+            </button>
           )}
 
           {/* Filters row - only show for authenticated users */}
@@ -696,6 +720,11 @@ const PromptsPage = () => {
                                     <p className="text-sm text-muted-foreground font-medium">
                                       {prompt.description}
                                     </p>
+                                    {prompt.author && (
+                                      <p className="text-xs text-muted-foreground/50 font-medium mt-1">
+                                        Inspired by {prompt.author}
+                                      </p>
+                                    )}
                                     {prompt.tools && (
                                       <div className="flex items-center gap-1.5 mt-1.5">
                                         <span className="text-[10px] font-semibold text-muted-foreground/40">Tools:</span>

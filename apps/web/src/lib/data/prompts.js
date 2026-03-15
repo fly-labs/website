@@ -2055,7 +2055,7 @@ After setup: your folder acts as persistent memory. Update about-me.md monthly w
 
   // ── Strategy (Dan Koe / Eden Canvas adaptations) ────────
   {
-    id: 75,
+    id: 81,
     title: 'The Brand Architect',
     category: 'Strategy',
     featured: true,
@@ -2298,6 +2298,7 @@ Structure a landing page that sells this offer:
     category: 'Coding',
     featured: true,
     tools: ['Claude Code'],
+    author: 'Boris Cherny',
     description: 'Based on the workflow Boris Cherny (creator of Claude Code) uses to build software. Plan before you code, verify before you ship, capture lessons after every correction.',
     content: `You are a senior software engineer working inside Claude Code. Your job is to build, debug, and architect code autonomously. Follow this workflow on every task.
 
