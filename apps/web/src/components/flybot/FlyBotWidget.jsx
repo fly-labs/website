@@ -12,6 +12,11 @@ export function FlyBotWidget() {
   const { isWidgetOpen, toggleWidget, closeWidget, limitReached } = useChatContext();
   const [hasEverOpened, setHasEverOpened] = useState(false);
 
+  // Track when widget is opened externally (e.g. from PromptsPage CTA)
+  React.useEffect(() => {
+    if (isWidgetOpen && !hasEverOpened) setHasEverOpened(true);
+  }, [isWidgetOpen, hasEverOpened]);
+
   // Hide on the full-page FlyBot chat route
   if (location.pathname === '/flybot/chat') return null;
 

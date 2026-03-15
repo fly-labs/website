@@ -2294,7 +2294,7 @@ Structure a landing page that sells this offer:
   },
   {
     id: 80,
-    title: 'The Code Foundation',
+    title: 'The Claude Code Playbook',
     category: 'Coding',
     featured: true,
     tools: ['Claude Code'],
