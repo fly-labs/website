@@ -131,12 +131,8 @@ export default function FlyBoardPage() {
   } = useBoardContext();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    const stored = localStorage.getItem('flyboard-sidebar');
-    if (stored !== null) return stored === 'true';
-    // Default: always start closed (maximize canvas, Apple-style)
-    return false;
-  });
+  // v2: sidebar is always overlay now, start closed
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const excalidrawRef = useRef(null);
 
   // Fullscreen state
@@ -247,10 +243,7 @@ export default function FlyBoardPage() {
     ? getContrastStroke(resolvedBgColor)
     : (STROKE_COLORS.find(c => c.id === strokeColorMode)?.hex || getContrastStroke(resolvedBgColor));
 
-  // Persist sidebar state
-  useEffect(() => {
-    localStorage.setItem('flyboard-sidebar', String(sidebarOpen));
-  }, [sidebarOpen]);
+  // Sidebar is overlay-only now, no need to persist open/closed state
 
 
 
@@ -850,7 +843,7 @@ export default function FlyBoardPage() {
           {/* ---- Main canvas area ---- */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Toolbar: single clean row, overflow menu catches the rest */}
-            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[48px] border-b shrink-0">
+            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[48px] border-b shrink-0 overflow-hidden">
               {/* Left: sidebar toggle + title */}
               <div className="flex items-center gap-1 min-w-0 shrink-0">
                 <button
