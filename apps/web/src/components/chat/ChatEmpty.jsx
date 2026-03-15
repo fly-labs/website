@@ -50,8 +50,8 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             compact ? 'text-xs max-w-[240px]' : 'text-sm max-w-sm'
           )}>
             {compact
-              ? `670+ scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. Ask me anything about building.`
-              : `I've scored 670+ real problems across ${FRAMEWORK_COUNT} frameworks. I know ${PROMPT_COUNT} prompts by name. I apply behavioral finance to building decisions. Describe an idea and I'll tell you what the data says.`
+              ? `Hundreds of scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. Ask me anything about building.`
+              : `I've scored hundreds of real problems across ${FRAMEWORK_COUNT} frameworks. I know ${PROMPT_COUNT} prompts by name. I apply behavioral finance to building decisions. Describe an idea and I'll tell you what the data says.`
             }
           </p>
           {!compact && (

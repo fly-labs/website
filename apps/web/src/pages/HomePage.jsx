@@ -64,7 +64,7 @@ const pillars = [
   {
     title: 'FlyBot',
     icon: Bot,
-    description: 'An AI loaded with 670+ scored ideas, 80 prompts, and 4 frameworks. Describe a problem, get a verdict backed by data.',
+    description: 'An AI loaded with hundreds of scored ideas, 80 prompts, and 4 frameworks. Describe a problem, get a verdict backed by data.',
     color: 'text-accent',
     bgColor: 'bg-accent/10',
     link: '/flybot',

@@ -105,7 +105,7 @@ export const projects = [
   },
   {
     title: 'FlyBot',
-    description: 'An AI loaded with 670+ scored ideas, 80 prompts, and 4 frameworks. Describe a problem, get a real verdict. Pattern-matching, not guessing.',
+    description: 'An AI loaded with hundreds of scored ideas, 80 prompts, and 4 frameworks. Describe a problem, get a real verdict. Pattern-matching, not guessing.',
     icon: Bot,
     link: '/flybot',
     color: 'text-accent',

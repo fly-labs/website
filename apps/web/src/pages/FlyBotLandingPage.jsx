@@ -122,8 +122,8 @@ const FlyBotLandingPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "FlyBot: AI That Already Scored 670+ Ideas Before You Asked",
-        description: `Talk to an AI that has scored ${ideaCount || '670'}+ real problems across ${FRAMEWORK_COUNT} frameworks, knows ${PROMPT_COUNT} prompts by name, and applies behavioral finance to your building decisions. Free during beta.`,
+        title: "FlyBot: AI With Hundreds of Scored Ideas Already Loaded",
+        description: `Talk to an AI loaded with hundreds of scored ideas, ${FRAMEWORK_COUNT} frameworks, and ${PROMPT_COUNT} prompts. Describe a problem, get a real verdict. Free during beta.`,
         keywords: "AI idea scoring, vibe building AI, business idea evaluator, FlyBot, idea validation AI, content strategy AI, behavioral finance for builders",
         url: "https://flylabs.fun/flybot",
         schema: {
@@ -133,7 +133,7 @@ const FlyBotLandingPage = () => {
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web",
           "url": "https://flylabs.fun/flybot",
-          "description": "AI-powered vibe building partner with access to 670+ scored ideas, 4 frameworks, 80 prompts, and behavioral finance models.",
+          "description": "AI-powered vibe building partner loaded with hundreds of scored ideas, 4 frameworks, 80 prompts, and behavioral finance models.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -166,7 +166,7 @@ const FlyBotLandingPage = () => {
               </h1>
 
               <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-4 max-w-lg">
-                FlyBot has scored {ideaCount ? `${ideaCount}+` : '670+'} real problems from {SOURCE_COUNT} sources, knows {PROMPT_COUNT} prompts by name, and applies behavioral finance to your building decisions.
+                FlyBot has scored {ideaCount ? `${ideaCount}+` : 'hundreds of'} real problems from {SOURCE_COUNT} sources, knows {PROMPT_COUNT} prompts by name, and applies behavioral finance to your building decisions.
               </p>
               <p className="text-base text-muted-foreground/70 font-medium leading-relaxed mb-8 max-w-lg">
                 When you describe an idea, it doesn't guess. It pattern-matches against hundreds of scored ideas and tells you what it's seen before.
@@ -215,7 +215,7 @@ const FlyBotLandingPage = () => {
             {[
               {
                 icon: Database,
-                title: `${ideaCount || '670'}+ ideas scored and analyzed`,
+                title: ideaCount ? `${ideaCount}+ ideas scored and analyzed` : 'Hundreds of ideas scored and analyzed',
                 desc: 'Real problems from Reddit, Hacker News, GitHub Issues, X, Product Hunt, the YC Graveyard, and more. Each one scored across 4 frameworks with per-pillar reasoning and a final verdict.',
                 color: 'text-primary',
                 bgColor: 'bg-primary/10',
@@ -350,7 +350,7 @@ const FlyBotLandingPage = () => {
                 FlyBot talks about the idea first. What excites it, what worries it, what patterns it's seen in similar problems. Then it drops the score card with per-framework breakdowns and a final verdict.
               </p>
               <p className="text-sm text-muted-foreground/70 leading-relaxed">
-                The same scoring engine that runs on the Idea Lab's {ideaCount ? `${ideaCount}+` : '670+'} ideas, now in a conversation.
+                The same scoring engine that powers the Idea Lab, now in a conversation.
               </p>
             </motion.div>
 
