@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Allow: /flybot
+Allow: /flyboard
 Allow: /templates/website-blueprint
 Allow: /templates/launch-checklist
 Allow: /templates/one-page-business-plan

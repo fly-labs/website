@@ -26,7 +26,7 @@ export const QUESTION_COUNT = 4;
 // Architectural constants (update when codebase changes)
 // These describe the codebase itself and can't be auto-computed at runtime.
 // Centralized here so there's ONE place to update.
-export const ROUTE_COUNT = 23;
+export const ROUTE_COUNT = 24;
 export const SCRIPT_COUNT = 11;
 export const GA4_EVENT_COUNT = 35;
 export const DB_TABLE_COUNT = 9;

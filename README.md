@@ -33,6 +33,8 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Vibe Coding Player** - Built-in lofi music player with 4 vibe modes (Ideate, Build, Create, Study). CC0 tracks on Supabase Storage, Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
 
+**FlyBoard** - Collaborative whiteboard powered by Excalidraw. Pick a template, sketch your ideas, and export when ready.
+
 **Library** - Free ebooks from study notes. AI, business, mindset.
 
 **Newsletter** - Substack archive with engagement metrics, read time, and Notes.
@@ -139,7 +141,7 @@ apps/web/
 │   ├── contexts/         # Auth, Chat, Music, Theme
 │   ├── hooks/            # useIdeaFilters, useChat
 │   ├── lib/data/         # prompts, projects, ideas config, tracks, stats
-│   └── pages/            # 23 route pages (all lazy-loaded)
+│   └── pages/            # 24 route pages (all lazy-loaded)
 ├── api/                  # Vercel serverless (chat, conversations)
 ├── scripts/              # Sync + scoring scripts (7 sources + Claude)
 └── .github/workflows/    # CI, daily sync, daily enrichment
@@ -147,7 +149,7 @@ apps/web/
 
 ## Routes
 
-23 routes total. Public pages, hybrid pages (partial access for guests), and member-only areas.
+24 routes total. Public pages, hybrid pages (partial access for guests), and member-only areas.
 
 | Path | What | Access |
 |------|------|--------|
@@ -159,6 +161,7 @@ apps/web/
 | `/prompts` | Prompt Library (81+ prompts) | Hybrid |
 | `/flybot` | FlyBot landing | Public |
 | `/flybot/chat` | FlyBot full chat | Members |
+| `/flyboard` | FlyBoard whiteboard | Public |
 | `/scoring` | Scoring methodology | Public |
 | `/newsletter` | Substack archive | Public |
 | `/library` | Free ebooks | Public |
