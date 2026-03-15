@@ -68,11 +68,12 @@ const VIBE_CONFIG = [
   { id: 'ideate', name: 'Ideate', description: 'Brainstorm mode. Upbeat beats to spark ideas.', icon: 'Lightbulb' },
   { id: 'build', name: 'Build', description: 'Flow state. Driving rhythms for deep work.', icon: 'Hammer' },
   { id: 'create', name: 'Create', description: 'Cozy vibes. Warm beats for writing and creating.', icon: 'PenLine' },
+  { id: 'cafe', name: 'Cafe', description: 'Cozy piano. Starbucks on a rainy afternoon.', icon: 'Coffee' },
   { id: 'study', name: 'Study', description: 'Focus mode. Calm sounds for reading and learning.', icon: 'BookOpen' },
-  { id: 'retro', name: 'Retro', description: 'Lan house era. Chiptune beats and 8-bit nostalgia.', icon: 'Gamepad2' },
+  { id: 'retro', name: 'Retro', description: 'Synthwave and retro beats. Late 2000s lan house energy.', icon: 'Gamepad2' },
 ];
 
-const MAX_TOTAL_SIZE_MB = 250;
+const MAX_TOTAL_SIZE_MB = 500;
 
 /**
  * Parse a filename like "01-chill-lofi-beats--artist-name.mp3" into title + artist

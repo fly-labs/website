@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Volume1, X, Lightbulb, Hammer, PenLine, BookOpen, Gamepad2 } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Volume1, X, Lightbulb, Hammer, PenLine, BookOpen, Coffee, Gamepad2 } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { useMusic } from '@/contexts/MusicContext.jsx';
 
@@ -9,6 +9,7 @@ const VIBE_ICONS = {
   Hammer,
   PenLine,
   BookOpen,
+  Coffee,
   Gamepad2,
 };
 
