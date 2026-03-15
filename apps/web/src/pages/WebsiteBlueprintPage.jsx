@@ -13,7 +13,7 @@ import { trackEvent } from '@/lib/analytics.js';
 import {
   SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, CATEGORY_LIST,
   ROUTE_COUNT, SCRIPT_COUNT, GA4_EVENT_COUNT, DB_TABLE_COUNT,
-  RPC_COUNT, WORKFLOW_COUNT, FRAMEWORK_COUNT,
+  RPC_COUNT, WORKFLOW_COUNT,
 } from '@/lib/data/siteStats.js';
 
 const GITHUB_URL = 'https://github.com/fly-labs/website';
@@ -21,7 +21,7 @@ const GITHUB_URL = 'https://github.com/fly-labs/website';
 const heroStats = [
   { label: 'Routes', value: String(ROUTE_COUNT) },
   { label: 'Data Sources', value: String(SOURCE_COUNT) },
-  { label: 'AI Frameworks', value: String(FRAMEWORK_COUNT) },
+  { label: 'Scoring Questions', value: '4' },
   { label: 'Scripts', value: String(SCRIPT_COUNT) },
   { label: 'GA4 Events', value: String(GA4_EVENT_COUNT) },
   { label: 'DB Tables', value: String(DB_TABLE_COUNT) },
@@ -32,8 +32,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Ideas Lab',
     route: '/ideas',
-    desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across ${FRAMEWORK_COUNT} frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
-    highlights: [`${SOURCE_COUNT} sources`, `${FRAMEWORK_COUNT} AI frameworks`, 'Market validation'],
+    desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI asks 4 questions about each idea. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
+    highlights: [`${SOURCE_COUNT} sources`, '4 questions, 1 verdict', 'Market validation'],
     icon: Lightbulb,
     color: 'border-primary',
   },
@@ -41,8 +41,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Scoring Frameworks',
     route: '/scoring',
-    desc: 'The Fly Labs Method (40% weight) plus Hormozi, Dan Koe, and Okamoto as expert perspectives (20% each). Per-pillar reasoning. Composite score. One verdict.',
-    highlights: [`${FRAMEWORK_COUNT} frameworks`, 'Per-pillar reasoning', 'Weighted synthesis'],
+    desc: 'The Fly Labs Method asks 4 questions, gives one score, one verdict. Hormozi, Dan Koe, and Okamoto add expert perspectives on the detail page. Per-pillar reasoning throughout.',
+    highlights: ['4 questions, 1 score', 'Per-pillar reasoning', '3 expert perspectives'],
     icon: BarChart3,
     color: 'border-secondary',
   },
@@ -77,8 +77,8 @@ const platformSections = [
     stage: 'Building',
     title: 'FlyBot',
     route: '/flybot',
-    desc: `AI-powered vibe building partner. Scores ideas with ${FRAMEWORK_COUNT} frameworks, helps write content, controls the lofi player. Claude-powered, 5 free messages during beta.`,
-    highlights: ['AI partner', `${FRAMEWORK_COUNT} frameworks`, 'Music control', 'Beta'],
+    desc: 'AI-powered vibe building partner. Asks 4 questions about your idea, gives one score, one verdict. Also helps write content and controls the lofi player. Claude-powered, 5 free messages during beta.',
+    highlights: ['AI partner', '4 questions, 1 verdict', 'Music control', 'Beta'],
     icon: Brain,
     color: 'border-accent',
   },
@@ -103,7 +103,7 @@ const platformSections = [
 ];
 
 const stackItems = [
-  { name: 'Claude Sonnet 4', icon: Brain, desc: `AI scoring engine. ${FRAMEWORK_COUNT} frameworks, per-pillar reasoning, verdicts.`, color: 'border-accent' },
+  { name: 'Claude Sonnet 4', icon: Brain, desc: '4 questions per idea. Per-pillar reasoning. One score, one verdict.', color: 'border-accent' },
   { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
   { name: 'Supabase', icon: Database, desc: `PostgreSQL + Auth + RLS. ${DB_TABLE_COUNT} tables, ${RPC_COUNT} RPCs.`, color: 'border-secondary' },
   { name: 'GitHub Actions', icon: GitBranch, desc: `${WORKFLOW_COUNT} workflows. Sync + enrich daily, auto-deploy on push.`, color: 'border-accent' },
@@ -223,7 +223,7 @@ const WebsiteBlueprintPage = () => {
     <PageLayout
       seo={{
         title: "Website Blueprint - Full Stack Architecture with AI Scoring Pipeline",
-        description: `How flylabs.fun was built. ${ROUTE_COUNT} routes, ${SCRIPT_COUNT} scripts, ${SOURCE_COUNT} data sources, ${FRAMEWORK_COUNT} AI scoring frameworks, ${WORKFLOW_COUNT} automated workflows. React, Supabase, Claude AI, Grok. Open source.`,
+        description: `How flylabs.fun was built. ${ROUTE_COUNT} routes, ${SCRIPT_COUNT} scripts, ${SOURCE_COUNT} data sources, 4 scoring questions, ${WORKFLOW_COUNT} automated workflows. React, Supabase, Claude AI, Grok. Open source.`,
         keywords: "website blueprint, React SPA, open source, Supabase, AI scoring, data pipeline, Claude AI, Grok, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",
         schema: [
@@ -263,7 +263,7 @@ const WebsiteBlueprintPage = () => {
                 Website <span className="text-primary">Blueprint</span>
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
-                {ROUTE_COUNT} routes, {SCRIPT_COUNT} scripts, {WORKFLOW_COUNT} automated workflows, {SOURCE_COUNT} data sources, {FRAMEWORK_COUNT} AI frameworks. Built by one person. Open source.
+                {ROUTE_COUNT} routes, {SCRIPT_COUNT} scripts, {WORKFLOW_COUNT} automated workflows, {SOURCE_COUNT} data sources, 4 scoring questions. Built by one person. Open source.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <a

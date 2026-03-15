@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { trackEvent } from '@/lib/analytics.js';
-import { SOURCE_COUNT, FRAMEWORK_COUNT, PROMPT_COUNT } from '@/lib/data/siteStats.js';
+import { SOURCE_COUNT, QUESTION_COUNT, PROMPT_COUNT } from '@/lib/data/siteStats.js';
 import { ScoreBar, getScoreTier, verdictStyles, FRAMEWORK_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 import supabase from '@/lib/supabaseClient.js';
 
@@ -111,7 +111,7 @@ const FlyBotLandingPage = () => {
     <PageLayout
       seo={{
         title: "FlyBot: An AI That Already Did the Homework",
-        description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${FRAMEWORK_COUNT} questions and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
+        description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${QUESTION_COUNT} questions and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
         keywords: "AI idea scoring, business idea evaluator, FlyBot, idea validation AI, vibe building, content strategy AI, solo builder tools",
         url: "https://flylabs.fun/flybot",
         schema: {
@@ -226,7 +226,7 @@ const FlyBotLandingPage = () => {
               },
               {
                 icon: Layers,
-                title: `${FRAMEWORK_COUNT} questions about your idea`,
+                title: `${QUESTION_COUNT} questions about your idea`,
                 desc: 'Is the problem real? Is there room for something new? Would people pay? Can you build it alone? Four questions, scored from different angles, combined into one honest verdict: BUILD, VALIDATE, or SKIP.',
                 color: 'text-secondary',
                 bgColor: 'bg-secondary/10',
@@ -374,7 +374,7 @@ const FlyBotLandingPage = () => {
             {[
               { value: ideaCount, label: 'Ideas scored', sub: 'with full reasoning', icon: BarChart3, color: 'text-primary' },
               { value: SOURCE_COUNT, label: 'Live sources', sub: 'synced daily', icon: Database, color: 'text-secondary' },
-              { value: FRAMEWORK_COUNT, label: 'Scoring questions', sub: 'weighted into one verdict', icon: Target, color: 'text-accent' },
+              { value: QUESTION_COUNT, label: 'Scoring questions', sub: 'one score, one verdict', icon: Target, color: 'text-accent' },
               { value: PROMPT_COUNT, label: 'Prompts loaded', sub: 'recommended by name', icon: Sparkles, color: 'text-amber-500' },
             ].map((stat) => (
               <motion.div key={stat.label} {...staggerItem} className="glass-card p-4 text-center">

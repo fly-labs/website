@@ -8,7 +8,7 @@ import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
-import { SOURCE_COUNT, FRAMEWORK_COUNT, PROMPT_COUNT, CATEGORY_COUNT, TRACK_COUNT } from '@/lib/data/siteStats.js';
+import { SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, TRACK_COUNT } from '@/lib/data/siteStats.js';
 import supabase from '@/lib/supabaseClient.js';
 
 const socials = [
@@ -320,7 +320,7 @@ const AboutPage = () => {
               {(() => {
                 const stages = [
                   { title: 'Sources', subtitle: `${SOURCE_COUNT} feeds`, icon: Search, color: 'text-secondary', bg: 'bg-secondary/5', iconBg: 'bg-secondary/15', border: 'border-secondary/30', dotColor: 'bg-secondary/40', items: ['Reddit', 'Product Hunt', 'Hacker News', 'X/Twitter', 'GitHub', 'ProblemHunt', 'YC Graveyard', 'Community'] },
-                  { title: 'Scoring', subtitle: `${FRAMEWORK_COUNT} frameworks`, icon: Filter, color: 'text-primary', bg: 'bg-primary/5', iconBg: 'bg-primary/15', border: 'border-primary/30', dotColor: 'bg-primary/40', items: ['Solo builder viability', 'Market demand', 'Competitive landscape', 'Composite score'] },
+                  { title: 'Scoring', subtitle: '4 questions, 1 verdict', icon: Filter, color: 'text-primary', bg: 'bg-primary/5', iconBg: 'bg-primary/15', border: 'border-primary/30', dotColor: 'bg-primary/40', items: ['Is the pain real?', 'Is there a gap?', 'Would someone pay?', 'Can you build it?'] },
                   { title: 'Validation', subtitle: 'Live evidence', icon: CheckCircle2, color: 'text-accent', bg: 'bg-accent/5', iconBg: 'bg-accent/15', border: 'border-accent/30', dotColor: 'bg-accent/40', items: ['X/Twitter search', 'Reddit conversations', 'Confidence scoring', 'Final verdict'] },
                 ];
                 return (
@@ -384,7 +384,7 @@ const AboutPage = () => {
                 { value: ideaCount, label: 'Ideas scored', icon: Zap, color: 'text-primary' },
                 { value: SOURCE_COUNT, label: 'Data sources', icon: Globe, color: 'text-secondary' },
                 { value: PROMPT_COUNT, label: 'AI prompts', icon: Sparkles, color: 'text-accent' },
-                { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', icon: Brain, color: 'text-primary' },
+                { value: 4, label: 'Scoring questions', icon: Brain, color: 'text-primary' },
                 { value: CATEGORY_COUNT, label: 'Prompt categories', icon: Terminal, color: 'text-secondary' },
                 { value: TRACK_COUNT, label: 'Lofi tracks', icon: Music, color: 'text-accent' },
               ].map((stat) => (

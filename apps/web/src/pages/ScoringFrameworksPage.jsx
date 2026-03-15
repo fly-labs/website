@@ -433,30 +433,30 @@ const ScoringFrameworksPage = () => {
               </div>
               <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">One Answer</h2>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-                The Fly Labs Method carries 40% of the weight. The {EXPERT_COUNT} expert perspectives split the other 60%. When market validation exists, real evidence gets the final say. You get one of three answers.
+                The Fly Labs Method answers {QUESTION_COUNT} questions. That score decides the verdict. {EXPERT_COUNT} expert perspectives add depth on the detail page but they don't change the number. When market validation exists, real evidence informs confidence. You get one of three answers.
               </p>
             </motion.div>
             <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
               <div className="flex-1 p-5 rounded-xl border border-primary/20 bg-primary/10 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-primary">BUILD</span>
-                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">70+</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">65+</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Composite {">="} 70, Fly Labs {">="} 60, no framework below 30. Strong signal. This is worth your Saturday morning.</p>
+                <p className="text-xs text-muted-foreground">FL score 65 or higher and you can actually build it. Strong signal. Worth your Saturday morning.</p>
               </div>
               <div className="flex-1 p-5 rounded-xl border border-amber-500/20 bg-amber-500/10 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-amber-600">VALIDATE</span>
-                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">45-69</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">40-64</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Composite 45-69, or gaps in one framework. Promising but something's off. Talk to people first.</p>
+                <p className="text-xs text-muted-foreground">FL score 40 to 64. Promising but something's off. Talk to real people before you build.</p>
               </div>
               <div className="flex-1 p-5 rounded-xl border border-red-500/20 bg-red-500/10 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-black text-red-500">SKIP</span>
-                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">{"<"}45</span>
+                  <span className="text-xs font-bold text-muted-foreground bg-muted/50 px-2 py-0.5 rounded tabular-nums">{"<"}40</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Composite below 45. Not viable for a solo builder right now. Move on. There are more ideas in the lab.</p>
+                <p className="text-xs text-muted-foreground">FL score below 40. The numbers say move on. There are more ideas in the lab.</p>
               </div>
             </div>
           </div>
