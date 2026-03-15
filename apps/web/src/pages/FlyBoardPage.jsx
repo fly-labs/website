@@ -867,8 +867,8 @@ export default function FlyBoardPage() {
 
           {/* ---- Main canvas area ---- */}
           <div className="flex-1 flex flex-col min-w-0">
-            {/* Toolbar */}
-            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[52px] border-b shrink-0">
+            {/* Toolbar: wraps to 2 rows at narrow widths, single row when wide */}
+            <div className="flyboard-toolbar flex flex-wrap items-center px-2 sm:px-3 min-h-[44px] border-b shrink-0 gap-y-0.5 py-0.5">
               {/* Left: sidebar toggle + title */}
               <div className="flex items-center gap-1 min-w-0 shrink-0">
                 <button
@@ -916,8 +916,8 @@ export default function FlyBoardPage() {
                 )}
               </div>
 
-              {/* Center: tool groups in pills (scrolls horizontally when overflowing) */}
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0 mx-2 sm:mx-3 justify-center overflow-x-auto scrollbar-none flex-nowrap">
+              {/* Tools: wraps to second row at narrow widths */}
+              <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 ml-2 sm:ml-3 mr-1 flex-wrap">
 
                 {/* Drawing tools pill - core 5 on mobile, +3 on tablet, all on desktop */}
                 <div className="flyboard-tool-pill">
@@ -1247,39 +1247,42 @@ export default function FlyBoardPage() {
                 >
                   <MoreHorizontal className="w-[18px] h-[18px]" />
                 </button>
-              </div>
 
-              {/* Right: actions pill */}
-              <div className="flyboard-tool-pill shrink-0">
-                <button
-                  onClick={() => setExportOpen(true)}
-                  className="flyboard-tb-btn"
-                  title="Export board"
-                >
-                  <Download className="w-[18px] h-[18px]" />
-                </button>
+                {/* Spacer pushes actions to the right */}
+                <div className="flex-1 min-w-2" />
 
-                <button
-                  onClick={handleToggleExcalidrawUI}
-                  className={`flyboard-tb-btn flyboard-native-toggle ${showExcalidrawUI ? 'active' : ''}`}
-                  title={showExcalidrawUI ? 'Hide native toolbar' : 'Show native Excalidraw toolbar (colors, links, images, LaTeX math)'}
-                >
-                  <SlidersHorizontal className="w-[18px] h-[18px]" />
-                </button>
+                {/* Actions pill (inside the scroll strip) */}
+                <div className="flyboard-tool-pill shrink-0">
+                  <button
+                    onClick={() => setExportOpen(true)}
+                    className="flyboard-tb-btn"
+                    title="Export board"
+                  >
+                    <Download className="w-[18px] h-[18px]" />
+                  </button>
 
-                <button
-                  onClick={toggleFullscreen}
-                  className="flyboard-tb-btn"
-                  title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
-                >
-                  {isFullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
-                </button>
+                  <button
+                    onClick={handleToggleExcalidrawUI}
+                    className={`flyboard-tb-btn flyboard-native-toggle ${showExcalidrawUI ? 'active' : ''}`}
+                    title={showExcalidrawUI ? 'Hide native toolbar' : 'Show native Excalidraw toolbar (colors, links, images, LaTeX math)'}
+                  >
+                    <SlidersHorizontal className="w-[18px] h-[18px]" />
+                  </button>
 
-                {!isAuthenticated && (
-                  <a href="/login" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
-                    Sign in
-                  </a>
-                )}
+                  <button
+                    onClick={toggleFullscreen}
+                    className="flyboard-tb-btn"
+                    title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
+                  >
+                    {isFullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
+                  </button>
+
+                  {!isAuthenticated && (
+                    <a href="/login" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
+                      Sign in
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
 
