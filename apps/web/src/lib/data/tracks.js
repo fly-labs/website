@@ -4,73 +4,209 @@
  *
  * 4 vibe modes, 28 tracks total.
  * All tracks are CC0/royalty-free (no attribution required).
- * HoliznaCC0 tracks: CC0 1.0 Universal (Public Domain)
- * Mixkit tracks: Mixkit Free License
  */
-
-const BASE = 'https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music';
 
 export const vibes = [
   {
-    id: 'ideate',
-    name: 'Ideate',
-    description: 'Brainstorm mode. Upbeat beats to spark ideas.',
-    icon: 'Lightbulb',
-    tracks: [
-      { id: 'ideate-01', title: 'Morning Coffee', artist: 'HoliznaCC0', src: `${BASE}/ideate/01-morning-coffee--holiznacc0.mp3` },
-      { id: 'ideate-02', title: 'Pretty Little Lies', artist: 'HoliznaCC0', src: `${BASE}/ideate/02-pretty-little-lies--holiznacc0.mp3` },
-      { id: 'ideate-03', title: 'Something in the Air', artist: 'HoliznaCC0', src: `${BASE}/ideate/03-something-in-the-air--holiznacc0.mp3` },
-      { id: 'ideate-04', title: 'Glad to Be Stuck Inside', artist: 'HoliznaCC0', src: `${BASE}/ideate/04-glad-to-be-stuck-inside--holiznacc0.mp3` },
-      { id: 'ideate-05', title: 'Lighter Than Air', artist: 'HoliznaCC0', src: `${BASE}/ideate/05-lighter-than-air--holiznacc0.mp3` },
-      { id: 'ideate-06', title: 'Latin Lovers', artist: 'Ahjay Stelino', src: `${BASE}/ideate/06-latin-lovers--ahjay-stelino.mp3` },
-      { id: 'ideate-07', title: 'Sweet September', artist: 'Arulo', src: `${BASE}/ideate/07-sweet-september--arulo.mp3` },
-    ],
+    "id": "ideate",
+    "name": "Ideate",
+    "description": "Brainstorm mode. Upbeat beats to spark ideas.",
+    "icon": "Lightbulb",
+    "tracks": [
+      {
+        "id": "ideate-01-morning-coffee--holiznacc0",
+        "title": "Morning Coffee",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/01-morning-coffee--holiznacc0.mp3"
+      },
+      {
+        "id": "ideate-02-pretty-little-lies--holiznacc0",
+        "title": "Pretty Little Lies",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/02-pretty-little-lies--holiznacc0.mp3"
+      },
+      {
+        "id": "ideate-03-something-in-the-air--holiznacc0",
+        "title": "Something in the Air",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/03-something-in-the-air--holiznacc0.mp3"
+      },
+      {
+        "id": "ideate-04-glad-to-be-stuck-inside--holiznacc0",
+        "title": "Glad to Be Stuck Inside",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/04-glad-to-be-stuck-inside--holiznacc0.mp3"
+      },
+      {
+        "id": "ideate-05-lighter-than-air--holiznacc0",
+        "title": "Lighter Than Air",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/05-lighter-than-air--holiznacc0.mp3"
+      },
+      {
+        "id": "ideate-06-latin-lovers--ahjay-stelino",
+        "title": "Latin Lovers",
+        "artist": "Ahjay Stelino",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/06-latin-lovers--ahjay-stelino.mp3"
+      },
+      {
+        "id": "ideate-07-sweet-september--arulo",
+        "title": "Sweet September",
+        "artist": "Arulo",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/ideate/07-sweet-september--arulo.mp3"
+      }
+    ]
   },
   {
-    id: 'build',
-    name: 'Build',
-    description: 'Flow state. Driving rhythms for deep work.',
-    icon: 'Hammer',
-    tracks: [
-      { id: 'build-01', title: 'Everything You Ever Dreamed', artist: 'HoliznaCC0', src: `${BASE}/build/01-everything-you-ever-dreamed--holiznacc0.mp3` },
-      { id: 'build-02', title: 'Lofi Forever', artist: 'HoliznaCC0', src: `${BASE}/build/02-lofi-forever--holiznacc0.mp3` },
-      { id: 'build-03', title: 'Laundry Day', artist: 'HoliznaCC0', src: `${BASE}/build/03-laundry-day--holiznacc0.mp3` },
-      { id: 'build-04', title: 'Whatever', artist: 'HoliznaCC0', src: `${BASE}/build/04-whatever--holiznacc0.mp3` },
-      { id: 'build-05', title: 'Keeping Cool', artist: 'HoliznaCC0', src: `${BASE}/build/05-keeping-cool--holiznacc0.mp3` },
-      { id: 'build-06', title: 'Lounging by Moonlight', artist: 'Ahjay Stelino', src: `${BASE}/build/06-lounging-by-moonlight--ahjay-stelino.mp3` },
-      { id: 'build-07', title: 'Nostalgic Night', artist: 'Michael Ramir C.', src: `${BASE}/build/07-nostalgic-night--michael-ramir-c.mp3` },
-    ],
+    "id": "build",
+    "name": "Build",
+    "description": "Flow state. Driving rhythms for deep work.",
+    "icon": "Hammer",
+    "tracks": [
+      {
+        "id": "build-01-everything-you-ever-dreamed--holiznacc0",
+        "title": "Everything You Ever Dreamed",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/01-everything-you-ever-dreamed--holiznacc0.mp3"
+      },
+      {
+        "id": "build-02-lofi-forever--holiznacc0",
+        "title": "Lofi Forever",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/02-lofi-forever--holiznacc0.mp3"
+      },
+      {
+        "id": "build-03-laundry-day--holiznacc0",
+        "title": "Laundry Day",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/03-laundry-day--holiznacc0.mp3"
+      },
+      {
+        "id": "build-04-whatever--holiznacc0",
+        "title": "Whatever",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/04-whatever--holiznacc0.mp3"
+      },
+      {
+        "id": "build-05-keeping-cool--holiznacc0",
+        "title": "Keeping Cool",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/05-keeping-cool--holiznacc0.mp3"
+      },
+      {
+        "id": "build-06-lounging-by-moonlight--ahjay-stelino",
+        "title": "Lounging by Moonlight",
+        "artist": "Ahjay Stelino",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/06-lounging-by-moonlight--ahjay-stelino.mp3"
+      },
+      {
+        "id": "build-07-nostalgic-night--michael-ramir-c",
+        "title": "Nostalgic Night",
+        "artist": "Michael Ramir C",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/build/07-nostalgic-night--michael-ramir-c.mp3"
+      }
+    ]
   },
   {
-    id: 'create',
-    name: 'Create',
-    description: 'Cozy vibes. Warm beats for writing and creating.',
-    icon: 'PenLine',
-    tracks: [
-      { id: 'create-01', title: 'Vintage', artist: 'HoliznaCC0', src: `${BASE}/create/01-vintage--holiznacc0.mp3` },
-      { id: 'create-02', title: 'A Little Shade', artist: 'HoliznaCC0', src: `${BASE}/create/02-a-little-shade--holiznacc0.mp3` },
-      { id: 'create-03', title: 'Come Again', artist: 'HoliznaCC0', src: `${BASE}/create/03-come-again--holiznacc0.mp3` },
-      { id: 'create-04', title: 'Poor but Happy', artist: 'HoliznaCC0', src: `${BASE}/create/04-poor-but-happy--holiznacc0.mp3` },
-      { id: 'create-05', title: 'Sooo Broke', artist: 'HoliznaCC0', src: `${BASE}/create/05-sooo-broke--holiznacc0.mp3` },
-      { id: 'create-06', title: 'Smooth Like Jazz', artist: 'Ahjay Stelino', src: `${BASE}/create/06-smooth-like-jazz--ahjay-stelino.mp3` },
-      { id: 'create-07', title: 'Charlotte', artist: 'Eugenio Mininni', src: `${BASE}/create/07-charlotte--eugenio-mininni.mp3` },
-    ],
+    "id": "create",
+    "name": "Create",
+    "description": "Cozy vibes. Warm beats for writing and creating.",
+    "icon": "PenLine",
+    "tracks": [
+      {
+        "id": "create-01-vintage--holiznacc0",
+        "title": "Vintage",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/01-vintage--holiznacc0.mp3"
+      },
+      {
+        "id": "create-02-a-little-shade--holiznacc0",
+        "title": "A Little Shade",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/02-a-little-shade--holiznacc0.mp3"
+      },
+      {
+        "id": "create-03-come-again--holiznacc0",
+        "title": "Come Again",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/03-come-again--holiznacc0.mp3"
+      },
+      {
+        "id": "create-04-poor-but-happy--holiznacc0",
+        "title": "Poor but Happy",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/04-poor-but-happy--holiznacc0.mp3"
+      },
+      {
+        "id": "create-05-sooo-broke--holiznacc0",
+        "title": "Sooo Broke",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/05-sooo-broke--holiznacc0.mp3"
+      },
+      {
+        "id": "create-06-smooth-like-jazz--ahjay-stelino",
+        "title": "Smooth Like Jazz",
+        "artist": "Ahjay Stelino",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/06-smooth-like-jazz--ahjay-stelino.mp3"
+      },
+      {
+        "id": "create-07-charlotte--eugenio-mininni",
+        "title": "Charlotte",
+        "artist": "Eugenio Mininni",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/create/07-charlotte--eugenio-mininni.mp3"
+      }
+    ]
   },
   {
-    id: 'study',
-    name: 'Study',
-    description: 'Focus mode. Calm sounds for reading and learning.',
-    icon: 'BookOpen',
-    tracks: [
-      { id: 'study-01', title: 'Autumn', artist: 'HoliznaCC0', src: `${BASE}/study/01-autumn--holiznacc0.mp3` },
-      { id: 'study-02', title: 'Foggy Headed', artist: 'HoliznaCC0', src: `${BASE}/study/02-foggy-headed--holiznacc0.mp3` },
-      { id: 'study-03', title: 'Seasons Change', artist: 'HoliznaCC0', src: `${BASE}/study/03-seasons-change--holiznacc0.mp3` },
-      { id: 'study-04', title: 'Static', artist: 'HoliznaCC0', src: `${BASE}/study/04-static--holiznacc0.mp3` },
-      { id: 'study-05', title: 'Limbo', artist: 'HoliznaCC0', src: `${BASE}/study/05-limbo--holiznacc0.mp3` },
-      { id: 'study-06', title: 'Yesterday', artist: 'HoliznaCC0', src: `${BASE}/study/06-yesterday--holiznacc0.mp3` },
-      { id: 'study-07', title: 'Pondering', artist: 'Arulo', src: `${BASE}/study/07-pondering--arulo.mp3` },
-    ],
-  },
+    "id": "study",
+    "name": "Study",
+    "description": "Focus mode. Calm sounds for reading and learning.",
+    "icon": "BookOpen",
+    "tracks": [
+      {
+        "id": "study-01-autumn--holiznacc0",
+        "title": "Autumn",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/01-autumn--holiznacc0.mp3"
+      },
+      {
+        "id": "study-02-foggy-headed--holiznacc0",
+        "title": "Foggy Headed",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/02-foggy-headed--holiznacc0.mp3"
+      },
+      {
+        "id": "study-03-seasons-change--holiznacc0",
+        "title": "Seasons Change",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/03-seasons-change--holiznacc0.mp3"
+      },
+      {
+        "id": "study-04-static--holiznacc0",
+        "title": "Static",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/04-static--holiznacc0.mp3"
+      },
+      {
+        "id": "study-05-limbo--holiznacc0",
+        "title": "Limbo",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/05-limbo--holiznacc0.mp3"
+      },
+      {
+        "id": "study-06-yesterday--holiznacc0",
+        "title": "Yesterday",
+        "artist": "Holiznacc0",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/06-yesterday--holiznacc0.mp3"
+      },
+      {
+        "id": "study-07-pondering--arulo",
+        "title": "Pondering",
+        "artist": "Arulo",
+        "src": "https://mtkqhdsblhgshozbeoar.supabase.co/storage/v1/object/public/music/study/07-pondering--arulo.mp3"
+      }
+    ]
+  }
 ];
 
 // Backward compat: flat array of all tracks
