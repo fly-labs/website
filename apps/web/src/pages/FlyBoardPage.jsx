@@ -131,8 +131,11 @@ export default function FlyBoardPage() {
   } = useBoardContext();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  // v2: sidebar is always overlay now, start closed
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Sidebar is overlay-only, always starts closed. Clean up old localStorage key.
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    try { localStorage.removeItem('flyboard-sidebar'); } catch {}
+    return false;
+  });
   const excalidrawRef = useRef(null);
 
   // Fullscreen state
