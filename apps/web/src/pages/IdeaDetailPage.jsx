@@ -137,8 +137,8 @@ const IdeaDetailPage = () => {
   const status = statusConfig[idea.status] || statusConfig.open;
   const synthesis = idea.score_breakdown?.synthesis;
   const enrichVerdict = idea.enrichment?.verdict;
-  const scoreVerdict = synthesis;
-  const rec = enrichVerdict?.recommendation || scoreVerdict?.verdict;
+  // Use materialized verdict column (source of truth, enforced by scoring + enrichment scripts)
+  const rec = idea.verdict || synthesis?.verdict;
   const vs = verdictStyles[rec] || verdictStyles.VALIDATE_FIRST;
 
   const flData = idea.score_breakdown?.flylabs;

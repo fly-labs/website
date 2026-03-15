@@ -90,7 +90,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, index, showScores = true }) => {
               {showScores ? (
                 <>
                   {(() => {
-                    const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
+                    const verdict = idea.verdict || idea.score_breakdown?.synthesis?.verdict;
                     if (!verdict) return null;
                     return (
                       <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>

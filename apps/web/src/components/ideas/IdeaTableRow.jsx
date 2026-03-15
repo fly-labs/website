@@ -11,7 +11,7 @@ const TRENDING_THRESHOLD = 5;
 
 const IdeaTableRow = ({ idea, hasVoted, onVote, index, showScores = true }) => {
   const navigate = useNavigate();
-  const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
+  const verdict = idea.verdict || idea.score_breakdown?.synthesis?.verdict;
 
   const handleClick = () => {
     trackEvent('idea_detail_opened', { idea_id: idea.id, idea_title: idea.idea_title, source: idea.source });
