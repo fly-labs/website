@@ -73,7 +73,7 @@ const VIBE_CONFIG = [
   { id: 'retro', name: 'Retro', description: 'Synthwave and retro beats. Late 2000s lan house energy.', icon: 'Gamepad2' },
 ];
 
-const MAX_TOTAL_SIZE_MB = 500;
+const MAX_TOTAL_SIZE_MB = 5000; // 10GB R2 bucket, safe limit at 5GB
 
 /**
  * Parse a filename like "01-chill-lofi-beats--artist-name.mp3" into title + artist
