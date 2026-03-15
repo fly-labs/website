@@ -419,7 +419,7 @@ Confidence rules:
 - low: < 5 pieces of evidence total
 
 For the verdict, cross-reference the Fly Labs score (if provided) with the market evidence to give the most informed recommendation possible. This verdict supersedes the scoring-only verdict because it has real market evidence.
-- BUILD: Strong market evidence confirms the FL score. Real people are experiencing this pain and willing to pay. FL score should be >= 55 for evidence to upgrade to BUILD. IMPORTANT: If the Fly Labs buildability score is below 10/20, the verdict CANNOT be BUILD regardless of market evidence. Strong demand for something a solo builder cannot ship is a trap, not an opportunity. Downgrade to VALIDATE_FIRST.
+- BUILD: Strong market evidence confirms the FL score. Real people are experiencing this pain and willing to pay. FL score MUST be >= 65 for BUILD. If FL < 65, the verdict CANNOT be BUILD regardless of how strong the market evidence is. Use VALIDATE_FIRST instead. IMPORTANT: If the Fly Labs buildability score is below 10/20, the verdict CANNOT be BUILD regardless of market evidence. Strong demand for something a solo builder cannot ship is a trap, not an opportunity. Downgrade to VALIDATE_FIRST.
 - VALIDATE_FIRST: Some evidence exists but gaps remain. Need more data before committing.
 - SKIP: Weak or contradicting evidence. The market signal does not support the idea.
 
@@ -588,6 +588,17 @@ async function main() {
       if (competitorCount <= 1 && result.validation) {
         result.validation.confidence = 'high';
         result.validation.underserved_market = true;
+      }
+
+      // Server-side FL score gate: enrichment cannot set BUILD if FL < 65
+      const fl = idea.flylabs_score || idea.score_breakdown?.flylabs?.total;
+      if (enrichmentVerdict === 'BUILD' && fl != null && fl < 65) {
+        console.log(`  FL gate: ${fl}/100 < 65, overriding enrichment BUILD → VALIDATE_FIRST`);
+        enrichmentVerdict = 'VALIDATE_FIRST';
+        result.verdict.recommendation = 'VALIDATE_FIRST';
+        result.verdict.fl_override = true;
+        result.verdict.original_recommendation = result.verdict.original_recommendation || 'BUILD';
+        result.verdict.override_reason = `FL score ${fl}/100 below minimum threshold of 65 for BUILD`;
       }
 
       // Server-side buildability gate: enrichment cannot override to BUILD if buildability < 10
