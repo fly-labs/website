@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
-import { buildSystemPrompt, findSimilarIdeas } from './lib/coach-prompt.js';
+import { buildSystemPrompt, findSimilarIdeas, fetchIdeaAnalytics } from './lib/coach-prompt.js';
 import { prompts as promptLibrary } from '../src/lib/data/prompts.js';
 
 export const config = {
@@ -143,24 +143,25 @@ export default async function handler(req, res) {
   // Find similar ideas if user might be describing one
   const ideaKeywords = ['idea', 'build', 'tool', 'app', 'project', 'product', 'saas', 'problem', 'solve', 'evaluate', 'score'];
   const mightBeIdea = ideaKeywords.some(k => cleanMessage.toLowerCase().includes(k));
-  let similarIdeas = [];
-  if (mightBeIdea) {
-    try {
-      similarIdeas = await findSimilarIdeas(supabase, cleanMessage);
-    } catch (e) {
-      // Non-critical, continue without similar ideas
-    }
-  }
+
+  // Run parallel: similar ideas + analytics + relevant prompts
+  const [similarIdeas, analytics] = await Promise.all([
+    mightBeIdea
+      ? findSimilarIdeas(supabase, cleanMessage).catch(() => [])
+      : Promise.resolve([]),
+    fetchIdeaAnalytics(supabase),
+  ]);
 
   // Find relevant prompts from our library
   const relevantPrompts = findRelevantPrompts(cleanMessage);
 
-  // Build system prompt with full knowledge base
+  // Build system prompt with full knowledge base + live analytics
   const systemPrompt = buildSystemPrompt({
     similarIdeas,
     relevantPrompts,
     promptCatalog: promptLibrary,
     pageContext: page_context,
+    analytics,
   });
 
   // Build messages array

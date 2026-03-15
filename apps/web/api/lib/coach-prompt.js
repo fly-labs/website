@@ -370,6 +370,7 @@ function buildRelevantPromptsSection(relevantPrompts) {
  * @param {Array} context.similarIdeas - Top 5 similar ideas from DB
  * @param {Array} context.relevantPrompts - Top 3 relevant prompts with full content
  * @param {Array} context.promptCatalog - Full prompt library for catalog listing
+ * @param {Object} context.analytics - Real-time idea analytics from fetchIdeaAnalytics()
  * @returns {string} Full system prompt
  */
 export function buildSystemPrompt(context = {}) {
@@ -398,12 +399,53 @@ export function buildSystemPrompt(context = {}) {
     prompt += `\n## SIMILAR IDEAS FROM THE DATABASE\n\n`;
     prompt += `Here are scored ideas similar to what the user is describing. Reference these by name when relevant:\n\n`;
     for (const idea of context.similarIdeas) {
-      prompt += `"${idea.idea_title}" (FL: ${idea.flylabs_score || 'N/A'}, Verdict: ${idea.verdict || 'N/A'})`;
+      prompt += `"${idea.idea_title}" (FL: ${idea.flylabs_score || 'N/A'}, Composite: ${idea.composite_score || 'N/A'}, Verdict: ${idea.verdict || 'N/A'}, Confidence: ${idea.confidence || 'N/A'}, Source: ${idea.source || 'N/A'})`;
       if (idea.score_breakdown?.synthesis?.reasoning) {
         prompt += ` - ${idea.score_breakdown.synthesis.reasoning}`;
       }
+      if (idea.enrichment?.verdict?.reasoning) {
+        prompt += ` [Market validation: ${idea.enrichment.verdict.reasoning}]`;
+      }
+      if (idea.meta?.failure_analysis) {
+        const fa = idea.meta.failure_analysis;
+        prompt += ` [YC Graveyard: failed because ${fa.failure_reason || 'unknown'}, what changed: ${fa.what_changed || 'unknown'}]`;
+      }
       prompt += `\n`;
     }
+  }
+
+  // Real-time analytics (always included when available)
+  if (context.analytics) {
+    const a = context.analytics;
+    prompt += `\n## LIVE IDEA LAB ANALYTICS (real-time from database)\n\n`;
+    prompt += `Use these numbers when the user asks about the Idea Lab, trends, patterns, or "what have you seen."\n\n`;
+    prompt += `Total ideas: ${a.total}. Scored: ${a.scored}. Validated with market evidence: ${a.validated}.\n`;
+    prompt += `Verdicts: ${a.verdicts.BUILD} BUILD, ${a.verdicts.VALIDATE_FIRST} VALIDATE_FIRST, ${a.verdicts.SKIP} SKIP.\n`;
+    if (a.scored > 0) {
+      const buildRate = Math.round(a.verdicts.BUILD / a.scored * 100);
+      const skipRate = Math.round(a.verdicts.SKIP / a.scored * 100);
+      prompt += `BUILD rate: ${buildRate}%. SKIP rate: ${skipRate}%. Most ideas land in VALIDATE_FIRST.\n`;
+    }
+    prompt += `\nScore distribution: ${Object.entries(a.scoreBuckets).map(([k, v]) => `${k}: ${v}`).join(', ')}.\n`;
+    prompt += `\nSource breakdown: ${Object.entries(a.sourceStats).map(([k, v]) => `${k}: ${v.count} ideas`).join(', ')}.\n`;
+    if (a.sourceQuality.length > 0) {
+      prompt += `Best source by avg score: ${a.sourceQuality[0].name} (avg ${a.sourceQuality[0].avg}, ${a.sourceQuality[0].builds} BUILDs out of ${a.sourceQuality[0].count}).\n`;
+    }
+    if (a.topIndustries.length > 0) {
+      prompt += `Top industries: ${a.topIndustries.map(([k, v]) => `${k} (${v})`).join(', ')}.\n`;
+    }
+    if (a.topIdeas.length > 0) {
+      prompt += `\nHighest-scoring ideas right now:\n`;
+      for (const idea of a.topIdeas) {
+        prompt += `- "${idea.idea_title}" (${idea.composite_score}, ${idea.verdict}, ${idea.industry || 'no industry'}, from ${idea.source})\n`;
+      }
+    }
+    prompt += `\nGrowth: ${a.growth.last7} new ideas in the last 7 days`;
+    if (a.growth.prior7 > 0) {
+      const change = Math.round((a.growth.last7 - a.growth.prior7) / a.growth.prior7 * 100);
+      prompt += ` (${change >= 0 ? '+' : ''}${change}% vs prior week)`;
+    }
+    prompt += `.\n`;
   }
 
   prompt += `\n## FIRST MESSAGE\n\n`;
@@ -416,7 +458,6 @@ export function buildSystemPrompt(context = {}) {
  * Search for similar ideas based on keywords
  */
 export async function findSimilarIdeas(supabase, userMessage) {
-  // Extract potential keywords (simple approach: words > 4 chars, excluding common words)
   const stopWords = new Set(['that', 'this', 'with', 'from', 'have', 'been', 'what', 'when', 'where', 'which', 'about', 'would', 'could', 'should', 'their', 'there', 'these', 'those', 'think', 'want', 'need', 'help', 'idea', 'ideas']);
   const words = userMessage.toLowerCase()
     .replace(/[^\w\s]/g, '')
@@ -426,18 +467,15 @@ export async function findSimilarIdeas(supabase, userMessage) {
 
   if (words.length === 0) return [];
 
-  let query = supabase
+  const { data: ideas } = await supabase
     .from('ideas')
-    .select('idea_title, flylabs_score, hormozi_score, koe_score, okamoto_score, composite_score, verdict, score_breakdown, industry')
+    .select('idea_title, flylabs_score, hormozi_score, koe_score, okamoto_score, composite_score, verdict, confidence, score_breakdown, enrichment, industry, source, meta')
     .not('verdict', 'is', null)
     .order('composite_score', { ascending: false })
     .limit(50);
 
-  const { data: ideas } = await query;
-
   if (!ideas || ideas.length === 0) return [];
 
-  // Score ideas by keyword relevance
   const scored = ideas.map(idea => {
     const title = (idea.idea_title || '').toLowerCase();
     const industry = (idea.industry || '').toLowerCase();
@@ -453,4 +491,97 @@ export async function findSimilarIdeas(supabase, userMessage) {
     .slice(0, 5);
 
   return scored;
+}
+
+/**
+ * Fetch real-time analytics from the ideas database
+ */
+export async function fetchIdeaAnalytics(supabase) {
+  try {
+    const { data: ideas } = await supabase
+      .from('ideas')
+      .select('source, category, industry, verdict, confidence, composite_score, flylabs_score, validation_score, created_at')
+      .eq('approved', true);
+
+    if (!ideas || ideas.length === 0) return null;
+
+    const total = ideas.length;
+    const scored = ideas.filter(i => i.verdict);
+    const validated = ideas.filter(i => i.validation_score != null);
+
+    // Verdict distribution
+    const verdicts = { BUILD: 0, VALIDATE_FIRST: 0, SKIP: 0 };
+    for (const i of scored) { if (verdicts[i.verdict] !== undefined) verdicts[i.verdict]++; }
+
+    // Source counts + avg scores
+    const sourceStats = {};
+    for (const i of ideas) {
+      const s = i.source || 'community';
+      if (!sourceStats[s]) sourceStats[s] = { count: 0, totalScore: 0, scored: 0, builds: 0 };
+      sourceStats[s].count++;
+      if (i.composite_score != null) {
+        sourceStats[s].totalScore += Number(i.composite_score);
+        sourceStats[s].scored++;
+      }
+      if (i.verdict === 'BUILD') sourceStats[s].builds++;
+    }
+
+    // Top industries
+    const industryCounts = {};
+    for (const i of ideas) {
+      if (i.industry) {
+        industryCounts[i.industry] = (industryCounts[i.industry] || 0) + 1;
+      }
+    }
+    const topIndustries = Object.entries(industryCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8);
+
+    // Score distribution
+    const scoreBuckets = { '0-29': 0, '30-44': 0, '45-59': 0, '60-69': 0, '70-84': 0, '85-100': 0 };
+    for (const i of scored) {
+      const s = Number(i.composite_score);
+      if (s < 30) scoreBuckets['0-29']++;
+      else if (s < 45) scoreBuckets['30-44']++;
+      else if (s < 60) scoreBuckets['45-59']++;
+      else if (s < 70) scoreBuckets['60-69']++;
+      else if (s < 85) scoreBuckets['70-84']++;
+      else scoreBuckets['85-100']++;
+    }
+
+    // Top 5 highest-scoring ideas
+    const topIdeas = scored
+      .sort((a, b) => Number(b.composite_score) - Number(a.composite_score))
+      .slice(0, 5);
+
+    // Best source by avg score
+    const sourceQuality = Object.entries(sourceStats)
+      .filter(([, v]) => v.scored >= 3)
+      .map(([name, v]) => ({ name, avg: Math.round(v.totalScore / v.scored), count: v.count, builds: v.builds }))
+      .sort((a, b) => b.avg - a.avg);
+
+    // Recent growth (last 7 days vs prior 7 days)
+    const now = Date.now();
+    const week = 7 * 24 * 60 * 60 * 1000;
+    const last7 = ideas.filter(i => now - new Date(i.created_at).getTime() < week).length;
+    const prior7 = ideas.filter(i => {
+      const age = now - new Date(i.created_at).getTime();
+      return age >= week && age < week * 2;
+    }).length;
+
+    return {
+      total,
+      scored: scored.length,
+      validated: validated.length,
+      verdicts,
+      sourceStats,
+      topIndustries,
+      scoreBuckets,
+      topIdeas,
+      sourceQuality,
+      growth: { last7, prior7 },
+    };
+  } catch (e) {
+    return null;
+  }
 }
