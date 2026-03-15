@@ -163,7 +163,7 @@ const HomePage = () => {
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            I build tools for one-person builders and give them away. AI-scored ideas, prompts, templates, open source everything. See what's inside.
+            Open source tools for one-person builders. AI-scored ideas, prompts, templates, and everything I build along the way.
           </p>
 
           {/* CTA */}
