@@ -941,42 +941,42 @@ const IdeasAnalyticsPage = () => {
         {/* ── Momentum Dashboard ── */}
         <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 mb-8 sm:mb-10" {...staggerContainer}>
           <motion.div {...staggerItem}>
-            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
-              <ArrowUpRight className="w-4 h-4 text-primary mb-1.5" />
-              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight">
+            <div className="glass-card p-4 sm:p-6 text-center border border-border rounded-xl h-full">
+              <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2 text-primary" />
+              <p className="text-xl sm:text-3xl font-black text-foreground leading-tight">
                 {stats.sourceMomentumData?.[0]?.source || '-'}
               </p>
               <DeltaBadge value={stats.sourceMomentumData?.[0]?.delta} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Hottest source</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1 leading-tight">Hottest source</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
-            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
-              <Zap className="w-4 h-4 text-secondary mb-1.5" />
-              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+            <div className="glass-card p-4 sm:p-6 text-center border border-border rounded-xl h-full">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2 text-secondary" />
+              <p className="text-2xl sm:text-4xl font-black text-foreground leading-tight tabular-nums">
                 {stats.pipelineThisWeek}
               </p>
               <DeltaBadge value={stats.pipelineDelta} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">New this week</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1 leading-tight">New this week</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
-            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
-              <TrendingUp className="w-4 h-4 text-accent mb-1.5" />
-              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+            <div className="glass-card p-4 sm:p-6 text-center border border-border rounded-xl h-full">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2 text-accent" />
+              <p className="text-2xl sm:text-4xl font-black text-foreground leading-tight tabular-nums">
                 {stats.currentWeekAvg}<span className="text-sm text-muted-foreground font-normal">/100</span>
               </p>
               <DeltaBadge value={stats.scoreTrend} />
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Quality this week</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1 leading-tight">Quality this week</p>
             </div>
           </motion.div>
           <motion.div {...staggerItem}>
-            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
-              <GitCompare className="w-4 h-4 text-amber-500 mb-1.5" />
-              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+            <div className="glass-card p-4 sm:p-6 text-center border border-border rounded-xl h-full">
+              <GitCompare className="w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2 text-amber-500" />
+              <p className="text-2xl sm:text-4xl font-black text-foreground leading-tight tabular-nums">
                 {stats.disagreements?.length || 0}
               </p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Experts disagree</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1 leading-tight">Experts disagree</p>
             </div>
           </motion.div>
         </motion.div>
