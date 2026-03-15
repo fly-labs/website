@@ -249,7 +249,7 @@ async function scoreIdea(idea) {
         }
       }
 
-      // Recompute composite to verify AI math
+      // Recompute composite server-side (don't trust AI math)
       if (parsed.synthesis) {
         const expected = Math.round(
           parsed.flylabs.total * 0.4 +
@@ -257,9 +257,32 @@ async function scoreIdea(idea) {
           parsed.koe.total * 0.2 +
           parsed.okamoto.total * 0.2
         );
-        if (parsed.synthesis.composite_score != null && Math.abs(parsed.synthesis.composite_score - expected) > 3) {
-          console.warn(`  Composite mismatch: AI=${parsed.synthesis.composite_score}, expected=${expected}. Using computed.`);
-          parsed.synthesis.composite_score = expected;
+        if (Math.abs((parsed.synthesis.composite_score || 0) - expected) > 3) {
+          console.warn(`  Composite mismatch: AI=${parsed.synthesis.composite_score}, computed=${expected}. Using computed.`);
+        }
+        parsed.synthesis.composite_score = expected;
+
+        // Recompute verdict server-side from scores (AI tends to be too conservative)
+        const composite = expected;
+        const flTotal = parsed.flylabs.total;
+        const buildScore = parsed.flylabs?.buildability?.score;
+        const minFw = Math.min(parsed.flylabs.total, parsed.hormozi.total, parsed.koe.total, parsed.okamoto.total);
+        const isSaturated = parsed.synthesis.saturation_capped;
+
+        let computedVerdict;
+        if (isSaturated) {
+          computedVerdict = 'VALIDATE_FIRST';
+        } else if (composite >= 70 && flTotal >= 60 && buildScore >= 10 && minFw >= 30) {
+          computedVerdict = 'BUILD';
+        } else if (composite >= 45) {
+          computedVerdict = 'VALIDATE_FIRST';
+        } else {
+          computedVerdict = 'SKIP';
+        }
+
+        if (parsed.synthesis.verdict !== computedVerdict) {
+          console.warn(`  Verdict override: AI="${parsed.synthesis.verdict}", computed="${computedVerdict}" (C:${composite} FL:${flTotal} B:${buildScore} Min:${minFw})`);
+          parsed.synthesis.verdict = computedVerdict;
         }
       }
 
