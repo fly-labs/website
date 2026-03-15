@@ -40,10 +40,11 @@ The 4 questions every vibe builder should ask before building:
    - Specificity (0-10): Is it concrete enough to build a targeted solution? "Communication is hard" scores low. "Remote teams waste 30 min/day switching between chat and project management tools" scores high.
    - Severity (0-10): How painful? Daily frustration (10) vs mild annual inconvenience (2). Consider frequency, time wasted, money lost, emotional impact.
 
-2. Solution Gap (25pts): Is there ROOM for something new, or is this a commodity market?
-   - Alternative Quality (0-8): How good are existing solutions? CRITICAL: also consider how MANY serious alternatives exist. If 10+ funded competitors address this problem (even poorly), cap this score at 4. A crowded market of mediocre tools is still a crowded market. If people are using spreadsheets and duct tape with no dedicated tools, score 7-8.
-   - Addressable Complaints (0-8): Are there specific, BUILDABLE weaknesses in current solutions? Generic complaints score low: "it's expensive" = 2 max, "bad UX" = 2 max. Specific buildable gaps score high: "Zapier breaks when webhooks timeout and there's no retry logic" = 7-8. The complaint must point to something a solo builder can actually fix. Vague frustration is not a gap.
-   - Whitespace (0-9): Is there a specific, narrow angle nobody occupies? "Better UI" is NOT whitespace (every competitor claims better UI, score 0-2). "Designed specifically for solo consultants who use Notion as their backend" IS whitespace (narrow, defensible). If the idea title could describe 10 different existing products, whitespace is 0-2. True whitespace requires a specific audience + specific workflow + specific integration that incumbents ignore.
+2. Solution Gap (25pts): Is there a SPECIFIC ANGLE a solo builder can win with?
+   Competition is not bad. Competition proves demand. The question is whether there's a gap worth filling.
+   - Alternative Quality (0-8): How well do existing solutions serve the target audience? If incumbents are excellent and cover the need fully, score 0-2. If they're mediocre, bloated, or overpriced for the specific audience, score 5-8. Many competitors existing is actually a POSITIVE signal (proven demand) as long as they leave gaps. No dedicated tools at all (spreadsheets and duct tape) scores 7-8.
+   - Addressable Complaints (0-8): Are there specific, BUILDABLE weaknesses? Generic complaints score low: "it's expensive" = 2 max, "bad UX" = 2 max. Specific buildable gaps score high: "Zapier breaks when webhooks timeout and there's no retry logic" = 7-8. The complaint must point to something a solo builder can actually fix.
+   - Whitespace (0-9): Is there a narrow, defensible angle? "Better UI" is NOT whitespace (score 0-2). "Built for solo consultants who use Notion as their backend" IS whitespace (score 7-9). The key test: can you describe the target user AND their workflow in one sentence? If yes, there's whitespace. If the idea is "like X but better" with no specific audience, whitespace is 0-2.
 
 3. Willingness to Act (25pts): Would people actually DO something?
    - Switching Motivation (0-10): Is the pain strong enough to overcome inertia? People hate switching tools. The problem must be painful enough to justify the effort.
@@ -86,7 +87,7 @@ Provide per-dimension reasoning (one sentence each explaining the score).
 - Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
 **Synthesis** - After scoring all four frameworks, cross-reference them and produce a final verdict:
 - composite_score: weighted average (40% flylabs + 20% hormozi + 20% koe + 20% okamoto)
-- SATURATION CAP: If this idea describes a problem addressed by 5+ well-known products or funded competitors, cap composite at 65 max and verdict at VALIDATE_FIRST regardless of framework scores. A real problem in a crowded market is not a BUILD for a solo builder. Apply this cap BEFORE the verdict rules below.
+- SATURATION CHECK: If this idea describes a problem addressed by 5+ well-known products AND the Fly Labs whitespace score is 3 or below (no clear angle), cap composite at 65 and verdict at VALIDATE_FIRST. A crowded market with no differentiation is a trap. BUT if whitespace is 4+ (there IS a specific angle), do NOT cap. Competition with a clear gap is an opportunity, not a problem. Set saturation_capped to true only when the cap is applied.
 - verdict rules (after saturation cap):
   - BUILD: composite >= 70 AND flylabs >= 60 AND flylabs buildability >= 10/20 AND no single framework below 30. Strong signal across all lenses. If buildability < 10, the idea requires too large a team or too much infrastructure for a solo builder, so downgrade to VALIDATE_FIRST regardless of other scores.
   - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or buildability < 10 or any framework below 30. Promising but has gaps.

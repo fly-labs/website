@@ -568,16 +568,23 @@ async function main() {
       const validationScore = result.validation?.strength || 0;
       let enrichmentVerdict = result.verdict?.recommendation || null;
 
-      // Post-enrichment saturation cap: 5+ named competitors caps verdict at VALIDATE_FIRST
+      // Post-enrichment saturation check: 5+ competitors WITHOUT a clear gap caps verdict
       const competitorCount = result.competitors?.products?.length || 0;
-      if (competitorCount >= 5 && enrichmentVerdict === 'BUILD') {
-        console.log(`  Saturation cap: ${competitorCount} competitors found, overriding BUILD → VALIDATE_FIRST`);
+      const hasMarketGap = result.competitors?.market_gap && result.competitors.market_gap.length > 20;
+      const hasDiffAngle = result.competitors?.differentiation_angle && result.competitors.differentiation_angle.length > 20;
+      if (competitorCount >= 5 && enrichmentVerdict === 'BUILD' && !hasMarketGap && !hasDiffAngle) {
+        console.log(`  Saturation cap: ${competitorCount} competitors, no clear gap, overriding BUILD → VALIDATE_FIRST`);
         enrichmentVerdict = 'VALIDATE_FIRST';
         result.verdict.recommendation = 'VALIDATE_FIRST';
         result.verdict.saturation_override = true;
         result.verdict.competitor_count = competitorCount;
         result.verdict.original_recommendation = result.verdict.original_recommendation || 'BUILD';
-        result.verdict.override_reason = `${competitorCount} established competitors found in market research`;
+        result.verdict.override_reason = `${competitorCount} established competitors with no clear differentiation angle`;
+      } else if (competitorCount >= 5 && enrichmentVerdict === 'BUILD') {
+        // Competitors exist but there's a clear gap, keep BUILD but flag it
+        console.log(`  ${competitorCount} competitors found but clear gap identified, keeping BUILD`);
+        result.verdict.competitor_count = competitorCount;
+        result.verdict.has_gap = true;
       }
       // Store competitor count for frontend display
       if (result.competitors) {
