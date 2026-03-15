@@ -90,7 +90,7 @@ const Header = () => {
                     <AvatarFallback className="bg-primary/20 text-primary text-xs"><User className="w-3 h-3" /></AvatarFallback>
                   </Avatar>
                   <span className="text-xs font-bold max-w-[100px] truncate">
-                    {profile?.name || currentUser?.email}
+                    {profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You'}
                   </span>
                 </Link>
                 <Button 
@@ -149,7 +149,7 @@ const Header = () => {
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="text-xs text-muted-foreground">Logged in as</span>
-                    <span className="text-sm font-bold truncate">{profile?.name || currentUser?.email}</span>
+                    <span className="text-sm font-bold truncate">{profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You'}</span>
                   </div>
                 </Link>
               )}
