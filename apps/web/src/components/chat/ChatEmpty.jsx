@@ -50,13 +50,13 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             compact ? 'text-xs max-w-[240px]' : 'text-sm max-w-sm'
           )}>
             {compact
-              ? `Hundreds of scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. Ask me anything about building.`
-              : `I've scored hundreds of real problems across ${FRAMEWORK_COUNT} frameworks. I know ${PROMPT_COUNT} prompts by name. I apply behavioral finance to building decisions. Describe an idea and I'll tell you what the data says.`
+              ? `Hundreds of scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. What are you working on?`
+              : `I sit on top of hundreds of scored ideas and ${PROMPT_COUNT} prompts. Describe what you're building and I'll tell you what I've seen before, where the gaps are, and whether it's worth your weekend.`
             }
           </p>
           {!compact && (
             <p className="text-xs text-muted-foreground/40 mt-2 max-w-sm mx-auto">
-              Tuned for builders. Won't do investment advice, personal coaching, or homework.
+              Built for builders. Won't do investment advice or homework.
             </p>
           )}
         </motion.div>

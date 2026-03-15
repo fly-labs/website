@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Bot, ArrowRight, Target, Sparkles, MessageSquare, TrendingUp,
-  Zap, ShieldCheck, Github, Database, Brain, BookOpen, Search,
-  BarChart3, Layers,
+  Bot, ArrowRight, Target, Sparkles, MessageSquare,
+  Zap, ShieldCheck, Github, Database, BookOpen, Search,
+  BarChart3, Layers, AlertTriangle,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -14,7 +14,6 @@ import { SOURCE_COUNT, FRAMEWORK_COUNT, PROMPT_COUNT } from '@/lib/data/siteStat
 import { ScoreBar, getScoreTier, verdictStyles, FRAMEWORK_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 import supabase from '@/lib/supabaseClient.js';
 
-// Static example evaluation for the demo
 const exampleEval = {
   idea_title: 'Meal prep subscription tracker for busy professionals',
   flylabs_score: 62,
@@ -27,7 +26,6 @@ const exampleEval = {
 
 const AnimatedNumber = ({ value, suffix = '' }) => {
   const [display, setDisplay] = useState(0);
-
   useEffect(() => {
     if (value == null) return;
     const duration = 1200;
@@ -45,7 +43,6 @@ const AnimatedNumber = ({ value, suffix = '' }) => {
     }, duration / steps);
     return () => clearInterval(interval);
   }, [value]);
-
   if (value == null) return <span>...</span>;
   return <span>{display.toLocaleString()}{suffix}</span>;
 };
@@ -70,12 +67,8 @@ const ExampleScoreCard = ({ scores, vs, tier }) => (
       {scores.map(({ key, score, config }) => (
         <div key={key}>
           <div className="flex items-center justify-between mb-1">
-            <span className={`text-[11px] font-medium ${config.color || 'text-muted-foreground'}`}>
-              {config.label}
-            </span>
-            <span className="text-[11px] font-bold tabular-nums text-muted-foreground">
-              {score}
-            </span>
+            <span className={`text-[11px] font-medium ${config.color || 'text-muted-foreground'}`}>{config.label}</span>
+            <span className="text-[11px] font-bold tabular-nums text-muted-foreground">{score}</span>
           </div>
           <ScoreBar score={score} color={config.barColor} />
         </div>
@@ -102,16 +95,11 @@ const FlyBotLandingPage = () => {
 
   const handleCTA = () => {
     trackEvent('cta_click', { cta: 'flybot_start', location: 'flybot_landing' });
-    if (isAuthenticated) {
-      navigate('/flybot/chat');
-    } else {
-      navigate('/login');
-    }
+    navigate(isAuthenticated ? '/flybot/chat' : '/login');
   };
 
   const vs = verdictStyles[exampleEval.verdict];
   const tier = getScoreTier(exampleEval.composite_score);
-
   const scores = [
     { key: 'flylabs', score: exampleEval.flylabs_score, config: FRAMEWORK_CONFIG[0] },
     { key: 'hormozi', score: exampleEval.hormozi_score, config: FRAMEWORK_CONFIG[1] },
@@ -122,9 +110,9 @@ const FlyBotLandingPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "FlyBot: AI With Hundreds of Scored Ideas Already Loaded",
-        description: `Talk to an AI loaded with hundreds of scored ideas, ${FRAMEWORK_COUNT} frameworks, and ${PROMPT_COUNT} prompts. Describe a problem, get a real verdict. Free during beta.`,
-        keywords: "AI idea scoring, vibe building AI, business idea evaluator, FlyBot, idea validation AI, content strategy AI, behavioral finance for builders",
+        title: "FlyBot: An AI That Already Did the Homework",
+        description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${FRAMEWORK_COUNT} frameworks and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
+        keywords: "AI idea scoring, business idea evaluator, FlyBot, idea validation AI, vibe building, content strategy AI, solo builder tools",
         url: "https://flylabs.fun/flybot",
         schema: {
           "@context": "https://schema.org",
@@ -133,15 +121,12 @@ const FlyBotLandingPage = () => {
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web",
           "url": "https://flylabs.fun/flybot",
-          "description": "AI-powered vibe building partner loaded with hundreds of scored ideas, 4 frameworks, 80 prompts, and behavioral finance models.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-          },
+          "description": "AI partner for solo builders. Scores ideas, writes content, catches blind spots. Loaded with hundreds of scored problems and 80 prompts.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         },
       }}
     >
+
       {/* ===== HERO ===== */}
       <section className="relative pt-24 sm:pt-32 md:pt-36 pb-12 md:pb-16 px-6 overflow-hidden">
         <motion.div
@@ -166,10 +151,10 @@ const FlyBotLandingPage = () => {
               </h1>
 
               <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-4 max-w-lg">
-                FlyBot has scored {ideaCount ? `${ideaCount}+` : 'hundreds of'} real problems from {SOURCE_COUNT} sources, knows {PROMPT_COUNT} prompts by name, and applies behavioral finance to your building decisions.
+                FlyBot sits on top of {ideaCount ? `${ideaCount}+` : 'hundreds of'} scored ideas, {PROMPT_COUNT} prompts, and {SOURCE_COUNT} live data sources. When you describe what you're building, it doesn't start from zero.
               </p>
               <p className="text-base text-muted-foreground/70 font-medium leading-relaxed mb-8 max-w-lg">
-                When you describe an idea, it doesn't guess. It pattern-matches against hundreds of scored ideas and tells you what it's seen before.
+                It tells you what it's already seen. Which similar ideas scored well. Where yours might break. And whether it's worth your weekend.
               </p>
 
               <div className="flex flex-col sm:flex-row items-start gap-3">
@@ -188,7 +173,6 @@ const FlyBotLandingPage = () => {
               </div>
             </div>
 
-            {/* Desktop: example score card */}
             <div className="hidden lg:block">
               <ExampleScoreCard scores={scores} vs={vs} tier={tier} />
             </div>
@@ -196,15 +180,35 @@ const FlyBotLandingPage = () => {
         </motion.div>
       </section>
 
-      {/* ===== THE DATA ADVANTAGE ===== */}
+      {/* ===== THE PROBLEM (storytelling, not jargon) ===== */}
+      <section className="py-10 md:py-14 px-6">
+        <div className="max-w-3xl mx-auto">
+          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="space-y-5">
+            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
+              You ask ChatGPT about your idea. It says "that sounds promising!" and gives you a list of next steps that could apply to literally anything.
+            </p>
+            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
+              You ask FlyBot. It pulls up three similar ideas that already scored below 45. It flags that nobody in those markets was willing to pay. It finds a YC startup that tried the same angle and shut down in 18 months.
+            </p>
+            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
+              Then it scores your idea anyway, because yours might be different. And it tells you exactly where it's different and where it's not.
+            </p>
+            <p className="text-xl md:text-2xl text-foreground font-bold">
+              Same question. Different answer. Because one of them has data.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ===== WHAT'S LOADED (the data, not the methodology) ===== */}
       <section className="py-10 md:py-14 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-10">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              ChatGPT doesn't know your market. FlyBot does.
+              What's already inside
             </h2>
             <p className="text-muted-foreground font-medium max-w-2xl">
-              Every day, automated pipelines pull real problems from {SOURCE_COUNT} sources and score them with {FRAMEWORK_COUNT} AI frameworks. That data lives inside FlyBot. When you bring an idea, it already has context.
+              Every day, automated pipelines pull real problems from {SOURCE_COUNT} sources and score them. That data lives inside FlyBot. When you bring your idea, it already has context.
             </p>
           </motion.div>
 
@@ -215,43 +219,43 @@ const FlyBotLandingPage = () => {
             {[
               {
                 icon: Database,
-                title: ideaCount ? `${ideaCount}+ ideas scored and analyzed` : 'Hundreds of ideas scored and analyzed',
-                desc: 'Real problems from Reddit, Hacker News, GitHub Issues, X, Product Hunt, the YC Graveyard, and more. Each one scored across 4 frameworks with per-pillar reasoning and a final verdict.',
+                title: ideaCount ? `${ideaCount}+ real problems scored` : 'Hundreds of real problems scored',
+                desc: 'From Reddit, Hacker News, GitHub, X, Product Hunt, the YC Graveyard, and more. Each one analyzed across 4 frameworks with a final verdict. FlyBot can search this database while you talk.',
                 color: 'text-primary',
                 bgColor: 'bg-primary/10',
               },
               {
                 icon: Layers,
-                title: `${FRAMEWORK_COUNT} scoring frameworks built in`,
-                desc: 'The Fly Labs Method (solo builder fit), Hormozi\'s $100M evaluation, Dan Koe\'s one-person business lens, Okamoto\'s MicroSaaS validation. Weighted composite score. One verdict: BUILD, VALIDATE, or SKIP.',
+                title: `${FRAMEWORK_COUNT} ways to evaluate your idea`,
+                desc: 'Is the problem real? Is there room for something new? Would people pay? Can you build it alone? Four frameworks look at different angles, then combine into one honest verdict: BUILD, VALIDATE, or SKIP.',
                 color: 'text-secondary',
                 bgColor: 'bg-secondary/10',
               },
               {
                 icon: Sparkles,
-                title: `${PROMPT_COUNT} prompts it can recommend by name`,
-                desc: 'Coding, writing, strategy, marketing, SEO, research, workflows, thinking. FlyBot knows every prompt in the library and will match the right one to your situation.',
+                title: `${PROMPT_COUNT} prompts it recommends by name`,
+                desc: 'Need to write a landing page? There\'s a prompt for that. Want to structure a Substack post? FlyBot will name the specific prompt, explain why it fits, and quote the key instructions from it.',
                 color: 'text-accent',
                 bgColor: 'bg-accent/10',
               },
               {
-                icon: Brain,
-                title: 'The finance brain',
-                desc: 'Confirmation bias, sunk cost fallacy, anchoring, loss aversion, disposition effect. CFA behavioral finance applied to builder decisions. It spots the bias before it costs you a weekend.',
+                icon: AlertTriangle,
+                title: 'A built-in BS detector',
+                desc: 'Are you only looking for evidence that agrees with you? Holding onto a project because you already spent three weekends on it? FlyBot spots the patterns that make smart people waste time on the wrong things.',
                 color: 'text-amber-500',
                 bgColor: 'bg-amber-500/10',
               },
               {
                 icon: BookOpen,
-                title: 'A full content production system',
-                desc: '12 title formulas, 7 subtitle moves, 5 article frameworks, 7 hook patterns for Notes, and the 2-hour content ecosystem. The same system behind @falacomigo, working on your content.',
+                title: 'The content engine behind @falacomigo',
+                desc: '12 title formulas, 5 article structures, 7 hook patterns for Notes. The same system that grew a newsletter to 460+ subscribers in 57 countries. Working on your content, not just mine.',
                 color: 'text-purple-500',
                 bgColor: 'bg-purple-500/10',
               },
               {
                 icon: Search,
-                title: 'Market validation data',
-                desc: 'Top ideas are validated against real conversations on X and Reddit via Grok and the Reddit API. FlyBot knows which ideas have real market evidence behind them.',
+                title: 'Real conversations as proof',
+                desc: 'The best ideas get validated against live discussions on X and Reddit. FlyBot knows which problems have real people actively complaining about them, and which ones are just theories.',
                 color: 'text-blue-500',
                 bgColor: 'bg-blue-500/10',
               },
@@ -272,24 +276,7 @@ const FlyBotLandingPage = () => {
         </div>
       </section>
 
-      {/* ===== THE PROBLEM ===== */}
-      <section className="py-10 md:py-14 px-6">
-        <div className="max-w-3xl mx-auto">
-          <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="space-y-5">
-            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
-              You describe an idea to ChatGPT. It says "that sounds interesting" and gives you a generic SWOT analysis.
-            </p>
-            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
-              You describe the same idea to FlyBot. It tells you three similar ideas already scored below 45, that the problem has weak payment signals, and that a YC startup tried the same angle in 2019 and died because distribution was too expensive.
-            </p>
-            <p className="text-xl md:text-2xl text-foreground font-bold">
-              The difference is data. FlyBot has it. General AI doesn't.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== WHAT YOU CAN DO ===== */}
+      {/* ===== THREE CONVERSATIONS ===== */}
       <section className="py-10 md:py-14 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mb-10">
@@ -301,24 +288,24 @@ const FlyBotLandingPage = () => {
           <motion.div className="space-y-4" {...staggerContainer}>
             {[
               {
-                label: '"Score my idea"',
-                response: 'You describe the problem you want to solve. FlyBot runs it through 4 frameworks, pulls similar ideas from the database, checks for YC graveyard matches, and gives you a composite score with a BUILD, VALIDATE, or SKIP verdict. With per-pillar reasoning so you know exactly where the gaps are.',
+                label: '"I have an idea. Is it any good?"',
+                response: 'Describe the problem you want to solve. FlyBot runs it through 4 frameworks, pulls similar ideas from the database, checks for dead startups that tried the same thing, and gives you a score with a BUILD, VALIDATE, or SKIP verdict. With per-pillar reasoning so you know exactly where the gaps are.',
                 icon: Target,
                 color: 'text-primary',
               },
               {
-                label: '"Help me write about what I\'m building"',
-                response: 'FlyBot knows 12 title formulas, 5 article structures, 7 hook patterns for Substack Notes, and the complete content production system behind a 460+ subscriber newsletter. It writes in bar talk, not marketing speak. And it can recommend specific prompts from the library by name.',
+                label: '"I need to write about what I\'m building."',
+                response: `FlyBot has 12 title formulas, 5 article structures, and 7 hook patterns loaded. It can recommend specific prompts from the library by name and tell you which one fits your situation. It writes like a person talks, not like a marketing team writes.`,
                 icon: Sparkles,
                 color: 'text-secondary',
               },
               {
-                label: '"I\'m stuck between two paths"',
-                response: 'This is where the finance brain kicks in. FlyBot will check if you\'re anchored on your first idea, whether sunk cost is clouding your judgment, or if confirmation bias is making a weak idea look strong. Then it scores both options and lets the data decide.',
-                icon: Brain,
+                label: '"I can\'t decide. I keep going back and forth."',
+                response: 'This is where FlyBot is most useful. It will ask you why you keep going back to the first option (maybe you\'re just attached to it). It will score both ideas side by side. And it will show you where the data actually points, even if it\'s not the answer you wanted.',
+                icon: MessageSquare,
                 color: 'text-accent',
               },
-            ].map((item, i) => (
+            ].map((item) => (
               <motion.div key={item.label} {...staggerItem} className="card-glow p-6">
                 <div className="flex items-start gap-4">
                   <div className={`w-10 h-10 rounded-lg bg-card border border-border flex items-center justify-center shrink-0 ${item.color}`}>
@@ -335,7 +322,7 @@ const FlyBotLandingPage = () => {
         </div>
       </section>
 
-      {/* ===== EXAMPLE EVALUATION (mobile + visual break) ===== */}
+      {/* ===== SCORE CARD DEMO ===== */}
       <section className="py-10 md:py-14 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -344,13 +331,13 @@ const FlyBotLandingPage = () => {
                 What it looks like
               </p>
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-4">
-                You type an idea. You get this back.
+                You type an idea. This comes back.
               </h2>
               <p className="text-muted-foreground font-medium leading-relaxed mb-4">
-                FlyBot talks about the idea first. What excites it, what worries it, what patterns it's seen in similar problems. Then it drops the score card with per-framework breakdowns and a final verdict.
+                FlyBot talks first. What looks strong, what's risky, what patterns it recognizes from similar problems. Then it drops the score card with per-framework breakdowns and a final verdict.
               </p>
               <p className="text-sm text-muted-foreground/70 leading-relaxed">
-                The same scoring engine that powers the Idea Lab, now in a conversation.
+                The same scoring engine that runs the Idea Lab, now in a conversation you can steer.
               </p>
             </motion.div>
 
@@ -366,22 +353,22 @@ const FlyBotLandingPage = () => {
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              The brain behind the conversation
+              Gets smarter every day
             </h2>
             <p className="text-muted-foreground font-medium max-w-xl mx-auto">
-              These numbers update daily. Every new idea scored, every new prompt added, every new source synced makes FlyBot smarter.
+              New ideas scored, new sources synced, new prompts added. These are live numbers.
             </p>
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-4"
             {...staggerContainer}
           >
             {[
-              { value: ideaCount, label: 'Ideas scored', sub: 'across 4 frameworks', icon: BarChart3, color: 'text-primary' },
+              { value: ideaCount, label: 'Ideas scored', sub: 'with full reasoning', icon: BarChart3, color: 'text-primary' },
               { value: SOURCE_COUNT, label: 'Live sources', sub: 'synced daily', icon: Database, color: 'text-secondary' },
-              { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', sub: 'weighted composite', icon: Target, color: 'text-accent' },
-              { value: PROMPT_COUNT, label: 'Prompts in memory', sub: 'recommended by name', icon: Sparkles, color: 'text-amber-500' },
+              { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', sub: 'weighted into one verdict', icon: Target, color: 'text-accent' },
+              { value: PROMPT_COUNT, label: 'Prompts loaded', sub: 'recommended by name', icon: Sparkles, color: 'text-amber-500' },
             ].map((stat) => (
               <motion.div key={stat.label} {...staggerItem} className="glass-card p-4 text-center">
                 <stat.icon className={`w-4 h-4 ${stat.color} mx-auto mb-2`} />
@@ -400,21 +387,19 @@ const FlyBotLandingPage = () => {
       <section className="py-10 md:py-14 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              How it works under the hood
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground">
+              Under the hood
             </h2>
           </motion.div>
 
           <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-4" {...staggerContainer}>
             {[
-              { num: '01', title: 'You talk', desc: 'Describe a problem, paste an idea, ask for help writing. Natural language. No forms, no templates.' },
-              { num: '02', title: 'FlyBot connects the dots', desc: `Pulls similar ideas from the database. Matches relevant prompts from the library. Runs the ${FRAMEWORK_COUNT} scoring frameworks. Checks for YC graveyard overlaps.` },
-              { num: '03', title: 'You get a real answer', desc: 'A score card with per-framework breakdown, a verdict, per-pillar reasoning, and honest commentary on what\'s strong and what\'s weak.' },
+              { num: '01', title: 'You talk', desc: 'Describe a problem, paste an idea, ask for help with a post. Just talk naturally.' },
+              { num: '02', title: 'FlyBot connects dots', desc: 'Pulls similar ideas from the database. Matches prompts from the library. Runs the scoring frameworks. Checks for dead startup overlaps.' },
+              { num: '03', title: 'You get a real answer', desc: 'A score card, a verdict, per-pillar reasoning, and honest commentary. Then you decide what to do with it.' },
             ].map((step) => (
               <motion.div key={step.num} {...staggerItem} className="glass-card p-6 text-center">
-                <span className="text-xs font-black uppercase tracking-widest text-primary mb-3 block">
-                  {step.num}
-                </span>
+                <span className="text-xs font-black uppercase tracking-widest text-primary mb-3 block">{step.num}</span>
                 <h3 className="font-bold text-foreground mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </motion.div>
@@ -434,13 +419,13 @@ const FlyBotLandingPage = () => {
               </div>
               <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>
-                  Powered by Claude (Anthropic). 5 free messages per account during beta. Conversations are stored securely and only visible to you.
+                  Powered by Claude (Anthropic). 5 free messages per account during beta. Your conversations are private and only visible to you.
                 </p>
                 <p>
-                  Scores and verdicts are AI opinions based on real data, not guarantees. FlyBot is tuned for one thing: helping solo builders make better decisions about what to build and how to talk about it. It won't do investment advice, personal coaching, or homework.
+                  Scores are AI opinions based on real data. Good opinions, but opinions. FlyBot helps solo builders decide what to build and how to talk about it. It won't give investment advice, do your homework, or pretend to be a therapist.
                 </p>
                 <p>
-                  The entire platform, including FlyBot's system prompt architecture, is open source.{' '}
+                  The entire platform is open source.{' '}
                   <a
                     href="https://github.com/fly-labs/website"
                     target="_blank"
@@ -456,7 +441,7 @@ const FlyBotLandingPage = () => {
         </div>
       </section>
 
-      {/* ===== CTA FOOTER ===== */}
+      {/* ===== CTA ===== */}
       <section className="relative py-14 md:py-20 px-6 overflow-hidden">
         <motion.div
           {...fadeUp}
@@ -464,10 +449,10 @@ const FlyBotLandingPage = () => {
           className="relative z-10 max-w-3xl mx-auto text-center"
         >
           <h2 className="text-3xl md:text-4xl font-black tracking-tight text-foreground mb-3">
-            Five free messages. Zero fluff.
+            Five messages. Real answers.
           </h2>
           <p className="text-muted-foreground font-medium mb-8 max-w-lg mx-auto">
-            Bring an idea, a draft, or a decision you're stuck on. FlyBot will tell you what the data says.
+            Bring an idea you're excited about. Or one you're not sure about. That's usually the more useful conversation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
             <button
@@ -486,6 +471,7 @@ const FlyBotLandingPage = () => {
           </div>
         </motion.div>
       </section>
+
     </PageLayout>
   );
 };
