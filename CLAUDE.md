@@ -205,6 +205,11 @@ apps/web/
 - **Security headers:** CSP, COOP, HSTS, and Permissions-Policy in `vercel.json`. CSP uses `https://*.supabase.co` (no hardcoded project URL). GA4 requires `unsafe-inline` for script-src
 - **Validation:** Use `isValidEmail()` from `@/lib/utils.js` for email fields (waitlist, ideas)
 
+## Development Workflow
+- **Plan first:** For any change touching 3+ files or involving architectural decisions, write the plan before coding. If something breaks mid-implementation, stop and re-plan.
+- **Verify before done:** After implementing, prove it works. Run the dev server, check the browser, test edge cases. Never mark a task complete without demonstrating correctness.
+- **Fix autonomously:** When encountering a bug or failing build, diagnose and fix it. Point at the error, explain the cause, resolve it. Zero hand-holding required.
+
 ## Data Layer
 - **projects.js:** `projects` array (9 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
 - **prompts.js:** 79 prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Each has: id, title, category, description, content, featured (optional - marks lead magnet for guest view), tools (optional - array of tool names for workflows)
