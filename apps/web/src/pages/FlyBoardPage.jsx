@@ -812,7 +812,20 @@ export default function FlyBoardPage() {
     <>
       <SEO
         title="FlyBoard - Free Online Whiteboard | Fly Labs"
-        description="A free infinite canvas whiteboard for sketching ideas, brainstorming, and creating visual content. Templates for mind maps, business canvases, and social media posts."
+        description="A free infinite canvas whiteboard for sketching ideas, brainstorming, and visual thinking. Templates for mind maps, business canvases, and frameworks. Dark mode, multiple grid styles, export to PNG."
+        keywords="free whiteboard, online whiteboard, infinite canvas, brainstorming tool, mind map, business canvas, Excalidraw, sketching, visual thinking, open source whiteboard"
+        url="https://flylabs.fun/flyboard"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "FlyBoard",
+          "description": "A free infinite canvas whiteboard for sketching ideas, brainstorming, and visual thinking.",
+          "url": "https://flylabs.fun/flyboard",
+          "applicationCategory": "DesignApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "author": { "@type": "Person", "name": "Luiz Alves" }
+        }}
       />
 
       <div className="h-dvh flex flex-col bg-background">

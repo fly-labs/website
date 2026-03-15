@@ -424,6 +424,15 @@ const PromptsPage = () => {
         description: "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more. Copy-paste ready for Claude, ChatGPT, Cowork, Lovable, and Gamma.",
         keywords: "AI prompts, AI workflows, coding prompts, writing prompts, strategy prompts, SEO prompts, Claude prompts, Claude Cowork workflows, prompt library",
         url: "https://flylabs.fun/prompts",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "AI Prompts & Workflows",
+          "description": "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more.",
+          "url": "https://flylabs.fun/prompts",
+          "numberOfItems": prompts.length,
+          "author": { "@type": "Person", "name": "Luiz Alves" }
+        },
       }}
       className="pt-32 pb-24"
     >

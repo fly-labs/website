@@ -240,6 +240,15 @@ const ScoringFrameworksPage = () => {
         description: `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict. Here's how.`,
         keywords: "Fly Labs Method, vibe building, idea scoring, AI validation, Hormozi, Dan Koe, Bruno Okamoto, startup ideas, problem-solution fit",
         url: "https://flylabs.fun/scoring",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": "How We Score Ideas: Fly Labs Method + AI Validation",
+          "description": `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict.`,
+          "url": "https://flylabs.fun/scoring",
+          "author": { "@type": "Person", "name": "Luiz Alves" },
+          "publisher": { "@type": "Organization", "name": "Fly Labs", "url": "https://flylabs.fun" }
+        },
       }}
       className="pt-32 pb-24"
     >

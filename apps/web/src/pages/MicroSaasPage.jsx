@@ -74,6 +74,14 @@ const MicroSaasPage = () => {
         description: "Small, focused tools that solve one problem really well. Open them, use them, done. Join the waitlist for upcoming micro tools from Fly Labs.",
         keywords: "micro tools, small apps, AI tools, automation, no-code tools, indie maker, waitlist",
         url: "https://flylabs.fun/microsaas",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Micro Tools",
+          "description": "Small, focused tools that solve one problem really well. Built by Fly Labs.",
+          "url": "https://flylabs.fun/microsaas",
+          "author": { "@type": "Person", "name": "Luiz Alves" }
+        },
       }}
       wrapperClassName="overflow-hidden"
       className="pt-32 pb-24"
