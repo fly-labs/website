@@ -134,8 +134,8 @@ export default function FlyBoardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const stored = localStorage.getItem('flyboard-sidebar');
     if (stored !== null) return stored === 'true';
-    // Default: open on desktop (900px+), closed on mobile/tablet
-    return window.innerWidth >= 900;
+    // Default: always start closed (maximize canvas, Apple-style)
+    return false;
   });
   const excalidrawRef = useRef(null);
 
@@ -252,16 +252,7 @@ export default function FlyBoardPage() {
     localStorage.setItem('flyboard-sidebar', String(sidebarOpen));
   }, [sidebarOpen]);
 
-  // Auto-collapse sidebar on medium widths to prevent toolbar overflow
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 900 && sidebarOpen) {
-        setSidebarOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [sidebarOpen]);
+
 
   // Close dropdowns and context menus on outside click
   useEffect(() => {
@@ -843,20 +834,11 @@ export default function FlyBoardPage() {
         {!isFullscreen && <Header />}
 
         <div className={`flex-1 flex overflow-hidden relative ${!isFullscreen ? 'pt-[60px]' : ''}`}>
-          {/* ---- Collapsible Desktop Sidebar ---- */}
-          <div
-            className={`hidden md:flex flex-col border-r bg-card/50 backdrop-blur-sm transition-[width,border] duration-200 overflow-hidden ${
-              sidebarOpen ? 'w-[260px]' : 'w-0 border-r-0'
-            }`}
-          >
-            {renderSidebarContent(false)}
-          </div>
-
-          {/* Mobile sidebar overlay */}
+          {/* Sidebar: always overlay to maximize canvas space */}
           {sidebarOpen && (
-            <div className="md:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)}>
+            <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)}>
               <div
-                className="absolute left-0 bottom-0 w-[300px] bg-card border-r flex flex-col"
+                className="absolute left-0 bottom-0 w-[280px] sm:w-[300px] bg-card border-r flex flex-col shadow-2xl"
                 style={{ top: isFullscreen ? 0 : '60px' }}
                 onClick={e => e.stopPropagation()}
               >
@@ -867,23 +849,17 @@ export default function FlyBoardPage() {
 
           {/* ---- Main canvas area ---- */}
           <div className="flex-1 flex flex-col min-w-0">
-            {/* Toolbar: wraps to 2 rows at narrow widths, single row when wide */}
-            <div className="flyboard-toolbar flex flex-wrap items-center px-2 sm:px-3 min-h-[44px] border-b shrink-0 gap-y-0.5 py-0.5">
+            {/* Toolbar: single clean row, overflow menu catches the rest */}
+            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[48px] border-b shrink-0">
               {/* Left: sidebar toggle + title */}
               <div className="flex items-center gap-1 min-w-0 shrink-0">
                 <button
                   onClick={() => setSidebarOpen(prev => !prev)}
-                  className="!hidden md:!inline-flex flyboard-tb-btn"
-                  title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+                  className="flyboard-tb-btn"
+                  title={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+                  aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
                 >
-                  {sidebarOpen ? <PanelLeftClose className="w-[18px] h-[18px]" /> : <PanelLeft className="w-[18px] h-[18px]" />}
-                </button>
-                <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="md:!hidden flyboard-tb-btn"
-                  aria-label="Open sidebar"
-                >
-                  <Menu className="w-[18px] h-[18px]" />
+                  {sidebarOpen ? <PanelLeftClose className="w-[18px] h-[18px]" /> : <Menu className="w-[18px] h-[18px]" />}
                 </button>
 
                 {activeBoard && isAuthenticated ? (
@@ -916,8 +892,8 @@ export default function FlyBoardPage() {
                 )}
               </div>
 
-              {/* Tools: wraps to second row at narrow widths */}
-              <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 ml-2 sm:ml-3 mr-1 flex-wrap">
+              {/* Tools: single row, excess goes to overflow */}
+              <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 ml-2 sm:ml-3 mr-1">
 
                 {/* Drawing tools pill - core 5 on mobile, +3 on tablet, all on desktop */}
                 <div className="flyboard-tool-pill">
@@ -955,8 +931,8 @@ export default function FlyBoardPage() {
                   </button>
                 </div>
 
-                {/* Zoom pill - hidden on mobile */}
-                <div className="flyboard-tool-pill !hidden sm:!flex">
+                {/* Zoom pill - hidden below md */}
+                <div className="flyboard-tool-pill !hidden md:!flex">
                   <button onClick={handleZoomOut} className="flyboard-tb-btn" title="Zoom out">
                     <ZoomOut className="w-[18px] h-[18px]" />
                   </button>
@@ -965,8 +941,8 @@ export default function FlyBoardPage() {
                   </button>
                 </div>
 
-                {/* Canvas controls pill - hidden below md (accessible via overflow) */}
-                <div className="flyboard-tool-pill !hidden md:!flex">
+                {/* Canvas controls pill - desktop only (accessible via overflow on smaller screens) */}
+                <div className="flyboard-tool-pill !hidden lg:!flex">
                   <button
                     onClick={handleGridToggle}
                     className={`flyboard-tb-btn ${gridVisible ? 'active' : ''}`}
