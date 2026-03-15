@@ -435,14 +435,14 @@ const AboutPage = () => {
 
           {/* 7. CLOSING */}
           <motion.section {...fadeUp} transition={{ duration: 0.5 }}>
-            <SectionLabel icon={Rocket} label="Come Build Something" color="text-accent" />
+            <SectionLabel icon={Rocket} label="Your move" color="text-accent" />
             <div className="card-glow p-6 md:p-8">
               <div className="space-y-4 mb-8">
                 <p className="text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
-                  Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing, the music I listen to while building. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, poke around.
+                  Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing, the music I listen to while building. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, this is the place.
                 </p>
                 <p className="text-foreground font-bold text-lg md:text-xl">
-                  Come build something.
+                  Start with the Ideas Lab. Or just look around.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-3">

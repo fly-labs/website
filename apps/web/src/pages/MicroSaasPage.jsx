@@ -123,9 +123,9 @@ const MicroSaasPage = () => {
             className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16"
           >
             {[
-              { icon: Zap, label: 'Fast and focused', sublabel: 'One tool, one job, done right' },
-              { icon: Wrench, label: 'Built from real needs', sublabel: 'Each one solves a specific problem' },
-              { icon: Layers, label: 'Free to use', sublabel: 'Open and ready, always' },
+              { icon: Zap, label: 'Does one thing well', sublabel: 'Open it, use it, move on' },
+              { icon: Wrench, label: 'Scratched my own itch', sublabel: 'Each one started as something I needed' },
+              { icon: Layers, label: 'Free and open source', sublabel: 'Use it, fork it, whatever you want' },
             ].map((item, i) => (
               <motion.div
                 key={item.label}

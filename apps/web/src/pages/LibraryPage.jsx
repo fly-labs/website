@@ -96,7 +96,7 @@ const LibraryPage = () => {
     <PageLayout
       seo={{
         title: "Free Ebooks for Builders",
-        description: "Free ebooks from my study notes. AI, business, mindset, and everything in between. Written by Luiz Alves for people who build things.",
+        description: "Free ebooks from my study notes on AI, business, and mindset. Written by Luiz Alves for people who build things.",
         keywords: "free ebooks, AI ebook, business ebook, mindset, builder resources, Luiz Alves",
         url: "https://flylabs.fun/library",
         ...(bookSchemas.length > 0 && { schema: bookSchemas }),
@@ -117,7 +117,7 @@ const LibraryPage = () => {
               Library
             </h1>
             <p className="text-lg text-muted-foreground font-medium max-w-2xl leading-relaxed">
-              Free ebooks from my study notes. AI, business, mindset, and everything in between.
+              Free ebooks from hundreds of hours of reading. AI, business, mindset. Written for people who build.
             </p>
           </motion.div>
 

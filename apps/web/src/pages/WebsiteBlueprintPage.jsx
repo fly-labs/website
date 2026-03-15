@@ -702,7 +702,7 @@ const WebsiteBlueprintPage = () => {
               Fully open source
             </h2>
             <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto mb-4">
-              The whole thing is live if you want to poke around. Fork it, clone it, make it yours. MIT License.
+              The entire codebase is on GitHub. Fork it, clone it, make it yours. MIT License.
             </p>
           </motion.div>
 

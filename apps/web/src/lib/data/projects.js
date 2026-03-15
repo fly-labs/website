@@ -33,7 +33,7 @@ export const projects = [
   },
   {
     title: 'Micro Tools',
-    description: 'Small apps that do one thing really well. No sign-ups, no bloat. Built because I needed them, now you can use them too.',
+    description: 'Small apps that do one thing really well. Built because I needed them, open for anyone.',
     icon: Code,
     link: '/microsaas',
     color: 'text-blue-500',
@@ -57,7 +57,7 @@ export const projects = [
   },
   {
     title: 'One-Page Business Plan',
-    description: 'Five questions that force clarity on what you\'re building, who it\'s for, and why it matters. One page, no fluff.',
+    description: 'Five questions that force clarity on what you\'re building, who it\'s for, and why it matters. One page, nothing extra.',
     icon: FileText,
     link: '/templates/one-page-business-plan',
     color: 'text-violet-500',
@@ -81,7 +81,7 @@ export const projects = [
   },
   {
     title: 'The Newsletter',
-    description: 'Where I write about what I\'m building, what breaks, and what I learn along the way. The honest version.',
+    description: 'Where I write about what I\'m building, what breaks, and what surprises me. No polish, just the real process.',
     icon: Mail,
     link: '/newsletter',
     color: 'text-purple-500',

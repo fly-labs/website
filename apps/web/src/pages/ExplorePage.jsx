@@ -40,7 +40,7 @@ const ExplorePage = () => {
           >
             <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">Explore</h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
-              Every project here started as a real problem. Built with AI, shipped open source, free to use and fork.
+              Every project started as something I actually needed. Built with AI, shipped open source.
             </p>
           </motion.div>
 
@@ -81,7 +81,7 @@ const ExplorePage = () => {
                 animate={{ opacity: 1 }}
                 className="text-center text-muted-foreground py-20"
               >
-                Nothing here yet. But stay tuned.
+                No projects in this category yet.
               </motion.p>
             ) : (
               <motion.div

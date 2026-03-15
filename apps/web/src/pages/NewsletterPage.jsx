@@ -38,7 +38,7 @@ const NewsletterPage = () => {
           "@context": "https://schema.org",
           "@type": "Blog",
           "name": "Fala Comigo!",
-          "description": "Vibe building in public. Micro tools, prompts, templates, and whatever I figure out building projects with AI.",
+          "description": "A finance guy builds things with AI in his spare time and writes about what happens. Tools, process, honest takes.",
           "url": "https://falacomigo.substack.com",
           "author": { "@type": "Person", "name": "Luiz Alves" },
         },
@@ -61,7 +61,7 @@ const NewsletterPage = () => {
             Fala <span className="text-primary">Comigo!</span>
           </h1>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-8">
-            Vibe building in public. Follow along as I build projects in my spare time using AI and share everything: micro tools, prompts, templates, and whatever I figure out along the way. In English and Portuguese. Always free.
+            A finance guy builds things with AI in his spare time and writes about what happens. What worked, what broke, what I'd do differently. In English (mostly) and Portuguese. Always free.
           </p>
           <a
             href="https://falacomigo.substack.com"

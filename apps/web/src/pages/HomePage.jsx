@@ -163,7 +163,7 @@ const HomePage = () => {
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
-            I build tools for one-person builders and give them away. AI-scored ideas, prompts, templates, open source everything. Come poke around.
+            I build tools for one-person builders and give them away. AI-scored ideas, prompts, templates, open source everything. See what's inside.
           </p>
 
           {/* CTA */}
@@ -180,7 +180,7 @@ const HomePage = () => {
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               onClick={() => trackEvent('cta_click', { cta: 'explore', location: 'home_hero' })}
             >
-              See what I've built
+              Browse all projects
             </Link>
           </div>
         </motion.div>
@@ -195,10 +195,10 @@ const HomePage = () => {
             className="mb-10"
           >
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              Everything in the lab
+              What's inside
             </h2>
             <p className="text-muted-foreground font-medium max-w-xl">
-              Every project started as a real need. Built from scratch with AI, shared with everyone.
+              Every project here started as a real problem I had. Built with AI, shipped open source.
             </p>
           </motion.div>
 
@@ -274,7 +274,7 @@ const HomePage = () => {
               { step: '01', title: 'Ideation', desc: 'Real problems from Reddit, X, Product Hunt, GitHub, and more. AI asks four questions about each one. You pick the best ones.', color: 'text-primary' },
               { step: '02', title: 'Build', desc: 'Pick your tools, ship fast, document what breaks. One person with AI can build what used to require a team.', color: 'text-secondary' },
               { step: '03', title: 'Share', desc: 'Open source the code, write about the process, put it out there. Feedback from real people sharpens everything.', color: 'text-accent' },
-              { step: '04', title: 'Compound', desc: 'Skills stack, tools compound, each project sharpens the next. The loop is the edge.', color: 'text-primary' },
+              { step: '04', title: 'Compound', desc: 'Skills stack, tools compound, each project sharpens the next one. Yesterday\'s side quest becomes tomorrow\'s shortcut.', color: 'text-primary' },
             ].map((item) => (
               <motion.div
                 key={item.step}
@@ -414,7 +414,7 @@ const HomePage = () => {
               to="/about"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
-              The story behind this
+              How this started
             </Link>
           </div>
         </motion.div>
