@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -642,110 +642,89 @@ const IdeasAnalyticsPage = () => {
     load();
   }, []);
 
-  // Generate smart insights (upgraded with cross-dimensional analysis)
+  // Generate insights: plain English, actionable, no jargon
   const insights = useMemo(() => {
     if (!stats) return [];
     const list = [];
 
-    // 1. Cross-source quality comparison
+    // 1. Where to look: best source by quality
     if (stats.sourceQualityData?.length >= 2) {
       const best = stats.sourceQualityData[0];
       const worst = stats.sourceQualityData[stats.sourceQualityData.length - 1];
-      const gap = best.avg - worst.avg;
       list.push({
-        icon: TrendingUp,
-        color: 'secondary',
-        text: `${best.name} leads in quality (avg ${best.avg}/100) while ${worst.name} trails at ${worst.avg}/100. That ${gap}-point gap is real signal for where to look first.`,
+        icon: Target,
+        color: 'primary',
+        text: `If you're browsing for ideas, start with ${best.name}. Average score of ${best.avg}/100. ${worst.name} has the weakest ideas at ${worst.avg}.`,
       });
     }
 
-    // 2. Top opportunity industry
+    // 2. Best industry to build in right now
     if (stats.industryIntelData?.length > 0) {
       const top = stats.industryIntelData[0];
+      const second = stats.industryIntelData[1];
       list.push({
         icon: Lightbulb,
         color: 'primary',
-        text: `${top.name} is the top opportunity right now: ${top.buildRate}% BUILD rate, avg score ${top.avgScore}/100, best fed by ${top.bestSource}. ${top.count} ideas and counting.`,
+        text: `Best space to build in right now: ${top.name}. ${top.count} ideas, ${top.buildRate}% worth building.${second ? ` Runner-up: ${second.name}.` : ''}`,
       });
     }
 
-    // 3. Score trend
-    if (stats.scoreTrend != null && stats.currentWeekAvg > 0) {
-      const direction = stats.scoreTrend > 5 ? 'climbing' : stats.scoreTrend < -5 ? 'dropping' : 'holding steady';
-      list.push({
-        icon: TrendingUp,
-        color: stats.scoreTrend > 5 ? 'primary' : stats.scoreTrend < -5 ? 'accent' : 'secondary',
-        text: `Idea quality is ${direction}. This week's average is ${stats.currentWeekAvg}/100 vs the 4-week rolling avg of ${stats.rollingAvg}. ${stats.scoreTrend > 5 ? 'The pipeline is getting sharper.' : stats.scoreTrend < -5 ? 'More noise entering the funnel.' : 'Consistent quality.'}`,
-      });
-    }
-
-    // 4. Framework disagreement highlight
-    if (stats.disagreements?.length > 0) {
-      const top = stats.disagreements[0];
-      list.push({
-        icon: GitCompare,
-        color: 'accent',
-        text: `Biggest expert split: "${top.title}" where ${top.highest[0]} scores ${top.highest[1]} but ${top.lowest[0]} gives it ${top.lowest[1]}. A ${top.spread}-point gap. Worth a closer look.`,
-        link: `/ideas/${top.id}`,
-      });
-    }
-
-    // 5. Source momentum
-    if (stats.sourceMomentumData?.length > 0) {
-      const accelerating = stats.sourceMomentumData.filter(s => s.delta > 0);
-      if (accelerating.length > 0) {
-        const names = accelerating.slice(0, 3).map(s => s.source).join(', ');
-        list.push({
-          icon: Zap,
-          color: 'secondary',
-          text: `Sources picking up speed this week: ${names}. ${accelerating.length > 1 ? 'Multiple channels heating up.' : `${accelerating[0].source} is surging with ${accelerating[0].thisWeek} new ideas.`}`,
-        });
-      }
-    }
-
-    // 6. Hidden gem callout
+    // 3. Hidden gem: specific idea you should look at
     if (stats.hiddenGems?.length > 0) {
       const gem = stats.hiddenGems[0];
       list.push({
         icon: Gem,
         color: 'accent',
-        text: `Hidden gem: "${gem.title}" scored ${gem.composite}/100 but only has ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. High quality, low visibility.`,
+        text: `Nobody noticed this one: "${gem.title}" scored ${gem.composite}/100 but only ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. Worth a look.`,
         link: `/ideas/${gem.id}`,
       });
     }
 
-    // 7. BUILD rate analysis
-    if (stats.buildRate > 0) {
+    // 4. How selective the scoring is
+    if (stats.buildRate >= 0) {
+      const skipPct = stats.withVerdict > 0 ? Math.round(((stats.withVerdict - stats.buildCount) / stats.withVerdict) * 100) : 0;
       list.push({
         icon: Target,
-        color: 'primary',
-        text: `${stats.buildRate}% of scored ideas get a BUILD verdict. ${stats.buildRate > 30 ? 'The pipeline is quality-rich.' : stats.buildRate > 15 ? 'Most ideas need more validation before building.' : 'The scoring is ruthless. Only the strongest survive.'}`,
+        color: stats.buildRate > 15 ? 'primary' : 'secondary',
+        text: `Only ${stats.buildRate}% of ideas pass the BUILD bar. ${skipPct}% get filtered out. The ones that survive are real opportunities, not just real problems.`,
       });
     }
 
-    // 8. Market saturation insight
-    if (stats.leaderboard?.length > 0) {
-      // Check if BUILD ideas have enrichment competitor data by looking at avg scores
-      // Since we don't have enrichment data in the analytics query, use a proxy:
-      // if BUILD rate is high AND average scores are moderate, flag potential saturation
-      if (stats.buildRate > 25 && stats.avgComposite < 70) {
+    // 5. Framework disagreement: the interesting debate
+    if (stats.disagreements?.length > 0) {
+      const top = stats.disagreements[0];
+      list.push({
+        icon: GitCompare,
+        color: 'accent',
+        text: `Most debated idea: "${top.title}". One framework scores it ${top.highest[1]}, another gives it ${top.lowest[1]}. That ${top.spread}-point split means it's either genius or a trap.`,
+        link: `/ideas/${top.id}`,
+      });
+    }
+
+    // 6. What's heating up this week
+    if (stats.sourceMomentumData?.length > 0) {
+      const accelerating = stats.sourceMomentumData.filter(s => s.delta > 20 && s.thisWeek >= 3);
+      if (accelerating.length > 0) {
+        const top = accelerating[0];
         list.push({
-          icon: AlertTriangle,
-          color: 'accent',
-          text: `${stats.buildRate}% BUILD rate with a ${stats.avgComposite} avg composite. The scoring may be finding real problems in crowded markets. Check individual ideas for competitor counts before building.`,
+          icon: Zap,
+          color: 'secondary',
+          text: `${top.source} is picking up steam: ${top.thisWeek} new ideas this week, up ${top.delta}% from last week.`,
         });
       }
     }
 
-    // 9. Framework correlation insight
-    if (stats.correlationData?.length > 0) {
-      const most = stats.correlationData[0];
-      const least = stats.correlationData[stats.correlationData.length - 1];
-      list.push({
-        icon: Layers,
-        color: 'secondary',
-        text: `${most.label} agree ${most.agreement}% of the time (most aligned). ${least.label} only agree ${least.agreement}% (most independent). Disagreement between frameworks reveals ideas worth debating.`,
-      });
+    // 7. Quality trend: are we finding better stuff?
+    if (stats.scoreTrend != null && stats.currentWeekAvg > 0) {
+      if (Math.abs(stats.scoreTrend) > 5) {
+        list.push({
+          icon: TrendingUp,
+          color: stats.scoreTrend > 0 ? 'primary' : 'accent',
+          text: stats.scoreTrend > 0
+            ? `Quality is up ${stats.scoreTrend}% this week. Average score: ${stats.currentWeekAvg}/100. Better problems coming in.`
+            : `Quality dipped ${Math.abs(stats.scoreTrend)}% this week (avg ${stats.currentWeekAvg}/100). More volume, less signal.`,
+        });
+      }
     }
 
     return list;
