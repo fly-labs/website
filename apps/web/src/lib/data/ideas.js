@@ -50,11 +50,7 @@ export const sortOptions = [
   { value: 'new', label: 'Newest' },
   { value: 'oldest', label: 'Oldest' },
   { value: 'top', label: 'Top Voted' },
-  { value: 'flylabs', label: 'Fly Labs Score' },
-  { value: 'hormozi', label: 'Hormozi Score' },
-  { value: 'koe', label: 'Koe Score' },
-  { value: 'okamoto', label: 'Okamoto Score' },
-  { value: 'validation', label: 'Validation' },
+  { value: 'flylabs', label: 'Score' },
   { value: 'verdict', label: 'Verdict' },
 ];
 

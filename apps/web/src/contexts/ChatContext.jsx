@@ -16,8 +16,8 @@ export const useChatContext = () => {
 const PAGE_CONTEXT_MAP = {
   '/': 'Home',
   '/explore': 'Explore (project catalog)',
-  '/ideas': 'Idea Lab (idea submissions and scoring)',
-  '/ideas/analytics': 'Idea Lab Analytics',
+  '/ideas': 'Ideas Lab (idea submissions and scoring)',
+  '/ideas/analytics': 'Ideas Lab Analytics',
   '/newsletter': 'Newsletter (Substack archive)',
   '/about': 'About Fly Labs',
   '/scoring': 'Scoring Frameworks',
@@ -31,6 +31,7 @@ const PAGE_CONTEXT_MAP = {
   '/microsaas': 'Micro Tools',
   '/profile': 'User Profile',
   '/flybot': 'FlyBot (full page)',
+  '/flyboard': 'FlyBoard (whiteboard/canvas)',
 };
 
 function getPageContext(pathname) {

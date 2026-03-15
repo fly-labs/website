@@ -92,7 +92,7 @@ const IdeaSubmitModal = ({ show, onClose, formData, onFormChange, formStep, onSt
               <Zap className="w-4 h-4 text-accent shrink-0" />
               <p className="text-xs text-muted-foreground">
                 Your idea will be scored by AI using{' '}
-                <span className="font-semibold text-foreground">{FRAMEWORK_COUNT} frameworks</span>,
+                <span className="font-semibold text-foreground">{FRAMEWORK_COUNT} questions</span>,
                 then given a BUILD / VALIDATE / SKIP verdict with reasoning.
                 Top ideas get validated against real conversations on X and Reddit.{' '}
                 <Link to="/scoring" className="text-accent hover:underline font-medium">See how scoring works</Link>

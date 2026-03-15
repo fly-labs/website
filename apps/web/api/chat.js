@@ -38,10 +38,11 @@ function sanitizeMessage(str) {
 
 // Whitelist valid page names for page_context sanitization
 const VALID_PAGES = new Set([
-  'Home', 'Explore', 'Idea Lab', 'Idea Detail', 'Idea Lab Analytics',
+  'Home', 'Explore', 'Ideas Lab', 'Idea Detail', 'Ideas Lab Analytics',
   'Newsletter', 'About', 'Scoring Frameworks', 'Library', 'Prompt Library',
   'Templates', 'Website Blueprint', 'Garmin to Notion', 'Launch Checklist',
   'One-Page Business Plan', 'Micro Tools', 'User Profile', 'FlyBot',
+  'FlyBoard',
 ]);
 
 /**

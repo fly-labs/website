@@ -310,7 +310,7 @@ const IdeasAnalyticsPage = () => {
           })
           .sort((a, b) => b.value - a.value);
 
-        // Source quality (avg composite by source, scored ideas only)
+        // Source quality (avg FL score by source, scored ideas only)
         const sourceScores = {};
         scored.forEach(i => {
           const s = i.source || 'community';
@@ -329,11 +329,9 @@ const IdeasAnalyticsPage = () => {
 
         // Score distribution (histogram)
         const scoreBuckets = [
-          { range: '0-19', min: 0, max: 19, count: 0, label: 'Risky' },
-          { range: '20-39', min: 20, max: 39, count: 0, label: 'Weak' },
-          { range: '40-59', min: 40, max: 59, count: 0, label: 'Moderate' },
-          { range: '60-79', min: 60, max: 79, count: 0, label: 'Strong' },
-          { range: '80-100', min: 80, max: 100, count: 0, label: 'Exceptional' },
+          { range: '0-39', min: 0, max: 39, count: 0, label: 'SKIP' },
+          { range: '40-64', min: 40, max: 64, count: 0, label: 'VALIDATE' },
+          { range: '65-100', min: 65, max: 100, count: 0, label: 'BUILD' },
         ];
         scored.forEach(i => {
           const bucket = scoreBuckets.find(b => i.composite_score >= b.min && i.composite_score <= b.max);
@@ -476,7 +474,7 @@ const IdeasAnalyticsPage = () => {
           }));
 
         const hiddenGems = ideas
-          .filter(i => i.composite_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP')
+          .filter(i => i.flylabs_score >= 65 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP')
           .sort((a, b) => b.composite_score - a.composite_score)
           .slice(0, 5)
           .map(i => ({
@@ -529,7 +527,7 @@ const IdeasAnalyticsPage = () => {
           })
           .sort((a, b) => b.opportunityScore - a.opportunityScore);
 
-        // ── NEW: Framework Disagreement ──
+        // ── NEW: Where Experts Disagree ──
         const disagreements = scored
           .map(i => {
             const fwScores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score].filter(s => s != null);
@@ -587,23 +585,6 @@ const IdeasAnalyticsPage = () => {
         const pipelineLastWeek = ideas.filter(i => { const d = new Date(i.created_at); return d >= twoWeeksAgo && d < oneWeekAgo; }).length;
         const pipelineDelta = pipelineLastWeek > 0 ? Math.round(((pipelineThisWeek - pipelineLastWeek) / pipelineLastWeek) * 100) : 0;
 
-        // ── NEW: Framework Correlation ──
-        const frameworkPairs = [
-          ['flylabs', 'hormozi', 'FL + H'], ['flylabs', 'koe', 'FL + K'],
-          ['flylabs', 'okamoto', 'FL + O'], ['hormozi', 'koe', 'H + K'],
-          ['hormozi', 'okamoto', 'H + O'], ['koe', 'okamoto', 'K + O'],
-        ];
-        const correlationData = frameworkPairs.map(([a, b, label]) => {
-          const both = scored.filter(i => i[`${a}_score`] != null && i[`${b}_score`] != null);
-          if (both.length < 5) return { label, agreement: 0, count: both.length };
-          const scoresA = both.map(i => i[`${a}_score`]).sort((x, y) => x - y);
-          const scoresB = both.map(i => i[`${b}_score`]).sort((x, y) => x - y);
-          const medA = scoresA[Math.floor(scoresA.length / 2)];
-          const medB = scoresB[Math.floor(scoresB.length / 2)];
-          const agree = both.filter(i => (i[`${a}_score`] >= medA && i[`${b}_score`] >= medB) || (i[`${a}_score`] < medA && i[`${b}_score`] < medB)).length;
-          return { label, agreement: Math.round((agree / both.length) * 100), count: both.length };
-        }).sort((a, b) => b.agreement - a.agreement);
-
         // ── NEW: Opportunity Map ──
         const oppFiltered = industryIntelData.filter(ind => ind.count >= 3 && ind.avgScore > 0);
         const medianCount = oppFiltered.length > 0 ? oppFiltered.map(i => i.count).sort((a, b) => a - b)[Math.floor(oppFiltered.length / 2)] : 0;
@@ -631,7 +612,7 @@ const IdeasAnalyticsPage = () => {
           leaderboard, hiddenGems, industryIntelData, disagreements,
           sourceMomentumData, scoreTrend, currentWeekAvg, rollingAvg,
           pipelineThisWeek, pipelineLastWeek, pipelineDelta,
-          correlationData, opportunityMapData,
+          opportunityMapData,
         });
       } catch (err) {
         console.error('Analytics load error:', err);
@@ -696,7 +677,7 @@ const IdeasAnalyticsPage = () => {
       list.push({
         icon: GitCompare,
         color: 'accent',
-        text: `Most debated idea: "${top.title}". One framework scores it ${top.highest[1]}, another gives it ${top.lowest[1]}. That ${top.spread}-point split means it's either genius or a trap.`,
+        text: `Most debated idea: "${top.title}". ${top.highest[0]} scores it ${top.highest[1]}, ${top.lowest[0]} gives it ${top.lowest[1]}. That ${top.spread}-point gap means it's either genius or a trap.`,
         link: `/ideas/${top.id}`,
       });
     }
@@ -732,7 +713,7 @@ const IdeasAnalyticsPage = () => {
 
   if (loading) {
     return (
-      <PageLayout seo={{ title: "Idea Lab Analytics | Fly Labs", noindex: true }}>
+      <PageLayout seo={{ title: "Ideas Lab Analytics | Fly Labs", noindex: true }}>
         <div className="min-h-screen flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -742,7 +723,7 @@ const IdeasAnalyticsPage = () => {
 
   if (!stats) {
     return (
-      <PageLayout seo={{ title: "Idea Lab Analytics | Fly Labs", noindex: true }}>
+      <PageLayout seo={{ title: "Ideas Lab Analytics | Fly Labs", noindex: true }}>
         <div className="min-h-screen flex flex-col items-center justify-center text-muted-foreground px-6">
           <FlaskConical className="w-12 h-12 mb-4" />
           <p>No data yet. Ideas need to be scored first.</p>
@@ -754,8 +735,8 @@ const IdeasAnalyticsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Idea Lab Analytics | Fly Labs",
-        description: "Live analytics from the Idea Lab. Score distributions, source breakdown, verdict analysis, and framework comparison across all scored ideas.",
+        title: "Ideas Lab Analytics | Fly Labs",
+        description: "Live analytics from the Ideas Lab. Score distributions, source quality, verdict analysis, and industry intelligence across all scored ideas.",
         url: "https://flylabs.fun/ideas/analytics",
         noindex: true,
       }}
@@ -769,7 +750,7 @@ const IdeasAnalyticsPage = () => {
             to="/ideas"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
           >
-            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Idea Lab
+            <ArrowLeft className="w-4 h-4 mr-1" /> Back to Ideas Lab
           </Link>
         </motion.div>
 
@@ -792,7 +773,7 @@ const IdeasAnalyticsPage = () => {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground mb-2 sm:mb-3">
-            Idea Lab Analytics
+            Ideas Lab Analytics
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
             The intelligence layer behind every idea. Verdict distribution, source quality, industry trends, scoring patterns. All from real data, scored by AI.
@@ -814,7 +795,7 @@ const IdeasAnalyticsPage = () => {
             <AnimatedStat value={stats.buildCount} label="Verdict: BUILD" icon={Target} color="text-primary" />
           </motion.div>
           <motion.div {...staggerItem}>
-            <AnimatedStat value={stats.avgComposite} suffix="/100" label="Avg composite" icon={TrendingUp} color="text-secondary" />
+            <AnimatedStat value={stats.avgComposite} suffix="/100" label="Avg FL score" icon={TrendingUp} color="text-secondary" />
           </motion.div>
         </motion.div>
 
@@ -1026,7 +1007,7 @@ const IdeasAnalyticsPage = () => {
           {/* Score Distribution */}
           <ChartCard
             title="Score distribution"
-            subtitle="How ideas spread across quality tiers"
+            subtitle="How ideas fall across verdict zones (SKIP / VALIDATE / BUILD)"
             doodle={LightbulbDoodle}
             doodleClass="top-3 right-3"
           >
@@ -1041,9 +1022,9 @@ const IdeasAnalyticsPage = () => {
                     return `${e.value} ideas${bucket ? ` (${bucket.label})` : ''}`;
                   }} />} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={28}>
-                    {stats.scoreBuckets.map((_, i) => {
-                      const colors = [COLORS.red, COLORS.orange, COLORS.amber, COLORS.secondary, COLORS.primary];
-                      return <Cell key={i} fill={colors[i]} />;
+                    {stats.scoreBuckets.map((bucket, i) => {
+                      const colors = { SKIP: COLORS.red, VALIDATE: COLORS.amber, BUILD: COLORS.primary };
+                      return <Cell key={i} fill={colors[bucket.label] || COLORS.primary} />;
                     })}
                   </Bar>
                 </BarChart>
@@ -1079,9 +1060,9 @@ const IdeasAnalyticsPage = () => {
             </div>
           </ChartCard>
 
-          {/* Framework Disagreement */}
+          {/* Where Experts Disagree */}
           {stats.disagreements?.length > 0 && (
-            <ChartCard title="Where the experts disagree" subtitle="Ideas with 25+ point spread between frameworks" doodle={FlaskDoodle}>
+            <ChartCard title="Where experts disagree" subtitle="Ideas where scoring frameworks gave wildly different scores (25+ point spread)" doodle={FlaskDoodle}>
               <div className="space-y-2.5">
                 {stats.disagreements.slice(0, 5).map(d => (
                   <Link key={d.id} to={`/ideas/${d.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-1 px-1 py-2 rounded-lg transition-colors">
@@ -1095,32 +1076,6 @@ const IdeasAnalyticsPage = () => {
                     </div>
                     <span className="text-xs font-black text-amber-500 tabular-nums shrink-0">{d.spread}pt</span>
                   </Link>
-                ))}
-              </div>
-            </ChartCard>
-          )}
-
-          {/* Framework Correlation */}
-          {stats.correlationData?.length > 0 && (
-            <ChartCard title="Framework alignment" subtitle="How often the scoring brains agree">
-              <div className="space-y-3">
-                {stats.correlationData.map((pair, i) => (
-                  <div key={pair.label}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-foreground">{pair.label}</span>
-                      <div className="flex items-center gap-2">
-                        {i === 0 && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">Most aligned</span>}
-                        {i === stats.correlationData.length - 1 && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-accent/10 text-accent">Most independent</span>}
-                        <span className="text-xs font-bold text-foreground tabular-nums">{pair.agreement}%</span>
-                      </div>
-                    </div>
-                    <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-700" style={{
-                        width: `${pair.agreement}%`,
-                        background: pair.agreement > 70 ? COLORS.primary : pair.agreement > 50 ? COLORS.amber : COLORS.red,
-                      }} />
-                    </div>
-                  </div>
                 ))}
               </div>
             </ChartCard>
@@ -1301,7 +1256,7 @@ const IdeasAnalyticsPage = () => {
           {/* Source Quality */}
           <ChartCard
             title="Source quality"
-            subtitle="Average composite score by source"
+            subtitle="Average FL score by source"
           >
             <div className="space-y-2.5">
               {stats.sourceQualityData.map((src) => (
@@ -1323,7 +1278,7 @@ const IdeasAnalyticsPage = () => {
 
           {/* Industry Intelligence Matrix */}
           {stats.industryIntelData?.length > 0 && (
-            <ChartCard title="Industry intelligence" subtitle="Opportunity score = avg quality + BUILD rate + momentum" className="md:col-span-2" doodle={LightbulbDoodle}>
+            <ChartCard title="Industry intelligence" subtitle="Ranked by avg score, BUILD rate, and weekly momentum" className="md:col-span-2" doodle={LightbulbDoodle}>
               <div className="overflow-x-auto -mx-1">
                 <table className="w-full text-xs">
                   <thead>
@@ -1486,7 +1441,7 @@ const IdeasAnalyticsPage = () => {
               to="/ideas"
               className="btn-playful btn-playful-primary px-6 py-3 text-sm w-full sm:w-auto"
             >
-              Explore the Idea Lab
+              Explore the Ideas Lab
             </Link>
             <Link
               to="/scoring"

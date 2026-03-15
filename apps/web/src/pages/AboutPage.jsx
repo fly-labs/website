@@ -160,12 +160,12 @@ const AboutPage = () => {
               </div>
             </motion.div>
 
-            {/* The Idea Lab */}
+            {/* The Ideas Lab */}
             <motion.div {...staggerItem} className="card-glow p-6 md:p-8 border-l-4 border-primary mb-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4">The Idea Lab</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4">The Ideas Lab</p>
               <div className="space-y-4 text-base md:text-lg text-muted-foreground font-medium leading-relaxed">
                 <p>
-                  The <Link to="/ideas" className="text-foreground font-semibold hover:text-primary transition-colors">Idea Lab</Link> is a different beast. Every day it pulls real problems people are complaining about across {SOURCE_COUNT} sources online. AI scores each one, validates the best against live conversations, and gives you a verdict. No guesswork. The whole point is to answer the question every solo builder asks: "is this worth my time?"
+                  The <Link to="/ideas" className="text-foreground font-semibold hover:text-primary transition-colors">Ideas Lab</Link> is a different beast. Every day it pulls real problems people are complaining about across {SOURCE_COUNT} sources online. AI scores each one, validates the best against live conversations, and gives you a verdict. No guesswork. The whole point is to answer the question every solo builder asks: "is this worth my time?"
                 </p>
 
                 {/* Verdict badges */}
@@ -192,7 +192,7 @@ const AboutPage = () => {
               </div>
               <div className="flex flex-wrap gap-3 mt-4">
                 <Link to="/ideas" className="inline-flex items-center text-sm font-semibold text-primary hover:underline">
-                  Browse the Idea Lab <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  Browse the Ideas Lab <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </Link>
                 <Link to="/ideas/analytics" className="inline-flex items-center text-sm font-semibold text-muted-foreground hover:text-primary hover:underline">
                   See the analytics <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -299,7 +299,7 @@ const AboutPage = () => {
                 </div>
 
                 <p>
-                  Fly Labs covers the entire cycle. The Idea Lab handles ideation. The prompts, templates, and blueprints help you build. The newsletter documents the process. And the whole thing is open source, so every project compounds into the next one.
+                  Fly Labs covers the entire cycle. The Ideas Lab handles ideation. The prompts, templates, and blueprints help you build. The newsletter documents the process. And the whole thing is open source, so every project compounds into the next one.
                 </p>
                 <p>
                   If you've ever thought "I want to build something but I don't know where to start," this is the place. Not a course. Not a community with paid tiers. Just the tools, the data, and an honest look at what it takes to build things as one person.
@@ -450,7 +450,7 @@ const AboutPage = () => {
                   to="/ideas"
                   className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:brightness-110 transition-[filter,transform] duration-150 active:translate-y-0.5"
                 >
-                  Explore the Idea Lab <ArrowRight className="w-4 h-4 ml-2" />
+                  Explore the Ideas Lab <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
                 <span className="hidden sm:inline text-muted-foreground">or</span>
                 <Link

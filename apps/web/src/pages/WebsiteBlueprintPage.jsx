@@ -30,7 +30,7 @@ const heroStats = [
 const platformSections = [
   {
     stage: 'Ideation',
-    title: 'Idea Lab',
+    title: 'Ideas Lab',
     route: '/ideas',
     desc: `${SOURCE_COUNT} automated sources pull real problems from Reddit, X, Hacker News, GitHub Issues, Product Hunt, ProblemHunt, the YC Graveyard, and the community. Claude AI scores every idea across ${FRAMEWORK_COUNT} frameworks. Grok validates against real conversations. BUILD, VALIDATE, or SKIP.`,
     highlights: [`${SOURCE_COUNT} sources`, `${FRAMEWORK_COUNT} AI frameworks`, 'Market validation'],
@@ -175,7 +175,7 @@ scripts/            # ${SCRIPT_COUNT} scripts
 
 const dbHighlights = [
   { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), enrichment (validation evidence, competitors), meta (YC failure analysis).', icon: Layers },
-  { title: 'Materialized Columns', desc: 'verdict, confidence, composite_score. Written by scripts, used for server-side filtering.', icon: Zap },
+  { title: 'Materialized Columns', desc: 'verdict, confidence, flylabs_score (= composite_score). Written by scripts, used for server-side filtering.', icon: Zap },
   { title: 'Row Level Security', desc: 'Every table has RLS. Public read for approved ideas, auth-gated writes.', icon: ShieldCheck },
   { title: `${RPC_COUNT} RPCs`, desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
 ];
@@ -466,17 +466,17 @@ const WebsiteBlueprintPage = () => {
               </h3>
               <div className="card-playful p-5 bg-card">
                 <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-4">
-                  Every idea gets scored by Claude Sonnet 4 across four frameworks. Each framework evaluates different dimensions. The composite score determines the verdict: BUILD, VALIDATE, or SKIP.
+                  Every idea gets scored by asking 4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it? The FL score determines the verdict: BUILD, VALIDATE, or SKIP. Three expert perspectives (Hormozi, Dan Koe, Okamoto) add depth on the detail page.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {[
-                    { name: 'Fly Labs Method', weight: '40%', color: 'bg-primary/10 text-primary border-primary/30' },
-                    { name: 'Hormozi', weight: '20%', color: 'bg-secondary/10 text-secondary border-secondary/30' },
-                    { name: 'Dan Koe', weight: '20%', color: 'bg-accent/10 text-accent border-accent/30' },
-                    { name: 'Okamoto', weight: '20%', color: 'bg-muted text-muted-foreground border-border' },
+                    { name: 'Fly Labs Method', tag: 'THE score', color: 'bg-primary/10 text-primary border-primary/30' },
+                    { name: 'Hormozi', tag: 'expert', color: 'bg-secondary/10 text-secondary border-secondary/30' },
+                    { name: 'Dan Koe', tag: 'expert', color: 'bg-accent/10 text-accent border-accent/30' },
+                    { name: 'Okamoto', tag: 'expert', color: 'bg-muted text-muted-foreground border-border' },
                   ].map((fw) => (
                     <span key={fw.name} className={`text-xs font-bold px-3 py-1.5 rounded-full border ${fw.color}`}>
-                      {fw.name} ({fw.weight})
+                      {fw.name} ({fw.tag})
                     </span>
                   ))}
                 </div>

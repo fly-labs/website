@@ -4,6 +4,7 @@ import { Bot, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
 
+// Default prompts
 const SUGGESTED_PROMPTS = [
   'I have a business idea. Score it.',
   'I\'m stuck between two ideas. Help me decide.',
@@ -19,8 +20,103 @@ const COMPACT_PROMPTS = [
   'Set the vibe',
 ];
 
-export function ChatEmpty({ onPromptClick, compact = false }) {
-  const prompts = compact ? COMPACT_PROMPTS : SUGGESTED_PROMPTS;
+// Page-specific prompts and descriptions
+const PAGE_CONFIGS = {
+  'FlyBoard': {
+    title: 'FlyBot for FlyBoard',
+    description: 'I can help you plan your canvas, suggest templates, or brainstorm what to draw next.',
+    compactDescription: 'Need help with your board? Ask me anything.',
+    prompts: [
+      'Which template should I use for my project?',
+      'Help me plan a mind map for my startup',
+      'What\'s the best canvas layout for a weekly review?',
+      'Create a new board for brainstorming',
+      'Help me organize my boards into folders',
+      'What fonts work best for a presentation?',
+    ],
+    compactPrompts: [
+      'Suggest a template for my idea',
+      'Help me plan my canvas',
+      'Tips for a better board',
+    ],
+  },
+  'Ideas Lab': {
+    title: 'FlyBot for Ideas',
+    description: 'Describe a problem or business idea. I\'ll ask 4 questions, score it, find similar ideas, and tell you if it\'s worth building.',
+    compactDescription: 'Describe an idea. I\'ll score and analyze it.',
+    prompts: [
+      'I have a business idea. Score it.',
+      'Show me the top BUILD ideas this week',
+      'Which industries have the most opportunities?',
+      'Find me ideas similar to [your idea]',
+      'What are the latest ideas from Product Hunt?',
+      'Help me validate my idea before building',
+    ],
+    compactPrompts: [
+      'Score my business idea',
+      'Show me BUILD ideas',
+      'What\'s trending?',
+    ],
+  },
+  'Prompt Library': {
+    title: 'FlyBot for Prompts',
+    description: 'I can help you find the right prompt, customize one for your use case, or suggest new ones.',
+    compactDescription: 'Need help with prompts? Ask me.',
+    prompts: [
+      'Find me a prompt for writing LinkedIn posts',
+      'I need a coding prompt for React debugging',
+      'What\'s the best SEO prompt you have?',
+      'Help me customize a prompt for my niche',
+      'Suggest a workflow for content creation',
+      'What prompts are most popular?',
+    ],
+    compactPrompts: [
+      'Find me a writing prompt',
+      'Best prompt for my use case',
+      'Help me customize a prompt',
+    ],
+  },
+  'Explore': {
+    title: 'FlyBot',
+    description: 'I can tell you about any Fly Labs project, help you find what you need, or suggest where to start.',
+    compactDescription: 'Ask me about any Fly Labs project.',
+    prompts: [
+      'What can I do on Fly Labs?',
+      'Tell me about the Ideas Lab',
+      'What tools are available?',
+      'Where should I start?',
+    ],
+    compactPrompts: [
+      'What can I do here?',
+      'Tell me about Ideas Lab',
+      'Where should I start?',
+    ],
+  },
+};
+
+function getPageConfig(pageContext) {
+  if (!pageContext?.name) return null;
+  // Match by page name prefix (e.g., "Ideas Lab (idea submissions...)" -> "Ideas Lab")
+  for (const [key, config] of Object.entries(PAGE_CONFIGS)) {
+    if (pageContext.name.startsWith(key)) return config;
+  }
+  return null;
+}
+
+export function ChatEmpty({ onPromptClick, compact = false, pageContext = null }) {
+  const pageConfig = getPageConfig(pageContext);
+
+  const prompts = compact
+    ? (pageConfig?.compactPrompts || COMPACT_PROMPTS)
+    : (pageConfig?.prompts || SUGGESTED_PROMPTS);
+
+  const title = compact
+    ? (pageConfig?.title || 'FlyBot')
+    : (pageConfig?.title ? `Hey, I'm ${pageConfig.title.replace('FlyBot for ', '')}'s FlyBot.` : 'Hey, I\'m FlyBot.');
+
+  const description = compact
+    ? (pageConfig?.compactDescription || 'Describe an idea. I\'ll score it and show you what I\'ve seen before.')
+    : (pageConfig?.description || 'Describe an idea. I\'ll ask 4 questions, pull similar ones I\'ve already analyzed, and tell you if it\'s worth your weekend.');
 
   return (
     <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
@@ -42,16 +138,13 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             'font-bold tracking-tight',
             compact ? 'text-lg mb-1.5' : 'text-2xl mb-2'
           )}>
-            {compact ? 'FlyBot' : 'Hey, I\'m FlyBot.'}
+            {compact ? (pageConfig?.title || 'FlyBot') : title}
           </h1>
           <p className={cn(
             'text-muted-foreground/70 leading-relaxed mx-auto',
             compact ? 'text-xs max-w-[240px]' : 'text-sm max-w-sm'
           )}>
-            {compact
-              ? 'Describe an idea. I\'ll score it and show you what I\'ve seen before.'
-              : 'Describe an idea and I\'ll score it against 4 frameworks, pull similar ones I\'ve already analyzed, and tell you if it\'s worth your weekend.'
-            }
+            {description}
           </p>
           {!compact && (
             <p className="text-xs text-muted-foreground/40 mt-2 max-w-sm mx-auto">

@@ -394,10 +394,11 @@ async function synthesizeEvidence(idea, xEvidence, xCompetitors, redditPosts) {
         ? 'Evidence comes primarily from Reddit. X search was unavailable.'
         : 'Limited evidence available from both sources. Be conservative with scoring.';
 
-  // Pass score_breakdown if available for cross-referencing (including buildability for the gate)
+  // Pass FL score + buildability for cross-referencing
   const buildabilityScore = idea.score_breakdown?.flylabs?.buildability?.score;
   const buildabilityReasoning = idea.score_breakdown?.flylabs?.buildability?.reasoning;
-  const scoreContext = idea.score_breakdown ? `\n\n=== Framework Scores ===\nFly Labs Method: ${idea.flylabs_score || idea.score_breakdown.flylabs?.total || 'N/A'}/100\nHormozi: ${idea.score_breakdown.hormozi?.total || 'N/A'}/100\nKoe: ${idea.score_breakdown.koe?.total || 'N/A'}/100\nOkamoto: ${idea.score_breakdown.okamoto?.total || 'N/A'}/100${idea.score_breakdown.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}${buildabilityScore != null ? `\nBuildability Score: ${buildabilityScore}/20${buildabilityScore < 10 ? ' (BELOW MINIMUM for BUILD verdict)' : ''}` : ''}${buildabilityReasoning ? `\nBuildability Reasoning: ${buildabilityReasoning}` : ''}` : '';
+  const fl = idea.flylabs_score || idea.score_breakdown?.flylabs?.total;
+  const scoreContext = fl != null ? `\n\n=== Fly Labs Score ===\nFL Score: ${fl}/100${idea.score_breakdown?.synthesis ? `\nScoring Verdict: ${idea.score_breakdown.synthesis.verdict}` : ''}${buildabilityScore != null ? `\nBuildability: ${buildabilityScore}/20${buildabilityScore < 10 ? ' (BELOW MINIMUM for BUILD verdict)' : ''}` : ''}${buildabilityReasoning ? `\nBuildability Reasoning: ${buildabilityReasoning}` : ''}` : '';
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
@@ -417,8 +418,8 @@ Confidence rules:
 - medium: 5-9 pieces of evidence, or single-source only
 - low: < 5 pieces of evidence total
 
-For the verdict, cross-reference the framework scores (if provided) with the market evidence to give the most informed recommendation possible. This verdict supersedes the scoring-only verdict because it has real market evidence.
-- BUILD: Strong market evidence confirms framework scores. Real people are experiencing this pain and willing to pay. IMPORTANT: If the Fly Labs buildability score is below 10/20, the verdict CANNOT be BUILD regardless of market evidence. Strong demand for something a solo builder cannot ship is a trap, not an opportunity. Downgrade to VALIDATE_FIRST.
+For the verdict, cross-reference the Fly Labs score (if provided) with the market evidence to give the most informed recommendation possible. This verdict supersedes the scoring-only verdict because it has real market evidence.
+- BUILD: Strong market evidence confirms the FL score. Real people are experiencing this pain and willing to pay. FL score should be >= 55 for evidence to upgrade to BUILD. IMPORTANT: If the Fly Labs buildability score is below 10/20, the verdict CANNOT be BUILD regardless of market evidence. Strong demand for something a solo builder cannot ship is a trap, not an opportunity. Downgrade to VALIDATE_FIRST.
 - VALIDATE_FIRST: Some evidence exists but gaps remain. Need more data before committing.
 - SKIP: Weak or contradicting evidence. The market signal does not support the idea.
 
@@ -538,20 +539,13 @@ async function main() {
     process.exit(1);
   }
 
-  // Filter: average of available scores >= 40
+  // Filter: FL score >= 40 (the only score that matters for eligibility)
   const eligible = ideas.filter((idea) => {
-    const scores = [idea.flylabs_score, idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
-    if (scores.length === 0) return false;
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    return avg >= 40;
+    return idea.flylabs_score != null && idea.flylabs_score >= 40;
   });
 
-  // Sort by highest average score first
-  const avgScore = (idea) => {
-    const scores = [idea.flylabs_score, idea.hormozi_score, idea.koe_score, idea.okamoto_score].filter((s) => s != null);
-    return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-  };
-  eligible.sort((a, b) => avgScore(b) - avgScore(a));
+  // Sort by highest FL score first
+  eligible.sort((a, b) => (b.flylabs_score || 0) - (a.flylabs_score || 0));
 
   const batch = eligible.slice(0, MAX_IDEAS_PER_RUN);
   console.log(`Found ${ideas.length} ideas, ${eligible.length} eligible, processing top ${batch.length}${enrichAll ? ' (--all mode)' : ''}`);

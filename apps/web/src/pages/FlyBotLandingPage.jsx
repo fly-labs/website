@@ -20,7 +20,7 @@ const exampleEval = {
   hormozi_score: 58,
   koe_score: 55,
   okamoto_score: 64,
-  composite_score: 60,
+  composite_score: 62, // = flylabs_score (backward compat)
   verdict: 'VALIDATE_FIRST',
 };
 
@@ -54,7 +54,7 @@ const ExampleScoreCard = ({ scores, vs, tier }) => (
         <h4 className="font-semibold text-sm leading-snug">{exampleEval.idea_title}</h4>
         <div className="flex items-baseline gap-1.5 mt-1.5">
           <span className={`text-3xl font-bold tabular-nums tracking-tight ${tier.color}`}>
-            {exampleEval.composite_score}
+            {exampleEval.flylabs_score}
           </span>
           <span className="text-xs text-muted-foreground/50">/100</span>
         </div>
@@ -99,7 +99,7 @@ const FlyBotLandingPage = () => {
   };
 
   const vs = verdictStyles[exampleEval.verdict];
-  const tier = getScoreTier(exampleEval.composite_score);
+  const tier = getScoreTier(exampleEval.flylabs_score);
   const scores = [
     { key: 'flylabs', score: exampleEval.flylabs_score, config: FRAMEWORK_CONFIG[0] },
     { key: 'hormozi', score: exampleEval.hormozi_score, config: FRAMEWORK_CONFIG[1] },
@@ -111,7 +111,7 @@ const FlyBotLandingPage = () => {
     <PageLayout
       seo={{
         title: "FlyBot: An AI That Already Did the Homework",
-        description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${FRAMEWORK_COUNT} frameworks and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
+        description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${FRAMEWORK_COUNT} questions and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
         keywords: "AI idea scoring, business idea evaluator, FlyBot, idea validation AI, vibe building, content strategy AI, solo builder tools",
         url: "https://flylabs.fun/flybot",
         schema: {
@@ -220,14 +220,14 @@ const FlyBotLandingPage = () => {
               {
                 icon: Database,
                 title: ideaCount ? `${ideaCount}+ real problems scored` : 'Hundreds of real problems scored',
-                desc: 'From Reddit, Hacker News, GitHub, X, Product Hunt, the YC Graveyard, and more. Each one analyzed across 4 frameworks with a final verdict. FlyBot can search this database while you talk.',
+                desc: 'From Reddit, Hacker News, GitHub, X, Product Hunt, the YC Graveyard, and more. Each one scored across 4 questions with a final verdict. FlyBot can search this database while you talk.',
                 color: 'text-primary',
                 bgColor: 'bg-primary/10',
               },
               {
                 icon: Layers,
-                title: `${FRAMEWORK_COUNT} ways to evaluate your idea`,
-                desc: 'Is the problem real? Is there room for something new? Would people pay? Can you build it alone? Four frameworks look at different angles, then combine into one honest verdict: BUILD, VALIDATE, or SKIP.',
+                title: `${FRAMEWORK_COUNT} questions about your idea`,
+                desc: 'Is the problem real? Is there room for something new? Would people pay? Can you build it alone? Four questions, scored from different angles, combined into one honest verdict: BUILD, VALIDATE, or SKIP.',
                 color: 'text-secondary',
                 bgColor: 'bg-secondary/10',
               },
@@ -296,7 +296,7 @@ const FlyBotLandingPage = () => {
             {[
               {
                 label: '"I have an idea. Is it any good?"',
-                response: 'Describe the problem you want to solve. FlyBot runs it through 4 frameworks, pulls similar ideas from the database, checks for dead startups that tried the same thing, and gives you a score with a BUILD, VALIDATE, or SKIP verdict. With per-pillar reasoning so you know exactly where the gaps are.',
+                response: 'Describe the problem you want to solve. FlyBot asks 4 questions about it, pulls similar ideas from the database, checks for dead startups that tried the same thing, and gives you a score with a BUILD, VALIDATE, or SKIP verdict. With per-pillar reasoning so you know exactly where the gaps are.',
                 icon: Target,
                 color: 'text-primary',
               },
@@ -344,7 +344,7 @@ const FlyBotLandingPage = () => {
                 FlyBot talks first. What looks strong, what's risky, what patterns it recognizes from similar problems. Then it drops the score card with per-framework breakdowns and a final verdict.
               </p>
               <p className="text-sm text-muted-foreground/70 leading-relaxed">
-                The same scoring engine that runs the Idea Lab, now in a conversation you can steer.
+                The same scoring engine that runs the Ideas Lab, now in a conversation you can steer.
               </p>
             </motion.div>
 
@@ -374,7 +374,7 @@ const FlyBotLandingPage = () => {
             {[
               { value: ideaCount, label: 'Ideas scored', sub: 'with full reasoning', icon: BarChart3, color: 'text-primary' },
               { value: SOURCE_COUNT, label: 'Live sources', sub: 'synced daily', icon: Database, color: 'text-secondary' },
-              { value: FRAMEWORK_COUNT, label: 'Scoring frameworks', sub: 'weighted into one verdict', icon: Target, color: 'text-accent' },
+              { value: FRAMEWORK_COUNT, label: 'Scoring questions', sub: 'weighted into one verdict', icon: Target, color: 'text-accent' },
               { value: PROMPT_COUNT, label: 'Prompts loaded', sub: 'recommended by name', icon: Sparkles, color: 'text-amber-500' },
             ].map((stat) => (
               <motion.div key={stat.label} {...staggerItem} className="glass-card p-4 text-center">
@@ -402,7 +402,7 @@ const FlyBotLandingPage = () => {
           <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-4" {...staggerContainer}>
             {[
               { num: '01', title: 'You talk', desc: 'Describe a problem, paste an idea, ask for help with a post. Just talk naturally.' },
-              { num: '02', title: 'FlyBot connects dots', desc: 'Pulls similar ideas from the database. Matches prompts from the library. Runs the scoring frameworks. Checks for dead startup overlaps.' },
+              { num: '02', title: 'FlyBot connects dots', desc: 'Pulls similar ideas from the database. Matches prompts from the library. Asks the 4 scoring questions. Checks for dead startup overlaps.' },
               { num: '03', title: 'You get a real answer', desc: 'A score card, a verdict, per-pillar reasoning, and honest commentary. Then you decide what to do with it.' },
             ].map((step) => (
               <motion.div key={step.num} {...staggerItem} className="glass-card p-6 text-center">
@@ -470,7 +470,7 @@ const FlyBotLandingPage = () => {
             </button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-            <Link to="/ideas" className="hover:text-primary transition-colors">Explore the Idea Lab</Link>
+            <Link to="/ideas" className="hover:text-primary transition-colors">Explore the Ideas Lab</Link>
             <span className="text-muted-foreground/30">|</span>
             <Link to="/prompts" className="hover:text-primary transition-colors">Browse {PROMPT_COUNT} Prompts</Link>
             <span className="text-muted-foreground/30">|</span>

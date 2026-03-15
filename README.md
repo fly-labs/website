@@ -19,7 +19,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 ## What You Get
 
-**Idea Lab** - 1,000+ real problems scraped daily from Reddit (19 subs), Product Hunt, Hacker News, X/Twitter, GitHub Issues, ProblemHunt, the YC Graveyard, and community submissions. Every idea scored by Claude using 4 frameworks, top ones validated against live conversations. BUILD, VALIDATE, or SKIP verdict with reasoning. Card/table views, 7-dimension filtering, full-text search.
+**Ideas Lab** - 1,000+ real problems scraped daily from Reddit (19 subs), Product Hunt, Hacker News, X/Twitter, GitHub Issues, ProblemHunt, the YC Graveyard, and community submissions. 4 questions decide the verdict. 3 expert perspectives add depth. BUILD, VALIDATE, or SKIP verdict with reasoning. Card/table views, 7-dimension filtering, full-text search.
 
 **FlyBot** - AI coach that sits on top of all the scored data. Evaluate your own ideas, get prompt recommendations, ask about patterns in the data. Claude-powered with streaming responses and conversation memory.
 
@@ -27,7 +27,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Analytics Dashboard** - 10 interactive charts: verdict distribution, source breakdown, score histograms, framework radar, growth timeline, source quality heatmap, and more.
 
-**Scoring Frameworks** - The full methodology: Fly Labs Method (solo builder lens) + Hormozi ($100M evaluation) + Dan Koe (one-person business) + Okamoto (MicroSaaS validation). Weighted composite with confidence scoring.
+**Scoring Frameworks** - The full methodology: Fly Labs Method (4 questions, solo builder lens) + 3 expert perspectives (Hormozi, Dan Koe, Okamoto) for depth on the detail page.
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
@@ -44,13 +44,13 @@ Every day at 6 AM UTC, GitHub Actions runs 7 sync scripts and a scoring pass:
 ```
 Sources (8)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
 ───────────          ──────────────────────          ──────────────────────────
-Reddit (19 subs)  →  Fly Labs Method (40%)        →  x_search live evidence
-Product Hunt      →  Hormozi Framework (20%)      →  Reddit conversation mining
-Hacker News       →  Dan Koe Framework (20%)      →  Confidence scoring
-X/Twitter (Grok)  →  Okamoto Framework (20%)      →  Competitive intelligence
-GitHub Issues     →  ─────────────────────
-ProblemHunt       →  Composite score + verdict
-YC Graveyard      →  BUILD / VALIDATE / SKIP
+Reddit (19 subs)  →  Fly Labs Method (THE score)  →  x_search live evidence
+Product Hunt      →  + 3 expert perspectives      →  Reddit conversation mining
+Hacker News       →    (Hormozi, Koe, Okamoto)    →  Confidence scoring
+X/Twitter (Grok)  →  ─────────────────────        →  Competitive intelligence
+GitHub Issues     →  FL >= 65 → BUILD
+ProblemHunt       →  FL 40-64 → VALIDATE
+YC Graveyard      →  FL < 40  → SKIP
 Community         →
 ```
 
@@ -108,7 +108,7 @@ npm run dev
 | `npm run sync:github` | Sync from GitHub Issues |
 | `npm run sync:yc` | Sync dead YC startups |
 | `npm run score` | Score unscored ideas with Claude Sonnet |
-| `npm run score:backfill` | Re-score BUILD/VALIDATE ideas with Haiku (cheap) |
+| `npm run score:backfill` | Re-score ALL ideas (backfill-all.mjs) |
 | `npm run enrich` | Validate top ideas with Grok + Reddit |
 | `npm run setup:music` | Upload tracks to Supabase Storage + generate tracks.js |
 
@@ -132,7 +132,7 @@ apps/web/
 ├── src/
 │   ├── components/
 │   │   ├── ui/           # shadcn/ui primitives
-│   │   ├── ideas/        # Idea Lab components (cards, filters, scoring)
+│   │   ├── ideas/        # Ideas Lab components (cards, filters, scoring)
 │   │   ├── chat/         # FlyBot chat (messages, input, evaluation cards)
 │   │   ├── flybot/       # FlyBot widget (trigger, panel)
 │   │   └── music/        # Vibe Coding player (trigger, panel, visualizer)
@@ -153,7 +153,7 @@ apps/web/
 |------|------|--------|
 | `/` | Landing page | Public |
 | `/explore` | Project catalog | Public |
-| `/ideas` | Idea Lab (AI-scored, multi-filter) | Public |
+| `/ideas` | Ideas Lab (AI-scored, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scores, evidence) | Public |
 | `/ideas/analytics` | Analytics dashboard (10 charts) | Public |
 | `/prompts` | Prompt Library (81+ prompts) | Hybrid |

@@ -27,22 +27,20 @@ export const verdictStyles = {
 
 export const confidenceColors = { high: 'text-primary', medium: 'text-amber-500', low: 'text-muted-foreground' };
 
-export const FRAMEWORK_CONFIG = [
-  {
-    key: 'flylabs',
-    name: 'Fly Labs Method',
-    color: 'text-indigo-500',
-    barColor: 'bg-indigo-500',
-    pillars: [
-      { key: 'problem_clarity', label: 'Problem Clarity' },
-      { key: 'solution_gap', label: 'Solution Gap' },
-      { key: 'willingness', label: 'Willingness to Act' },
-      { key: 'buildability', label: 'Buildability' },
-    ],
-  },
+// FL Method: THE scoring framework (4 questions, one score)
+export const FL_PILLARS = [
+  { key: 'problem_clarity', label: 'Is the Pain Real?' },
+  { key: 'solution_gap', label: 'Is There a Gap?' },
+  { key: 'willingness', label: 'Would Someone Pay?' },
+  { key: 'buildability', label: 'Can You Build It?' },
+];
+
+// Expert perspectives: secondary, detail-page only
+export const EXPERT_CONFIG = [
   {
     key: 'hormozi',
-    name: 'Hormozi Score',
+    name: 'Hormozi',
+    question: 'Would this make money?',
     color: 'text-foreground',
     pillars: [
       { key: 'market_viability', label: 'Market Viability' },
@@ -54,7 +52,8 @@ export const FRAMEWORK_CONFIG = [
   },
   {
     key: 'koe',
-    name: 'Dan Koe Score',
+    name: 'Dan Koe',
+    question: 'Can one person sell this?',
     color: 'text-foreground',
     pillars: [
       { key: 'problem_clarity', label: 'Problem Clarity' },
@@ -68,7 +67,8 @@ export const FRAMEWORK_CONFIG = [
   },
   {
     key: 'okamoto',
-    name: 'Okamoto Score',
+    name: 'Okamoto',
+    question: 'Is this a viable micro-SaaS?',
     color: 'text-foreground',
     pillars: [
       { key: 'target_audience', label: 'Target Audience' },
@@ -79,4 +79,16 @@ export const FRAMEWORK_CONFIG = [
       { key: 'validation_readiness', label: 'Validation Readiness' },
     ],
   },
+];
+
+// Legacy compat: FRAMEWORK_CONFIG includes FL + experts for components that still use it
+export const FRAMEWORK_CONFIG = [
+  {
+    key: 'flylabs',
+    name: 'Fly Labs Method',
+    color: 'text-indigo-500',
+    barColor: 'bg-indigo-500',
+    pillars: FL_PILLARS,
+  },
+  ...EXPERT_CONFIG.map(e => ({ ...e, barColor: 'bg-foreground/30' })),
 ];

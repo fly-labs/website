@@ -7,7 +7,7 @@ import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
 import { books } from '@/lib/data/library.js';
-import { SOURCE_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
+import { SOURCE_COUNT, QUESTION_COUNT } from '@/lib/data/siteStats.js';
 import supabase from '@/lib/supabaseClient.js';
 import { cn } from '@/lib/utils.js';
 import { fetchArticles } from '@/lib/substackApi.js';
@@ -16,9 +16,9 @@ const availableBookCount = books.filter((b) => b.status === 'available').length;
 
 const pillars = [
   {
-    title: 'Idea Lab',
+    title: 'Ideas Lab',
     icon: Users,
-    description: `Real problems from ${SOURCE_COUNT} sources, scored by ${FRAMEWORK_COUNT} AI frameworks, validated against real conversations online.`,
+    description: `Real problems from ${SOURCE_COUNT} sources. ${QUESTION_COUNT} questions. One verdict.`,
     color: 'text-primary',
     bgColor: 'bg-primary/10',
     link: '/ideas',
@@ -173,7 +173,7 @@ const HomePage = () => {
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:brightness-110 transition-[filter,transform] duration-150 active:translate-y-0.5"
               onClick={() => trackEvent('cta_click', { cta: 'explore_ideas', location: 'home_hero' })}
             >
-              Explore the Idea Lab <ArrowRight className="w-5 h-5 ml-2" />
+              Explore the Ideas Lab <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
             <Link
               to="/explore"
@@ -207,7 +207,7 @@ const HomePage = () => {
             {...staggerContainer}
           >
             {pillars.map((pillar) => {
-              const stat = pillar.title === 'Idea Lab' && ideaCount != null
+              const stat = pillar.title === 'Ideas Lab' && ideaCount != null
                 ? `${ideaCount} ideas scored`
                 : pillar.stat;
               return (
@@ -271,7 +271,7 @@ const HomePage = () => {
 
           <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-4" {...staggerContainer}>
             {[
-              { step: '01', title: 'Ideation', desc: 'Real problems from Reddit, X, Product Hunt, GitHub, and more. AI scores them across four frameworks. You pick the best ones.', color: 'text-primary' },
+              { step: '01', title: 'Ideation', desc: 'Real problems from Reddit, X, Product Hunt, GitHub, and more. AI asks four questions about each one. You pick the best ones.', color: 'text-primary' },
               { step: '02', title: 'Build', desc: 'Pick your tools, ship fast, document what breaks. One person with AI can build what used to require a team.', color: 'text-secondary' },
               { step: '03', title: 'Share', desc: 'Open source the code, write about the process, put it out there. Feedback from real people sharpens everything.', color: 'text-accent' },
               { step: '04', title: 'Compound', desc: 'Skills stack, tools compound, each project sharpens the next. The loop is the edge.', color: 'text-primary' },

@@ -227,14 +227,6 @@ export function useIdeaFilters() {
         return query.order('votes', { ascending: false });
       case 'flylabs':
         return query.order('flylabs_score', { ascending: false, nullsFirst: false });
-      case 'hormozi':
-        return query.order('hormozi_score', { ascending: false, nullsFirst: false });
-      case 'koe':
-        return query.order('koe_score', { ascending: false, nullsFirst: false });
-      case 'okamoto':
-        return query.order('okamoto_score', { ascending: false, nullsFirst: false });
-      case 'validation':
-        return query.order('validation_score', { ascending: false, nullsFirst: false });
       case 'verdict':
         // Verdict sort: BUILD > VALIDATE_FIRST > SKIP, then by composite_score
         return query

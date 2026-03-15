@@ -1,4 +1,4 @@
-import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen, Bot } from 'lucide-react';
+import { Sparkles, LayoutTemplate, Mail, Code, Lightbulb, Globe, ListChecks, FileText, BookOpen, Bot, PenLine } from 'lucide-react';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 
@@ -104,6 +104,17 @@ export const projects = [
 
   },
   {
+    title: 'FlyBoard',
+    description: 'A whiteboard that thinks like a Moleskine. Sketch ideas, drop framework templates, switch grid styles, export clean visuals. Your canvas for thinking.',
+    icon: PenLine,
+    link: '/flyboard',
+    color: 'text-emerald-500',
+    bgColor: 'bg-emerald-500/10',
+    type: 'Canvas',
+    status: 'Live',
+    category: 'Tools',
+  },
+  {
     title: 'FlyBot',
     description: 'Describe what you\'re building. FlyBot pulls up similar ideas it already scored, flags where yours is strong or weak, and tells you if it\'s worth your weekend.',
     icon: Bot,
@@ -115,8 +126,8 @@ export const projects = [
     category: 'Tools',
   },
   {
-    title: 'Idea Lab',
-    description: `Pulls real problems from ${SOURCE_COUNT} sources, scores them with ${FRAMEWORK_COUNT} AI frameworks, and validates against real conversations. The best ones get built.`,
+    title: 'Ideas Lab',
+    description: `${SOURCE_COUNT} sources. 4 questions. One score. One verdict. The best ideas get built.`,
     icon: Lightbulb,
     link: '/ideas',
     color: 'text-orange-500',

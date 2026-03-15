@@ -20,6 +20,9 @@ export { SOURCE_COUNT };
 // Re-export shared constant
 export { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 
+// The 4 questions that decide the score
+export const QUESTION_COUNT = 4;
+
 // Architectural constants (update when codebase changes)
 // These describe the codebase itself and can't be auto-computed at runtime.
 // Centralized here so there's ONE place to update.
@@ -29,4 +32,4 @@ export const GA4_EVENT_COUNT = 35;
 export const DB_TABLE_COUNT = 9;
 export const RPC_COUNT = 7;
 export const WORKFLOW_COUNT = 3;
-export const EXPERT_FRAMEWORK_COUNT = 3; // Hormozi, Dan Koe, Okamoto
+export const EXPERT_COUNT = 3; // Hormozi, Dan Koe, Okamoto

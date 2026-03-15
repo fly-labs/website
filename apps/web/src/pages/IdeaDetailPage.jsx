@@ -1,21 +1,22 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Archive, ExternalLink, Share2, AlertTriangle, Sparkles } from 'lucide-react';
+import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Archive, ExternalLink, Share2, AlertTriangle, Sparkles, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
 import supabase from '@/lib/supabaseClient.js';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
-import { FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
-import { getScoreTier, ScoreBar, verdictStyles, confidenceColors, FRAMEWORK_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
+import { getScoreTier, ScoreBar, verdictStyles, confidenceColors, FL_PILLARS, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 
 const IdeaDetailPage = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { openWidget } = useChatContext();
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -55,7 +56,6 @@ const IdeaDetailPage = () => {
     const alreadyVoted = votedIds.includes(ideaId);
 
     if (alreadyVoted) {
-      // Unvote: optimistic removal
       const newVotedIds = votedIds.filter(v => v !== ideaId);
       setVotedIds(newVotedIds);
       localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
@@ -68,7 +68,6 @@ const IdeaDetailPage = () => {
         setIdea(prev => prev ? { ...prev, votes: (prev.votes || 0) + 1 } : prev);
       }
     } else {
-      // Vote: optimistic add
       const newVotedIds = [...votedIds, ideaId];
       setVotedIds(newVotedIds);
       localStorage.setItem('voted_ideas', JSON.stringify(newVotedIds));
@@ -106,7 +105,7 @@ const IdeaDetailPage = () => {
 
   if (loading) {
     return (
-      <PageLayout seo={{ title: 'Loading - Idea Lab', noindex: true }}>
+      <PageLayout seo={{ title: 'Loading - Ideas Lab', noindex: true }}>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -116,13 +115,13 @@ const IdeaDetailPage = () => {
 
   if (notFound || !idea) {
     return (
-      <PageLayout seo={{ title: 'Idea not found - Idea Lab', noindex: true }}>
+      <PageLayout seo={{ title: 'Idea not found - Ideas Lab', noindex: true }}>
         <div className="container mx-auto px-6 pt-32 pb-20">
           <div className="max-w-3xl mx-auto text-center py-20">
             <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
             <p className="text-lg font-medium text-muted-foreground mb-4">This idea doesn't exist or has been removed.</p>
             <Link to="/ideas" className="inline-flex items-center gap-2 text-primary font-medium hover:underline">
-              <ChevronLeft className="w-4 h-4" /> Back to Idea Lab
+              <ChevronLeft className="w-4 h-4" /> Back to Ideas Lab
             </Link>
           </div>
         </div>
@@ -136,18 +135,11 @@ const IdeaDetailPage = () => {
   const synthesis = idea.score_breakdown?.synthesis;
   const enrichVerdict = idea.enrichment?.verdict;
   const scoreVerdict = synthesis;
-  const activeVerdict = enrichVerdict || scoreVerdict;
   const rec = enrichVerdict?.recommendation || scoreVerdict?.verdict;
   const vs = verdictStyles[rec] || verdictStyles.VALIDATE_FIRST;
 
-  const frameworks = FRAMEWORK_CONFIG
-    .map((cfg) => {
-      const data = idea.score_breakdown?.[cfg.key];
-      if (!data) return null;
-      const tier = getScoreTier(data.total);
-      return { ...cfg, data, tier };
-    })
-    .filter(Boolean);
+  const flData = idea.score_breakdown?.flylabs;
+  const flTier = flData ? getScoreTier(flData.total) : null;
 
   const validation = idea.enrichment?.validation;
   const competitors = idea.enrichment?.competitors;
@@ -158,7 +150,7 @@ const IdeaDetailPage = () => {
   return (
     <PageLayout
       seo={{
-        title: `${idea.idea_title} - Idea Lab`,
+        title: `${idea.idea_title} - Ideas Lab`,
         description: synthesis?.one_liner || idea.idea_description || 'AI-scored idea analysis on Fly Labs',
         url: `https://flylabs.fun/ideas/${idea.id}`,
         schema: [
@@ -166,7 +158,7 @@ const IdeaDetailPage = () => {
             "@type": "BreadcrumbList",
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "Home", item: "https://flylabs.fun" },
-              { "@type": "ListItem", position: 2, name: "Idea Lab", item: "https://flylabs.fun/ideas" },
+              { "@type": "ListItem", position: 2, name: "Ideas Lab", item: "https://flylabs.fun/ideas" },
               { "@type": "ListItem", position: 3, name: idea.idea_title },
             ],
           },
@@ -185,7 +177,7 @@ const IdeaDetailPage = () => {
 
           {/* Back link */}
           <Link to="/ideas" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Back to Idea Lab
+            <ChevronLeft className="w-4 h-4" /> Back to Ideas Lab
           </Link>
 
           {/* Hero */}
@@ -252,13 +244,22 @@ const IdeaDetailPage = () => {
                 View source <ArrowRight className="w-3.5 h-3.5" />
               </a>
             )}
+            <button
+              onClick={() => {
+                openWidget();
+                trackEvent('cta_click', { cta: 'flybot_from_idea_detail', location: 'idea_detail' });
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/30 bg-primary/5 text-sm font-medium text-primary hover:bg-primary/10 transition-colors ml-auto"
+            >
+              <Bot className="w-4 h-4" /> Ask FlyBot
+            </button>
           </div>
 
           {/* ─── Quick Read ─── */}
           {(() => {
-            const thePain = synthesis?.the_pain || synthesis?.one_liner || idea.idea_description || idea.score_breakdown?.flylabs?.problem_clarity?.reasoning;
-            const theGap = synthesis?.the_gap || idea.score_breakdown?.flylabs?.solution_gap?.reasoning || competitors?.market_gap;
-            const buildAngle = synthesis?.build_angle || competitors?.differentiation_angle || synthesis?.next_steps?.[0] || idea.score_breakdown?.flylabs?.buildability?.reasoning;
+            const thePain = synthesis?.the_pain || synthesis?.one_liner || idea.idea_description || flData?.problem_clarity?.reasoning;
+            const theGap = synthesis?.the_gap || flData?.solution_gap?.reasoning || competitors?.market_gap;
+            const buildAngle = synthesis?.build_angle || competitors?.differentiation_angle || synthesis?.next_steps?.[0] || flData?.buildability?.reasoning;
             const hasQuickRead = thePain || theGap || buildAngle;
 
             if (!hasQuickRead) return null;
@@ -294,36 +295,35 @@ const IdeaDetailPage = () => {
             );
           })()}
 
-          {/* ─── Verdict ─── */}
+          {/* ─── The Score ─── */}
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Verdict</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">The Score</span>
               <div className="h-px flex-1 bg-border" />
             </div>
 
-            {!activeVerdict && !idea.score_breakdown ? (
+            {!flData && !synthesis ? (
               <div className="text-center py-8">
                 <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground font-medium">Scores and verdict pending. New ideas are scored daily.</p>
+                <p className="text-sm text-muted-foreground font-medium">Score pending. New ideas are scored daily.</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {/* Verdict box: clean and punchy */}
+                {/* Verdict box */}
                 <div className={`rounded-xl border ${vs.border} ${vs.bg} p-5 space-y-3`}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
                       <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
-                      {enrichVerdict?.confidence && (
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[enrichVerdict.confidence] || confidenceColors.medium}`}>
-                          {enrichVerdict.confidence} confidence
+                      {(enrichVerdict?.confidence || idea.confidence) && (
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[enrichVerdict?.confidence || idea.confidence] || confidenceColors.medium}`}>
+                          {enrichVerdict?.confidence || idea.confidence} confidence
                         </span>
                       )}
                     </div>
-                    {synthesis?.composite_score != null && (
+                    {flData && (
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground/60">Composite</span>
-                        <span className={`text-lg font-black tabular-nums ${vs.text}`}>{synthesis.composite_score}</span>
+                        <span className={`text-3xl font-black tabular-nums ${flTier?.color || 'text-foreground'}`}>{flData.total}</span>
                         <span className="text-xs text-muted-foreground/60">/100</span>
                       </div>
                     )}
@@ -353,13 +353,66 @@ const IdeaDetailPage = () => {
                     }
                     return null;
                   })()}
-                  {/* Saturation cap notice */}
                   {synthesis?.saturation_capped && (
                     <p className="text-xs text-amber-500/80">Score capped due to market saturation. Real problem, crowded space.</p>
                   )}
                 </div>
 
-                {/* Strengths & Risks: compact grid below verdict */}
+                {/* FL Method pillars */}
+                {flData && (
+                  <div className="border border-border/60 rounded-xl overflow-hidden">
+                    <button
+                      onClick={() => toggleExpanded('flylabs')}
+                      className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/30 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-sm font-bold text-indigo-500">Fly Labs Method</span>
+                          <span className="text-[10px] font-medium text-muted-foreground/50">4 questions, one score</span>
+                        </div>
+                        {flData.summary && (
+                          <p className="text-xs text-muted-foreground line-clamp-1">{flData.summary}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xl font-black tabular-nums text-indigo-500">{flData.total}</span>
+                        <span className="text-xs text-muted-foreground/60">/100</span>
+                        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${expanded.flylabs ? 'rotate-180' : ''}`} />
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {expanded.flylabs && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 pb-4 space-y-3 border-t border-border/40 pt-3">
+                            {flData.reasoning && (
+                              <p className="text-xs text-muted-foreground">{flData.reasoning}</p>
+                            )}
+                            {FL_PILLARS.map((pillar) => {
+                              const p = flData[pillar.key];
+                              if (!p) return null;
+                              return (
+                                <div key={pillar.key}>
+                                  <span className="text-sm font-medium">{pillar.label}</span>
+                                  <ScoreBar score={p.score || 0} max={p.max || 100} color="bg-indigo-500" />
+                                  {p.reasoning && <p className="text-xs text-muted-foreground mt-1">{p.reasoning}</p>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
+
+                {/* Strengths & Risks */}
                 {(synthesis?.strengths?.length > 0 || synthesis?.risks?.length > 0) && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {synthesis?.strengths?.length > 0 && (
@@ -399,6 +452,15 @@ const IdeaDetailPage = () => {
                     </ol>
                   </div>
                 )}
+
+                {/* DYOR note */}
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/30 border border-border/40">
+                  <Info className="w-4 h-4 text-muted-foreground/40 mt-0.5 shrink-0" />
+                  <p className="text-xs text-muted-foreground/60 leading-relaxed">
+                    AI-generated scores and analysis. Always do your own research before building.
+                    {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
+                  </p>
+                </div>
               </div>
             )}
           </section>
@@ -467,42 +529,42 @@ const IdeaDetailPage = () => {
             );
           })()}
 
-          {/* ─── Scoring Breakdown ─── */}
-          <section>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Scoring Breakdown</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            {frameworks.length === 0 ? (
-              <div className="text-center py-8">
-                <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground font-medium">Scores pending. New ideas are scored daily.</p>
+          {/* ─── Expert Perspectives ─── */}
+          {EXPERT_CONFIG.some(e => idea.score_breakdown?.[e.key]) && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Expert Perspectives</span>
+                <div className="h-px flex-1 bg-border" />
               </div>
-            ) : (
+              <p className="text-xs text-muted-foreground/50 mb-3">
+                Three AI perspectives inspired by different business thinkers. These scores are for context only and do not affect the verdict.
+              </p>
+
               <div className="space-y-3">
-                {frameworks.map((fw) => {
-                  const isOpen = expanded[fw.key];
-                  const barColor = fw.barColor || fw.tier.bar;
+                {EXPERT_CONFIG.map((expert) => {
+                  const data = idea.score_breakdown?.[expert.key];
+                  if (!data) return null;
+                  const tier = getScoreTier(data.total);
+                  const isOpen = expanded[expert.key];
 
                   return (
-                    <div key={fw.key} className="border border-border/60 rounded-xl overflow-hidden">
+                    <div key={expert.key} className="border border-border/40 rounded-xl overflow-hidden opacity-80 hover:opacity-100 transition-opacity">
                       <button
-                        onClick={() => toggleExpanded(fw.key)}
+                        onClick={() => toggleExpanded(expert.key)}
                         className="w-full flex items-center gap-3 p-4 text-left hover:bg-muted/30 transition-colors"
                       >
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-sm font-bold ${fw.color}`}>{fw.name}</span>
-                            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${fw.tier.bg} ${fw.tier.color}`}>{fw.tier.label}</span>
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-sm font-bold text-foreground">{expert.name}</span>
+                            <span className="text-[10px] text-muted-foreground/50 italic">{expert.question}</span>
                           </div>
-                          {fw.data.summary && (
-                            <p className="text-xs text-muted-foreground line-clamp-1">{fw.data.summary}</p>
+                          {data.summary && (
+                            <p className="text-xs text-muted-foreground line-clamp-1">{data.summary}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-xl font-black tabular-nums ${fw.key === 'flylabs' ? 'text-indigo-500' : fw.tier.color}`}>{fw.data.total}</span>
+                          <span className={`text-lg font-black tabular-nums ${tier.color}`}>{data.total}</span>
                           <span className="text-xs text-muted-foreground/60">/100</span>
                           <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                         </div>
@@ -518,16 +580,16 @@ const IdeaDetailPage = () => {
                             className="overflow-hidden"
                           >
                             <div className="px-4 pb-4 space-y-3 border-t border-border/40 pt-3">
-                              {fw.data.reasoning && (
-                                <p className="text-xs text-muted-foreground">{fw.data.reasoning}</p>
+                              {data.reasoning && (
+                                <p className="text-xs text-muted-foreground">{data.reasoning}</p>
                               )}
-                              {fw.pillars.map((pillar) => {
-                                const p = fw.data[pillar.key];
+                              {expert.pillars.map((pillar) => {
+                                const p = data[pillar.key];
                                 if (!p) return null;
                                 return (
                                   <div key={pillar.key}>
                                     <span className="text-sm font-medium">{pillar.label}</span>
-                                    <ScoreBar score={p.score || 0} max={p.max || 100} color={barColor} />
+                                    <ScoreBar score={p.score || 0} max={p.max || 100} color="bg-foreground/30" />
                                     {p.reasoning && <p className="text-xs text-muted-foreground mt-1">{p.reasoning}</p>}
                                   </div>
                                 );
@@ -539,30 +601,9 @@ const IdeaDetailPage = () => {
                     </div>
                   );
                 })}
-
-                <details className="group mt-4">
-                  <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                    <Info className="w-4 h-4" />
-                    How are these scores calculated?
-                  </summary>
-                  <div className="mt-3 space-y-3 text-sm text-muted-foreground leading-relaxed">
-                    <p>
-                      Each idea is scored by <strong className="text-foreground">{FRAMEWORK_COUNT} AI frameworks</strong> that weigh problem quality,
-                      monetization potential, audience fit, and solo-builder viability. The composite score synthesizes into a
-                      BUILD / VALIDATE / SKIP verdict.
-                    </p>
-                    <p className="text-muted-foreground/60">
-                      All scores and reasoning are generated by Claude AI analyzing the problem description,
-                      industry context, and market signals.
-                    </p>
-                    <Link to="/scoring" className="inline-flex items-center gap-1 text-accent hover:underline font-medium">
-                      Full framework breakdown <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </details>
               </div>
-            )}
-          </section>
+            </section>
+          )}
 
           {/* ─── Market Evidence ─── */}
           <section>
@@ -587,7 +628,7 @@ const IdeaDetailPage = () => {
                   return (
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold">Market Validation</h4>
+                        <h4 className="font-bold">Real-World Signals</h4>
                         <div className="flex items-center gap-2">
                           <span className={`text-2xl font-black tabular-nums ${tier.color}`}>{v.strength}</span>
                           <span className="text-xs text-muted-foreground/60">/100</span>
@@ -618,7 +659,7 @@ const IdeaDetailPage = () => {
 
                       {v.frustration_language?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Frustration Language</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">What people are saying</p>
                           <div className="flex flex-wrap gap-1.5">
                             {v.frustration_language.map((phrase, i) => (
                               <span key={i} className="bg-amber-500/10 text-amber-500 text-xs rounded-full px-2 py-0.5">{phrase}</span>
@@ -629,7 +670,7 @@ const IdeaDetailPage = () => {
 
                       {v.communities?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Active Communities</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Where they talk about it</p>
                           <div className="space-y-1.5">
                             {v.communities.map((c, i) => (
                               <div key={i} className="flex items-center gap-2 text-sm">
@@ -658,7 +699,7 @@ const IdeaDetailPage = () => {
 
                       {v.unmet_needs?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Unmet Needs</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">What people want</p>
                           <ul className="space-y-1">
                             {v.unmet_needs.map((n, i) => (
                               <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
@@ -678,8 +719,8 @@ const IdeaDetailPage = () => {
                   const c = competitors;
                   return (
                     <div className="space-y-4">
-                      <h4 className="font-bold">Competitive Landscape</h4>
-                      <p className="text-xs text-muted-foreground">Competitors identified from real conversations on X and Reddit.</p>
+                      <h4 className="font-bold">Who else is doing this</h4>
+                      <p className="text-xs text-muted-foreground">Competitors found from real conversations on X and Reddit.</p>
 
                       {c.products?.length > 0 && (
                         <div className="space-y-3">

@@ -29,95 +29,64 @@ if (backfill) {
   console.log(`Backfill mode: using ${MODEL} (cheaper), ${MAX_IDEAS_PER_RUN} ideas per run`);
 }
 
-const SYSTEM_PROMPT = `You are an expert startup and business idea evaluator. You will evaluate ideas using four frameworks, provide per-pillar reasoning, and synthesize a final verdict. Return ONLY valid JSON.
+const SYSTEM_PROMPT = `You score business ideas for solo builders. Return ONLY valid JSON, no markdown.
 
-**Fly Labs Method (0-100)** - Problem-Solution Fit for Vibe Builders
-Evaluate from the perspective of a solo builder with AI tools and limited time.
-The 4 questions every vibe builder should ask before building:
+**FLY LABS METHOD (0-100)** - The primary score. Would a solo builder's weekend be well spent?
 
-1. Problem Clarity (30pts): Is this problem REAL and FELT?
-   - Existence & Awareness (0-10): Do real people actively experience and discuss this pain? A hidden or suppressed problem is unwanted. Look for signals: people searching for solutions, discussing frustrations, creating workarounds.
-   - Specificity (0-10): Is it concrete enough to build a targeted solution? "Communication is hard" scores low. "Remote teams waste 30 min/day switching between chat and project management tools" scores high.
-   - Severity (0-10): How painful? Daily frustration (10) vs mild annual inconvenience (2). Consider frequency, time wasted, money lost, emotional impact.
+1. IS THE PAIN REAL? (30 points)
+   - Do people talk about this problem online? (0-10) Hidden or suppressed problems score low.
+   - Is it specific enough to build for? (0-10) "Communication is hard" = 2. "Remote teams waste 30 min/day switching between chat and PM tools" = 9.
+   - How bad is it? (0-10) Daily frustration = 8-10. Mild annual annoyance = 1-3.
 
-2. Solution Gap (25pts): Is there a SPECIFIC ANGLE a solo builder can win with?
-   Competition is not bad. Competition proves demand. The question is whether there's a gap worth filling.
-   - Alternative Quality (0-8): How well do existing solutions serve the target audience? If incumbents are excellent and cover the need fully, score 0-2. If they're mediocre, bloated, or overpriced for the specific audience, score 5-8. Many competitors existing is actually a POSITIVE signal (proven demand) as long as they leave gaps. No dedicated tools at all (spreadsheets and duct tape) scores 7-8.
-   - Addressable Complaints (0-8): Are there specific, BUILDABLE weaknesses? Generic complaints score low: "it's expensive" = 2 max, "bad UX" = 2 max. Specific buildable gaps score high: "Zapier breaks when webhooks timeout and there's no retry logic" = 7-8. The complaint must point to something a solo builder can actually fix.
-   - Whitespace (0-9): Is there a narrow, defensible angle? "Better UI" is NOT whitespace (score 0-2). "Built for solo consultants who use Notion as their backend" IS whitespace (score 7-9). The key test: can you describe the target user AND their workflow in one sentence? If yes, there's whitespace. If the idea is "like X but better" with no specific audience, whitespace is 0-2.
+2. IS THERE A GAP? (25 points)
+   Competition is GOOD. It proves demand. The question is whether there's a specific angle left.
+   - How well do current tools solve this? (0-8) Excellent incumbents = 0-2. Mediocre or overpriced for a specific audience = 5-8.
+   - Are there specific complaints you could fix? (0-8) "It's expensive" = 2. "Zapier breaks on webhook timeouts with no retry" = 7.
+   - Is there a narrow angle nobody took? (0-9) "Better UI" = 1. "Built for Notion freelancers" = 8. Can you name the specific user AND their workflow in one sentence? If yes, there's an angle.
 
-3. Willingness to Act (25pts): Would people actually DO something?
-   - Switching Motivation (0-10): Is the pain strong enough to overcome inertia? People hate switching tools. The problem must be painful enough to justify the effort.
-   - Payment Signals (0-8): Evidence people would pay. Explicit statements ("I'd pay for this"), pricing discussions, complaints about free tools being insufficient, workaround effort (time = money).
-   - Urgency (0-7): Is this "need it now" or "maybe someday"? Growing problems score higher. Problems getting worse with scale score higher.
+3. WOULD SOMEONE PAY? (25 points)
+   - Is the pain bad enough to switch tools? (0-10) People hate switching. The pain must overcome that.
+   - Any signals people would pay? (0-8) Pricing discussions, complaints about free tools, time spent on workarounds.
+   - Is this urgent or "maybe someday"? (0-7) Growing problems and things getting worse score higher.
 
-4. Buildability (20pts): Can a VIBE BUILDER ship this?
-   - Solo Feasibility (0-8): Can one person with AI tools (Claude, Cursor, no-code platforms) build an MVP? Consider technical complexity, integrations needed, infrastructure requirements.
-   - Speed to Market (0-7): Can a useful v1 ship in days or weeks, not months? The best vibe building projects start small and iterate.
-   - Compound Value (0-5): Does building this teach skills or create assets useful for the next project? Does it generate content? Does it compound?
+4. CAN YOU BUILD IT? (20 points)
+   - Can one person with AI tools ship an MVP? (0-8)
+   - Can you ship something useful in weeks, not months? (0-7)
+   - Does building this help your next project too? (0-5)
 
-Provide per-dimension reasoning (one sentence each explaining the score).
+**EXPERT SECOND OPINIONS (0-100 each)** - Three lenses that catch what the main score might miss.
 
-**Hormozi Evaluation (0-100)** based on Alex Hormozi's $100M framework:
-- Market Viability (20pts): Massive Pain (0-7), Purchasing Power (0-7), Easy to Target (0-6)
-- Value Equation (25pts) - Hormozi's perceived value formula: Value = (Dream Outcome x Likelihood) / (Time Delay x Effort)
-  - Dream Outcome (0-7): The REAL dream the customer wants, not just the feature you're delivering. What transformation are they buying? Score high if the outcome connects to a deep desire (save time, make money, reduce stress), low if it's incremental improvement.
-  - Perceived Likelihood (0-6): How likely does the customer BELIEVE your solution will work? Score based on proof signals (testimonials, demos, guarantees, social proof), not actual efficacy. A solution can be great but score low if it's hard to believe.
-  - Speed to First Result (0-6): Time to FIRST visible result, not full transformation. Can the user see value in minutes (score 6) or does it take months (score 1)? The first "aha moment" determines retention.
-  - Low Effort/Sacrifice (0-6): Perceived effort or sacrifice in the customer journey. Switching costs, learning curve, data migration, behavior change. Score high if frictionless, low if requires significant lifestyle or workflow changes.
-- Market Growth & Timing (15pts): Market Trajectory (0-8), Timing Fit (0-7)
-- Offer Differentiation (20pts): Competitive Moat (0-7), Offer Stacking (0-6), Pricing Power (0-7)
-- Execution Feasibility (20pts): Build Complexity (0-7), GTM Clarity (0-7), Resource Requirements (0-6)
+Hormozi lens: Would this make money? Score on market pain + purchasing power + targeting (20pts), dream outcome + believability + speed to result + low effort (25pts), market growth + timing (15pts), moat + offer stacking + pricing power (20pts), build complexity + go-to-market + resources (20pts).
 
-**Dan Koe Evaluation (0-100)** based on the one-person business lens:
-- Problem Clarity (25pts): Is the problem specific, quantifiable, urgent?
-- Creator Fit (20pts): Can a solo creator/small team build this?
-- Audience Reach (15pts): Is the audience identifiable, connected, reachable online?
-- Simplicity (15pts): Can users adopt quickly? Hours not months?
-- Monetization (15pts): Clear path to revenue? SaaS, templates, services?
-- Anti-Niche POV (5pts): Unique angle that's hard to replicate?
-- Leverage Potential (5pts): Can it scale without founder bottleneck?
+Koe lens: Can one person run this? Score on problem clarity (25pts), creator fit (20pts), audience reach (15pts), simplicity (15pts), monetization (15pts), unique angle (5pts), leverage (5pts).
 
-**Bruno Okamoto Evaluation (0-100)** based on MicroSaaS validation methodology (4 Pillars of a Scalable MVP + Validation Copilot):
-- Target Audience (20pts): Specificity (0-7), Identifiability (0-7), Reachability (0-6). How well-defined and reachable is the target audience?
-- Value Proposition (25pts): Clarity (0-8), Specificity (0-9), Measurability (0-8). Is the value proposition clear, specific, and measurable?
-- Distribution Channel (20pts): Accessibility (0-7), Viral Coefficient (0-7), CAC Efficiency (0-6). Can you reach customers efficiently?
-- Business Model (15pts): Monetization Clarity (0-5), Willingness to Pay (0-5), Pricing Power (0-5). Is there a clear path to revenue?
-- Assumption Risk (10pts): Testability (0-5), Critical Assumptions (0-5). How testable are the core assumptions?
-- Validation Readiness (10pts): Experiment Feasibility (0-5), Evidence Availability (0-5). Can you validate before building?
-**Synthesis** - After scoring all four frameworks, cross-reference them and produce a final verdict:
-- composite_score: weighted average (40% flylabs + 20% hormozi + 20% koe + 20% okamoto)
-- SATURATION CHECK: If this idea describes a problem addressed by 5+ well-known products AND the Fly Labs whitespace score is 3 or below (no clear angle), cap composite at 65 and verdict at VALIDATE_FIRST. A crowded market with no differentiation is a trap. BUT if whitespace is 4+ (there IS a specific angle), do NOT cap. Competition with a clear gap is an opportunity, not a problem. Set saturation_capped to true only when the cap is applied.
-- verdict rules (after saturation cap):
-  - BUILD: composite >= 70 AND flylabs >= 60 AND flylabs buildability >= 10/20 AND no single framework below 30. Strong signal across all lenses. If buildability < 10, the idea requires too large a team or too much infrastructure for a solo builder, so downgrade to VALIDATE_FIRST regardless of other scores.
-  - VALIDATE_FIRST: composite 45-69, OR composite >= 70 but flylabs < 60 or buildability < 10 or any framework below 30. Promising but has gaps.
-  - SKIP: composite < 45. Not viable for a solo builder right now.
+Okamoto lens: Is this a viable micro-SaaS? Score on target audience specificity + reachability (20pts), value prop clarity + measurability (25pts), distribution channels (20pts), business model (15pts), assumption risk (10pts), validation readiness (10pts).
 
-IMPORTANT: For each pillar, include a "reasoning" string (one sentence explaining the score). For each framework, include a "reasoning" string (2-3 sentences on what drives the score up and what holds it back).
+For each expert lens, provide total (0-100), summary (one line), and reasoning (1-2 sentences).
 
-Return ONLY this JSON structure (no markdown, no code fences):
+**SYNTHESIS** - Cross-reference all four scores. The verdict is computed server-side from the numbers, so focus on quality scoring and the actionable fields below.
+
+Return this JSON:
 {
   "flylabs": {
-    "total": <number 0-100>,
+    "total": <0-100>,
     "problem_clarity": { "score": <0-30>, "max": 30, "existence": <0-10>, "specificity": <0-10>, "severity": <0-10>, "reasoning": "..." },
     "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-8>, "addressable_complaints": <0-8>, "whitespace": <0-9>, "reasoning": "..." },
     "willingness": { "score": <0-25>, "max": 25, "switching_motivation": <0-10>, "payment_signals": <0-8>, "urgency": <0-7>, "reasoning": "..." },
     "buildability": { "score": <0-20>, "max": 20, "solo_feasibility": <0-8>, "speed_to_market": <0-7>, "compound_value": <0-5>, "reasoning": "..." },
-    "summary": "<one-line>",
-    "reasoning": "<2-3 sentences>"
+    "summary": "...", "reasoning": "..."
   },
   "hormozi": {
-    "total": <number 0-100>,
-    "market_viability": { "score": <0-20>, "max": 20, "pain": <0-7>, "purchasing_power": <0-7>, "targeting": <0-6>, "reasoning": "..." },
-    "value_equation": { "score": <0-25>, "max": 25, "dream_outcome": <0-7>, "likelihood": <0-6>, "speed": <0-6>, "effort": <0-6>, "reasoning": "..." },
-    "market_growth": { "score": <0-15>, "max": 15, "trajectory": <0-8>, "timing": <0-7>, "reasoning": "..." },
-    "differentiation": { "score": <0-20>, "max": 20, "moat": <0-7>, "stacking": <0-6>, "pricing": <0-7>, "reasoning": "..." },
-    "feasibility": { "score": <0-20>, "max": 20, "build": <0-7>, "gtm": <0-7>, "resources": <0-6>, "reasoning": "..." },
-    "summary": "<one-line Hormozi-style assessment>",
-    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
+    "total": <0-100>,
+    "market_viability": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "value_equation": { "score": <0-25>, "max": 25, "reasoning": "..." },
+    "market_growth": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "differentiation": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "feasibility": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "summary": "...", "reasoning": "..."
   },
   "koe": {
-    "total": <number 0-100>,
+    "total": <0-100>,
     "problem_clarity": { "score": <0-25>, "max": 25, "reasoning": "..." },
     "creator_fit": { "score": <0-20>, "max": 20, "reasoning": "..." },
     "audience_reach": { "score": <0-15>, "max": 15, "reasoning": "..." },
@@ -125,32 +94,30 @@ Return ONLY this JSON structure (no markdown, no code fences):
     "monetization": { "score": <0-15>, "max": 15, "reasoning": "..." },
     "anti_niche": { "score": <0-5>, "max": 5, "reasoning": "..." },
     "leverage": { "score": <0-5>, "max": 5, "reasoning": "..." },
-    "summary": "<one-line Koe-style assessment>",
-    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
+    "summary": "...", "reasoning": "..."
   },
   "okamoto": {
-    "total": <number 0-100>,
-    "target_audience": { "score": <0-20>, "max": 20, "specificity": <0-7>, "identifiability": <0-7>, "reachability": <0-6>, "reasoning": "..." },
-    "value_proposition": { "score": <0-25>, "max": 25, "clarity": <0-8>, "specificity": <0-9>, "measurability": <0-8>, "reasoning": "..." },
-    "distribution_channel": { "score": <0-20>, "max": 20, "accessibility": <0-7>, "viral_coefficient": <0-7>, "cac_efficiency": <0-6>, "reasoning": "..." },
-    "business_model": { "score": <0-15>, "max": 15, "monetization_clarity": <0-5>, "willingness_to_pay": <0-5>, "pricing_power": <0-5>, "reasoning": "..." },
-    "assumption_risk": { "score": <0-10>, "max": 10, "testability": <0-5>, "critical_assumptions": <0-5>, "reasoning": "..." },
-    "validation_readiness": { "score": <0-10>, "max": 10, "experiment_feasibility": <0-5>, "evidence_availability": <0-5>, "reasoning": "..." },
-    "summary": "<one-line validation-focused assessment>",
-    "reasoning": "<2-3 sentences: what drives the score up, what holds it back>"
+    "total": <0-100>,
+    "target_audience": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "value_proposition": { "score": <0-25>, "max": 25, "reasoning": "..." },
+    "distribution_channel": { "score": <0-20>, "max": 20, "reasoning": "..." },
+    "business_model": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "assumption_risk": { "score": <0-10>, "max": 10, "reasoning": "..." },
+    "validation_readiness": { "score": <0-10>, "max": 10, "reasoning": "..." },
+    "summary": "...", "reasoning": "..."
   },
   "synthesis": {
     "verdict": "<BUILD|VALIDATE_FIRST|SKIP>",
-    "composite_score": <number 0-100>,
-    "one_liner": "<One sentence that tells a builder EXACTLY what they'd build and who it's for. Not a verdict summary. Example: 'A Slack bot that auto-archives channels with no activity for 30 days, sold to IT admins at mid-size companies.' Specific enough to start building from this sentence.>",
-    "the_pain": "<One sentence describing the specific, felt pain. Quote real language if possible. Example: 'Teams waste 20+ minutes per day scrolling past dead channels looking for the active ones.' If unclear, write what you can infer from the idea.>",
-    "the_gap": "<One sentence describing what current solutions miss. Example: 'Slack's native archiving requires manual admin work and has no automation rules.' Be specific about WHAT is missing, not just that something is missing.>",
-    "build_angle": "<One sentence describing the specific, defensible angle for a solo builder. Example: 'A lightweight Slack app (not a full platform) that just does auto-archiving with simple rules, priced at $5/team/month.' Include the format, the narrow scope, and the pricing position.>",
-    "saturation_capped": <boolean, true if saturation cap was applied>,
-    "strengths": ["strength 1", "strength 2"],
-    "risks": ["risk 1", "risk 2"],
-    "next_steps": ["step 1", "step 2", "step 3"],
-    "reasoning": "<2-3 sentences explaining the verdict by cross-referencing all four frameworks>"
+    "composite_score": <0-100>,
+    "one_liner": "<What you'd build and for whom. Specific enough to start coding from this sentence.>",
+    "the_pain": "<The felt pain in one sentence. Use real language.>",
+    "the_gap": "<What current solutions miss. Be specific.>",
+    "build_angle": "<The narrow angle for a solo builder: format, scope, price point.>",
+    "saturation_capped": false,
+    "strengths": ["...", "..."],
+    "risks": ["...", "..."],
+    "next_steps": ["...", "...", "..."],
+    "reasoning": "<2-3 sentences explaining the verdict>"
   }
 }`;
 
@@ -229,61 +196,37 @@ async function scoreIdea(idea) {
         }
       }
 
-      // Server-side saturation cap: crowded markets cap at VALIDATE_FIRST
-      if (parsed.synthesis?.saturation_capped && parsed.synthesis?.verdict === 'BUILD') {
-        console.warn(`  Saturation cap: AI flagged crowded market but gave BUILD, downgrading to VALIDATE_FIRST`);
-        parsed.synthesis.verdict = 'VALIDATE_FIRST';
-      }
-      if (parsed.synthesis?.saturation_capped && parsed.synthesis?.composite_score > 65) {
-        console.warn(`  Saturation cap: capping composite from ${parsed.synthesis.composite_score} to 65`);
-        parsed.synthesis.composite_score = 65;
-      }
-
-      // Server-side YC team-size gate: large teams + low buildability = not solo-buildable
-      if (parsed.synthesis?.verdict === 'BUILD' && idea.source === 'yc') {
-        const teamSize = idea.meta?.failure_analysis?.team_size;
-        const buildability = parsed.flylabs?.buildability?.score;
-        if (teamSize && teamSize > 10 && buildability != null && buildability < 12) {
-          console.warn(`  YC team-size gate: team of ${teamSize} with buildability ${buildability}/20, downgrading to VALIDATE_FIRST`);
-          parsed.synthesis.verdict = 'VALIDATE_FIRST';
-        }
-      }
-
-      // Recompute composite server-side (don't trust AI math)
+      // ── Server-side truth: FL score IS the score, verdict from FL alone ──
       if (parsed.synthesis) {
-        const expected = Math.round(
-          parsed.flylabs.total * 0.4 +
-          parsed.hormozi.total * 0.2 +
-          parsed.koe.total * 0.2 +
-          parsed.okamoto.total * 0.2
-        );
-        if (Math.abs((parsed.synthesis.composite_score || 0) - expected) > 3) {
-          console.warn(`  Composite mismatch: AI=${parsed.synthesis.composite_score}, computed=${expected}. Using computed.`);
-        }
-        parsed.synthesis.composite_score = expected;
+        const fl = parsed.flylabs.total;
+        const buildability = parsed.flylabs?.buildability?.score ?? 0;
 
-        // Recompute verdict server-side from scores (AI tends to be too conservative)
-        const composite = expected;
-        const flTotal = parsed.flylabs.total;
-        const buildScore = parsed.flylabs?.buildability?.score;
-        const minFw = Math.min(parsed.flylabs.total, parsed.hormozi.total, parsed.koe.total, parsed.okamoto.total);
-        const isSaturated = parsed.synthesis.saturation_capped;
+        // composite_score = flylabs_score (backward compat for existing sorts/filters)
+        parsed.synthesis.composite_score = fl;
 
-        let computedVerdict;
-        if (isSaturated) {
-          computedVerdict = 'VALIDATE_FIRST';
-        } else if (composite >= 70 && flTotal >= 60 && buildScore >= 10 && minFw >= 30) {
-          computedVerdict = 'BUILD';
-        } else if (composite >= 45) {
-          computedVerdict = 'VALIDATE_FIRST';
+        // Verdict rules: FL score only, simple and deterministic
+        let verdict;
+        if (fl >= 65 && buildability >= 10) {
+          verdict = 'BUILD';
+        } else if (fl >= 40) {
+          verdict = 'VALIDATE_FIRST';
         } else {
-          computedVerdict = 'SKIP';
+          verdict = 'SKIP';
         }
 
-        if (parsed.synthesis.verdict !== computedVerdict) {
-          console.warn(`  Verdict override: AI="${parsed.synthesis.verdict}", computed="${computedVerdict}" (C:${composite} FL:${flTotal} B:${buildScore} Min:${minFw})`);
-          parsed.synthesis.verdict = computedVerdict;
+        // YC team-size gate: big teams suggest the problem needs more than one person
+        if (verdict === 'BUILD' && idea.source === 'yc') {
+          const teamSize = idea.meta?.failure_analysis?.team_size;
+          if (teamSize > 10 && buildability < 12) {
+            console.warn(`  YC gate: team of ${teamSize}, buildability ${buildability}/20 → VALIDATE_FIRST`);
+            verdict = 'VALIDATE_FIRST';
+          }
         }
+
+        if (parsed.synthesis.verdict !== verdict) {
+          console.warn(`  Verdict: AI="${parsed.synthesis.verdict}" → computed="${verdict}" (FL:${fl} B:${buildability})`);
+        }
+        parsed.synthesis.verdict = verdict;
       }
 
       return parsed;
@@ -310,10 +253,7 @@ async function main() {
   let ideas = [];
   if (scoreAll) {
     let query = supabase.from('ideas').select('*').eq('approved', true);
-    // In backfill mode, skip SKIP ideas (they're already SKIP, no point re-scoring)
-    if (backfill) {
-      query = query.in('verdict', ['BUILD', 'VALIDATE_FIRST']);
-    }
+    // Backfill mode scores everything (BUILD, VALIDATE, SKIP, and unscored)
     query = query.limit(MAX_IDEAS_PER_RUN);
     const { data, error } = await query;
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
@@ -351,7 +291,7 @@ async function main() {
             okamoto_score: result.okamoto.total,
             score_breakdown: result,
             verdict: result.synthesis?.verdict || null,
-            composite_score: result.synthesis?.composite_score || null,
+            composite_score: result.flylabs.total, // FL = the score (backward compat)
           })
           .eq('id', idea.id);
 

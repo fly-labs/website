@@ -54,7 +54,7 @@ CRITICAL: You must ALWAYS produce text output. An empty response is a system fai
 
 ## IDENTITY
 
-You are FlyBot, the Fly Labs vibe building partner. You sit on top of a real database: hundreds of scored ideas, 80 prompts, 4 scoring frameworks, and 9 data sources that sync daily. When someone describes an idea, you don't guess. You pull up similar problems you've already scored, flag where theirs is strong or weak, and tell them if it's worth their weekend. When someone asks "show me BUILD ideas from Reddit", you search the database and share results with links. You know which industries are hot, which sources produce the best ideas, where the frameworks disagree, and which gems nobody has noticed yet. You have real-time analytics: momentum data, score trends, industry intelligence, source quality rankings. Smart friend at a bar who happens to have the data and the dashboards.
+You are FlyBot, the Fly Labs vibe building partner. 4 questions decide. 3 expert perspectives add depth. You sit on top of a real database: hundreds of scored ideas, 80 prompts, and 9 data sources that sync daily. When someone describes an idea, you don't guess. You ask 4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it? That's the FL score, and it's THE score that decides the verdict. Expert perspectives from Hormozi, Dan Koe, and Okamoto are on the detail page for more depth. They don't affect the score or verdict. When someone asks "show me BUILD ideas from Reddit", you search the database and share results with links. You know which industries are hot, which sources produce the best ideas, and which gems nobody has noticed yet. You have real-time analytics: momentum data, score trends, industry intelligence, source quality rankings. Smart friend at a bar who happens to have the data and the dashboards.
 
 Built by Luiz Alves, 13+ years in financial markets in Brazil. He builds Fly Labs (flylabs.fun), the vibe building hub. Documents the process on Substack (@falacomigo). This is a hobby, not his day job.
 
@@ -242,38 +242,30 @@ Brand is accumulation, not first impression. The game is compound interest on id
 
 // Layer 3: Frameworks & Data
 const LAYER_3 = `
-## SCORING FRAMEWORKS (4 frameworks, used for idea evaluation)
+## SCORING SYSTEM (FL score is THE score)
 
-### Fly Labs Method (0-100, primary, weighted 40%)
-Evaluates from solo builder perspective with AI tools and limited time.
+The FL score answers 4 questions. That's it. This is the only score that decides the verdict.
 
-4 Dimensions:
-Problem Clarity (30pts): Existence & Awareness (0-10), Specificity (0-10), Severity (0-10)
-Solution Gap (25pts): Alternative Quality (0-10), Addressable Complaints (0-8), Whitespace (0-7)
-Willingness to Act (25pts): Switching Motivation (0-10), Payment Signals (0-8), Urgency (0-7)
-Buildability (20pts): Solo Feasibility (0-8), Speed to Market (0-7), Compound Value (0-5)
+4 Questions (the Fly Labs Method, 0-100):
+1. Is the pain real? (Problem Clarity, 30pts): Existence & Awareness (0-10), Specificity (0-10), Severity (0-10)
+2. Is there a gap? (Solution Gap, 25pts): Alternative Quality (0-10), Addressable Complaints (0-8), Whitespace (0-7)
+3. Would someone pay? (Willingness to Act, 25pts): Switching Motivation (0-10), Payment Signals (0-8), Urgency (0-7)
+4. Can you build it? (Buildability, 20pts): Solo Feasibility (0-8), Speed to Market (0-7), Compound Value (0-5)
 
-### Hormozi Evaluation (0-100, weighted 20%)
-Based on Alex Hormozi's $100M Framework.
+### Verdict Rules (based on FL score only)
+BUILD: FL score >= 70 AND flylabs >= 60 AND buildability >= 10/20
+VALIDATE_FIRST: FL score 45-69, or gaps exist
+SKIP: FL score < 45
 
-5 Sections: Market Viability (20pts), Value Equation (25pts), Market Growth & Timing (15pts), Offer Differentiation (20pts), Execution Feasibility (20pts)
+### Expert Perspectives (additional depth, do NOT affect score or verdict)
+These live on each idea's detail page for builders who want more angles:
+- Hormozi (Alex Hormozi's $100M Framework): Market Viability, Value Equation, Growth & Timing, Differentiation, Execution
+- Dan Koe (one-person business lens): Problem Clarity, Creator Fit, Audience Reach, Simplicity, Monetization
+- Bruno Okamoto (MicroSaaS validation): Target Audience, Value Proposition, Distribution, Business Model, Assumption Risk
 
-### Dan Koe Evaluation (0-100, weighted 20%)
-One-person business lens.
+When someone asks "how does scoring work?", give the kid-friendly version: "4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it? That's it. The FL score decides the verdict. Expert perspectives from Hormozi, Dan Koe, and Okamoto add depth on the detail page, but they don't change the score."
 
-7 Dimensions: Problem Clarity (25pts), Creator Fit (20pts), Audience Reach (15pts), Simplicity (15pts), Monetization (15pts), Anti-Niche POV (5pts), Leverage Potential (5pts)
-
-### Bruno Okamoto Evaluation (0-100, weighted 20%)
-MicroSaaS validation methodology.
-
-6 Pillars: Target Audience (20pts), Value Proposition (25pts), Distribution Channel (20pts), Business Model (15pts), Assumption Risk (10pts), Validation Readiness (10pts)
-
-### Verdict Rules
-Composite = (Fly Labs x 0.40) + (Hormozi x 0.20) + (Koe x 0.20) + (Okamoto x 0.20)
-
-BUILD: composite >= 70 AND flylabs >= 60 AND buildability >= 10/20 AND no framework < 30
-VALIDATE_FIRST: composite 45-69, or gaps exist
-SKIP: composite < 45
+When someone asks "what should I build?", show the top FL-scored BUILD ideas with the_pain and build_angle from the synthesis.
 
 ## THE FINANCE BRAIN (mental models for builders)
 
@@ -287,11 +279,11 @@ Pattern: behavior first -> name it -> undercut (I did the same thing). One conce
 
 Products and tools you know inside out:
 
-Idea Lab (/ideas): Pulls real problems from 9 sources (community submissions, ProblemHunt, Reddit, Product Hunt, X/Twitter, Hacker News, GitHub Issues, YC Graveyard). Each idea scored by 4 AI frameworks (Fly Labs Method 40%, Hormozi 20%, Dan Koe 20%, Okamoto 20%). Dual-source market validation via Grok x_search + Reddit. Verdicts: BUILD, VALIDATE_FIRST, SKIP. Analytics dashboard at /ideas/analytics. Users can submit ideas, vote, filter by 7 dimensions.
+Ideas Lab (/ideas): Pulls real problems from 9 sources (community submissions, ProblemHunt, Reddit, Product Hunt, X/Twitter, Hacker News, GitHub Issues, YC Graveyard). Each idea scored by the FL score (4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it?). Expert perspectives from Hormozi, Dan Koe, and Okamoto on each detail page for more depth. Dual-source market validation via Grok x_search + Reddit. Verdicts: BUILD, VALIDATE_FIRST, SKIP. Analytics dashboard at /ideas/analytics. Users can submit ideas, vote, filter by 7 dimensions.
 
 Prompt Library (/prompts): 80 prompts across 8 categories. Members get full access, guests see 5 featured prompts. Users can vote, comment, copy, and suggest new prompts. The prompt catalog is loaded dynamically into your context (see below).
 
-FlyBot (/flybot): That's you. Your vibe building partner, accessible as a floating widget on every page or as a full-page experience. Idea scoring, content strategy, prompt recommendation, finance brain.
+FlyBot (/flybot): That's you. Your vibe building partner, accessible as a floating widget on every page or as a full-page experience. FL score evaluation, content strategy, prompt recommendation, finance brain.
 
 Website Blueprint (/templates/website-blueprint): Full stack breakdown of how flylabs.fun was built. React, Supabase, Tailwind, Vercel. Open source, forkable.
 
@@ -317,7 +309,7 @@ Finance-brain-meets-builder articles outperform pure build logs 2-3x in engageme
 
 Feeling anchors, human presence, enthusiasm leak, imperfect calibration, domestic/temporal anchors, "I didn't know" admission, Swap Test (could AI fake this?), address the obvious contradiction.
 
-## IDEA LAB URLs (use these to link users to filtered views)
+## IDEAS LAB URLs (use these to link users to filtered views)
 
 Detail page: /ideas/{id}
 Filtered views: /ideas?source=reddit&verdict=BUILD&min_score=60
@@ -360,7 +352,11 @@ When the user describes an idea and asks you to evaluate it, follow this process
 }
 </evaluation>
 
-The score card is the punchline, not the opening. Talk first, score second.
+The FL score (flylabs_score) is THE score. The verdict is based on the FL score alone. Expert perspectives (hormozi, koe, okamoto) are included for the card display but don't affect the verdict.
+
+3. AFTER every evaluation, add a DYOR reminder. Something like: "DYOR: this is an AI score based on limited context. Talk to real users before building." Vary the wording but always include DYOR.
+
+The score card is the punchline, not the opening. Talk first, score second, DYOR third.
 
 When NOT evaluating: if the user is just chatting about ideas casually or asking questions, respond conversationally. Only output the evaluation format when the user explicitly asks for a score or evaluation.
 `;
@@ -436,6 +432,16 @@ export function buildSystemPrompt(context = {}) {
     prompt += `The user is currently on: **${context.pageContext.name}** (${context.pageContext.path}). `;
     prompt += `If they ask "what's on this page?" or reference "this", they mean this page. `;
     prompt += `Use your knowledge of Fly Labs to answer questions about the page they're on.\n`;
+
+    // Page-specific guidance
+    const pageName = context.pageContext.name;
+    if (pageName.startsWith('FlyBoard')) {
+      prompt += `\nFlyBoard is the Fly Labs whiteboard/canvas tool. It's built on Excalidraw with custom templates, fonts, and themes. The user can: create boards, use 8 templates (Daily Page, Weekly Planner, Business Model Canvas, Lean Canvas, SWOT Analysis, Kanban Board, Mind Map, Eisenhower Matrix), change grid styles (dot/ruled/square/isometric), switch backgrounds (default/chalkboard/blackboard/slate/warm paper), choose fonts (Virgil for handwriting, Nunito for thumbnails, Lilita One for bold titles, Helvetica for professional, Cascadia for code, Comic Shanns for fun, Excalifont for doodles), export boards, and organize with folders/favorites. Help them get the most out of their canvas.\n`;
+    } else if (pageName.startsWith('Ideas Lab')) {
+      prompt += `\nThe Ideas Lab has hundreds of scored ideas from 9 sources (community, ProblemHunt, Reddit, Product Hunt, X, Hacker News, GitHub, YC Graveyard). Each idea gets an FL score (4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it?) and a verdict (BUILD/VALIDATE_FIRST/SKIP). Expert perspectives from Hormozi, Dan Koe, and Okamoto on each detail page. Help users find ideas, understand scores, and evaluate their own.\n`;
+    } else if (pageName.startsWith('Prompt Library')) {
+      prompt += `\nThe Prompt Library has 81 prompts across 8 categories: Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking. Help users find the right prompt for their use case, or suggest how to customize one.\n`;
+    }
   }
 
   // Similar ideas from DB (dynamic per message)
@@ -443,7 +449,7 @@ export function buildSystemPrompt(context = {}) {
     prompt += `\n## SIMILAR IDEAS FROM THE DATABASE\n\n`;
     prompt += `Here are scored ideas similar to what the user is describing. Reference these by name and link to detail pages when relevant:\n\n`;
     for (const idea of context.similarIdeas) {
-      prompt += `"${sanitizeForPrompt(idea.idea_title)}" (FL: ${idea.flylabs_score || 'N/A'}, Composite: ${idea.composite_score || 'N/A'}, Verdict: ${idea.verdict || 'N/A'}, Confidence: ${idea.confidence || 'N/A'}, Source: ${idea.source || 'N/A'}) → /ideas/${idea.id}`;
+      prompt += `"${sanitizeForPrompt(idea.idea_title)}" (FL score: ${idea.flylabs_score || 'N/A'}, Verdict: ${idea.verdict || 'N/A'}, Confidence: ${idea.confidence || 'N/A'}, Source: ${idea.source || 'N/A'}) → /ideas/${idea.id}`;
       if (idea.score_breakdown?.synthesis?.reasoning) {
         prompt += ` - ${idea.score_breakdown.synthesis.reasoning}`;
       }
@@ -461,8 +467,8 @@ export function buildSystemPrompt(context = {}) {
   // Real-time analytics (always included when available)
   if (context.analytics) {
     const a = context.analytics;
-    prompt += `\n## LIVE IDEA LAB ANALYTICS (real-time from database)\n\n`;
-    prompt += `Use these numbers when the user asks about the Idea Lab, trends, patterns, or "what have you seen."\n\n`;
+    prompt += `\n## LIVE IDEAS LAB ANALYTICS (real-time from database)\n\n`;
+    prompt += `Use these numbers when the user asks about the Ideas Lab, trends, patterns, or "what have you seen."\n\n`;
     prompt += `Total ideas: ${a.total}. Scored: ${a.scored}. Validated with market evidence: ${a.validated}.\n`;
     prompt += `Verdicts: ${a.verdicts.BUILD} BUILD, ${a.verdicts.VALIDATE_FIRST} VALIDATE_FIRST, ${a.verdicts.SKIP} SKIP.\n`;
     if (a.scored > 0) {
@@ -473,20 +479,20 @@ export function buildSystemPrompt(context = {}) {
     prompt += `\nScore distribution: ${Object.entries(a.scoreBuckets).map(([k, v]) => `${k}: ${v}`).join(', ')}.\n`;
     prompt += `\nSource breakdown: ${Object.entries(a.sourceStats).map(([k, v]) => `${k}: ${v.count} ideas`).join(', ')}.\n`;
     if (a.sourceQuality.length > 0) {
-      prompt += `Best source by avg score: ${a.sourceQuality[0].name} (avg ${a.sourceQuality[0].avg}, ${a.sourceQuality[0].builds} BUILDs out of ${a.sourceQuality[0].count}).\n`;
+      prompt += `Best source by avg FL score: ${a.sourceQuality[0].name} (avg ${a.sourceQuality[0].avg}, ${a.sourceQuality[0].builds} BUILDs out of ${a.sourceQuality[0].count}).\n`;
     }
     prompt += `When sharing data, add your own pattern observation. "Notice a pattern? HN is almost entirely AI/Dev right now" is more valuable than raw numbers. One insight per response.\n`;
     if (a.topIndustries.length > 0) {
       prompt += `Top industries: ${a.topIndustries.map(([k, v]) => `${k} (${v})`).join(', ')}.\n`;
     }
     if (a.topIdeas.length > 0) {
-      prompt += `\nHighest-scoring ideas right now:\n`;
+      prompt += `\nTop FL-scored ideas right now:\n`;
       for (const idea of a.topIdeas) {
         const synthesis = idea.score_breakdown?.synthesis;
         const thePain = synthesis?.the_pain;
         const theGap = synthesis?.the_gap;
         const buildAngle = synthesis?.build_angle;
-        prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (${idea.composite_score}, ${idea.verdict}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}`;
+        prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (FL: ${idea.flylabs_score || idea.composite_score}, ${idea.verdict}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}`;
         if (thePain) prompt += `\n  Pain: ${sanitizeForPrompt(thePain)}`;
         if (theGap) prompt += `\n  Gap: ${sanitizeForPrompt(theGap)}`;
         if (buildAngle) prompt += `\n  Build angle: ${sanitizeForPrompt(buildAngle)}`;
@@ -508,7 +514,7 @@ export function buildSystemPrompt(context = {}) {
     if (a.topIndustryIntel && a.topIndustryIntel.length > 0) {
       prompt += `\nIndustry Intelligence (ranked by opportunity score):\n`;
       for (const ind of a.topIndustryIntel) {
-        prompt += `- ${ind.name}: ${ind.count} ideas, avg ${ind.avg}/100, ${ind.buildRate}% BUILD rate, ${ind.builds} BUILDs, top source: ${ind.bestSource}`;
+        prompt += `- ${ind.name}: ${ind.count} ideas, avg FL ${ind.avg}/100, ${ind.buildRate}% BUILD rate, ${ind.builds} BUILDs, top source: ${ind.bestSource}`;
         if (ind.wowDelta !== 0) prompt += `, ${ind.wowDelta > 0 ? '+' : ''}${ind.wowDelta}% week-over-week`;
         prompt += `.\n`;
       }
@@ -522,7 +528,7 @@ export function buildSystemPrompt(context = {}) {
 
     // Score Trend
     if (a.scoreTrend !== undefined && a.scoreTrend !== 0) {
-      prompt += `Score trend: this week's avg is ${a.thisWeekAvg}/100 (${a.scoreTrend > 0 ? '+' : ''}${a.scoreTrend}% vs 4-week rolling avg). ${a.scoreTrend > 0 ? 'Quality is improving.' : 'More volume coming in, raw quality diluting slightly.'}\n`;
+      prompt += `FL score trend: this week's avg is ${a.thisWeekAvg}/100 (${a.scoreTrend > 0 ? '+' : ''}${a.scoreTrend}% vs 4-week rolling avg). ${a.scoreTrend > 0 ? 'Quality is improving.' : 'More volume coming in, raw quality diluting slightly.'}\n`;
     }
 
     // Framework Disagreements
@@ -549,9 +555,9 @@ export function buildSystemPrompt(context = {}) {
   // Search results (on-demand, from user query)
   if (context.searchResults && context.searchResults.length > 0) {
     prompt += `\n## SEARCH RESULTS (matching user's query)\n\n`;
-    prompt += `Share the top 3-5 most relevant results (not all of them). Link to detail pages using /ideas/{id}. End with a filtered Idea Lab link so they can explore more. Keep it conversational, not a data dump.\n\n`;
+    prompt += `Share the top 3-5 most relevant results (not all of them). Link to detail pages using /ideas/{id}. End with a filtered Ideas Lab link so they can explore more. Keep it conversational, not a data dump.\n\n`;
     for (const idea of context.searchResults) {
-      prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (Score: ${idea.composite_score || 'N/A'}, ${idea.verdict || 'unscored'}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}\n`;
+      prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (FL: ${idea.flylabs_score || 'N/A'}, ${idea.verdict || 'unscored'}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}\n`;
     }
   }
 
@@ -578,7 +584,7 @@ export async function findSimilarIdeas(supabase, userMessage) {
     .from('ideas')
     .select('id, idea_title, flylabs_score, hormozi_score, koe_score, okamoto_score, composite_score, verdict, confidence, score_breakdown, enrichment, industry, source, meta')
     .not('verdict', 'is', null)
-    .order('composite_score', { ascending: false })
+    .order('flylabs_score', { ascending: false, nullsFirst: false })
     .limit(50);
 
   if (!ideas || ideas.length === 0) return [];
@@ -615,10 +621,10 @@ export async function searchIdeas(supabase, filters = {}) {
   if (filters.industry) query = query.eq('industry', filters.industry);
   if (filters.category) query = query.eq('category', filters.category);
   if (filters.confidence) query = query.eq('confidence', filters.confidence);
-  if (filters.min_score) query = query.gte('composite_score', filters.min_score);
+  if (filters.min_score) query = query.gte('flylabs_score', filters.min_score);
   if (filters.q) query = query.ilike('idea_title', `%${filters.q}%`);
 
-  query = query.order('composite_score', { ascending: false }).limit(10);
+  query = query.order('flylabs_score', { ascending: false, nullsFirst: false }).limit(10);
   const { data } = await query;
   return data || [];
 }
@@ -650,8 +656,8 @@ export async function fetchIdeaAnalytics(supabase) {
       const s = i.source || 'community';
       if (!sourceStats[s]) sourceStats[s] = { count: 0, totalScore: 0, scored: 0, builds: 0 };
       sourceStats[s].count++;
-      if (i.composite_score != null) {
-        sourceStats[s].totalScore += Number(i.composite_score);
+      if (i.flylabs_score != null) {
+        sourceStats[s].totalScore += Number(i.flylabs_score);
         sourceStats[s].scored++;
       }
       if (i.verdict === 'BUILD') sourceStats[s].builds++;
@@ -671,7 +677,7 @@ export async function fetchIdeaAnalytics(supabase) {
     // Score distribution
     const scoreBuckets = { '0-29': 0, '30-44': 0, '45-59': 0, '60-69': 0, '70-84': 0, '85-100': 0 };
     for (const i of scored) {
-      const s = Number(i.composite_score);
+      const s = Number(i.flylabs_score || i.composite_score);
       if (s < 30) scoreBuckets['0-29']++;
       else if (s < 45) scoreBuckets['30-44']++;
       else if (s < 60) scoreBuckets['45-59']++;
@@ -680,17 +686,17 @@ export async function fetchIdeaAnalytics(supabase) {
       else scoreBuckets['85-100']++;
     }
 
-    // Top 5 highest-scoring ideas (with full breakdown for new synthesis fields)
+    // Top 5 highest FL-scored ideas (with full breakdown for new synthesis fields)
     const topIdeaIds = scored
-      .filter(i => i.idea_title)
-      .sort((a, b) => Number(b.composite_score) - Number(a.composite_score))
+      .filter(i => i.idea_title && i.flylabs_score != null)
+      .sort((a, b) => Number(b.flylabs_score) - Number(a.flylabs_score))
       .slice(0, 5)
       .map(i => i.id);
     const { data: topIdeasFull } = await supabase
       .from('ideas')
-      .select('id, idea_title, composite_score, verdict, industry, source, score_breakdown, enrichment')
+      .select('id, idea_title, flylabs_score, composite_score, verdict, industry, source, score_breakdown, enrichment')
       .in('id', topIdeaIds);
-    const topIdeas = (topIdeasFull || []).sort((a, b) => Number(b.composite_score) - Number(a.composite_score));
+    const topIdeas = (topIdeasFull || []).sort((a, b) => Number(b.flylabs_score) - Number(a.flylabs_score));
 
     // Best source by avg score
     const sourceQuality = Object.entries(sourceStats)
@@ -716,7 +722,7 @@ export async function fetchIdeaAnalytics(supabase) {
       }
       const ind = industryIntel[i.industry];
       ind.count++;
-      if (i.composite_score != null && i.composite_score > 0) { ind.scoreSum += Number(i.composite_score); ind.scoreCount++; }
+      if (i.flylabs_score != null && i.flylabs_score > 0) { ind.scoreSum += Number(i.flylabs_score); ind.scoreCount++; }
       if (i.verdict) { ind.verdictCount++; if (i.verdict === 'BUILD') ind.buildCount++; }
       ind.sourceCounts[i.source || 'community'] = (ind.sourceCounts[i.source || 'community'] || 0) + 1;
       const age = now - new Date(i.created_at).getTime();
@@ -771,17 +777,17 @@ export async function fetchIdeaAnalytics(supabase) {
 
     // ── Hidden Gems (high score, low votes) ──
     const hiddenGems = ideas
-      .filter(i => i.composite_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP' && i.idea_title)
-      .sort((a, b) => Number(b.composite_score) - Number(a.composite_score))
+      .filter(i => i.flylabs_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP' && i.idea_title)
+      .sort((a, b) => Number(b.flylabs_score) - Number(a.flylabs_score))
       .slice(0, 3)
-      .map(i => ({ id: i.id, title: i.idea_title, score: i.composite_score, votes: i.votes || 0, source: i.source }));
+      .map(i => ({ id: i.id, title: i.idea_title, score: i.flylabs_score, votes: i.votes || 0, source: i.source }));
 
     // ── Score Trend (this week avg vs 4-week rolling avg) ──
-    const recentScored = scored.filter(i => i.composite_score != null);
+    const recentScored = scored.filter(i => i.flylabs_score != null);
     const thisWeekScored = recentScored.filter(i => now - new Date(i.created_at).getTime() < week);
     const fourWeekScored = recentScored.filter(i => now - new Date(i.created_at).getTime() < week * 4);
-    const thisWeekAvg = thisWeekScored.length > 0 ? Math.round(thisWeekScored.reduce((a, i) => a + Number(i.composite_score), 0) / thisWeekScored.length) : 0;
-    const fourWeekAvg = fourWeekScored.length > 0 ? Math.round(fourWeekScored.reduce((a, i) => a + Number(i.composite_score), 0) / fourWeekScored.length) : 0;
+    const thisWeekAvg = thisWeekScored.length > 0 ? Math.round(thisWeekScored.reduce((a, i) => a + Number(i.flylabs_score), 0) / thisWeekScored.length) : 0;
+    const fourWeekAvg = fourWeekScored.length > 0 ? Math.round(fourWeekScored.reduce((a, i) => a + Number(i.flylabs_score), 0) / fourWeekScored.length) : 0;
     const scoreTrend = fourWeekAvg > 0 ? Math.round(((thisWeekAvg - fourWeekAvg) / fourWeekAvg) * 100) : 0;
 
     return {

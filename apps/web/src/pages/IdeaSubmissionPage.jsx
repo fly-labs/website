@@ -11,7 +11,6 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 
 import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
-import { EXPERT_FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
@@ -305,9 +304,9 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems from 8 sources, scored by 4 AI frameworks with BUILD/VALIDATE/SKIP verdicts. Validated against real market conversations.",
-          keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
+          title: "Ideas Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
+          description: "Real problems scored by the Fly Labs Method. BUILD, VALIDATE, or SKIP.",
+          keywords: "submit idea, project idea, community, vote, tool request, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
         className="pt-32 pb-28 sm:pb-24"
@@ -323,7 +322,7 @@ const IdeaSubmissionPage = () => {
               className="text-center mb-6"
             >
               <h1 className="text-4xl md:text-7xl font-black mb-3 tracking-tight">
-                The <span className="text-primary">Idea Lab</span>
+                The <span className="text-primary">Ideas Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground/50 font-medium">
                 {globalCount ? `${globalCount} real problems from ${SOURCE_COUNT} sources` : `Real problems from ${SOURCE_COUNT} sources`}, scored by AI daily.
@@ -739,9 +738,7 @@ const IdeaSubmissionPage = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      We pull real problems from {SOURCE_COUNT} sources daily, score each one through the Fly Labs
-                      Method and {EXPERT_FRAMEWORK_COUNT} expert frameworks, then validate top ideas against real conversations
-                      on X and Reddit. Each idea gets a verdict: build it, validate first, or move on.
+                      We pull real problems from {SOURCE_COUNT} sources daily, score each one with 4 questions using the Fly Labs Method, then validate top ideas against real conversations on X and Reddit. Each idea gets a verdict: build it, validate first, or move on.
                       {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
                     </p>
                   </div>

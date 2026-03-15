@@ -69,16 +69,16 @@ Community submissions and automated imports from 8 external sources. Each idea g
 | `status` | text | | open, building, or shipped |
 | `frequency` | text | | Daily, Weekly, Sometimes, Once |
 | `existing_solutions` | text | | Known alternatives |
-| `flylabs_score` | integer | | 0-100, Fly Labs Method score (primary framework, 40% weight) |
-| `hormozi_score` | integer | | 0-100, Hormozi Value Equation score (20% weight) |
-| `koe_score` | integer | | 0-100, Dan Koe One-Person Business score (20% weight) |
-| `okamoto_score` | integer | | 0-100, Okamoto MicroSaaS score (20% weight) |
+| `flylabs_score` | integer | | 0-100, Fly Labs Method score (THE score) |
+| `hormozi_score` | integer | | 0-100, Hormozi Value Equation (expert perspective, detail page only) |
+| `koe_score` | integer | | 0-100, Dan Koe One-Person Business (expert perspective, detail page only) |
+| `okamoto_score` | integer | | 0-100, Okamoto MicroSaaS (expert perspective, detail page only) |
 | `score_breakdown` | jsonb | | Per-framework pillar scores + reasoning + synthesis (verdict, reasoning, next_steps) |
 | `enrichment` | jsonb | | Validation data: evidence, competitors, summary, confidence level, evidence_count, enrichment verdict |
 | `validation_score` | integer | | 0-100, computed from enrichment evidence |
 | `verdict` | text | | Materialized: BUILD, VALIDATE_FIRST, or SKIP |
 | `confidence` | text | | Materialized: high, medium, or low |
-| `composite_score` | numeric | | Materialized weighted average (40% FL + 20% H + 20% K + 20% O) |
+| `composite_score` | numeric | | Materialized FL score (= flylabs_score, backward compat) |
 | `published_at` | timestamptz | | Original publication date from source (tweet date, Reddit created_utc, etc.). Falls back to created_at in frontend |
 | `meta` | jsonb | | Source-specific context. Currently used for YC ideas (failure_analysis: failure_reason, what_changed, rebuild_angle) |
 | `created_at` | timestamptz | now() | Row creation time |
@@ -238,22 +238,24 @@ All tables have RLS enabled.
 
 Ideas are scored by Claude Sonnet 4 across 4 frameworks via `scripts/score-ideas.mjs`.
 
-### Frameworks and Weights
+### Frameworks
 
-| Framework | Weight | Score Range | Focus |
-|-----------|--------|-------------|-------|
-| Fly Labs Method | 40% | 0-100 | Problem Clarity (30pts), Solution Gap (25pts), Willingness to Act (25pts), Buildability (20pts) |
-| Hormozi Value Equation | 20% | 0-100 | Dream Outcome, Likelihood, Speed, Effort |
-| Dan Koe One-Person Business | 20% | 0-100 | 7 dimensions for solo creator viability |
-| Okamoto MicroSaaS | 20% | 0-100 | 6 dimensions for micro-SaaS validation |
+The FL score IS the score. Expert scores are stored in `score_breakdown` for the detail page only.
+
+| Framework | Role | Score Range | Focus |
+|-----------|------|-------------|-------|
+| Fly Labs Method | THE score (composite_score = flylabs_score) | 0-100 | Problem Clarity (30pts), Solution Gap (25pts), Willingness to Act (25pts), Buildability (20pts) |
+| Hormozi Value Equation | Expert perspective (detail page) | 0-100 | Dream Outcome, Likelihood, Speed, Effort |
+| Dan Koe One-Person Business | Expert perspective (detail page) | 0-100 | 7 dimensions for solo creator viability |
+| Okamoto MicroSaaS | Expert perspective (detail page) | 0-100 | 6 dimensions for micro-SaaS validation |
 
 ### Verdict Rules
 
 | Verdict | Condition |
 |---------|-----------|
-| **BUILD** | composite_score >= 70 AND flylabs_score >= 60 AND no single framework below 30 |
-| **VALIDATE_FIRST** | composite_score 45-69, or has gaps (one framework below 30 despite high composite) |
-| **SKIP** | composite_score < 45 |
+| **BUILD** | FL >= 65 AND buildable |
+| **VALIDATE_FIRST** | FL 40-64 |
+| **SKIP** | FL < 40 |
 
 The `verdict`, `confidence`, and `composite_score` columns are materialized by the scoring and enrichment scripts. They are not computed at query time.
 
@@ -264,7 +266,7 @@ Top-scoring ideas are enriched via `scripts/enrich-ideas.mjs` with dual-source v
 - **Primary:** Grok xAI API with `x_search` tool (always available)
 - **Secondary:** Reddit API with OAuth auto-upgrade (best-effort)
 - **Synthesis:** Claude combines evidence from both sources, assigns confidence level (high/medium/low), counts evidence items, and produces an enrichment verdict (BUILD/VALIDATE_FIRST/SKIP)
-- **Threshold:** Only ideas with composite_score >= 40 are enriched
+- **Threshold:** Only ideas with FL score >= 40 are enriched
 - **Schedule:** Daily at 4 AM UTC via GitHub Actions
 
 Results are stored in the `enrichment` JSONB column and `validation_score` integer column.
