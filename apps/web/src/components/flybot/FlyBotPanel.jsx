@@ -37,21 +37,21 @@ function AuthGate() {
         </div>
         <h3 className="font-semibold mb-1.5 text-sm">Sign in to chat with FlyBot</h3>
         <p className="text-xs text-muted-foreground/70 mb-4 leading-relaxed">
-          Score business ideas, get help writing content, think through building decisions. 5 free messages.
+          Evaluate business ideas with AI scoring, get content strategy help, and think through building decisions. 5 free messages.
         </p>
         <div className="flex gap-2 justify-center">
           <button
-            onClick={() => { closeWidget(); navigate('/login'); }}
+            onClick={() => { closeWidget(); navigate('/signup'); }}
             className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
           >
             <LogIn className="w-3.5 h-3.5" />
-            Sign in
+            Sign up free
           </button>
           <button
-            onClick={() => { closeWidget(); navigate('/signup'); }}
+            onClick={() => { closeWidget(); navigate('/login'); }}
             className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
           >
-            Sign up
+            Sign in
           </button>
         </div>
       </div>

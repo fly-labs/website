@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo, lazy, Suspense } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
-  Menu, Plus, Loader2, Grid3x3, ChevronDown,
+  Menu, Plus, Loader2, Grid3x3, ChevronDown, Keyboard, X,
   Sun, Moon, Palette, Download, LayoutTemplate, Eye, EyeOff,
-  Maximize2, Minimize2, PanelLeftClose, PanelLeft,
+  Maximize2, Minimize2, PanelLeftClose,
   Undo2, Redo2, ZoomIn, ZoomOut, PenTool, MousePointer2,
   Square, Circle, ArrowRight, Minus, TypeIcon, Eraser, Hand,
   SlidersHorizontal, Star, Search, MoreHorizontal, Copy, Trash2,
   FolderPlus, Folder, FolderOpen, ChevronRight,
 } from 'lucide-react';
 import { SEO } from '@/components/SEO.jsx';
-import Header from '@/components/Header.jsx';
+import { SmileLogo } from '@/components/SmileLogo.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useTheme } from '@/contexts/ThemeContext.jsx';
 import { useBoardContext } from '@/contexts/BoardContext.jsx';
@@ -38,17 +38,18 @@ const BG_PRESETS = [
 ];
 
 // Font options grouped by use case (Excalidraw built-in font IDs)
+// CSS font-family strings must match what Excalidraw registers internally
 const FONT_OPTIONS = [
-  // Handwritten
-  { id: 1, label: 'Virgil', desc: 'Notes & sketches', category: 'Handwritten' },
-  { id: 7, label: 'Comic Shanns', desc: 'Fun & playful', category: 'Handwritten' },
-  { id: 4, label: 'Excalifont', desc: 'Loose doodles', category: 'Handwritten' },
-  // Clean
-  { id: 5, label: 'Nunito', desc: 'Thumbnails & slides', category: 'Clean' },
-  { id: 6, label: 'Lilita One', desc: 'Bold titles & X posts', category: 'Clean' },
-  { id: 2, label: 'Helvetica', desc: 'Professional exports', category: 'Clean' },
-  // Code
-  { id: 3, label: 'Cascadia', desc: 'Code & tech', category: 'Code' },
+  // Handwritten (sketchy, organic feel)
+  { id: 1, label: 'Virgil', desc: 'Sketchy notes', category: 'Sketch', css: 'Virgil, cursive' },
+  { id: 4, label: 'Excalifont', desc: 'Whiteboard', category: 'Sketch', css: 'Excalifont, cursive' },
+  { id: 7, label: 'Comic Shanns', desc: 'Playful', category: 'Sketch', css: '"Comic Shanns", cursive' },
+  // Clean (presentations, exports, social)
+  { id: 5, label: 'Nunito', desc: 'Slides & thumbnails', category: 'Clean', css: 'Nunito, sans-serif' },
+  { id: 6, label: 'Lilita One', desc: 'Bold headlines', category: 'Clean', css: '"Lilita One", sans-serif' },
+  { id: 2, label: 'Helvetica', desc: 'Professional', category: 'Clean', css: '"Liberation Sans", Helvetica, sans-serif' },
+  // Monospace (code, diagrams, data)
+  { id: 3, label: 'Cascadia', desc: 'Code & data', category: 'Mono', css: 'Cascadia, monospace' },
 ];
 
 // Stroke/text color presets
@@ -98,6 +99,25 @@ function getContrastStroke(bgHex) {
   }
 }
 
+// Arrow presets for content creators: frameworks, flowcharts, diagrams
+const ARROW_PRESETS = [
+  { id: 'sketch',    label: 'Sketch',      roughness: 1, arrowType: 'round', startArrowhead: null,    endArrowhead: 'arrow' },
+  { id: 'sharp',     label: 'Sharp',       roughness: 0, arrowType: 'sharp', startArrowhead: null,    endArrowhead: 'triangle' },
+  { id: 'elbow',     label: 'Elbow',       roughness: 0, arrowType: 'elbow', startArrowhead: null,    endArrowhead: 'triangle' },
+  { id: 'both',      label: 'Both ways',   roughness: 0, arrowType: 'sharp', startArrowhead: 'arrow', endArrowhead: 'arrow' },
+  { id: 'connector', label: 'Connector',   roughness: 0, arrowType: 'sharp', startArrowhead: null,    endArrowhead: null },
+  { id: 'dot',       label: 'Dot end',     roughness: 0, arrowType: 'sharp', startArrowhead: null,    endArrowhead: 'dot' },
+  { id: 'bar',       label: 'Bar end',     roughness: 0, arrowType: 'sharp', startArrowhead: null,    endArrowhead: 'bar' },
+  { id: 'dot-both',  label: 'Dot both',    roughness: 0, arrowType: 'sharp', startArrowhead: 'dot',   endArrowhead: 'dot' },
+];
+
+// Stroke width options
+const STROKE_WIDTHS = [
+  { id: 1, label: 'Thin' },
+  { id: 2, label: 'Medium' },
+  { id: 4, label: 'Thick' },
+];
+
 // Guest board limit (module-level constant)
 const GUEST_BOARD_LIMIT = 1;
 
@@ -113,6 +133,57 @@ const DRAW_TOOLS = [
   { id: 'eraser', label: 'Eraser (E)', icon: Eraser, shortcut: 'E' },
   { id: 'hand', label: 'Pan (H)', icon: Hand, shortcut: 'H' },
 ];
+
+/** SVG icon for each arrow preset */
+function ArrowPresetIcon({ preset, size = 18 }) {
+  const s = size;
+  // Arrowhead markers
+  const endHead = (x, y, dir = 'right') => {
+    if (!preset.endArrowhead) return null;
+    if (preset.endArrowhead === 'dot') return <circle cx={x} cy={y} r={2.5} fill="currentColor" />;
+    if (preset.endArrowhead === 'bar') return <line x1={x} y1={y - 4} x2={x} y2={y + 4} stroke="currentColor" strokeWidth="2" strokeLinecap="round" />;
+    // arrow or triangle
+    if (dir === 'up') return <polygon points={`${x},${y - 3} ${x - 3},${y + 2} ${x + 3},${y + 2}`} fill="currentColor" />;
+    return <polygon points={`${x + 2},${y} ${x - 3},${y - 3} ${x - 2},${y + 3}`} fill="currentColor" />;
+  };
+  const startHead = (x, y) => {
+    if (!preset.startArrowhead) return null;
+    if (preset.startArrowhead === 'dot') return <circle cx={x} cy={y} r={2.5} fill="currentColor" />;
+    if (preset.startArrowhead === 'bar') return <line x1={x} y1={y - 4} x2={x} y2={y + 4} stroke="currentColor" strokeWidth="2" strokeLinecap="round" />;
+    return <polygon points={`${x - 2},${y} ${x + 3},${y - 3} ${x + 2},${y + 3}`} fill="currentColor" />;
+  };
+
+  const vb = `0 0 ${s} ${s}`;
+  const sw = 1.5;
+  const midY = s * 0.55;
+
+  if (preset.arrowType === 'round' || preset.id === 'sketch') {
+    return (
+      <svg width={s} height={s} viewBox={vb} fill="none" className="text-current">
+        <path d={`M3 ${midY + 3} Q${s * 0.35} ${midY - 3} ${s * 0.5} ${midY} Q${s * 0.65} ${midY + 3} ${s - 5} ${midY - 2}`} stroke="currentColor" strokeWidth={sw} strokeLinecap="round" fill="none" />
+        {endHead(s - 3, midY - 2)}
+        {startHead(3, midY + 3)}
+      </svg>
+    );
+  }
+  if (preset.arrowType === 'elbow') {
+    return (
+      <svg width={s} height={s} viewBox={vb} fill="none" className="text-current">
+        <polyline points={`3,${midY + 2} ${s * 0.55},${midY + 2} ${s * 0.55},${midY - 4}`} stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        {endHead(s * 0.55, midY - 5, 'up')}
+        {startHead(3, midY + 2)}
+      </svg>
+    );
+  }
+  // sharp / default: straight line
+  return (
+    <svg width={s} height={s} viewBox={vb} fill="none" className="text-current">
+      <line x1={4} y1={midY} x2={s - 5} y2={midY} stroke="currentColor" strokeWidth={sw} strokeLinecap="round" />
+      {endHead(s - 3, midY)}
+      {startHead(4, midY)}
+    </svg>
+  );
+}
 
 /**
  * FlyBoardPage: full-screen whiteboard with toolbar, sidebar, templates, and exports.
@@ -171,6 +242,19 @@ export default function FlyBoardPage() {
   const [showExcalidrawUI, setShowExcalidrawUI] = useState(() => localStorage.getItem('flyboard-excalidraw-ui') === 'true');
   // Active drawing tool
   const [activeTool, setActiveTool] = useState('selection');
+
+  // Style controls (persisted to localStorage)
+  const [strokeWidth, setStrokeWidth] = useState(() => parseInt(localStorage.getItem('flyboard-stroke-width') || '2', 10));
+  const [fontSize, setFontSize] = useState(() => parseInt(localStorage.getItem('flyboard-font-size') || '20', 10));
+  const [arrowPreset, setArrowPreset] = useState(() => localStorage.getItem('flyboard-arrow-preset') || 'sketch');
+  const [strokeWidthMenuOpen, setStrokeWidthMenuOpen] = useState(false);
+  const [inlineColorMenuOpen, setInlineColorMenuOpen] = useState(false);
+  const [inlineFontMenuOpen, setInlineFontMenuOpen] = useState(false);
+  const [arrowMenuOpen, setArrowMenuOpen] = useState(false);
+  const strokeWidthMenuRef = useRef(null);
+  const inlineColorMenuRef = useRef(null);
+  const inlineFontMenuRef = useRef(null);
+  const arrowMenuRef = useRef(null);
 
   // Modal states
   const [exportOpen, setExportOpen] = useState(false);
@@ -246,13 +330,19 @@ export default function FlyBoardPage() {
     ? getContrastStroke(resolvedBgColor)
     : (STROKE_COLORS.find(c => c.id === strokeColorMode)?.hex || getContrastStroke(resolvedBgColor));
 
-  // Sidebar is overlay-only now, no need to persist open/closed state
+  // Lock body scroll when sidebar or bottom sheet is open (prevents iOS scroll-behind)
+  useEffect(() => {
+    if (sidebarOpen || mobileToolsOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [sidebarOpen, mobileToolsOpen]);
 
 
 
   // Close dropdowns and context menus on outside click
   useEffect(() => {
-    if (!gridMenuOpen && !bgMenuOpen && !fontMenuOpen && !colorMenuOpen && !symbolMenuOpen && !emojiMenuOpen && !boardContextMenu && !folderContextMenu) return;
+    if (!gridMenuOpen && !bgMenuOpen && !fontMenuOpen && !colorMenuOpen && !symbolMenuOpen && !emojiMenuOpen && !boardContextMenu && !folderContextMenu && !strokeWidthMenuOpen && !inlineColorMenuOpen && !inlineFontMenuOpen && !arrowMenuOpen) return;
     const handler = (e) => {
       if (gridMenuOpen && gridMenuRef.current && !gridMenuRef.current.contains(e.target)) setGridMenuOpen(false);
       if (bgMenuOpen && bgMenuRef.current && !bgMenuRef.current.contains(e.target)) setBgMenuOpen(false);
@@ -262,15 +352,31 @@ export default function FlyBoardPage() {
       if (emojiMenuOpen && emojiMenuRef.current && !emojiMenuRef.current.contains(e.target)) setEmojiMenuOpen(false);
       if (boardContextMenu && contextMenuRef.current && !contextMenuRef.current.contains(e.target)) setBoardContextMenu(null);
       if (folderContextMenu && folderContextMenuRef.current && !folderContextMenuRef.current.contains(e.target)) setFolderContextMenu(null);
+      if (strokeWidthMenuOpen && strokeWidthMenuRef.current && !strokeWidthMenuRef.current.contains(e.target)) setStrokeWidthMenuOpen(false);
+      if (inlineColorMenuOpen && inlineColorMenuRef.current && !inlineColorMenuRef.current.contains(e.target)) setInlineColorMenuOpen(false);
+      if (inlineFontMenuOpen && inlineFontMenuRef.current && !inlineFontMenuRef.current.contains(e.target)) setInlineFontMenuOpen(false);
+      if (arrowMenuOpen && arrowMenuRef.current && !arrowMenuRef.current.contains(e.target)) setArrowMenuOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [gridMenuOpen, bgMenuOpen, fontMenuOpen, colorMenuOpen, symbolMenuOpen, emojiMenuOpen, boardContextMenu, folderContextMenu]);
+  }, [gridMenuOpen, bgMenuOpen, fontMenuOpen, colorMenuOpen, symbolMenuOpen, emojiMenuOpen, boardContextMenu, folderContextMenu, strokeWidthMenuOpen, inlineColorMenuOpen, inlineFontMenuOpen, arrowMenuOpen]);
 
   // Init board context on mount (guests get localStorage mode automatically)
   useEffect(() => {
     initBoard();
   }, [initBoard]);
+
+  // Auto-create first board when none exist (Figma-style instant start)
+  useEffect(() => {
+    if (!isInitialized || boards.length > 0) return;
+    // Prevent infinite retries if creation fails
+    if (sessionStorage.getItem('flyboard-autocreated')) return;
+    sessionStorage.setItem('flyboard-autocreated', '1');
+    (async () => {
+      const board = await createBoard({ title: 'Untitled Board' });
+      if (board) await openBoard(board.id);
+    })();
+  }, [isInitialized, boards.length, createBoard, openBoard]);
 
   // Track programmatic URL updates to avoid re-triggering openBoard
   const programmaticUrlRef = useRef(false);
@@ -303,17 +409,10 @@ export default function FlyBoardPage() {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // F11 keyboard shortcut for fullscreen
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'F11') {
-        e.preventDefault();
-        toggleFullscreen();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  // Refs for keyboard shortcuts (declared early, effect registered after handlers)
+  const prevToolRef = useRef('selection');
+  const spaceDownRef = useRef(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
@@ -352,26 +451,26 @@ export default function FlyBoardPage() {
     };
   }, [isSaving, lastSavedAt]);
 
-  // Smart auto-contrast: when theme changes and we're in auto mode, recolor existing elements
-  const prevStrokeRef = useRef(resolvedStrokeColor);
+  // When background changes and manual color clashes, auto-switch to 'auto'
+  const prevBgRef = useRef(resolvedBgColor);
   useEffect(() => {
-    const prev = prevStrokeRef.current;
-    prevStrokeRef.current = resolvedStrokeColor;
-    if (strokeColorMode !== 'auto' || prev === resolvedStrokeColor) return;
+    const prevBg = prevBgRef.current;
+    prevBgRef.current = resolvedBgColor;
+    if (strokeColorMode === 'auto' || prevBg === resolvedBgColor) return;
 
-    const api = excalidrawRef.current?.getAPI?.() || excalidrawRef.current;
-    if (!api?.getSceneElements) return;
-
-    const elements = api.getSceneElements();
-    const updated = elements.map(el => {
-      // Recolor elements that were using the old auto-contrast color
-      if (el.strokeColor === prev || el.strokeColor === '#e8e4df' || el.strokeColor === '#1e1e1e') {
-        return { ...el, strokeColor: resolvedStrokeColor };
+    const manualHex = STROKE_COLORS.find(c => c.id === strokeColorMode)?.hex;
+    if (!manualHex) return;
+    try {
+      const mR = parseInt(manualHex.slice(1, 3), 16), mG = parseInt(manualHex.slice(3, 5), 16), mB = parseInt(manualHex.slice(5, 7), 16);
+      const mLum = (0.299 * mR + 0.587 * mG + 0.114 * mB) / 255;
+      const bR = parseInt(resolvedBgColor.slice(1, 3), 16), bG = parseInt(resolvedBgColor.slice(3, 5), 16), bB = parseInt(resolvedBgColor.slice(5, 7), 16);
+      const bLum = (0.299 * bR + 0.587 * bG + 0.114 * bB) / 255;
+      if ((mLum < 0.4 && bLum < 0.4) || (mLum > 0.6 && bLum > 0.6)) {
+        setStrokeColorMode('auto');
+        localStorage.setItem('flyboard-stroke-color', 'auto');
       }
-      return el;
-    });
-    api.updateScene({ elements: updated });
-  }, [resolvedStrokeColor, strokeColorMode]);
+    } catch {}
+  }, [resolvedBgColor, strokeColorMode]);
 
   // Scene change handler (works for both authenticated and guest/localStorage mode)
   const onSceneChange = useCallback((sceneData) => {
@@ -422,57 +521,151 @@ export default function FlyBoardPage() {
     });
   }, []);
 
+  // Helper: get Excalidraw API (prefers raw API from getAPI(), falls back to imperative handle)
+  const getExcalidrawAPI = useCallback(() => {
+    const handle = excalidrawRef.current;
+    if (!handle) return null;
+    return handle.getAPI?.() || handle;
+  }, []);
+
+  // Shared utility: apply props to selected elements (optionally filter by type)
+  // Returns number of elements changed (0 = nothing selected/matched)
+  const applyToSelected = useCallback((props, filter) => {
+    const api = getExcalidrawAPI();
+    if (!api?.getSceneElements || !api?.getAppState) return 0;
+    const appState = api.getAppState();
+    const elements = api.getSceneElements();
+    const selectedIds = appState.selectedElementIds || {};
+    let changed = 0;
+    const updated = elements.map(el => {
+      if (!selectedIds[el.id] || el.isDeleted) return el;
+      if (filter && !filter(el)) return el;
+      changed++;
+      return { ...el, ...props };
+    });
+    if (changed) api.updateScene({ elements: updated });
+    return changed;
+  }, [getExcalidrawAPI]);
+
   const handleBgChange = useCallback((presetId) => {
     setBgPreset(presetId);
     localStorage.setItem('flyboard-bg-preset', presetId);
     setBgMenuOpen(false);
-
-    // Smart auto-contrast: when in auto mode, update ALL existing elements to match new background
-    if (strokeColorMode === 'auto') {
-      const preset = BG_PRESETS.find(p => p.id === presetId) || BG_PRESETS[0];
-      const newBg = isDark ? preset.dark : preset.light;
-      const newStroke = getContrastStroke(newBg);
-      const api = excalidrawRef.current?.getAPI?.() || excalidrawRef.current;
-      if (api?.getSceneElements) {
-        const elements = api.getSceneElements();
-        const oldStroke = getContrastStroke(resolvedBgColor);
-        // Only recolor elements that used the previous auto-contrast color
-        const updated = elements.map(el => {
-          if (el.strokeColor === oldStroke || el.strokeColor === '#e8e4df' || el.strokeColor === '#1e1e1e') {
-            return { ...el, strokeColor: newStroke };
-          }
-          return el;
-        });
-        api.updateScene({
-          elements: updated,
-          appState: { currentItemStrokeColor: newStroke },
-        });
-      }
-    }
-
     trackEvent('flyboard_bg_changed', { bg_preset: presetId });
-  }, [strokeColorMode, isDark, resolvedBgColor]);
+  }, []);
 
   const handleFontChange = useCallback((fontId) => {
     setFontFamily(fontId);
     localStorage.setItem('flyboard-font', String(fontId));
     setFontMenuOpen(false);
+    setInlineFontMenuOpen(false);
+    const api = getExcalidrawAPI();
+    if (api?.updateScene) {
+      api.updateScene({ appState: { currentItemFontFamily: fontId } });
+    }
+    applyToSelected({ fontFamily: fontId }, el => el.type === 'text');
     trackEvent('flyboard_font_changed', { font_id: fontId });
-  }, []);
+  }, [getExcalidrawAPI, applyToSelected]);
 
   const handleStrokeColorChange = useCallback((colorId) => {
     setStrokeColorMode(colorId);
     localStorage.setItem('flyboard-stroke-color', colorId);
     setColorMenuOpen(false);
-    // Update Excalidraw state for ALL modes (auto and manual)
+    setInlineColorMenuOpen(false);
     const hex = colorId === 'auto'
       ? getContrastStroke(resolvedBgColor)
       : (STROKE_COLORS.find(c => c.id === colorId)?.hex);
     if (hex) {
-      excalidrawRef.current?.updateScene({ appState: { currentItemStrokeColor: hex } });
+      const api = getExcalidrawAPI();
+      if (api?.updateScene) {
+        api.updateScene({ appState: { currentItemStrokeColor: hex } });
+      }
+      applyToSelected({ strokeColor: hex });
     }
     trackEvent('flyboard_stroke_color_changed', { color: colorId });
-  }, [resolvedBgColor]);
+  }, [resolvedBgColor, getExcalidrawAPI, applyToSelected]);
+
+  const handleStrokeWidthChange = useCallback((width) => {
+    setStrokeWidth(width);
+    localStorage.setItem('flyboard-stroke-width', String(width));
+    setStrokeWidthMenuOpen(false);
+    const api = getExcalidrawAPI();
+    if (api?.updateScene) {
+      api.updateScene({ appState: { currentItemStrokeWidth: width } });
+    }
+    applyToSelected({ strokeWidth: width });
+    trackEvent('flyboard_stroke_width_changed', { width });
+  }, [getExcalidrawAPI, applyToSelected]);
+
+  const handleArrowPresetSelect = useCallback((presetId) => {
+    const preset = ARROW_PRESETS.find(p => p.id === presetId);
+    if (!preset) return;
+    setArrowPreset(preset.id);
+    localStorage.setItem('flyboard-arrow-preset', preset.id);
+    const api = getExcalidrawAPI();
+    if (api?.updateScene) {
+      api.updateScene({
+        appState: {
+          currentItemRoughness: preset.roughness,
+          currentItemEndArrowhead: preset.endArrowhead,
+          currentItemStartArrowhead: preset.startArrowhead,
+        },
+      });
+    }
+    applyToSelected(
+      {
+        roughness: preset.roughness,
+        roundness: preset.arrowType === 'round' ? { type: 2 } : null,
+        startArrowhead: preset.startArrowhead,
+        endArrowhead: preset.endArrowhead,
+      },
+      el => el.type === 'arrow'
+    );
+    trackEvent('flyboard_arrow_preset_changed', { preset: preset.id });
+  }, [getExcalidrawAPI, applyToSelected]);
+
+  // Compute derived arrow preset properties for ExcalidrawCanvas
+  const activeArrowPreset = ARROW_PRESETS.find(p => p.id === arrowPreset) || ARROW_PRESETS[0];
+
+  // Font size change: applies to selected text + sets default for new text
+  const handleFontSizeChange = useCallback((direction) => {
+    const api = getExcalidrawAPI();
+    if (!api?.getSceneElements || !api?.getAppState) return;
+
+    const appState = api.getAppState();
+    const elements = api.getSceneElements();
+    const selectedIds = appState.selectedElementIds || {};
+    const selectedText = elements.filter(el => selectedIds[el.id] && !el.isDeleted && el.type === 'text');
+
+    if (selectedText.length > 0) {
+      // Resize selected text elements
+      const updated = elements.map(el => {
+        if (!selectedIds[el.id] || el.isDeleted || el.type !== 'text') return el;
+        const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
+        const newIdx = direction === 'up'
+          ? Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)
+          : Math.max((idx >= 0 ? idx : 3) - 1, 0);
+        return { ...el, fontSize: FONT_SIZES[newIdx] };
+      });
+      api.updateScene({ elements: updated });
+    }
+
+    // Also update the default font size for new text
+    const curIdx = FONT_SIZES.findIndex(s => s >= fontSize);
+    const newIdx = direction === 'up'
+      ? Math.min((curIdx >= 0 ? curIdx : 3) + 1, FONT_SIZES.length - 1)
+      : Math.max((curIdx >= 0 ? curIdx : 3) - 1, 0);
+    const newSize = FONT_SIZES[newIdx];
+    setFontSize(newSize);
+    localStorage.setItem('flyboard-font-size', String(newSize));
+    api.updateScene({ appState: { currentItemFontSize: newSize } });
+
+    if (selectedText.length === 0) {
+      setToast(`Default text size: ${newSize}px`);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setToast(null), 1500);
+    }
+  }, [getExcalidrawAPI, fontSize]);
 
   // Insert a symbol/emoji: copies to clipboard and shows toast
   const handleInsertSymbol = useCallback((char) => {
@@ -485,7 +678,16 @@ export default function FlyBoardPage() {
 
   const handleToolSelect = useCallback((toolId) => {
     setActiveTool(toolId);
-    excalidrawRef.current?.setTool(toolId);
+    // Lock drawing tools so they stay active for multiple placements
+    const nonLockedTools = ['selection', 'eraser', 'hand'];
+    const locked = !nonLockedTools.includes(toolId);
+    if (excalidrawRef.current?.setTool) {
+      excalidrawRef.current.setTool(toolId, { locked });
+    } else {
+      setToast('Board is loading, try again in a moment');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setToast(null), 2000);
+    }
   }, []);
 
   const handleToggleExcalidrawUI = useCallback(() => {
@@ -500,6 +702,61 @@ export default function FlyBoardPage() {
   const handleRedo = useCallback(() => excalidrawRef.current?.redo(), []);
   const handleZoomIn = useCallback(() => excalidrawRef.current?.zoomIn(), []);
   const handleZoomOut = useCallback(() => excalidrawRef.current?.zoomOut(), []);
+
+  // Keyboard shortcuts: tool switching, undo/redo, zoom, fullscreen, help overlay
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+
+      if (e.key === 'F11') { e.preventDefault(); toggleFullscreen(); return; }
+      if (e.key === '?' || (e.shiftKey && e.key === '/')) { e.preventDefault(); setShowShortcuts(prev => !prev); return; }
+
+      if (e.key === 'Escape') {
+        if (showShortcuts) { setShowShortcuts(false); return; }
+        if (mobileToolsOpen) { setMobileToolsOpen(false); return; }
+        if (sidebarOpen) { setSidebarOpen(false); return; }
+        handleToolSelect('selection');
+        return;
+      }
+
+      if (e.code === 'Space' && !e.repeat && !spaceDownRef.current) {
+        e.preventDefault();
+        spaceDownRef.current = true;
+        prevToolRef.current = activeTool;
+        handleToolSelect('hand');
+        return;
+      }
+
+      if (e.metaKey || e.ctrlKey) {
+        if (e.key === 'z' && e.shiftKey) { e.preventDefault(); handleRedo(); return; }
+        if (e.key === 'z') { e.preventDefault(); handleUndo(); return; }
+        if (e.key === '=' || e.key === '+') { e.preventDefault(); handleZoomIn(); return; }
+        if (e.key === '-') { e.preventDefault(); handleZoomOut(); return; }
+        return;
+      }
+
+      if (!e.metaKey && !e.ctrlKey && !e.altKey) {
+        const key = e.key.toUpperCase();
+        const tool = DRAW_TOOLS.find(t => t.shortcut === key);
+        if (tool) { e.preventDefault(); handleToolSelect(tool.id); return; }
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      if (e.code === 'Space' && spaceDownRef.current) {
+        spaceDownRef.current = false;
+        handleToolSelect(prevToolRef.current);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [activeTool, showShortcuts, mobileToolsOpen, sidebarOpen, handleToolSelect, handleUndo, handleRedo, handleZoomIn, handleZoomOut, toggleFullscreen]);
 
   // Sidebar handlers
   const handleStartRename = useCallback((boardId, currentTitle) => {
@@ -574,15 +831,15 @@ export default function FlyBoardPage() {
 
   const boardTitle = activeBoard?.title || 'FlyBoard';
 
-  // Render a single board item (shared between desktop and mobile sidebar)
-  const renderBoardItem = (board, isMobile) => {
+  // Render a single board item (sidebar overlay)
+  const renderBoardItem = (board) => {
     const isActive = activeBoard?.id === board.id;
     const isRenaming = renamingBoardId === board.id;
 
     const handleBoardClick = (e) => {
       e.preventDefault();
       openBoard(board.id);
-      if (isMobile) setSidebarOpen(false);
+      setSidebarOpen(false);
     };
 
     const handleContextMenuClick = (e) => {
@@ -633,14 +890,12 @@ export default function FlyBoardPage() {
     );
   };
 
-  // Render sidebar content (shared between desktop and mobile)
-  const renderSidebarContent = (isMobile) => {
-    const minW = isMobile ? 'min-w-[300px]' : 'min-w-[260px]';
-
+  // Render sidebar content (overlay only, always mobile-style)
+  const renderSidebarContent = () => {
     return (
       <>
         {/* Search + Actions */}
-        <div className={`p-3 border-b space-y-2 ${minW}`}>
+        <div className="p-3 border-b space-y-2">
           <div className="relative">
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -653,14 +908,14 @@ export default function FlyBoardPage() {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={() => { handleNewBoard(); if (isMobile) setSidebarOpen(false); }}
+              onClick={() => { handleNewBoard(); setSidebarOpen(false); }}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/50 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               New Board
             </button>
             <button
-              onClick={() => { setTemplatePickerOpen(true); if (isMobile) setSidebarOpen(false); }}
+              onClick={() => { setTemplatePickerOpen(true); setSidebarOpen(false); }}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             >
               <LayoutTemplate className="w-3.5 h-3.5" />
@@ -697,7 +952,7 @@ export default function FlyBoardPage() {
         </div>
 
         {/* Board list */}
-        <div className={`flex-1 overflow-y-auto p-2 space-y-1 scrollbar-none ${minW}`}>
+        <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-none">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -715,7 +970,7 @@ export default function FlyBoardPage() {
                     <Star className="w-3 h-3" />
                     Favorites
                   </div>
-                  {filteredBoards.favorites.map(b => renderBoardItem(b, isMobile))}
+                  {filteredBoards.favorites.map(b => renderBoardItem(b))}
                 </div>
               )}
 
@@ -760,7 +1015,7 @@ export default function FlyBoardPage() {
                         {folderBoards.length === 0 ? (
                           <p className="text-[11px] text-muted-foreground/40 px-2 py-1">Empty folder</p>
                         ) : (
-                          folderBoards.map(b => renderBoardItem(b, isMobile))
+                          folderBoards.map(b => renderBoardItem(b))
                         )}
                       </div>
                     )}
@@ -776,7 +1031,7 @@ export default function FlyBoardPage() {
                       All Boards
                     </div>
                   )}
-                  {boardsByFolder.unfiled.map(b => renderBoardItem(b, isMobile))}
+                  {boardsByFolder.unfiled.map(b => renderBoardItem(b))}
                 </div>
               )}
             </>
@@ -784,7 +1039,7 @@ export default function FlyBoardPage() {
         </div>
 
         {/* Footer */}
-        <div className={`px-3 py-2 border-t ${minW}`}>
+        <div className="px-3 py-2 border-t">
           {!isAuthenticated ? (
             <div className="text-center space-y-1.5">
               <p className="text-[11px] text-muted-foreground/60">Guest mode: {GUEST_BOARD_LIMIT} board limit</p>
@@ -827,27 +1082,32 @@ export default function FlyBoardPage() {
       />
 
       <div className="h-dvh flex flex-col bg-background">
-        {!isFullscreen && <Header />}
-
-        {/* Sidebar overlay: lives outside overflow-hidden so fixed positioning works */}
+        {/* Sidebar overlay */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-40 bg-black/50" style={{ top: isFullscreen ? 0 : '60px' }} onClick={() => setSidebarOpen(false)}>
+          <div className="fixed inset-0 z-[52] bg-black/40 backdrop-blur-[2px]" onClick={() => setSidebarOpen(false)}>
             <div
-              className="absolute left-0 top-0 bottom-0 w-[280px] sm:w-[300px] bg-card border-r flex flex-col shadow-2xl"
+              className="absolute left-0 top-0 bottom-0 w-[280px] sm:w-[300px] bg-card border-r flex flex-col shadow-2xl animate-slide-in-left"
               onClick={e => e.stopPropagation()}
             >
-              {renderSidebarContent(true)}
+              {renderSidebarContent()}
             </div>
           </div>
         )}
 
-        <div className={`flex-1 flex overflow-hidden relative ${!isFullscreen ? 'pt-[60px]' : ''}`}>
+        <div className="flex-1 flex overflow-hidden relative">
           {/* ---- Main canvas area ---- */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Toolbar: single clean row, overflow menu catches the rest */}
-            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[48px] border-b shrink-0 overflow-hidden">
-              {/* Left: sidebar toggle + title */}
+            <div className="flyboard-toolbar flex items-center px-2 sm:px-3 h-[48px] border-b shrink-0">
+              {/* Left: logo + sidebar toggle + title */}
               <div className="flex items-center gap-1 min-w-0 shrink-0">
+                <Link to="/" className="flyboard-tb-btn !w-auto !px-1.5 gap-1 text-foreground hover:text-primary" title="Fly Labs home">
+                  <SmileLogo className="w-5 h-5 text-primary" />
+                  <span className="hidden sm:inline text-[12px] font-bold tracking-tight">Fly Labs</span>
+                </Link>
+
+                <div className="w-px h-5 bg-border/50 mx-0.5" />
+
                 <button
                   onClick={() => setSidebarOpen(prev => !prev)}
                   className="flyboard-tb-btn"
@@ -887,22 +1147,24 @@ export default function FlyBoardPage() {
                 )}
               </div>
 
-              {/* Tools: single row, excess goes to overflow */}
-              <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 ml-2 sm:ml-3 mr-1">
-
-                {/* Drawing tools pill - core 5 on mobile, +3 on tablet, all on desktop */}
+              {/* CENTER: Drawing tools pill + overflow */}
+              <div className="flex items-center gap-1 flex-1 min-w-0 ml-2 sm:ml-3 mr-1 justify-center">
                 <div className="flyboard-tool-pill">
                   {DRAW_TOOLS.map(tool => {
                     const Icon = tool.icon;
-                    // Mobile (below sm): selection, rectangle, freedraw, text, eraser
-                    const isMobileCore = ['selection', 'rectangle', 'freedraw', 'text', 'eraser'].includes(tool.id);
-                    // Tablet (sm to lg): hide hand and line (available in overflow)
-                    const isDesktopOnly = ['hand', 'line'].includes(tool.id);
+                    // Mobile: 3 tools (selection, freedraw, text)
+                    const isMobileCore = ['selection', 'freedraw', 'text'].includes(tool.id);
+                    // Tablet (sm): add rectangle, ellipse, arrow, eraser
+                    const isTabletExtra = ['rectangle', 'ellipse', 'arrow', 'eraser'].includes(tool.id);
+                    // Desktop (lg): add line, hand (all 9 tools)
+                    const isDesktopExtra = ['line', 'hand'].includes(tool.id);
                     const visibilityClass = isMobileCore
                       ? ''
-                      : isDesktopOnly
-                        ? '!hidden lg:!inline-flex'
-                        : '!hidden sm:!inline-flex';
+                      : isTabletExtra
+                        ? '!hidden sm:!inline-flex'
+                        : isDesktopExtra
+                          ? '!hidden lg:!inline-flex'
+                          : '';
                     return (
                       <button
                         key={tool.id}
@@ -914,354 +1176,266 @@ export default function FlyBoardPage() {
                       </button>
                     );
                   })}
-                </div>
 
-                {/* History pill: Undo / Redo */}
-                <div className="flyboard-tool-pill">
-                  <button onClick={handleUndo} className="flyboard-tb-btn" title="Undo (Ctrl+Z)">
-                    <Undo2 className="w-[18px] h-[18px]" />
-                  </button>
-                  <button onClick={handleRedo} className="flyboard-tb-btn" title="Redo (Ctrl+Shift+Z)">
-                    <Redo2 className="w-[18px] h-[18px]" />
-                  </button>
-                </div>
+                  {/* Style controls separator + inline controls */}
+                  <div className="flyboard-style-sep" />
 
-                {/* Zoom pill - hidden below md */}
-                <div className="flyboard-tool-pill !hidden md:!flex">
-                  <button onClick={handleZoomOut} className="flyboard-tb-btn" title="Zoom out">
-                    <ZoomOut className="w-[18px] h-[18px]" />
-                  </button>
-                  <button onClick={handleZoomIn} className="flyboard-tb-btn" title="Zoom in">
-                    <ZoomIn className="w-[18px] h-[18px]" />
-                  </button>
-                </div>
-
-                {/* Canvas controls pill - desktop only (accessible via overflow on smaller screens) */}
-                <div className="flyboard-tool-pill !hidden lg:!flex">
-                  <button
-                    onClick={handleGridToggle}
-                    className={`flyboard-tb-btn ${gridVisible ? 'active' : ''}`}
-                    title={gridVisible ? 'Hide grid' : 'Show grid'}
-                  >
-                    {gridVisible ? <Eye className="w-[18px] h-[18px]" /> : <EyeOff className="w-[18px] h-[18px]" />}
-                  </button>
-
-                  <div className="relative" ref={gridMenuRef}>
+                  {/* Inline color dot (always visible) */}
+                  <div ref={inlineColorMenuRef} className="relative">
                     <button
-                      onClick={() => { setGridMenuOpen(!gridMenuOpen); setBgMenuOpen(false); setFontMenuOpen(false); }}
-                      className="flyboard-tb-btn flyboard-tb-dropdown"
-                      title="Grid style"
+                      onClick={() => { setInlineColorMenuOpen(p => !p); setStrokeWidthMenuOpen(false); setInlineFontMenuOpen(false); }}
+                      className="flyboard-tb-btn"
+                      title={`Stroke color: ${strokeColorMode === 'auto' ? 'Auto' : STROKE_COLORS.find(c => c.id === strokeColorMode)?.label || 'Auto'}`}
                     >
-                      <Grid3x3 className="w-[18px] h-[18px]" />
-                      <ChevronDown className="w-3 h-3 opacity-50" />
+                      <span
+                        className="w-4 h-4 rounded-full ring-2 ring-white/80 dark:ring-white/20"
+                        style={{
+                          backgroundColor: strokeColorMode === 'auto' ? resolvedStrokeColor : (STROKE_COLORS.find(c => c.id === strokeColorMode)?.hex || resolvedStrokeColor),
+                          ...(strokeColorMode === 'auto' ? { background: 'conic-gradient(#e8e4df 0deg, #e8e4df 180deg, #1e1e1e 180deg, #1e1e1e 360deg)' } : {}),
+                        }}
+                      />
                     </button>
-                    {gridMenuOpen && (
-                      <div className="flyboard-grid-menu">
-                        {GRID_OPTIONS.map(opt => (
-                          <button key={opt.id} onClick={() => handleGridStyleChange(opt.id)} className={gridStyle === opt.id ? 'active' : ''}>
-                            <span className="inline-block w-5 text-center mr-1.5">{opt.icon}</span>
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="relative !hidden lg:!block" ref={bgMenuRef}>
-                    <button
-                      onClick={() => { setBgMenuOpen(!bgMenuOpen); setGridMenuOpen(false); setFontMenuOpen(false); }}
-                      className="flyboard-tb-btn flyboard-tb-dropdown"
-                      title="Background"
-                    >
-                      <Palette className="w-[18px] h-[18px]" />
-                      <ChevronDown className="w-3 h-3 opacity-50" />
-                    </button>
-                    {bgMenuOpen && (
-                      <div className="flyboard-grid-menu">
-                        {BG_PRESETS.map(preset => (
-                          <button key={preset.id} onClick={() => handleBgChange(preset.id)} className={bgPreset === preset.id ? 'active' : ''}>
-                            <span
-                              className="inline-block w-4 h-4 rounded-full border border-border mr-2 shrink-0"
-                              style={{ backgroundColor: isDark ? preset.swatch.dark : preset.swatch.light }}
-                            />
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="relative !hidden lg:!block" ref={fontMenuRef}>
-                    <button
-                      onClick={() => { setFontMenuOpen(!fontMenuOpen); setGridMenuOpen(false); setBgMenuOpen(false); }}
-                      className="flyboard-tb-btn flyboard-tb-dropdown"
-                      title="Font family"
-                    >
-                      <span className="text-[13px] font-semibold leading-none tracking-tight">Aa</span>
-                      <ChevronDown className="w-3 h-3 opacity-50" />
-                    </button>
-                    {fontMenuOpen && (
-                      <div className="flyboard-grid-menu" style={{ minWidth: '200px' }}>
-                        {FONT_OPTIONS.map((opt, i) => {
-                          const prev = i > 0 ? FONT_OPTIONS[i - 1] : null;
-                          const isNewCategory = !prev || prev.category !== opt.category;
-                          return (
-                            <React.Fragment key={opt.id}>
-                              {isNewCategory && (
-                                <>
-                                  {i > 0 && <div className="h-px bg-border my-1" />}
-                                  <div className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-                                    {opt.category}
-                                  </div>
-                                </>
-                              )}
-                              <button onClick={() => handleFontChange(opt.id)} className={fontFamily === opt.id ? 'active' : ''}>
-                                <span className="font-medium">{opt.label}</span>
-                                <span className="text-muted-foreground ml-auto text-[11px] pl-2">{opt.desc}</span>
-                              </button>
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Stroke color picker - always visible in canvas controls pill */}
-                  <div className="relative" ref={colorMenuRef}>
-                    <button
-                      onClick={() => { setColorMenuOpen(!colorMenuOpen); setGridMenuOpen(false); setBgMenuOpen(false); setFontMenuOpen(false); }}
-                      className="flyboard-tb-btn flyboard-tb-dropdown"
-                      title="Text & stroke color"
-                    >
-                      <span className="flex flex-col items-center leading-none gap-0">
-                        <span className="text-[13px] font-bold" style={{ color: resolvedStrokeColor }}>A</span>
-                        <span
-                          className="w-4 h-[3px] rounded-full -mt-0.5"
-                          style={{ backgroundColor: resolvedStrokeColor }}
-                        />
-                      </span>
-                      <ChevronDown className="w-3 h-3 opacity-50" />
-                    </button>
-                    {colorMenuOpen && (
-                      <div className="flyboard-grid-menu" style={{ minWidth: '200px', padding: '8px' }}>
-                        <div className="px-1 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-                          Color
-                        </div>
-                        <div className="grid grid-cols-5 gap-1.5 mb-2">
+                    {inlineColorMenuOpen && (
+                      <div
+                        className="absolute top-full mt-1.5 z-[100] p-3 rounded-xl shadow-xl"
+                        style={{
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: isDark ? '#1e1e24' : '#ffffff',
+                          border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                        }}
+                      >
+                        <div className="grid grid-cols-5 gap-2.5" style={{ width: 'max-content' }}>
                           {STROKE_COLORS.map(color => (
                             <button
                               key={color.id}
                               onClick={() => handleStrokeColorChange(color.id)}
-                              className="!w-8 !h-8 !p-0 flex items-center justify-center rounded-lg"
+                              className="flex items-center justify-center"
                               title={color.label}
-                              style={{ background: 'transparent' }}
+                              style={{ width: 32, height: 32 }}
                             >
                               <span
-                                className={`w-6 h-6 rounded-full border-2 transition-transform ${
-                                  strokeColorMode === color.id ? 'scale-110 border-primary ring-2 ring-primary/30' : 'border-border/60 hover:scale-105'
-                                }`}
                                 style={{
+                                  width: 24,
+                                  height: 24,
+                                  borderRadius: '50%',
+                                  border: strokeColorMode === color.id
+                                    ? '2.5px solid hsl(142 72% 50%)'
+                                    : `2px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)'}`,
+                                  boxShadow: strokeColorMode === color.id ? '0 0 0 3px rgba(50,190,100,0.25)' : 'none',
                                   backgroundColor: color.hex || 'transparent',
-                                  ...(color.id === 'auto' ? { background: `conic-gradient(#e8e4df 0deg, #e8e4df 180deg, #1e1e1e 180deg, #1e1e1e 360deg)` } : {}),
+                                  ...(color.id === 'auto' ? { background: 'conic-gradient(#e8e4df 0deg, #e8e4df 180deg, #1e1e1e 180deg, #1e1e1e 360deg)' } : {}),
                                 }}
                               />
                             </button>
                           ))}
                         </div>
-                        <div className="text-[10px] text-muted-foreground/40 px-1">
-                          {strokeColorMode === 'auto' ? 'Auto: white on dark, black on light' : STROKE_COLORS.find(c => c.id === strokeColorMode)?.label}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Font size A-/A+ (always visible, compact on mobile) */}
+                  <button
+                    onClick={() => handleFontSizeChange('down')}
+                    className="flyboard-tb-btn !w-[28px] sm:!w-[36px] text-[11px] font-bold"
+                    title={`Decrease text size (${fontSize}px)`}
+                  >
+                    A-
+                  </button>
+                  <button
+                    onClick={() => handleFontSizeChange('up')}
+                    className="flyboard-tb-btn !w-[28px] sm:!w-[36px] text-[13px] font-bold"
+                    title={`Increase text size (${fontSize}px)`}
+                  >
+                    A+
+                  </button>
+
+                  {/* Stroke width icon (sm+) */}
+                  <div ref={strokeWidthMenuRef} className="relative hidden sm:block">
+                    <button
+                      onClick={() => { setStrokeWidthMenuOpen(p => !p); setInlineColorMenuOpen(false); setInlineFontMenuOpen(false); }}
+                      className="flyboard-tb-btn"
+                      title={`Stroke width: ${STROKE_WIDTHS.find(w => w.id === strokeWidth)?.label || 'Medium'}`}
+                    >
+                      {/* 3 stacked lines icon (thin/med/thick) */}
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-current">
+                        <line x1="2" y1="4" x2="14" y2="4" stroke="currentColor" strokeWidth={strokeWidth === 1 ? 2 : 1} strokeLinecap="round" />
+                        <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth={strokeWidth === 2 ? 2.5 : 1.5} strokeLinecap="round" />
+                        <line x1="2" y1="12" x2="14" y2="12" stroke="currentColor" strokeWidth={strokeWidth === 4 ? 3.5 : 2.5} strokeLinecap="round" />
+                      </svg>
+                    </button>
+                    {strokeWidthMenuOpen && (
+                      <div className="flyboard-grid-menu !min-w-[120px]" style={{ left: '50%', transform: 'translateX(-50%)' }}>
+                        {STROKE_WIDTHS.map(w => (
+                          <button
+                            key={w.id}
+                            onClick={() => handleStrokeWidthChange(w.id)}
+                            className={strokeWidth === w.id ? 'active' : ''}
+                          >
+                            <span className="w-5 flex items-center justify-center mr-2">
+                              <span className="w-4 rounded-full bg-current" style={{ height: `${Math.max(w.id, 1.5)}px` }} />
+                            </span>
+                            {w.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Font picker (sm+) */}
+                  <div ref={inlineFontMenuRef} className="relative hidden sm:flex items-center">
+                    <div className="flyboard-style-sep" />
+                    <button
+                      onClick={() => { setInlineFontMenuOpen(p => !p); setInlineColorMenuOpen(false); setStrokeWidthMenuOpen(false); }}
+                      className="flyboard-tb-btn flyboard-tb-dropdown text-[11px] font-medium"
+                      title={`Font: ${FONT_OPTIONS.find(f => f.id === fontFamily)?.label || 'Virgil'}`}
+                    >
+                      <span className="hidden lg:inline text-[12px]" style={{ fontFamily: FONT_OPTIONS.find(f => f.id === fontFamily)?.css }}>{(FONT_OPTIONS.find(f => f.id === fontFamily)?.label || 'Virgil')}</span>
+                      <span className="lg:hidden text-[12px]" style={{ fontFamily: FONT_OPTIONS.find(f => f.id === fontFamily)?.css }}>Aa</span>
+                    </button>
+                    {inlineFontMenuOpen && (
+                      <div
+                        className="absolute top-full mt-1.5 z-[100] rounded-xl shadow-xl overflow-hidden"
+                        style={{
+                          left: '50%', transform: 'translateX(-50%)',
+                          background: isDark ? '#1e1e24' : '#ffffff',
+                          border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                          minWidth: 220,
+                        }}
+                      >
+                        {['Sketch', 'Clean', 'Mono'].map(cat => (
+                          <div key={cat}>
+                            <p className="text-[9px] text-muted-foreground/40 uppercase tracking-[0.15em] font-semibold px-3 pt-2.5 pb-1">{cat}</p>
+                            {FONT_OPTIONS.filter(f => f.category === cat).map(f => (
+                              <button
+                                key={f.id}
+                                onClick={() => handleFontChange(f.id)}
+                                className={`flex items-center gap-3 w-full px-3 py-2 text-left transition-colors ${
+                                  fontFamily === f.id
+                                    ? 'bg-primary/10 text-primary'
+                                    : 'text-foreground hover:bg-muted/50'
+                                }`}
+                              >
+                                <span className="text-[15px] leading-none w-[110px] truncate" style={{ fontFamily: f.css }}>{f.label}</span>
+                                <span className="text-[10px] text-muted-foreground/50 ml-auto whitespace-nowrap">{f.desc}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ))}
+                        <div className="border-t border-border/30 px-3 py-1.5">
+                          <p className="text-[9px] text-muted-foreground/30 text-center">Excalidraw native toolbar has more fonts</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Arrow style picker (sm+) */}
+                  <div ref={arrowMenuRef} className="relative hidden sm:flex items-center">
+                    <div className="flyboard-style-sep" />
+                    <button
+                      onClick={() => { setArrowMenuOpen(p => !p); setInlineColorMenuOpen(false); setStrokeWidthMenuOpen(false); setInlineFontMenuOpen(false); }}
+                      className="flyboard-tb-btn"
+                      title={`Arrow style: ${activeArrowPreset.label}`}
+                    >
+                      <ArrowPresetIcon preset={activeArrowPreset} size={18} />
+                    </button>
+                    {arrowMenuOpen && (
+                      <div
+                        className="absolute top-full mt-1.5 z-[100] p-2 rounded-xl shadow-xl"
+                        style={{
+                          right: 0,
+                          background: isDark ? '#1e1e24' : '#ffffff',
+                          border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                          minWidth: 200,
+                        }}
+                      >
+                        <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium px-2 pt-1 pb-2">Arrow Style</p>
+                        <div className="grid grid-cols-2 gap-1">
+                          {ARROW_PRESETS.map(preset => (
+                            <button
+                              key={preset.id}
+                              onClick={() => { handleArrowPresetSelect(preset.id); setArrowMenuOpen(false); }}
+                              className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs transition-colors ${
+                                arrowPreset === preset.id
+                                  ? 'bg-primary/15 text-primary font-medium'
+                                  : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                              }`}
+                            >
+                              <ArrowPresetIcon preset={preset} size={20} />
+                              <span>{preset.label}</span>
+                            </button>
+                          ))}
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Theme toggle pill - hidden below lg */}
-                <div className="flyboard-tool-pill !hidden lg:!flex">
-                  <button
-                    onClick={toggleTheme}
-                    className="flyboard-tb-btn"
-                    title={isDark ? 'Light mode' : 'Dark mode'}
-                  >
-                    {isDark ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
-                  </button>
-                </div>
-
-                {/* Text size + symbols + emoji - hidden below lg */}
-                <div className="flyboard-tool-pill !hidden lg:!flex">
-                  <button
-                    onClick={() => {
-                      const api = excalidrawRef.current?.getAPI();
-                      if (!api) return;
-                      const selected = api.getSceneElements().filter(el => api.getAppState().selectedElementIds?.[el.id] && el.type === 'text');
-                      if (selected.length) {
-                        const updated = selected.map(el => {
-                          const currentIdx = FONT_SIZES.findIndex(s => s >= el.fontSize);
-                          const nextIdx = Math.min((currentIdx >= 0 ? currentIdx : 3) + 1, FONT_SIZES.length - 1);
-                          return { ...el, fontSize: FONT_SIZES[nextIdx] };
-                        });
-                        api.updateScene({ elements: api.getSceneElements().map(el => updated.find(u => u.id === el.id) || el) });
-                      } else {
-                        // No selection: bump default font size for new text
-                        const appState = api.getAppState();
-                        const current = appState.currentItemFontSize || 20;
-                        const currentIdx = FONT_SIZES.findIndex(s => s >= current);
-                        const nextIdx = Math.min((currentIdx >= 0 ? currentIdx : 3) + 1, FONT_SIZES.length - 1);
-                        api.updateScene({ appState: { currentItemFontSize: FONT_SIZES[nextIdx] } });
-                      }
-                    }}
-                    className="flyboard-tb-btn"
-                    title="Increase text size (A+)"
-                  >
-                    <span className="text-[14px] font-bold leading-none">A+</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      const api = excalidrawRef.current?.getAPI();
-                      if (!api) return;
-                      const selected = api.getSceneElements().filter(el => api.getAppState().selectedElementIds?.[el.id] && el.type === 'text');
-                      if (selected.length) {
-                        const updated = selected.map(el => {
-                          const currentIdx = FONT_SIZES.findIndex(s => s >= el.fontSize);
-                          const prevIdx = Math.max((currentIdx >= 0 ? currentIdx : 3) - 1, 0);
-                          return { ...el, fontSize: FONT_SIZES[prevIdx] };
-                        });
-                        api.updateScene({ elements: api.getSceneElements().map(el => updated.find(u => u.id === el.id) || el) });
-                      } else {
-                        const appState = api.getAppState();
-                        const current = appState.currentItemFontSize || 20;
-                        const currentIdx = FONT_SIZES.findIndex(s => s >= current);
-                        const prevIdx = Math.max((currentIdx >= 0 ? currentIdx : 3) - 1, 0);
-                        api.updateScene({ appState: { currentItemFontSize: FONT_SIZES[prevIdx] } });
-                      }
-                    }}
-                    className="flyboard-tb-btn"
-                    title="Decrease text size (A-)"
-                  >
-                    <span className="text-[11px] font-bold leading-none">A-</span>
-                  </button>
-
-                  {/* Symbols picker */}
-                  <div className="relative" ref={symbolMenuRef}>
-                    <button
-                      onClick={() => { setSymbolMenuOpen(!symbolMenuOpen); setEmojiMenuOpen(false); setColorMenuOpen(false); setGridMenuOpen(false); setBgMenuOpen(false); setFontMenuOpen(false); }}
-                      className="flyboard-tb-btn"
-                      title="Math & code symbols"
-                    >
-                      <span className="text-[15px] leading-none">{'\u03C0'}</span>
-                    </button>
-                    {symbolMenuOpen && (
-                      <div className="flyboard-grid-menu" style={{ minWidth: '240px', padding: '8px', maxHeight: '320px', overflowY: 'auto' }}>
-                        {SYMBOL_GROUPS.map(group => (
-                          <div key={group.label} className="mb-2 last:mb-0">
-                            <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-                              {group.label}
-                            </div>
-                            <div className="grid grid-cols-8 gap-0.5">
-                              {group.symbols.map(sym => (
-                                <button
-                                  key={sym}
-                                  onClick={() => handleInsertSymbol(sym)}
-                                  className="!w-7 !h-7 !p-0 flex items-center justify-center rounded-md text-[15px] hover:!bg-primary/10"
-                                  title={`Copy "${sym}"`}
-                                >
-                                  {sym}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Emoji picker */}
-                  <div className="relative" ref={emojiMenuRef}>
-                    <button
-                      onClick={() => { setEmojiMenuOpen(!emojiMenuOpen); setSymbolMenuOpen(false); setColorMenuOpen(false); setGridMenuOpen(false); setBgMenuOpen(false); setFontMenuOpen(false); }}
-                      className="flyboard-tb-btn"
-                      title="Emojis"
-                    >
-                      <span className="text-[15px] leading-none">{'\uD83D\uDE00'}</span>
-                    </button>
-                    {emojiMenuOpen && (
-                      <div className="flyboard-grid-menu" style={{ minWidth: '220px', padding: '8px' }}>
-                        {EMOJI_GROUPS.map(group => (
-                          <div key={group.label} className="mb-2 last:mb-0">
-                            <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-                              {group.label}
-                            </div>
-                            <div className="grid grid-cols-6 gap-0.5">
-                              {group.emojis.map(emoji => (
-                                <button
-                                  key={emoji}
-                                  onClick={() => handleInsertSymbol(emoji)}
-                                  className="!w-8 !h-8 !p-0 flex items-center justify-center rounded-md text-[18px] hover:!bg-primary/10 hover:scale-110 transition-transform"
-                                  title={`Copy ${emoji}`}
-                                >
-                                  {emoji}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Overflow menu: shows all hidden tools (visible below sm on mobile, also below lg for symbols/emoji) */}
+                {/* Overflow: always visible, opens bottom sheet with everything else */}
                 <button
                   onClick={() => setMobileToolsOpen(true)}
-                  className="flyboard-tb-btn lg:!hidden"
+                  className="flyboard-tb-btn"
                   title="More tools"
                 >
                   <MoreHorizontal className="w-[18px] h-[18px]" />
                 </button>
+              </div>
 
-                {/* Spacer pushes actions to the right */}
-                <div className="flex-1 min-w-2" />
+              {/* RIGHT: Export + Native UI + Fullscreen + Help */}
+              <div className="flyboard-tool-pill shrink-0">
+                <button
+                  onClick={() => setExportOpen(true)}
+                  className="flyboard-tb-btn"
+                  title="Export board"
+                >
+                  <Download className="w-[18px] h-[18px]" />
+                </button>
 
-                {/* Actions pill (inside the scroll strip) */}
-                <div className="flyboard-tool-pill shrink-0">
-                  <button
-                    onClick={() => setExportOpen(true)}
-                    className="flyboard-tb-btn"
-                    title="Export board"
-                  >
-                    <Download className="w-[18px] h-[18px]" />
-                  </button>
+                <button
+                  onClick={handleToggleExcalidrawUI}
+                  className={`flyboard-tb-btn flyboard-native-toggle hidden sm:inline-flex ${showExcalidrawUI ? 'active' : ''}`}
+                  title={showExcalidrawUI ? 'Hide native toolbar' : 'Show native Excalidraw toolbar (colors, links, images, LaTeX math)'}
+                >
+                  <SlidersHorizontal className="w-[18px] h-[18px]" />
+                </button>
 
-                  <button
-                    onClick={handleToggleExcalidrawUI}
-                    className={`flyboard-tb-btn flyboard-native-toggle ${showExcalidrawUI ? 'active' : ''}`}
-                    title={showExcalidrawUI ? 'Hide native toolbar' : 'Show native Excalidraw toolbar (colors, links, images, LaTeX math)'}
-                  >
-                    <SlidersHorizontal className="w-[18px] h-[18px]" />
-                  </button>
+                <button
+                  onClick={toggleTheme}
+                  className="flyboard-tb-btn hidden sm:inline-flex"
+                  title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  {isDark ? <Sun className="w-[18px] h-[18px]" /> : <Moon className="w-[18px] h-[18px]" />}
+                </button>
 
-                  <button
-                    onClick={toggleFullscreen}
-                    className="flyboard-tb-btn"
-                    title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
-                  >
-                    {isFullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
-                  </button>
+                <button
+                  onClick={toggleFullscreen}
+                  className="flyboard-tb-btn hidden sm:inline-flex"
+                  title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
+                >
+                  {isFullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
+                </button>
 
-                  {!isAuthenticated && (
-                    <a href="/login" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
-                      Sign in
-                    </a>
-                  )}
-                </div>
+                <button
+                  onClick={() => setShowShortcuts(prev => !prev)}
+                  className={`flyboard-tb-btn hidden sm:inline-flex ${showShortcuts ? 'active' : ''}`}
+                  title="Keyboard shortcuts (?)"
+                >
+                  <Keyboard className="w-[18px] h-[18px]" />
+                </button>
+
+                {!isAuthenticated && (
+                  <Link to="/login" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
+                    Sign in
+                  </Link>
+                )}
               </div>
             </div>
 
             {/* Canvas */}
             <div className="flex-1 relative">
-              {/* Toast notification (replaces red error banner) */}
+              {/* Toast notification */}
               {toast && (
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-foreground/10 backdrop-blur-md border border-border text-sm text-foreground/80 shadow-lg animate-fade-in">
+                <div role="status" aria-live="polite" className="absolute top-3 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-foreground/10 backdrop-blur-md border border-border text-sm text-foreground/80 shadow-lg animate-fade-in">
                   {toast}
                 </div>
               )}
@@ -1281,6 +1455,11 @@ export default function FlyBoardPage() {
                   bgColor={resolvedBgColor}
                   defaultFont={fontFamily}
                   strokeColor={resolvedStrokeColor}
+                  strokeWidth={strokeWidth}
+                  roughness={activeArrowPreset.roughness}
+                  fontSize={fontSize}
+                  startArrowhead={activeArrowPreset.startArrowhead}
+                  endArrowhead={activeArrowPreset.endArrowhead}
                   hideUI={!showExcalidrawUI}
                 />
               </Suspense>
@@ -1333,10 +1512,29 @@ export default function FlyBoardPage() {
             <div className="w-10 h-1 rounded-full bg-border mx-auto mt-2 mb-1 shrink-0" />
             <div className="overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] overscroll-contain">
 
-            {/* Drawing tools */}
+            {/* Undo / Redo */}
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">History</p>
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => { handleUndo(); }}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-muted-foreground hover:bg-muted border border-border/50"
+              >
+                <Undo2 className="w-5 h-5" />
+                <span className="text-xs">Undo</span>
+              </button>
+              <button
+                onClick={() => { handleRedo(); }}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-muted-foreground hover:bg-muted border border-border/50"
+              >
+                <Redo2 className="w-5 h-5" />
+                <span className="text-xs">Redo</span>
+              </button>
+            </div>
+
+            {/* Drawing tools - ALL tools available here */}
             <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Drawing Tools</p>
             <div className="grid grid-cols-5 gap-2 mb-4">
-              {DRAW_TOOLS.filter(t => !['selection', 'rectangle', 'freedraw', 'text', 'eraser'].includes(t.id)).map(tool => {
+              {DRAW_TOOLS.map(tool => {
                 const Icon = tool.icon;
                 return (
                   <button
@@ -1430,17 +1628,17 @@ export default function FlyBoardPage() {
 
             {/* Font */}
             <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Font</p>
-            <div className="grid grid-cols-2 gap-1.5 mb-4">
+            <div className="space-y-1 mb-4">
               {FONT_OPTIONS.map(opt => (
                 <button
                   key={opt.id}
                   onClick={() => handleFontChange(opt.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs transition-colors ${
-                    fontFamily === opt.id ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:bg-muted border border-border/50'
+                  className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-colors ${
+                    fontFamily === opt.id ? 'bg-primary/15 text-primary' : 'text-foreground hover:bg-muted/50 border border-border/30'
                   }`}
                 >
-                  <span className="font-medium">{opt.label}</span>
-                  <span className="text-[10px] text-muted-foreground/60 ml-auto">{opt.desc}</span>
+                  <span className="text-[15px] leading-none truncate" style={{ fontFamily: opt.css }}>{opt.label}</span>
+                  <span className="text-[10px] text-muted-foreground/50 ml-auto whitespace-nowrap">{opt.desc}</span>
                 </button>
               ))}
             </div>
@@ -1468,39 +1666,51 @@ export default function FlyBoardPage() {
               ))}
             </div>
 
+            {/* Stroke Width */}
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Stroke Width</p>
+            <div className="flex gap-2 mb-4">
+              {STROKE_WIDTHS.map(w => (
+                <button
+                  key={w.id}
+                  onClick={() => handleStrokeWidthChange(w.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs transition-colors ${
+                    strokeWidth === w.id ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:bg-muted border border-border/50'
+                  }`}
+                >
+                  <span className="w-5 rounded-full bg-current" style={{ height: `${Math.max(w.id, 1.5)}px` }} />
+                  {w.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Arrow Style */}
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Arrow Style</p>
+            <div className="grid grid-cols-4 gap-1.5 mb-4">
+              {ARROW_PRESETS.map(preset => (
+                <button
+                  key={preset.id}
+                  onClick={() => handleArrowPresetSelect(preset.id)}
+                  className={`flex flex-col items-center gap-1 py-2 rounded-xl text-[10px] transition-colors ${
+                    arrowPreset === preset.id ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:bg-muted border border-border/50'
+                  }`}
+                >
+                  <ArrowPresetIcon preset={preset} size={28} />
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
             {/* Text Size */}
-            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Text Size</p>
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Text Size <span className="normal-case font-normal">({fontSize}px)</span></p>
             <div className="flex gap-2 mb-4">
               <button
-                onClick={() => {
-                  const api = excalidrawRef.current?.getAPI();
-                  if (!api) return;
-                  const selected = api.getSceneElements().filter(el => api.getAppState().selectedElementIds?.[el.id] && el.type === 'text');
-                  if (selected.length) {
-                    const updated = selected.map(el => {
-                      const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
-                      return { ...el, fontSize: FONT_SIZES[Math.max((idx >= 0 ? idx : 3) - 1, 0)] };
-                    });
-                    api.updateScene({ elements: api.getSceneElements().map(el => updated.find(u => u.id === el.id) || el) });
-                  }
-                }}
+                onClick={() => handleFontSizeChange('down')}
                 className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-muted-foreground hover:bg-muted border border-border/50 text-sm font-bold"
               >
                 A-
               </button>
               <button
-                onClick={() => {
-                  const api = excalidrawRef.current?.getAPI();
-                  if (!api) return;
-                  const selected = api.getSceneElements().filter(el => api.getAppState().selectedElementIds?.[el.id] && el.type === 'text');
-                  if (selected.length) {
-                    const updated = selected.map(el => {
-                      const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
-                      return { ...el, fontSize: FONT_SIZES[Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)] };
-                    });
-                    api.updateScene({ elements: api.getSceneElements().map(el => updated.find(u => u.id === el.id) || el) });
-                  }
-                }}
+                onClick={() => handleFontSizeChange('up')}
                 className="flex-1 flex items-center justify-center gap-1 py-2.5 rounded-xl text-muted-foreground hover:bg-muted border border-border/50 text-lg font-bold"
               >
                 A+
@@ -1664,7 +1874,58 @@ export default function FlyBoardPage() {
         </div>
       )}
 
-      {/* Inline keyframe styles for toast/saved animations */}
+      {/* Keyboard shortcuts overlay */}
+      {showShortcuts && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center" onClick={() => setShowShortcuts(false)}>
+          <div className="bg-card border border-border rounded-2xl shadow-2xl p-6 max-w-md w-[calc(100%-2rem)] max-h-[80dvh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold">Keyboard Shortcuts</h2>
+              <button onClick={() => setShowShortcuts(false)} className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-medium mb-2">Tools</p>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                  {DRAW_TOOLS.map(tool => (
+                    <div key={tool.id} className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{tool.label.split(' (')[0]}</span>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted text-[11px] font-mono font-medium">{tool.shortcut}</kbd>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-px bg-border" />
+
+              <div>
+                <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-medium mb-2">Canvas</p>
+                <div className="grid grid-cols-1 gap-y-1.5">
+                  {[
+                    ['Space + Drag', 'Pan (temporary)'],
+                    ['Ctrl/Cmd + Z', 'Undo'],
+                    ['Ctrl/Cmd + Shift + Z', 'Redo'],
+                    ['Ctrl/Cmd + +', 'Zoom in'],
+                    ['Ctrl/Cmd + -', 'Zoom out'],
+                    ['Escape', 'Back to Select'],
+                    ['F11', 'Fullscreen'],
+                    ['?', 'This help'],
+                  ].map(([key, action]) => (
+                    <div key={key} className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{action}</span>
+                      <kbd className="px-1.5 py-0.5 rounded bg-muted text-[11px] font-mono font-medium whitespace-nowrap">{key}</kbd>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inline keyframe styles for toast/saved/sidebar animations */}
       <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translate(-50%, -8px); }
@@ -1674,22 +1935,20 @@ export default function FlyBoardPage() {
           from { opacity: 1; }
           to { opacity: 0; }
         }
+        @keyframes slide-in-left {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
         .animate-fade-in {
           animation: fade-in 0.2s ease-out forwards;
         }
         .animate-fade-out {
           animation: fade-out 1s ease-out 1s forwards;
         }
+        .animate-slide-in-left {
+          animation: slide-in-left 0.2s ease-out forwards;
+        }
       `}</style>
     </>
   );
-}
-
-function formatTimeAgo(date) {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 5) return 'just now';
-  if (seconds < 60) return `${seconds}s ago`;
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  return `${Math.floor(minutes / 60)}h ago`;
 }

@@ -4,18 +4,6 @@ export const fadeUp = {
   viewport: { once: true, margin: '-60px' },
 };
 
-export const fadeIn = {
-  initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { once: true, margin: '-60px' },
-};
-
-export const scaleIn = {
-  initial: { opacity: 0, scale: 0.95 },
-  whileInView: { opacity: 1, scale: 1 },
-  viewport: { once: true, margin: '-60px' },
-};
-
 export const staggerContainer = {
   initial: 'hidden',
   whileInView: 'visible',

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, Minus, GitCompare, Megaphone } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, GitCompare, Megaphone } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -9,11 +9,13 @@ import supabase from '@/lib/supabaseClient.js';
 import { sourceOptions } from '@/lib/data/ideas.js';
 import { cn, timeAgo } from '@/lib/utils.js';
 import { verdictStyles, getScoreTier } from '@/components/ideas/ScoreUtils.jsx';
+import { useAuth } from '@/contexts/AuthContext.jsx';
+import { GatedOverlay } from '@/components/GatedOverlay.jsx';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   AreaChart, Area,
-  ComposedChart, Line,
+  ComposedChart,
   ScatterChart, Scatter, ZAxis,
 } from 'recharts';
 
@@ -244,6 +246,7 @@ const DeltaBadge = ({ value }) => {
 };
 
 const IdeasAnalyticsPage = () => {
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [growthView, setGrowthView] = useState('combo');
@@ -883,6 +886,58 @@ const IdeasAnalyticsPage = () => {
           </motion.div>
         </motion.div>
 
+        {/* ── Verdict Donut Teaser (guests only) ── */}
+        {!isAuthenticated && (
+          <motion.div className="mb-8 sm:mb-10 max-w-md mx-auto" {...fadeUp}>
+            <ChartCard
+              title="What the lab decided"
+              subtitle="BUILD, VALIDATE, or SKIP. Here's how the ideas split."
+              doodle={StarDoodle}
+              doodleClass="top-3 right-3"
+            >
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-40 h-40 sm:w-48 sm:h-48 shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={stats.verdictData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius="40%"
+                        outerRadius="70%"
+                        paddingAngle={3}
+                        dataKey="value"
+                        strokeWidth={0}
+                      >
+                        {stats.verdictData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<ChartTooltip formatter={(e) => `${e.value} ideas`} />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-row sm:flex-col gap-3 sm:gap-2 flex-wrap justify-center">
+                  {stats.verdictData.map((v) => (
+                    <div key={v.name} className="flex items-center gap-2 text-sm">
+                      <span className="w-3 h-3 rounded-full shrink-0" style={{ background: v.color }} />
+                      <span className="font-medium text-foreground">{v.name}</span>
+                      <span className="text-muted-foreground">{v.pct}%</span>
+                    </div>
+                  ))}
+                  {stats.noVerdict > 0 && (
+                    <p className="text-[11px] text-muted-foreground">{stats.noVerdict} unscored</p>
+                  )}
+                </div>
+              </div>
+            </ChartCard>
+          </motion.div>
+        )}
+
+        {/* ── Gated sections: full analytics for members, blurred preview for guests ── */}
+        {isAuthenticated ? (
+        <>
+
         {/* ── Momentum Dashboard ── */}
         <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 mb-8 sm:mb-10" {...staggerContainer}>
           <motion.div {...staggerItem}>
@@ -1284,7 +1339,7 @@ const IdeasAnalyticsPage = () => {
                         <span
                           className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md text-[11px] font-bold"
                           style={{
-                            background: row.BUILD > 0 ? `hsla(142, 70%, 40%, ${Math.min(0.15 + (row.BUILD / Math.max(...stats.sourceVerdictData.map(r => r.BUILD || 1))) * 0.6, 0.75)})` : 'transparent',
+                            background: row.BUILD > 0 ? `hsla(142, 70%, 40%, ${Math.min(0.15 + (row.BUILD / Math.max(1, ...stats.sourceVerdictData.map(r => r.BUILD || 0))) * 0.6, 0.75)})` : 'transparent',
                             color: row.BUILD > 0 ? 'hsl(142, 70%, 35%)' : 'hsl(var(--muted-foreground))',
                           }}
                         >
@@ -1295,7 +1350,7 @@ const IdeasAnalyticsPage = () => {
                         <span
                           className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md text-[11px] font-bold"
                           style={{
-                            background: row.VALIDATE_FIRST > 0 ? `hsla(38, 92%, 50%, ${Math.min(0.15 + (row.VALIDATE_FIRST / Math.max(...stats.sourceVerdictData.map(r => r.VALIDATE_FIRST || 1))) * 0.5, 0.65)})` : 'transparent',
+                            background: row.VALIDATE_FIRST > 0 ? `hsla(38, 92%, 50%, ${Math.min(0.15 + (row.VALIDATE_FIRST / Math.max(1, ...stats.sourceVerdictData.map(r => r.VALIDATE_FIRST || 0))) * 0.5, 0.65)})` : 'transparent',
                             color: row.VALIDATE_FIRST > 0 ? 'hsl(38, 80%, 40%)' : 'hsl(var(--muted-foreground))',
                           }}
                         >
@@ -1306,7 +1361,7 @@ const IdeasAnalyticsPage = () => {
                         <span
                           className="inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-md text-[11px] font-bold"
                           style={{
-                            background: row.SKIP > 0 ? `hsla(0, 72%, 51%, ${Math.min(0.15 + (row.SKIP / Math.max(...stats.sourceVerdictData.map(r => r.SKIP || 1))) * 0.5, 0.65)})` : 'transparent',
+                            background: row.SKIP > 0 ? `hsla(0, 72%, 51%, ${Math.min(0.15 + (row.SKIP / Math.max(1, ...stats.sourceVerdictData.map(r => r.SKIP || 0))) * 0.5, 0.65)})` : 'transparent',
                             color: row.SKIP > 0 ? 'hsl(0, 60%, 45%)' : 'hsl(var(--muted-foreground))',
                           }}
                         >
@@ -1553,6 +1608,39 @@ const IdeasAnalyticsPage = () => {
             </Link>
           </div>
         </motion.div>
+
+        </>
+        ) : (
+          <GatedOverlay
+            title="Sign up free to see the full analytics"
+            description="Source quality, expert disagreements, industry intelligence, and more."
+            location="ideas_analytics"
+          >
+            {/* Blurred placeholder sections so guests see the page is data-rich */}
+            <div className="space-y-8">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="glass-card p-4 sm:p-5 border border-border rounded-xl h-24" />
+                ))}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[1,2,3].map(i => (
+                  <div key={i} className="glass-card p-5 border border-border rounded-xl h-20" />
+                ))}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="glass-card p-5 border border-border rounded-xl h-64" />
+                ))}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                {[1,2].map(i => (
+                  <div key={i} className="glass-card p-5 border border-border rounded-xl h-56" />
+                ))}
+              </div>
+            </div>
+          </GatedOverlay>
+        )}
 
       </div>
     </PageLayout>

@@ -2,7 +2,7 @@
 
 ## Project Overview
 **FlyLabs** (flylabs.fun) - "Tools, templates, and ideas for business and learning."
-A React SPA built by Luiz Alves. Community-facing site with public pages (explore, ideas, newsletter, about), hybrid public/gated pages (prompts, micro tools), and member-only areas (templates, profile). Explore page organizes projects by category (Business, Tools, Learn).
+A React SPA built by Luiz Alves. Community-facing site with public pages (explore, newsletter, about), hybrid public/gated pages (ideas, ideas analytics, prompts, micro tools), and member-only areas (templates, flybot chat, profile). Freemium model: guests get a taste of every feature (browsing, teaser content), members unlock full AI scoring, analytics, and FlyBot. Explore page organizes projects by category (Business, Tools, Learn).
 
 ## Quick Start
 ```bash
@@ -43,6 +43,7 @@ apps/web/
 │   │   ├── ErrorBoundary.jsx # Error boundary fallback
 │   │   ├── AuthModal.jsx     # Login/signup modal (tabs, Google OAuth, password strength)
 │   │   ├── ProtectedRoute.jsx # Redirects guests to AuthModal
+│   │   ├── GatedOverlay.jsx  # Reusable freemium gating (blur overlay + CTA card, inline lock badge). Used by Ideas, Analytics, Detail pages
 │   │   ├── ThemeToggle.jsx   # Dark/light switch
 │   │   ├── GoogleIcon.jsx    # Shared Google "G" SVG
 │   │   ├── XIcon.jsx         # X/Twitter icon
@@ -52,8 +53,8 @@ apps/web/
 │   │   ├── SmileLogo.jsx     # Animated brand logo
 │   │   ├── ScrollToTop.jsx   # Resets scroll on route change
 │   │   └── ideas/            # Extracted Ideas page components
-│   │       ├── IdeaCard.jsx      # Idea card view (vote, verdict + FL score + confidence badges, competitor count, navigates to /ideas/:id)
-│   │       ├── IdeaTableRow.jsx  # Compact table row view (vote, title, verdict, FL score, source, age)
+│   │       ├── IdeaCard.jsx      # Idea card view (vote, verdict + FL score + confidence badges, competitor count, navigates to /ideas/:id). showScores prop for freemium gating
+│   │       ├── IdeaTableRow.jsx  # Compact table row view (vote, title, verdict, FL score, source, age). showScores prop for freemium gating
 │   │       ├── IdeaFilterSheet.jsx # Bottom sheet (mobile) + inline panel (desktop) for type/industry/score/confidence/perPage
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
 │   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, verdictStyles, confidenceColors)
@@ -67,7 +68,7 @@ apps/web/
 │   │       ├── ChatEmpty.jsx     # Landing with suggested prompt chips
 │   │       └── ChatLimitReached.jsx # Email capture waitlist with waitlist count
 │   │   └── flybot/          # FlyBot site-wide widget components
-│   │       ├── FlyBotWidget.jsx  # Orchestrator: trigger + lazy panel, hidden on /flybot
+│   │       ├── FlyBotWidget.jsx  # Orchestrator: trigger + lazy panel, hidden on /flybot. Guests see panel with AuthGate CTA (no redirect)
 │   │       ├── FlyBotTrigger.jsx # Floating action button (bottom-right, Cmd+K, pulse glow)
 │   │       └── FlyBotPanel.jsx   # Slide-in chat panel (right panel desktop, bottom sheet mobile)
 │   │   └── music/           # Vibe Coding music player components
@@ -82,7 +83,7 @@ apps/web/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   ├── BoardContext.jsx  # FlyBoard state management
 │   │   ├── ChatContext.jsx   # App-wide chat state (wraps useChat, widget open/close, page context, lazy init)
-│   │   ├── MusicContext.jsx  # Audio engine (HTML5 Audio + Web Audio API visualizer, 5 vibe modes, shuffle within vibe, volume, FlyBot bridge with vibe selection, MediaSession)
+│   │   ├── MusicContext.jsx  # Audio engine (HTML5 Audio + Web Audio API visualizer, 6 vibe modes, shuffle within vibe, volume, FlyBot bridge with vibe selection, MediaSession)
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
 │   │   ├── useIdeaFilters.js # Server-side paginated filter hook (Supabase queries, URL state, 7 filter dimensions, cascading counts)
@@ -94,7 +95,7 @@ apps/web/
 │   │   │   ├── projects.js       # projects array (title, type, status, category, colors) + categories exports
 │   │   │   ├── prompts.js        # 81 prompts across 8 categories (featured flag for lead magnet)
 │   │   │   ├── library.js        # Books array, topics, topicColors for Library page
-│   │   │   ├── ideas.js          # Idea categories, industries, statusConfig, sortOptions (10-way), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
+│   │   │   ├── ideas.js          # Idea categories, industries, statusConfig, sortOptions (6-way: hot/new/oldest/top/score/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions, scoreThresholds, confidenceOptions, perPageOptions, frequencyOptions, formSteps, verdictColors, verdictLabels, SOURCE_COUNT
 │   │   │   ├── tracks.js        # Music player track data with vibe modes (auto-generated by scripts/setup-music.mjs)
 │   │   │   ├── siteStats.js     # Centralized dynamic counts (prompts, categories, books, templates, frameworks, routes, etc.)
 │   │   │   ├── boardTemplates.js # FlyBoard template definitions
@@ -105,19 +106,18 @@ apps/web/
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
 │   │   ├── chatApi.js       # FlyBot API client (streamChat SSE, listConversations, createConversation, deleteConversation, loadMessages, joinFlyBotWaitlist)
-│   │   ├── boardApi.js      # FlyBoard API client
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 6 live-stat pillars incl. FlyBot, how it works, newsletter preview, narrative closing)
 │       ├── ExplorePage.jsx       # Project catalog (flat grid with category filter)
-│       ├── IdeaSubmissionPage.jsx # Ideas Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states)
-│       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share
-│       ├── IdeasAnalyticsPage.jsx # Ideas Lab analytics dashboard (recharts: verdict donut, source breakdown, score histogram, framework radar, growth timeline, source x verdict heatmap, verdict-over-time stacked bar, day-of-week activity, top industries, source quality)
+│       ├── IdeaSubmissionPage.jsx # Ideas Lab list (card/table view toggle, URL state filters via useIdeaFilters hook, search, verdict tabs, active chips, source pills, filter sheet, smart empty states). Hybrid: guests see ideas but no scores/verdicts
+│       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share. Hybrid: scoring sections gated behind GatedOverlay for guests
+│       ├── IdeasAnalyticsPage.jsx # Ideas Lab analytics dashboard (recharts: verdict donut, source breakdown, score histogram, framework radar, growth timeline, source x verdict heatmap, verdict-over-time stacked bar, day-of-week activity, top industries, source quality). Hybrid: stats + verdict donut public, rest gated behind GatedOverlay for guests
 │       ├── NewsletterPage.jsx    # Substack archive API feed + engagement metrics + Notes section + subscribe CTA
 │       ├── AboutPage.jsx         # 5-act visual journey: hero, manifesto, story beat cards, by-the-numbers stats + GitHub heatmap, closing CTA
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
-│       ├── PromptsPage.jsx       # Hybrid: 5 public / full library for members (vote, comment, copy, suggest)
+│       ├── PromptsPage.jsx       # Hybrid: 10 public / full library for members (vote, comment, copy, suggest)
 │       ├── TemplatesPage.jsx     # Protected template directory (4 templates)
 │       ├── GarminToNotionPage.jsx  # Protected - Garmin sync details + builder's note
 │       ├── WebsiteBlueprintPage.jsx # Public - full stack breakdown + builder's note
@@ -132,7 +132,7 @@ apps/web/
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── api/                         # Vercel Serverless Functions (Node.js, server-side)
-│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Opus, JWT auth, rate limit, message count)
+│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Opus, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max)
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
 │   └── lib/
 │       ├── auth.js              # Supabase JWT verification, admin email check
@@ -153,16 +153,16 @@ apps/web/
 |------|------|------|
 | `/` | HomePage | Public |
 | `/explore` | ExplorePage | Public |
-| `/ideas` | IdeaSubmissionPage | Public |
-| `/ideas/:id` | IdeaDetailPage | Public |
-| `/ideas/analytics` | IdeasAnalyticsPage | Public (noindex) |
+| `/ideas` | IdeaSubmissionPage | Hybrid (browsable for guests, scores/verdicts hidden behind signup CTA) |
+| `/ideas/:id` | IdeaDetailPage | Hybrid (title/description public, scoring/analysis gated behind GatedOverlay) |
+| `/ideas/analytics` | IdeasAnalyticsPage | Hybrid (stats + verdict donut public, rest gated behind GatedOverlay, noindex) |
 | `/newsletter` | NewsletterPage | Public |
 | `/about` | AboutPage | Public |
 | `/login` | LoginPage | Public |
 | `/signup` | SignupPage | Public |
 | `/scoring` | ScoringFrameworksPage | Public |
 | `/library` | LibraryPage | Public |
-| `/prompts` | PromptsPage | Hybrid (5 public, full library for members) |
+| `/prompts` | PromptsPage | Hybrid (10 public, full library for members) |
 | `/microsaas` | MicroSaasPage | Public (waitlist capture) |
 | `/templates` | TemplatesPage | Protected |
 | `/templates/garmin-to-notion` | GarminToNotionPage | Protected |
@@ -177,12 +177,12 @@ apps/web/
 
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
-- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist
+- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, idea_rate_limits, conversations, messages, flybot_waitlist, boards, board_folders
 - **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github/yc), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized FL score, = flylabs_score for backward compat), published_at (original publication date), meta (JSONB, source-specific context, e.g. YC failure_analysis), created_at, updated_at (auto-updated via trigger)
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h. RLS enabled with honeypot defense in `log_idea_submission` RPC
-- **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`
+- **RPCs:** `increment_vote(idea_id)`, `decrement_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`, `init_flyboard_defaults(p_user_id)`, `move_board(p_board_id, p_folder_id)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Also: `scripts/clean-titles.mjs` (one-time DB cleanup to strip source prefixes like "Show HN:", "[Feature Request]" from idea titles). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`
+- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`
 - **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
 
 ## Design System
@@ -212,7 +212,7 @@ apps/web/
 - **Icons:** Import individually from `lucide-react` (tree-shakeable)
 - **Pages:** Wrap in `<PageLayout>` (provides SEO, Header, Footer, and background). Pass `seo={{ title, description, ... }}` prop
 - **Protected pages:** Wrap route element in `<ProtectedRoute>` in App.jsx
-- **Hybrid pages:** Use `useAuth()` to render different content for guests vs members (e.g., PromptsPage)
+- **Hybrid pages:** Use `useAuth()` to render different content for guests vs members. Two patterns: (1) `showScores` prop on IdeaCard/IdeaTableRow for field-level gating, (2) `<GatedOverlay>` component for section-level blur + CTA (e.g., IdeaDetailPage scoring, IdeasAnalyticsPage charts). GatedOverlay supports `variant="overlay"` (blur children + CTA card) and `variant="inline"` (compact lock badge). Always pass `location` prop for GA4 tracking
 - **State:** Local state (`useState`) for UI, Context for auth/theme. No Redux or external state lib
 - **Supabase:** Use `supabase` client from `@/lib/supabaseClient.js`. RPC for atomic operations
 - **No em dashes:** Never use the em dash character in text or documentation. Use periods, colons, or hyphens instead
@@ -234,24 +234,27 @@ apps/web/
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (6-way: hot/new/oldest/top/score/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 
 ## Analytics Events (GA4)
-All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`.
+All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`. 62 events total.
 
+**Auth (2)**
 | Event | Fired From | Key Params |
 |-------|-----------|------------|
 | `sign_up` | AuthContext | `method` (email/google) |
 | `login` | AuthContext | `method` |
-| `prompt_copied` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
-| `prompt_voted` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
-| `prompt_commented` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+
+**Ideas (6)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
 | `idea_submitted` | IdeaSubmissionPage, PromptsPage | `category`, `prompt_category` (PromptsPage only) |
-| `idea_voted` | IdeaSubmissionPage | `idea_id`, `idea_title`, `category` |
-| `waitlist_joined` | MicroSaasPage | `source` |
-| `newsletter_click` | NewsletterPage, AboutPage, HomePage (closing + newsletter section) | `location` |
-| `article_click` | NewsletterPage, HomePage | `article_title`, `location` |
-| `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage, NewsletterPage, IdeaSubmissionPage | `link_url`, `link_label`, `location` |
-| `cta_click` | HomePage, PromptsPage | `cta`, `location` |
-| `project_click` | ExplorePage | `project`, `category` |
-| `profile_updated` | ProfilePage | `fields_filled` |
+| `idea_voted` | IdeaSubmissionPage, IdeaDetailPage | `idea_id`, `idea_title`, `category` |
+| `idea_unvoted` | IdeaSubmissionPage, IdeaDetailPage | `idea_id`, `idea_title`, `category` |
+| `idea_detail_opened` | IdeaCard, IdeaTableRow | `idea_id`, `idea_title`, `source` |
+| `idea_shared` | IdeaDetailPage | `idea_id`, `idea_title` |
+| `idea_form_step` | IdeaSubmissionPage, IdeaSubmitModal | `step` (0/1/2), `step_name` (problem/context/about_you) |
+
+**Ideas Filters (8)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
 | `ideas_sort_change` | useIdeaFilters | `sort_by` |
 | `ideas_filter_change` | useIdeaFilters | `filter_type` (source/type/industry/per_page), `filter_value` |
 | `ideas_search` | useIdeaFilters | `query` |
@@ -260,15 +263,10 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `ideas_confidence_filter` | useIdeaFilters | `confidence` |
 | `ideas_filter_removed` | useIdeaFilters | `filter_type`, `filter_value` |
 | `ideas_filters_cleared` | useIdeaFilters | `previous_count` |
-| `idea_detail_opened` | IdeaCard | `idea_id`, `idea_title`, `source` |
-| `idea_shared` | IdeaDetailPage | `idea_id`, `idea_title` |
-| `idea_form_step` | IdeaSubmissionPage | `step` (0/1/2), `step_name` (problem/context/about_you) |
-| `ebook_clicked` | LibraryPage | `book_id`, `book_title`, `topic`, `status` |
-| `ebook_downloaded` | LibraryPage | `book_id`, `book_title`, `topic` |
-| `ebook_notify` | LibraryPage | `book_id`, `book_title`, `topic` |
-| `library_filter_change` | LibraryPage | `topic` |
-| `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
-| `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
+
+**FlyBot (7)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
 | `flybot_message_sent` | FlyBotPage, FlyBotPanel | `conversation_id`, `message_length`, `source` (widget/full_page) |
 | `flybot_prompt_clicked` | FlyBotPage, FlyBotPanel | `prompt`, `source` |
 | `flybot_link_clicked` | ChatMessage | `link_url`, `link_text` |
@@ -276,11 +274,77 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `flybot_conversation_deleted` | useChat | `conversation_id` |
 | `flybot_evaluation_displayed` | useChat | `idea_title`, `verdict`, `composite_score` |
 | `flybot_waitlist_joined` | ChatLimitReached | `message_count` |
+
+**FlyBoard (17)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `flyboard_board_opened` | useBoard | `board_id`, `board_title` |
+| `flyboard_board_saved` | useBoard | `board_id`, `element_count` |
+| `flyboard_board_created` | useBoard | `board_id`, `board_title` |
+| `flyboard_board_deleted` | useBoard | `board_id` |
+| `flyboard_board_duplicated` | FlyBoardPage | `board_id` |
+| `flyboard_board_moved` | useBoard | `board_id`, `folder_id` |
+| `flyboard_favorite_toggled` | useBoard | `board_id`, `is_favorite` |
+| `flyboard_folder_created` | useBoard | `folder_id`, `folder_name` |
+| `flyboard_folder_deleted` | useBoard | `folder_id` |
+| `flyboard_template_used` | FlyBoardPage | `template_id`, `template_title` |
+| `flyboard_grid_changed` | FlyBoardPage | `grid_style` |
+| `flyboard_bg_changed` | FlyBoardPage | `bg_preset` |
+| `flyboard_font_changed` | FlyBoardPage | `font_id` |
+| `flyboard_stroke_color_changed` | FlyBoardPage | `color` |
+| `flyboard_stroke_width_changed` | FlyBoardPage | `width` |
+| `flyboard_arrow_preset_changed` | FlyBoardPage | `preset` |
+| `flyboard_exported` | ExportMenu | `format`, `element_count` |
+
+**Music (5)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
 | `music_player_toggled` | MusicWidget | `state` (open/close) |
 | `music_track_played` | MusicContext | `track_title`, `track_artist`, `vibe`, `source` (user/flybot) |
 | `music_track_skipped` | MusicContext | `track_title`, `direction` (next/prev) |
-| `music_vibe_changed` | MusicContext | `vibe` (ideate/build/create/study/retro) |
+| `music_vibe_changed` | MusicContext | `vibe` (ideate/build/create/cafe/study/retro) |
 | `music_flybot_control` | useChat.js | `action` (play/pause/open) |
+
+**Prompts (3)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `prompt_copied` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+| `prompt_voted` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+| `prompt_commented` | PromptsPage | `prompt_id`, `prompt_title`, `category` |
+
+**Library (4)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `ebook_clicked` | LibraryPage | `book_id`, `book_title`, `topic`, `status` |
+| `ebook_downloaded` | LibraryPage | `book_id`, `book_title`, `topic` |
+| `ebook_notify` | LibraryPage | `book_id`, `book_title`, `topic` |
+| `library_filter_change` | LibraryPage | `topic` |
+
+**Freemium Gating (1)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `gated_cta_click` | GatedOverlay | `location` (idea_detail/ideas_analytics/etc), `title` |
+
+**Navigation (5)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `cta_click` | HomePage, PromptsPage, FlyBotLandingPage, IdeaSubmissionPage, IdeaDetailPage | `cta`, `location` |
+| `newsletter_click` | NewsletterPage, AboutPage, HomePage | `location` |
+| `article_click` | NewsletterPage, HomePage | `article_title`, `location` |
+| `outbound_click` | Footer, AboutPage, GarminToNotionPage, WebsiteBlueprintPage, NewsletterPage, IdeaDetailPage, SourceBadge, GitHubHeatmap | `link_url`, `link_label`, `location` |
+| `project_click` | ExplorePage | `project`, `category` |
+
+**User (3)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `profile_updated` | ProfilePage | `fields_filled` |
+| `waitlist_joined` | MicroSaasPage | `source` |
+| `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
+
+**System (1)**
+| Event | Fired From | Key Params |
+|-------|-----------|------------|
+| `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
 
 ## Environment Variables
 ```

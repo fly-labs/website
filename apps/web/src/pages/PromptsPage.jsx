@@ -35,7 +35,7 @@ const CATEGORY_COLORS = {
   Thinking: { text: 'text-cyan-500',    bg: 'bg-cyan-500/10',    border: 'border-cyan-500/25',    pill: 'text-cyan-500',    pillBg: 'bg-cyan-500/10',    pillBorder: 'border-cyan-500/30' },
 };
 
-const lockedPreviewPrompts = prompts.filter(p => !p.featured).slice(0, 3);
+const lockedPreviewPrompts = prompts.filter(p => !p.featured).slice(0, 6);
 
 const PromptsPage = () => {
   const { toast } = useToast();

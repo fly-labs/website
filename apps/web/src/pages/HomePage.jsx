@@ -197,7 +197,7 @@ const HomePage = () => {
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
               What's inside
             </h2>
-            <p className="text-muted-foreground font-medium max-w-xl">
+            <p className="text-muted-foreground font-medium max-w-2xl">
               Every project here started as a real problem I had. Built with AI, shipped open source.
             </p>
           </motion.div>
@@ -264,7 +264,7 @@ const HomePage = () => {
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
               The vibe building cycle
             </h2>
-            <p className="text-muted-foreground font-medium max-w-xl mx-auto">
+            <p className="text-muted-foreground font-medium max-w-2xl mx-auto">
               See a real problem. Build a solution with AI. Share it openly. Each project feeds the next one.
             </p>
           </motion.div>
@@ -304,7 +304,7 @@ const HomePage = () => {
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
                 From the newsletter
               </h2>
-              <p className="text-muted-foreground font-medium max-w-xl">
+              <p className="text-muted-foreground font-medium max-w-2xl">
                 I write about what I build, what breaks, and what I learn along the way. Always free.
               </p>
             </motion.div>
@@ -399,7 +399,7 @@ const HomePage = () => {
             <br />
             <span className="text-muted-foreground">That's the whole team.</span>
           </h2>
-          <p className="text-lg text-muted-foreground font-medium leading-relaxed mb-10 max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
             I document what I build, what breaks, and what I learn along the way. The newsletter covers the process. Everything else lives here.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

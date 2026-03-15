@@ -1,5 +1,5 @@
 
-import { ChevronUp, Flame } from 'lucide-react';
+import { ChevronUp, Flame, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
@@ -9,7 +9,7 @@ import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const TRENDING_THRESHOLD = 5;
 
-const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
+const IdeaCard = ({ idea, hasVoted, onVote, index, showScores = true }) => {
   const navigate = useNavigate();
   const status = statusConfig[idea.status] || statusConfig.open;
   const dotColor = idea.status === 'building'
@@ -106,35 +106,44 @@ const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
 
             {/* Score badges - verdict + FL score only, full breakdown in detail page */}
             <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
-              {(() => {
-                const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
-                if (!verdict) return null;
-                return (
-                  <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>
-                    {verdictLabels[verdict] || verdict}
-                  </span>
-                );
-              })()}
-              {idea.flylabs_score != null && (
-                <span
-                  className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 text-[11px] font-bold tabular-nums"
-                  title="Fly Labs Score"
-                >
-                  FL {idea.flylabs_score}
-                </span>
-              )}
-              {idea.enrichment?.competitors?.products?.length > 0 && (
-                <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px] font-medium">
-                  {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}
-                </span>
-              )}
-              {idea.confidence && (
-                <span className={`hidden sm:inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium ${
-                  idea.confidence === 'high' ? 'bg-primary/10 text-primary' :
-                  idea.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
-                  'bg-muted text-muted-foreground'
-                }`}>
-                  {idea.confidence} conf.
+              {showScores ? (
+                <>
+                  {(() => {
+                    const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
+                    if (!verdict) return null;
+                    return (
+                      <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>
+                        {verdictLabels[verdict] || verdict}
+                      </span>
+                    );
+                  })()}
+                  {idea.flylabs_score != null && (
+                    <span
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 text-[11px] font-bold tabular-nums"
+                      title="Fly Labs Score"
+                    >
+                      FL {idea.flylabs_score}
+                    </span>
+                  )}
+                  {idea.enrichment?.competitors?.products?.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px] font-medium">
+                      {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                  {idea.confidence && (
+                    <span className={`hidden sm:inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium ${
+                      idea.confidence === 'high' ? 'bg-primary/10 text-primary' :
+                      idea.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {idea.confidence} conf.
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 text-primary text-[11px] font-semibold">
+                  <Lock className="w-3 h-3" />
+                  Sign up to see scores
                 </span>
               )}
             </div>
@@ -144,10 +153,10 @@ const IdeaCard = ({ idea, hasVoted, onVote, index }) => {
               {idea.idea_description}
             </p>
           )}
-          {idea.score_breakdown?.synthesis?.one_liner && (
+          {showScores && idea.score_breakdown?.synthesis?.one_liner && (
             <p className="text-xs text-muted-foreground/60 italic line-clamp-1 mb-2">{idea.score_breakdown.synthesis.one_liner}</p>
           )}
-          {idea.score_breakdown?.synthesis?.strengths?.length > 0 && (
+          {showScores && idea.score_breakdown?.synthesis?.strengths?.length > 0 && (
             <div className="hidden sm:flex items-center gap-1.5 mb-2">
               {idea.score_breakdown.synthesis.strengths.slice(0, 2).map((s, i) => (
                 <span key={i} className="text-[11px] px-2 py-0.5 rounded-full bg-primary/8 text-primary/70">{s}</span>

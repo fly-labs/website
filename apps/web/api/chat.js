@@ -158,6 +158,8 @@ export default async function handler(req, res) {
   }
 
   // Check message count
+  // NOTE: get_user_message_count RPC must count ALL messages including from deleted conversations
+  // to prevent users from bypassing limits by deleting conversations.
   const messageLimit = isAdmin ? Infinity : 5;
   const { data: msgCount } = await supabase.rpc('get_user_message_count', { p_user_id: user.id });
   const currentCount = msgCount || 0;
@@ -168,6 +170,20 @@ export default async function handler(req, res) {
       message_count: currentCount,
       limit: messageLimit,
     });
+  }
+
+  // Conversation cap (spam protection)
+  if (!isAdmin) {
+    const { count: convCount } = await supabase
+      .from('conversations')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+    if (convCount >= 10) {
+      return res.status(403).json({
+        error: 'conversation_limit',
+        message: 'Maximum conversations reached. Contact support for more access.',
+      });
+    }
   }
 
   // Validate conversation ownership

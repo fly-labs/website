@@ -1,5 +1,5 @@
 
-import { ChevronUp, Flame } from 'lucide-react';
+import { ChevronUp, Flame, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
@@ -9,7 +9,7 @@ import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 
 const TRENDING_THRESHOLD = 5;
 
-const IdeaTableRow = ({ idea, hasVoted, onVote, index }) => {
+const IdeaTableRow = ({ idea, hasVoted, onVote, index, showScores = true }) => {
   const navigate = useNavigate();
   const verdict = idea.enrichment?.verdict?.recommendation || idea.score_breakdown?.synthesis?.verdict;
 
@@ -56,18 +56,30 @@ const IdeaTableRow = ({ idea, hasVoted, onVote, index }) => {
 
       {/* Verdict */}
       <td className="py-2.5 px-2 w-24 align-middle hidden sm:table-cell">
-        {verdict && (
-          <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>
-            {verdictLabels[verdict] || verdict}
+        {showScores ? (
+          verdict && (
+            <span className={`px-2 py-0.5 rounded-md text-[11px] font-bold ${verdictColors[verdict] || verdictColors.VALIDATE_FIRST}`}>
+              {verdictLabels[verdict] || verdict}
+            </span>
+          )
+        ) : (
+          <span className="inline-flex items-center gap-1 text-muted-foreground/40 text-[11px]">
+            <Lock className="w-3 h-3" />
           </span>
         )}
       </td>
 
       {/* FL Score */}
       <td className="py-2.5 px-2 w-16 align-middle text-center hidden sm:table-cell">
-        {idea.flylabs_score != null && (
-          <span className="text-[11px] font-bold tabular-nums text-indigo-500">
-            {idea.flylabs_score}
+        {showScores ? (
+          idea.flylabs_score != null && (
+            <span className="text-[11px] font-bold tabular-nums text-indigo-500">
+              {idea.flylabs_score}
+            </span>
+          )
+        ) : (
+          <span className="text-muted-foreground/40 text-[11px]">
+            <Lock className="w-3 h-3 inline" />
           </span>
         )}
       </td>

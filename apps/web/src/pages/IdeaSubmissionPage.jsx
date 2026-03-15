@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid, Bot } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, PenLine, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid, Bot, Lock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -23,8 +23,22 @@ import IdeaFilterSheet from '@/components/ideas/IdeaFilterSheet.jsx';
 // Shipped fallback - shown if no shipped ideas in DB
 const SHIPPED_FALLBACK = [
   {
+    title: 'FlyBot',
+    description: 'AI partner that scores ideas, finds patterns across sources, and answers questions about the lab. Built on Claude.',
+    industry: 'AI',
+    link: '/flybot',
+    icon: 'bot',
+  },
+  {
+    title: 'FlyBoard',
+    description: 'Whiteboard with 12 templates, 5 grid styles, and clean exports. Powered by Excalidraw.',
+    industry: 'Productivity',
+    link: '/flyboard',
+    icon: 'penline',
+  },
+  {
     title: 'Garmin to Notion Sync',
-    description: 'Automatically sync your Garmin health data to Notion. Born from a community request, now live and open source.',
+    description: 'Auto-sync Garmin health data to Notion. Born from a community request, now open source.',
     industry: 'Sport & Fitness',
     link: '/templates/garmin-to-notion',
     icon: 'activity',
@@ -284,7 +298,9 @@ const IdeaSubmissionPage = () => {
   const moreSortActive = sortOptions.find(o => !PRIMARY_SORTS.includes(o.value) && o.value === sortBy);
 
   const ShippedIcon = ({ icon }) => {
+    if (icon === 'bot') return <Bot className="w-5 h-5" />;
     if (icon === 'activity') return <Activity className="w-5 h-5" />;
+    if (icon === 'penline') return <PenLine className="w-5 h-5" />;
     return <Globe className="w-5 h-5" />;
   };
 
@@ -499,8 +515,8 @@ const IdeaSubmissionPage = () => {
               <div className="absolute right-0 top-0 bottom-1 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
               </div>
 
-              {/* Row 4: Verdict tabs with counts */}
-              <div className="relative">
+              {/* Row 4: Verdict tabs with counts (members only) */}
+              {isAuthenticated && <div className="relative">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
                 {verdictOptions.map((opt) => {
                   const count = verdictCounts[opt.value] || 0;
@@ -527,7 +543,7 @@ const IdeaSubmissionPage = () => {
                 })}
               </div>
               <div className="absolute right-0 top-0 bottom-1 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
-              </div>
+              </div>}
 
               {/* Row 5: Active filter chips */}
               {activeFilters.length > 0 && (
@@ -604,6 +620,16 @@ const IdeaSubmissionPage = () => {
               </motion.div>
             ) : (
               <>
+                {/* Guest teaser banner */}
+                {!isAuthenticated && (
+                  <div className="mb-4 px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3 text-sm">
+                    <Lock className="w-4 h-4 text-primary shrink-0" />
+                    <span className="text-muted-foreground">
+                      Scores, verdicts, and AI analysis are available for free.{' '}
+                      <a href="/signup" className="text-primary font-semibold hover:underline">Sign up</a> to unlock.
+                    </span>
+                  </div>
+                )}
                 {viewMode === 'table' ? (
                   <div className="overflow-x-auto rounded-xl border border-border/60">
                     <table className="w-full text-left">
@@ -626,6 +652,7 @@ const IdeaSubmissionPage = () => {
                               hasVoted={votedIds.includes(idea.id)}
                               onVote={handleVote}
                               index={i}
+                              showScores={isAuthenticated}
                             />
                           ))}
                         </AnimatePresence>
@@ -642,6 +669,7 @@ const IdeaSubmissionPage = () => {
                           hasVoted={votedIds.includes(idea.id)}
                           onVote={handleVote}
                           index={i}
+                          showScores={isAuthenticated}
                         />
                       ))}
                     </AnimatePresence>
@@ -703,7 +731,7 @@ const IdeaSubmissionPage = () => {
                       to={item.link}
                       className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card/50 hover:bg-card hover:border-border transition-colors duration-200"
                     >
-                      <div className={`w-10 h-10 rounded-lg ${item.icon === 'activity' ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200`}>
+                      <div className={`w-10 h-10 rounded-lg ${item.icon === 'bot' ? 'bg-accent/10 text-accent' : item.icon === 'activity' ? 'bg-secondary/10 text-secondary' : item.icon === 'penline' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-primary/10 text-primary'} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-200`}>
                         <ShippedIcon icon={item.icon} />
                       </div>
                       <div className="flex-1 min-w-0">

@@ -7,33 +7,6 @@ import '@excalidraw/excalidraw/index.css';
 const CHALK_WHITE = '#e8e4df';
 const INK_BLACK = '#1e1e1e';
 
-// Excalidraw's own default colors that we need to intercept (all known defaults)
-const EXCALIDRAW_DEFAULTS = new Set(['#1e1e1e', '#000000', '#000', '#e8e4df', '#ffffff', '#fff', '#1b1b1f', '#343a40']);
-
-/**
- * Check if a hex color clashes with the background (both dark or both light).
- * Returns true if the element color would be invisible/hard to read.
- */
-function colorClashesWithBg(elementHex, bgHex) {
-  if (!elementHex || !bgHex || bgHex === 'transparent') return false;
-  try {
-    const elR = parseInt(elementHex.slice(1, 3), 16);
-    const elG = parseInt(elementHex.slice(3, 5), 16);
-    const elB = parseInt(elementHex.slice(5, 7), 16);
-    const elLum = (0.299 * elR + 0.587 * elG + 0.114 * elB) / 255;
-
-    const bgR = parseInt(bgHex.slice(1, 3), 16);
-    const bgG = parseInt(bgHex.slice(3, 5), 16);
-    const bgB = parseInt(bgHex.slice(5, 7), 16);
-    const bgLum = (0.299 * bgR + 0.587 * bgG + 0.114 * bgB) / 255;
-
-    // Both dark (lum < 0.4) or both light (lum > 0.6) = clash
-    return (elLum < 0.4 && bgLum < 0.4) || (elLum > 0.6 && bgLum > 0.6);
-  } catch {
-    return false;
-  }
-}
-
 /**
  * Auto-contrast: pick stroke color based on background luminance.
  */
@@ -52,51 +25,49 @@ function getContrastStroke(bgHex) {
 
 /**
  * FlyBoard canvas wrapper around Excalidraw.
+ *
+ * All style props map directly to Excalidraw appState keys.
+ * We trust Excalidraw to apply currentItem* to new elements.
+ * No aggressive onChange recoloring - that causes flashing.
  */
+// Tools that should NOT be re-applied after Excalidraw resets to selection
+const SINGLE_USE_TOOLS = new Set(['selection', 'eraser', 'hand']);
+
 const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
-  { board, onSceneChange, isDark, gridStyle = 'dot', gridVisible = true, bgColor, defaultFont = 1, strokeColor: strokeColorProp, hideUI = false },
+  { board, onSceneChange, isDark, gridStyle = 'dot', gridVisible = true, bgColor, defaultFont = 1, strokeColor: strokeColorProp, strokeWidth: strokeWidthProp = 2, roughness: roughnessProp = 1, fontSize: fontSizeProp = 20, startArrowhead: startArrowheadProp = null, endArrowhead: endArrowheadProp = 'arrow', hideUI = false },
   ref
 ) {
   const [excalidrawAPI, setExcalidrawAPI] = useState(null);
 
-  // Use refs for callbacks to keep onChange handler stable
   const onSceneChangeRef = useRef(onSceneChange);
   onSceneChangeRef.current = onSceneChange;
 
-  // Track board ID changes to reset the initialization guard
   const activeBoardIdRef = useRef(board?.id || null);
   const changeCountRef = useRef(0);
   const changeTimerRef = useRef(null);
 
-  // Use prop if provided, otherwise compute from background
+  // Track the desired tool so we can re-apply it when Excalidraw resets to selection
+  // (e.g. after finishing text editing, Excalidraw forcibly switches to selection)
+  const desiredToolRef = useRef(null);
+  const reapplyTimerRef = useRef(null);
+
+  // Resolve stroke color from prop or auto-contrast
   const strokeColor = strokeColorProp || getContrastStroke(bgColor) || (isDark ? CHALK_WHITE : INK_BLACK);
 
-  // Keep refs of latest values for use in closures and onChange
+  // Refs for stable onChange closure
   const strokeColorRef = useRef(strokeColor);
   strokeColorRef.current = strokeColor;
-  const defaultFontRef = useRef(defaultFont);
-  defaultFontRef.current = defaultFont;
-  const isDarkRef = useRef(isDark);
-  isDarkRef.current = isDark;
-  const bgColorRef = useRef(bgColor);
-  bgColorRef.current = bgColor;
 
-  // Track known element IDs to detect newly created elements
-  const knownElementIdsRef = useRef(new Set());
-
-  // When board ID changes, reset the guard and known elements
+  // When board ID changes, reset the init guard
   useEffect(() => {
     const newId = board?.id || null;
     if (newId !== activeBoardIdRef.current) {
       activeBoardIdRef.current = newId;
       changeCountRef.current = 0;
-      knownElementIdsRef.current = new Set(
-        (board?.scene_data?.elements || []).map(el => el.id)
-      );
     }
-  }, [board?.id, board?.scene_data?.elements]);
+  }, [board?.id]);
 
-  // Expose API to parent via ref
+  // Expose API to parent
   useImperativeHandle(ref, () => ({
     getAPI: () => excalidrawAPI,
     getSceneElements: () => excalidrawAPI?.getSceneElements() || [],
@@ -118,83 +89,74 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
       if (!excalidrawAPI) return;
       excalidrawAPI.updateScene({ appState: { zoom: { value: 1 } } });
     },
-    setTool: (tool) => {
+    setTool: (tool, opts = {}) => {
       if (!excalidrawAPI) return;
-      excalidrawAPI.setActiveTool({ type: tool });
+      // Track desired tool for re-application after Excalidraw resets
+      desiredToolRef.current = SINGLE_USE_TOOLS.has(tool) ? null : tool;
+      excalidrawAPI.setActiveTool({ type: tool, ...opts });
     },
   }), [excalidrawAPI]);
 
-  // Stable onChange handler - uses refs so it never changes identity
+  // Build the full appState object from current props
+  const getAppStateFromProps = useCallback(() => ({
+    theme: isDark ? 'dark' : 'light',
+    viewBackgroundColor: 'transparent',
+    currentItemStrokeColor: strokeColor,
+    currentItemFontFamily: defaultFont,
+    currentItemStrokeWidth: strokeWidthProp,
+    currentItemRoughness: roughnessProp,
+    currentItemFontSize: fontSizeProp,
+    currentItemStartArrowhead: startArrowheadProp,
+    currentItemEndArrowhead: endArrowheadProp,
+  }), [isDark, strokeColor, defaultFont, strokeWidthProp, roughnessProp, fontSizeProp, startArrowheadProp, endArrowheadProp]);
+
+  // onChange: debounce save + re-apply tool when Excalidraw resets to selection
   const handleChange = useCallback((elements, appState) => {
     changeCountRef.current += 1;
-    if (changeCountRef.current <= 2) return;
+    if (changeCountRef.current <= 2) return; // skip init
 
-    const targetStroke = strokeColorRef.current;
-    let needsUpdate = false;
-    const fixedElements = [];
-
-    // Check each element: fix newly created ones that have wrong contrast color
-    const currentBg = bgColorRef.current;
-    for (const el of elements) {
-      if (!knownElementIdsRef.current.has(el.id) && !el.isDeleted) {
-        // This is a NEW element - ensure it uses the correct auto-contrast color
-        // Fix if: (1) has a known Excalidraw default color, OR (2) clashes with background
-        const hasDefaultColor = EXCALIDRAW_DEFAULTS.has(el.strokeColor);
-        const clashesWithBg = colorClashesWithBg(el.strokeColor, currentBg);
-        if ((hasDefaultColor || clashesWithBg) && el.strokeColor !== targetStroke) {
-          fixedElements.push({ ...el, strokeColor: targetStroke });
-          needsUpdate = true;
-        } else {
-          fixedElements.push(el);
+    // Re-apply locked tool when Excalidraw forcibly switches to selection
+    // (happens after text editing, for example)
+    const currentTool = appState?.activeTool?.type;
+    const desired = desiredToolRef.current;
+    const isEditing = appState?.editingTextElement || appState?.editingLinearElement;
+    if (desired && currentTool === 'selection' && !isEditing) {
+      if (reapplyTimerRef.current) clearTimeout(reapplyTimerRef.current);
+      reapplyTimerRef.current = setTimeout(() => {
+        const api = excalidrawAPIRef.current;
+        if (api && desiredToolRef.current) {
+          api.setActiveTool({ type: desiredToolRef.current, locked: true });
         }
-        knownElementIdsRef.current.add(el.id);
-      } else {
-        fixedElements.push(el);
-      }
+      }, 150);
     }
 
-    // Also ensure currentItemStrokeColor stays correct
-    if (appState.currentItemStrokeColor !== targetStroke) {
-      needsUpdate = true;
-    }
-
-    // Debounce: batch rapid onChange calls into one save
     if (changeTimerRef.current) clearTimeout(changeTimerRef.current);
     changeTimerRef.current = setTimeout(() => {
-      const cleanAppState = {
-        viewBackgroundColor: appState.viewBackgroundColor,
-        currentItemFontFamily: appState.currentItemFontFamily,
-        currentItemStrokeColor: targetStroke,
-        gridSize: appState.gridSize,
-      };
-
       onSceneChangeRef.current?.({
-        elements: fixedElements.map(el => ({ ...el, selected: undefined })),
-        appState: cleanAppState,
+        elements: elements.map(el => ({ ...el, selected: undefined })),
+        appState: {
+          viewBackgroundColor: appState.viewBackgroundColor,
+          currentItemFontFamily: appState.currentItemFontFamily,
+          currentItemStrokeColor: appState.currentItemStrokeColor,
+          currentItemStrokeWidth: appState.currentItemStrokeWidth,
+          gridSize: appState.gridSize,
+        },
       });
     }, 300);
+  }, []);
 
-    // If we need to fix elements or stroke color, update immediately (not debounced)
-    if (needsUpdate && excalidrawAPIRef.current) {
-      excalidrawAPIRef.current.updateScene({
-        elements: needsUpdate ? fixedElements : undefined,
-        appState: { currentItemStrokeColor: targetStroke },
-      });
-    }
-  }, []); // empty deps = stable identity
-
-  // Ref for excalidrawAPI used in onChange (avoids stale closure)
+  // Ref for API in init callback
   const excalidrawAPIRef = useRef(null);
   excalidrawAPIRef.current = excalidrawAPI;
 
-  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (changeTimerRef.current) clearTimeout(changeTimerRef.current);
+      if (reapplyTimerRef.current) clearTimeout(reapplyTimerRef.current);
     };
   }, []);
 
-  // Memoize initial data to prevent Excalidraw from re-initializing on every render
+  // Initial data (only recomputed on board change)
   const initialData = useMemo(() => {
     const sceneData = board?.scene_data;
     return {
@@ -205,6 +167,11 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
         viewBackgroundColor: 'transparent',
         currentItemStrokeColor: strokeColor,
         currentItemFontFamily: defaultFont,
+        currentItemStrokeWidth: strokeWidthProp,
+        currentItemRoughness: roughnessProp,
+        currentItemFontSize: fontSizeProp,
+        currentItemStartArrowhead: startArrowheadProp,
+    currentItemEndArrowhead: endArrowheadProp,
         zoom: { value: 1 },
       },
       scrollToContent: false,
@@ -212,36 +179,21 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board?.id]);
 
-  // Update theme/font/stroke reactively without re-initializing
+  // Reactively push prop changes to Excalidraw
   useEffect(() => {
     if (excalidrawAPI) {
-      excalidrawAPI.updateScene({
-        appState: {
-          theme: isDark ? 'dark' : 'light',
-          viewBackgroundColor: 'transparent',
-          currentItemStrokeColor: strokeColor,
-          currentItemFontFamily: defaultFont,
-        },
-      });
+      excalidrawAPI.updateScene({ appState: getAppStateFromProps() });
     }
-  }, [isDark, excalidrawAPI, defaultFont, strokeColor]);
+  }, [excalidrawAPI, getAppStateFromProps]);
 
-  // When board changes, load the new scene data into existing Excalidraw instance
+  // When board changes, load scene data
   useEffect(() => {
     if (excalidrawAPI && board?.scene_data) {
-      // Update known element IDs
-      knownElementIdsRef.current = new Set(
-        (board.scene_data.elements || []).map(el => el.id)
-      );
-
       excalidrawAPI.updateScene({
         elements: board.scene_data.elements || [],
         appState: {
           ...(board.scene_data.appState || {}),
-          theme: isDark ? 'dark' : 'light',
-          viewBackgroundColor: 'transparent',
-          currentItemStrokeColor: strokeColor,
-          currentItemFontFamily: defaultFont,
+          ...getAppStateFromProps(),
         },
       });
       if (board.scene_data.elements?.length) {
@@ -253,7 +205,6 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board?.id, excalidrawAPI]);
 
-  // Grid style CSS class
   const gridClass = {
     dot: 'flyboard-grid-dot',
     ruled: 'flyboard-grid-ruled',
@@ -266,7 +217,6 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
       className={`flyboard-canvas w-full h-full relative${hideUI ? ' flyboard-hide-excalidraw-ui' : ''}`}
       style={bgColor ? { backgroundColor: bgColor } : undefined}
     >
-      {/* Grid overlay */}
       {gridVisible && gridClass && (
         <div className={`flyboard-grid-overlay ${gridClass}`} />
       )}
@@ -274,21 +224,11 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
       <Excalidraw
         excalidrawAPI={(api) => {
           setExcalidrawAPI(api);
-          // Force correct state after mount using refs for fresh values
           // Multiple passes to survive Excalidraw's internal init resets
-          const applyState = () => {
-            api.updateScene({
-              appState: {
-                viewBackgroundColor: 'transparent',
-                currentItemStrokeColor: strokeColorRef.current,
-                currentItemFontFamily: defaultFontRef.current,
-              },
-            });
-          };
-          applyState();
-          setTimeout(applyState, 50);
-          setTimeout(applyState, 200);
-          setTimeout(applyState, 500);
+          const apply = () => api.updateScene({ appState: getAppStateFromProps() });
+          apply();
+          setTimeout(apply, 50);
+          setTimeout(apply, 200);
         }}
         initialData={initialData}
         onChange={handleChange}

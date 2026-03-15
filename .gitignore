@@ -51,3 +51,6 @@ scripts/music/
 
 # Claude Code local files
 .claude/
+
+# Video production artifacts
+article-media/

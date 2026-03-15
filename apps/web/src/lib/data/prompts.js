@@ -971,6 +971,7 @@ Key metrics: [LIST YOUR BEST NUMBERS]`,
     id: 44,
     title: 'SEO Competitive Matrix',
     category: 'SEO',
+    featured: true,
     description: 'Build a complete competitive intelligence spreadsheet showing where you outperform, fall short, and the exact gaps to close.',
     content: `Analyze my website and compare it against my top competitors for SEO competitive intelligence.
 
@@ -1612,6 +1613,7 @@ Give me a clear recommendation with reasoning.`,
     id: 65,
     title: 'Calendar Optimizer',
     category: 'Workflows',
+    featured: true,
     tools: ['Claude Cowork'],
     description: 'Analyze your calendar, protect deep work blocks, suggest meeting consolidation, and draft scheduling emails. Ongoing calendar management.',
     content: `I need you to help me optimize my calendar and schedule meetings efficiently.

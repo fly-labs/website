@@ -5,6 +5,7 @@ import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Ar
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
+import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import supabase from '@/lib/supabaseClient.js';
 import { timeAgo } from '@/lib/utils.js';
@@ -12,10 +13,12 @@ import { trackEvent } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 import { getScoreTier, ScoreBar, verdictStyles, confidenceColors, FL_PILLARS, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
+import { GatedOverlay } from '@/components/GatedOverlay.jsx';
 
 const IdeaDetailPage = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   const { openWidget } = useChatContext();
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -255,6 +258,8 @@ const IdeaDetailPage = () => {
             </button>
           </div>
 
+          {isAuthenticated ? (
+          <>
           {/* ─── Quick Read ─── */}
           {(() => {
             const thePain = synthesis?.the_pain || synthesis?.one_liner || idea.idea_description || flData?.problem_clarity?.reasoning;
@@ -763,6 +768,55 @@ const IdeaDetailPage = () => {
               </div>
             )}
           </section>
+          </>
+          ) : (
+          <GatedOverlay
+            title="Sign up free to see the full analysis"
+            description="AI scoring, expert perspectives, and market evidence for every idea."
+            location="idea_detail"
+          >
+            <div className="space-y-8">
+              <section className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Quick Read</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">The Pain</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">People are frustrated with existing solutions in this space.</p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">The Gap</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">Current tools miss key needs that users keep asking for.</p>
+                  </div>
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-primary">What to Build</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">A focused solution targeting the underserved segment.</p>
+                  </div>
+                </div>
+              </section>
+              <section>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">The Score</span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-black text-primary">BUILD</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-black tabular-nums text-indigo-500">72</span>
+                      <span className="text-xs text-muted-foreground/60">/100</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Score breakdown and expert analysis available after sign up.</p>
+                </div>
+              </section>
+            </div>
+          </GatedOverlay>
+          )}
 
         </div>
       </div>

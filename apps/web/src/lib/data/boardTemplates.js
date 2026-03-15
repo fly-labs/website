@@ -519,6 +519,204 @@ const eisenhowerMatrix = {
 };
 
 // ============================================================
+// CONTENT CREATION TEMPLATES
+// ============================================================
+
+const quoteCard = {
+  id: 'quote-card',
+  title: 'Quote Card',
+  description: 'Eye-catching quote card for social media. Large quote marks, attribution line, hand-drawn style.',
+  category: 'Content',
+  creator: 'Social media visual',
+  sceneData: {
+    elements: (() => {
+      const els = [];
+      const cardW = 500;
+      const cardH = 400;
+      const startX = 60;
+      const startY = 60;
+
+      // Card background
+      els.push(rect('qc-bg', startX, startY, cardW, cardH, { color: YELLOW, strokeWidth: 2 }));
+
+      // Opening quote mark
+      els.push(text('qc-open', startX + 30, startY + 20, '\u201C', { fontSize: 80, color: YELLOW, fontFamily: 1 }));
+
+      // Quote text
+      els.push(text('qc-quote', startX + 50, startY + 110, 'Your quote here.\nMake it memorable.', { fontSize: 28, color: WHITE, fontFamily: 1, width: cardW - 100 }));
+
+      // Closing quote mark
+      els.push(text('qc-close', startX + cardW - 80, startY + 240, '\u201D', { fontSize: 80, color: YELLOW, fontFamily: 1 }));
+
+      // Separator line
+      els.push(line('qc-sep', startX + 50, startY + 310, [[0, 0], [cardW - 100, 0]], { color: PINK, strokeWidth: 1 }));
+
+      // Attribution
+      els.push(text('qc-author', startX + 50, startY + 325, '- Author Name', { fontSize: 18, color: PINK, fontFamily: 1 }));
+
+      return els;
+    })(),
+    appState: {},
+  },
+};
+
+const codeSnippet = {
+  id: 'code-snippet',
+  title: 'Code Snippet',
+  description: 'Terminal-style code display with traffic light dots. Perfect for dev content.',
+  category: 'Content',
+  creator: 'Developer content',
+  sceneData: {
+    elements: (() => {
+      const els = [];
+      const cardW = 520;
+      const cardH = 340;
+      const startX = 60;
+      const startY = 60;
+
+      // Editor window background
+      els.push(rect('cs-bg', startX, startY, cardW, cardH, {
+        color: WHITE,
+        bg: '#1a1a2e',
+        fillStyle: 'solid',
+        strokeWidth: 2,
+        roundness: { type: 3 },
+      }));
+
+      // Top bar
+      els.push(rect('cs-topbar', startX, startY, cardW, 36, {
+        color: WHITE,
+        bg: '#252540',
+        fillStyle: 'solid',
+        strokeWidth: 0,
+        roundness: null,
+      }));
+
+      // Traffic light dots
+      els.push(ellipse('cs-dot-r', startX + 14, startY + 10, 14, 14, { color: '#ff5f56', bg: '#ff5f56', fillStyle: 'solid' }));
+      els.push(ellipse('cs-dot-y', startX + 34, startY + 10, 14, 14, { color: '#ffbd2e', bg: '#ffbd2e', fillStyle: 'solid' }));
+      els.push(ellipse('cs-dot-g', startX + 54, startY + 10, 14, 14, { color: '#27c93f', bg: '#27c93f', fillStyle: 'solid' }));
+
+      // File name
+      els.push(text('cs-filename', startX + 80, startY + 9, 'app.js', { fontSize: 13, color: '#888899', fontFamily: 3 }));
+
+      // Code text (monospace, green on dark)
+      els.push(text('cs-code', startX + 20, startY + 50, 'const idea = getIdea();\n\nif (idea.score > 65) {\n  console.log("BUILD IT");\n  ship(idea);\n} else {\n  validate(idea);\n}', {
+        fontSize: 16,
+        color: GREEN,
+        fontFamily: 3,
+        width: cardW - 40,
+      }));
+
+      return els;
+    })(),
+    appState: {},
+  },
+};
+
+const promptCard = {
+  id: 'prompt-card',
+  title: 'Prompt Card',
+  description: 'Display an AI prompt with a label and hint. Great for sharing prompt templates.',
+  category: 'Content',
+  creator: 'AI prompt visual',
+  sceneData: {
+    elements: (() => {
+      const els = [];
+      const cardW = 480;
+      const cardH = 360;
+      const startX = 60;
+      const startY = 60;
+
+      // Card background
+      els.push(rect('pc-bg', startX, startY, cardW, cardH, {
+        color: BLUE,
+        strokeWidth: 2,
+        roundness: { type: 3 },
+      }));
+
+      // Corner flourishes (decorative lines)
+      els.push(line('pc-fl-tl', startX + 12, startY + 12, [[0, 20], [0, 0], [20, 0]], { color: BLUE, strokeWidth: 1 }));
+      els.push(line('pc-fl-tr', startX + cardW - 32, startY + 12, [[0, 0], [20, 0], [20, 20]], { color: BLUE, strokeWidth: 1 }));
+      els.push(line('pc-fl-bl', startX + 12, startY + cardH - 32, [[0, 0], [0, 20], [20, 20]], { color: BLUE, strokeWidth: 1 }));
+      els.push(line('pc-fl-br', startX + cardW - 32, startY + cardH - 32, [[20, 0], [20, 20], [0, 20]], { color: BLUE, strokeWidth: 1 }));
+
+      // PROMPT label
+      els.push(text('pc-label', startX + 30, startY + 30, 'PROMPT', { fontSize: 12, color: BLUE, fontFamily: 2 }));
+
+      // Prompt text
+      els.push(text('pc-prompt', startX + 30, startY + 65, 'Act as a senior product manager.\nAnalyze this idea and tell me:\n1. Who is the user?\n2. What pain does it solve?\n3. Why would they pay?', {
+        fontSize: 20,
+        color: WHITE,
+        fontFamily: 1,
+        width: cardW - 60,
+      }));
+
+      // Hint text
+      els.push(text('pc-hint', startX + 30, startY + cardH - 45, 'copy & paste into your favorite AI', { fontSize: 13, color: BLUE, fontFamily: 1 }));
+
+      return els;
+    })(),
+    appState: {},
+  },
+};
+
+const xPostMockup = {
+  id: 'x-post-mockup',
+  title: 'X / Twitter Post',
+  description: 'Hand-drawn tweet mockup with profile, text, and engagement metrics.',
+  category: 'Content',
+  creator: 'Social media mockup',
+  sceneData: {
+    elements: (() => {
+      const els = [];
+      const cardW = 500;
+      const cardH = 320;
+      const startX = 60;
+      const startY = 60;
+
+      // Tweet card
+      els.push(rect('xp-card', startX, startY, cardW, cardH, {
+        color: WHITE,
+        strokeWidth: 1,
+        roundness: { type: 3 },
+      }));
+
+      // Profile circle
+      els.push(ellipse('xp-avatar', startX + 16, startY + 16, 44, 44, { color: BLUE, bg: BLUE, fillStyle: 'cross-hatch' }));
+
+      // Display name
+      els.push(text('xp-name', startX + 70, startY + 18, 'Your Name', { fontSize: 16, color: WHITE, fontFamily: 2 }));
+      // Handle
+      els.push(text('xp-handle', startX + 70, startY + 40, '@yourhandle', { fontSize: 14, color: '#888899', fontFamily: 2 }));
+
+      // Tweet body
+      els.push(text('xp-body', startX + 20, startY + 80, 'Your tweet goes here.\n\nMake it punchy, make it real.\nThe best posts sound like\nsomething you would actually say.', {
+        fontSize: 18,
+        color: WHITE,
+        fontFamily: 1,
+        width: cardW - 40,
+      }));
+
+      // Timestamp
+      els.push(text('xp-time', startX + 20, startY + 230, '10:42 AM \u00B7 Mar 15, 2026', { fontSize: 13, color: '#888899', fontFamily: 2 }));
+
+      // Separator
+      els.push(line('xp-sep', startX + 20, startY + 258, [[0, 0], [cardW - 40, 0]], { color: WHITE, strokeWidth: 0.5 }));
+
+      // Engagement row
+      els.push(text('xp-reply', startX + 20, startY + 270, '\uD83D\uDCAC 12', { fontSize: 14, color: '#888899', fontFamily: 2 }));
+      els.push(text('xp-rt', startX + 120, startY + 270, '\uD83D\uDD01 48', { fontSize: 14, color: '#888899', fontFamily: 2 }));
+      els.push(text('xp-like', startX + 220, startY + 270, '\u2764\uFE0F 247', { fontSize: 14, color: '#888899', fontFamily: 2 }));
+      els.push(text('xp-share', startX + 340, startY + 270, '\u2197\uFE0F 8', { fontSize: 14, color: '#888899', fontFamily: 2 }));
+
+      return els;
+    })(),
+    appState: {},
+  },
+};
+
+// ============================================================
 // EXPORTS
 // ============================================================
 
@@ -531,8 +729,12 @@ export const boardTemplates = [
   kanbanBoard,
   mindMap,
   eisenhowerMatrix,
+  quoteCard,
+  codeSnippet,
+  promptCard,
+  xPostMockup,
 ];
 
-export const boardCategories = ['All', 'Journal', 'Strategy', 'Planning', 'Productivity'];
+export const boardCategories = ['All', 'Journal', 'Strategy', 'Planning', 'Productivity', 'Content'];
 
 export const BOARD_TEMPLATE_COUNT = boardTemplates.length;
