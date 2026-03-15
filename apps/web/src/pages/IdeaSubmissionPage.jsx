@@ -306,7 +306,7 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: "Idea Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems from 9 sources, scored by 4 AI frameworks with BUILD/VALIDATE/SKIP verdicts. Validated against real market conversations.",
+          description: "Real problems from 8 sources, scored by 4 AI frameworks with BUILD/VALIDATE/SKIP verdicts. Validated against real market conversations.",
           keywords: "submit idea, project idea, community, vote, tool request, hormozi score, dan koe score, okamoto score, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}

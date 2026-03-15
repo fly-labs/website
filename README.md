@@ -6,7 +6,7 @@
 
 **The vibe building hub.** One person, AI tools, weekends. This is what comes out.
 
-Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 8 sources daily, scores them with AI using 4 frameworks, validates the best ones against live market data, and gives you an AI coach that knows all of it.
+Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 9 sources daily, scores them with AI using 4 frameworks, validates the best ones against live market data, and gives you an AI coach that knows all of it.
 
 [![CI](https://github.com/fly-labs/website/actions/workflows/ci.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/ci.yml)
 [![Sync Ideas](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml)
@@ -108,6 +108,7 @@ npm run dev
 | `npm run sync:github` | Sync from GitHub Issues |
 | `npm run sync:yc` | Sync dead YC startups |
 | `npm run score` | Score unscored ideas with Claude Sonnet |
+| `npm run score:backfill` | Re-score BUILD/VALIDATE ideas with Haiku (cheap) |
 | `npm run enrich` | Validate top ideas with Grok + Reddit |
 | `npm run setup:music` | Upload tracks to Supabase Storage + generate tracks.js |
 
@@ -155,7 +156,7 @@ apps/web/
 | `/ideas` | Idea Lab (AI-scored, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scores, evidence) | Public |
 | `/ideas/analytics` | Analytics dashboard (10 charts) | Public |
-| `/prompts` | Prompt Library (81 prompts) | Hybrid |
+| `/prompts` | Prompt Library (81+ prompts) | Hybrid |
 | `/flybot` | FlyBot landing | Public |
 | `/flybot/chat` | FlyBot full chat | Members |
 | `/scoring` | Scoring methodology | Public |
@@ -171,7 +172,7 @@ Supabase PostgreSQL with Row Level Security on every table. Schema in `supabase/
 
 **Tables:** profiles, ideas, idea_rate_limits, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist
 
-**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 8 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
+**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 9 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
 
 ## Design
 

@@ -87,7 +87,7 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
               )}
             >
               <span className="flex-1">{prompt}</span>
-              <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-40 group-hover:translate-x-0 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-40 group-hover:translate-x-0 transition-[opacity,transform]" />
             </motion.button>
           ))}
         </div>
