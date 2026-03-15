@@ -76,26 +76,7 @@ const IdeaCard = ({ idea, hasVoted, onVote, index, showScores = true }) => {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 mb-1">
             <div className="flex items-center gap-2 min-w-0">
               <h3 className="font-semibold text-foreground leading-snug group-hover:text-primary transition-colors">
-                {(idea.source === 'problemhunt' || idea.source === 'reddit' || idea.source === 'producthunt' || idea.source === 'x' || idea.source === 'hackernews' || idea.source === 'github' || idea.source === 'yc') && idea.source_url ? (
-                  <a
-                    href={idea.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      trackEvent('outbound_click', {
-                        link_url: idea.source_url,
-                        link_label: idea.idea_title,
-                        location: 'ideas',
-                      });
-                    }}
-                    className="hover:underline"
-                  >
-                    {idea.idea_title}
-                  </a>
-                ) : (
-                  idea.idea_title
-                )}
+                {idea.idea_title}
               </h3>
               {(idea.votes || 0) >= TRENDING_THRESHOLD && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20 shrink-0">

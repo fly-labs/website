@@ -77,6 +77,14 @@ function renderMarkdown(text) {
         }
         return label;
       });
+      // Auto-detect full flylabs.fun URLs (e.g. flylabs.fun/prompts) and convert to internal links
+      processed = processed.replace(/(?<!href="|">)(?:https?:\/\/)?flylabs\.fun(\/[a-z0-9/-]*)/gi, (match, path) => {
+        return `<a href="${escapeHtml(path)}" data-internal="true" class="text-primary hover:underline underline-offset-2">flylabs.fun${path}</a>`;
+      });
+      // Auto-detect bare internal paths (e.g. /prompts, /ideas, /flyboard) not already inside an href
+      processed = processed.replace(/(?<!href="|">|flylabs\.fun)(\/(?:prompts|ideas|flybot|flyboard|templates|library|explore|scoring|newsletter|about|microsaas)(?:\/[a-z0-9-]*)?)\b/gi, (match, path) => {
+        return `<a href="${escapeHtml(path)}" data-internal="true" class="text-primary hover:underline underline-offset-2">${path}</a>`;
+      });
 
       return (
         <React.Fragment key={`${i}-${j}`}>

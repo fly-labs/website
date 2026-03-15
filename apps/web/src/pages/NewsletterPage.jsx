@@ -61,7 +61,7 @@ const NewsletterPage = () => {
             Fala <span className="text-primary">Comigo!</span>
           </h1>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-8">
-            A finance guy builds things with AI in his spare time and writes about what happens. What worked, what broke, what I'd do differently. In English (mostly) and Portuguese. Always free.
+            A finance guy builds things with AI in his spare time and writes about what happens. What worked, what broke, what I'd do differently. In English. Always free.
           </p>
           <a
             href="https://falacomigo.substack.com"
