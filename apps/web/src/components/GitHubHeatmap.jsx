@@ -85,43 +85,28 @@ function Tooltip({ children, text }) {
 
 function SkeletonGrid({ cols, labelWidth, gap }) {
   return (
-    <div className="animate-pulse w-full">
-      {/* Month labels spacer row */}
-      <div className="flex" style={{ gap: `${gap}px` }}>
-        <div className="shrink-0" style={{ width: `${labelWidth}px` }} />
-        <div
-          className="grid w-full flex-1"
-          style={{
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-            gap: `${gap}px`,
-          }}
-        >
-          {Array.from({ length: cols }).map((_, i) => (
-            <div key={i} className="h-3" />
-          ))}
-        </div>
-      </div>
+    <div className="animate-pulse w-full flex flex-col gap-1">
+      {/* Month labels spacer */}
+      <div className="h-4" />
 
-      {/* Day labels + cells */}
-      <div className="flex" style={{ gap: `${gap}px` }}>
-        <div className="grid grid-rows-7 shrink-0" style={{ width: `${labelWidth}px`, gap: `${gap}px` }}>
-          {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="aspect-square" />
-          ))}
-        </div>
-        <div
-          className="grid w-full flex-1"
-          style={{
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-            gridTemplateRows: 'repeat(7, 1fr)',
-            gridAutoFlow: 'column',
-            gap: `${gap}px`,
-          }}
-        >
-          {Array.from({ length: cols * 7 }).map((_, i) => (
-            <div key={i} className="rounded-sm bg-muted aspect-square" />
-          ))}
-        </div>
+      {/* Single grid matching real layout */}
+      <div
+        className="grid w-full"
+        style={{
+          gridTemplateColumns: `${labelWidth}px repeat(${cols}, minmax(0, 1fr))`,
+          gridTemplateRows: 'repeat(7, 1fr)',
+          gridAutoFlow: 'column',
+          gap: `${gap}px`,
+        }}
+      >
+        {/* Label column placeholders */}
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div key={`label-${i}`} />
+        ))}
+        {/* Cell placeholders */}
+        {Array.from({ length: cols * 7 }).map((_, i) => (
+          <div key={i} className="rounded-sm bg-muted aspect-square" />
+        ))}
       </div>
     </div>
   );
@@ -130,22 +115,22 @@ function SkeletonGrid({ cols, labelWidth, gap }) {
 function MonthLabelsRow({ weeks, labelWidth, gap }) {
   const monthPositions = useMemo(() => getMonthPositions(weeks), [weeks]);
 
+  // Use absolute positioning so labels aren't squeezed into tiny grid cells
   return (
     <div className="flex" style={{ gap: `${gap}px` }}>
       <div className="shrink-0" style={{ width: `${labelWidth}px` }} />
-      <div
-        className="grid w-full flex-1"
-        style={{
-          gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
-          gap: `${gap}px`,
-        }}
-      >
-        {weeks.map((_, colIdx) => {
-          const pos = monthPositions.find((p) => p.col === colIdx);
+      <div className="relative w-full flex-1 h-4">
+        {monthPositions.map((pos, i) => {
+          // Calculate left % based on column position
+          const leftPct = (pos.col / weeks.length) * 100;
           return (
-            <div key={colIdx} className="text-[10px] text-muted-foreground/60 leading-none h-3 truncate">
-              {pos ? MONTH_LABELS[pos.month] : ''}
-            </div>
+            <span
+              key={i}
+              className="absolute text-[11px] text-muted-foreground/70 leading-none"
+              style={{ left: `${leftPct}%` }}
+            >
+              {MONTH_LABELS[pos.month]}
+            </span>
           );
         })}
       </div>
@@ -158,39 +143,35 @@ function CompactHeatmapGrid({ weeks }) {
     <div className="w-full flex flex-col gap-1">
       <MonthLabelsRow weeks={weeks} labelWidth={COMPACT_LABEL_W} gap={COMPACT_GAP} />
 
-      {/* Day labels + cells */}
-      <div className="flex" style={{ gap: `${COMPACT_GAP}px` }}>
-        {/* Day of week labels */}
-        <div className="grid grid-rows-7 shrink-0" style={{ width: `${COMPACT_LABEL_W}px`, gap: `${COMPACT_GAP}px` }}>
-          {DAY_LABELS_SHORT.map((label, i) => (
-            <div key={i} className="aspect-square flex items-center justify-end pr-0.5">
-              <span className="text-[9px] text-muted-foreground/50 leading-none">{label}</span>
-            </div>
-          ))}
-        </div>
+      {/* Day labels + cells in a single shared grid so rows align perfectly */}
+      <div
+        className="grid w-full"
+        style={{
+          gridTemplateColumns: `${COMPACT_LABEL_W}px repeat(${weeks.length}, minmax(0, 1fr))`,
+          gridTemplateRows: 'repeat(7, 1fr)',
+          gridAutoFlow: 'column',
+          gap: `${COMPACT_GAP}px`,
+        }}
+      >
+        {/* Day labels (first column, 7 rows) */}
+        {DAY_LABELS_SHORT.map((label, i) => (
+          <div key={`label-${i}`} className="flex items-center justify-end pr-0.5">
+            <span className="text-[9px] text-muted-foreground/50 leading-none">{label}</span>
+          </div>
+        ))}
 
         {/* Cells */}
-        <div
-          className="grid w-full flex-1"
-          style={{
-            gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
-            gridTemplateRows: 'repeat(7, 1fr)',
-            gridAutoFlow: 'column',
-            gap: `${COMPACT_GAP}px`,
-          }}
-        >
-          {weeks.map((week, colIdx) =>
-            week.map((day, rowIdx) => (
-              <div
-                key={`${colIdx}-${rowIdx}`}
-                className={cn(
-                  'rounded-sm aspect-square',
-                  INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
-                )}
-              />
-            ))
-          )}
-        </div>
+        {weeks.map((week, colIdx) =>
+          week.map((day, rowIdx) => (
+            <div
+              key={`${colIdx}-${rowIdx}`}
+              className={cn(
+                'rounded-sm aspect-square',
+                INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
+              )}
+            />
+          ))
+        )}
       </div>
     </div>
   );
@@ -201,48 +182,44 @@ function FullHeatmapGrid({ weeks }) {
     <div className="w-full flex flex-col gap-1">
       <MonthLabelsRow weeks={weeks} labelWidth={FULL_LABEL_W} gap={FULL_GAP} />
 
-      {/* Day labels + cells */}
-      <div className="flex" style={{ gap: `${FULL_GAP}px` }}>
-        {/* Day labels */}
-        <div className="grid grid-rows-7 shrink-0" style={{ width: `${FULL_LABEL_W}px`, gap: `${FULL_GAP}px` }}>
-          {Array.from({ length: 7 }).map((_, row) => {
-            const dayLabel = DAY_LABELS_FULL.find((d) => d.row === row);
-            return (
-              <div key={row} className="aspect-square flex items-center justify-end pr-1">
-                <span className="text-[10px] text-muted-foreground leading-none">
-                  {dayLabel ? dayLabel.label : ''}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+      {/* Day labels + cells in a single shared grid so rows align perfectly */}
+      <div
+        className="grid w-full"
+        style={{
+          gridTemplateColumns: `${FULL_LABEL_W}px repeat(${weeks.length}, minmax(0, 1fr))`,
+          gridTemplateRows: 'repeat(7, 1fr)',
+          gridAutoFlow: 'column',
+          gap: `${FULL_GAP}px`,
+        }}
+      >
+        {/* Day labels (first column, 7 rows) */}
+        {Array.from({ length: 7 }).map((_, row) => {
+          const dayLabel = DAY_LABELS_FULL.find((d) => d.row === row);
+          return (
+            <div key={`label-${row}`} className="flex items-center justify-end pr-1">
+              <span className="text-[10px] text-muted-foreground leading-none">
+                {dayLabel ? dayLabel.label : ''}
+              </span>
+            </div>
+          );
+        })}
 
         {/* Grid cells */}
-        <div
-          className="grid w-full flex-1"
-          style={{
-            gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))`,
-            gridTemplateRows: 'repeat(7, 1fr)',
-            gridAutoFlow: 'column',
-            gap: `${FULL_GAP}px`,
-          }}
-        >
-          {weeks.map((week, colIdx) =>
-            week.map((day, rowIdx) => (
-              <Tooltip
-                key={`${colIdx}-${rowIdx}`}
-                text={`${day.count} contribution${day.count !== 1 ? 's' : ''} on ${formatDate(day.date)}`}
-              >
-                <div
-                  className={cn(
-                    'rounded-sm cursor-default aspect-square',
-                    INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
-                  )}
-                />
-              </Tooltip>
-            ))
-          )}
-        </div>
+        {weeks.map((week, colIdx) =>
+          week.map((day, rowIdx) => (
+            <Tooltip
+              key={`${colIdx}-${rowIdx}`}
+              text={`${day.count} contribution${day.count !== 1 ? 's' : ''} on ${formatDate(day.date)}`}
+            >
+              <div
+                className={cn(
+                  'rounded-sm cursor-default aspect-square',
+                  INTENSITY_CLASSES[day.intensity] || INTENSITY_CLASSES[0]
+                )}
+              />
+            </Tooltip>
+          ))
+        )}
       </div>
     </div>
   );
