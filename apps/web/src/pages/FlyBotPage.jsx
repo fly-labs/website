@@ -95,6 +95,9 @@ export default function FlyBotPage() {
       <div className="h-dvh flex flex-col bg-background">
         <Header />
 
+        {/* Spacer for fixed header (py-3 + content ~56px) */}
+        <div className="shrink-0 h-14 sm:h-[60px]" />
+
         <div className="flex-1 flex overflow-hidden relative">
           {/* Sidebar */}
           <ChatSidebar

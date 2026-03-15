@@ -15,10 +15,10 @@ export function ChatMessages({ messages, isStreaming, compact = false, onNavigat
     }
   }, []);
 
-  // Auto-scroll on new messages (instant during streaming to avoid jank)
+  // Auto-scroll on new messages (wait for DOM update, instant to avoid jank)
   useEffect(() => {
     if (!userScrolled) {
-      scrollToBottom(false);
+      requestAnimationFrame(() => scrollToBottom(false));
     }
   }, [messages, userScrolled, scrollToBottom]);
 
