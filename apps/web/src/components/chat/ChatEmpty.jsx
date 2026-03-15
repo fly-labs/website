@@ -3,20 +3,21 @@ import { motion } from 'framer-motion';
 import { Bot, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
+import { PROMPT_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 
 const SUGGESTED_PROMPTS = [
   'I have a business idea. Score it.',
   'Help me write about what I\'m building',
-  'Is this problem worth solving?',
-  'I\'m stuck between two ideas',
-  'Help me name my project',
-  'What are the best-scoring ideas you\'ve seen?',
+  'What are the highest-scoring ideas in the Idea Lab?',
+  'I\'m stuck between two ideas. Help me decide.',
+  'Which prompts should I use for writing a landing page?',
+  'Am I falling for sunk cost on this project?',
 ];
 
 const COMPACT_PROMPTS = [
   'Score my business idea',
-  'Help me write a post',
-  'Is this problem worth solving?',
+  'What prompts fit my project?',
+  'Am I biased on this idea?',
 ];
 
 export function ChatEmpty({ onPromptClick, compact = false }) {
@@ -49,13 +50,13 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             compact ? 'text-xs max-w-[240px]' : 'text-sm max-w-sm'
           )}>
             {compact
-              ? 'I score business ideas, help write content, and think through building decisions.'
-              : 'I score business ideas with 4 AI frameworks, help write content, and think through building decisions. I\'m a sparring partner for people who build things.'
+              ? `670+ scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. Ask me anything about building.`
+              : `I've scored 670+ real problems across ${FRAMEWORK_COUNT} frameworks. I know ${PROMPT_COUNT} prompts by name. I apply behavioral finance to building decisions. Describe an idea and I'll tell you what the data says.`
             }
           </p>
           {!compact && (
             <p className="text-xs text-muted-foreground/40 mt-2 max-w-sm mx-auto">
-              Not a general assistant. I don't do personal coaching, investment advice, or homework.
+              Tuned for builders. Won't do investment advice, personal coaching, or homework.
             </p>
           )}
         </motion.div>
