@@ -22,7 +22,7 @@ export { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 // Centralized here so there's ONE place to update.
 export const ROUTE_COUNT = 23;
 export const SCRIPT_COUNT = 10;
-export const GA4_EVENT_COUNT = 26;
+export const GA4_EVENT_COUNT = 30;
 export const DB_TABLE_COUNT = 9;
 export const RPC_COUNT = 7;
 export const WORKFLOW_COUNT = 3;

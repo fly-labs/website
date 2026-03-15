@@ -250,6 +250,10 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `exception` | ErrorBoundary, trackError() | `description`, `fatal` |
 | `flybot_message_sent` | FlyBotPage, FlyBotPanel | `conversation_id`, `message_length`, `source` (widget/full_page) |
 | `flybot_prompt_clicked` | FlyBotPage, FlyBotPanel | `prompt`, `source` |
+| `flybot_link_clicked` | ChatMessage | `link_url`, `link_text` |
+| `flybot_conversation_created` | useChat | `conversation_id` |
+| `flybot_conversation_deleted` | useChat | `conversation_id` |
+| `flybot_evaluation_displayed` | useChat | `idea_title`, `verdict`, `composite_score` |
 | `flybot_waitlist_joined` | ChatLimitReached | `message_count` |
 
 ## Environment Variables

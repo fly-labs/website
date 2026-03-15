@@ -27,8 +27,13 @@ function checkRateLimit(userId) {
   return true;
 }
 
-function stripHtml(str) {
-  return str.replace(/<[^>]*>/g, '').trim();
+function sanitizeMessage(str) {
+  return str
+    .replace(/<[^>]*>/g, '')
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g, '')
+    .replace(/(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, '')
+    .trim();
 }
 
 // Whitelist valid page names for page_context sanitization
@@ -130,7 +135,7 @@ export default async function handler(req, res) {
   }
 
   // Max message length
-  const cleanMessage = stripHtml(message).slice(0, 2000);
+  const cleanMessage = sanitizeMessage(message).slice(0, 2000);
   if (cleanMessage.length === 0) {
     return res.status(400).json({ error: 'Message is empty' });
   }

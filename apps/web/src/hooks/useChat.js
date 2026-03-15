@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { streamChat, loadMessages, listConversations, createConversation, deleteConversation } from '@/lib/chatApi.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 export function useChat() {
   const [messages, setMessages] = useState([]);
@@ -83,6 +84,7 @@ export function useChat() {
         setIsStreaming(false);
         if (data.conversation_id && !activeConversationId) {
           setActiveConversationId(data.conversation_id);
+          trackEvent('flybot_conversation_created', { conversation_id: data.conversation_id });
         }
         if (data.message_count !== undefined) {
           setMessageCount(data.message_count);
@@ -98,6 +100,11 @@ export function useChat() {
                 : m
             )
           );
+          trackEvent('flybot_evaluation_displayed', {
+            idea_title: data.metadata.evaluation.idea_title,
+            verdict: data.metadata.evaluation.verdict,
+            composite_score: data.metadata.evaluation.composite_score,
+          });
         }
         // Refresh conversations list
         fetchConversations();
@@ -141,6 +148,7 @@ export function useChat() {
   const removeConversation = useCallback(async (id) => {
     try {
       await deleteConversation(id);
+      trackEvent('flybot_conversation_deleted', { conversation_id: id });
       setConversations(prev => prev.filter(c => c.id !== id));
       if (activeConversationId === id) {
         startNewChat();

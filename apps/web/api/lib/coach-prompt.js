@@ -455,6 +455,7 @@ export function buildSystemPrompt(context = {}) {
     if (a.sourceQuality.length > 0) {
       prompt += `Best source by avg score: ${a.sourceQuality[0].name} (avg ${a.sourceQuality[0].avg}, ${a.sourceQuality[0].builds} BUILDs out of ${a.sourceQuality[0].count}).\n`;
     }
+    prompt += `When sharing data, add your own pattern observation. "Notice a pattern? HN is almost entirely AI/Dev right now" is more valuable than raw numbers. One insight per response.\n`;
     if (a.topIndustries.length > 0) {
       prompt += `Top industries: ${a.topIndustries.map(([k, v]) => `${k} (${v})`).join(', ')}.\n`;
     }
@@ -475,7 +476,7 @@ export function buildSystemPrompt(context = {}) {
   // Search results (on-demand, from user query)
   if (context.searchResults && context.searchResults.length > 0) {
     prompt += `\n## SEARCH RESULTS (matching user's query)\n\n`;
-    prompt += `Share these with the user. Link to detail pages using /ideas/{id}. Also suggest a filtered Idea Lab link if appropriate.\n\n`;
+    prompt += `Share the top 3-5 most relevant results (not all of them). Link to detail pages using /ideas/{id}. End with a filtered Idea Lab link so they can explore more. Keep it conversational, not a data dump.\n\n`;
     for (const idea of context.searchResults) {
       prompt += `- "${sanitizeForPrompt(idea.idea_title)}" (Score: ${idea.composite_score || 'N/A'}, ${idea.verdict || 'unscored'}, ${idea.industry || 'no industry'}, from ${idea.source}) → /ideas/${idea.id}\n`;
     }

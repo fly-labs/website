@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Bot } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
+import { trackEvent } from '@/lib/analytics.js';
 import { ChatEvaluation } from '@/components/chat/ChatEvaluation.jsx';
 
 /**
@@ -120,7 +121,12 @@ export function ChatMessage({ message, isStreaming, compact = false, onNavigate 
     const anchor = e.target.closest('a[data-internal]');
     if (anchor) {
       e.preventDefault();
-      onNavigate?.(anchor.getAttribute('href'));
+      const href = anchor.getAttribute('href');
+      trackEvent('flybot_link_clicked', {
+        link_url: href,
+        link_text: anchor.textContent?.slice(0, 100),
+      });
+      onNavigate?.(href);
     }
   };
 
