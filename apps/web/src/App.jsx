@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, BrowserRouter as Router, useLocation } from 'r
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
 import { ChatProvider } from '@/contexts/ChatContext.jsx';
+import { MusicProvider } from '@/contexts/MusicContext.jsx';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -10,6 +11,7 @@ import ScrollToTop from '@/components/ScrollToTop.jsx';
 import GridBackground from '@/components/GridBackground.jsx';
 import { ProtectedRoute } from '@/components/ProtectedRoute.jsx';
 import { FlyBotWidget } from '@/components/flybot/FlyBotWidget.jsx';
+import { MusicWidget } from '@/components/music/MusicWidget.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { Loader2 } from 'lucide-react';
@@ -101,17 +103,20 @@ function App() {
           <Router>
             <ErrorBoundary>
               <ChatProvider>
-                <ScrollToTop />
-                <PageTracker />
-                <GridBackground />
+                <MusicProvider>
+                  <ScrollToTop />
+                  <PageTracker />
+                  <GridBackground />
 
-                <Suspense fallback={<PageFallback />}>
-                  <AnimatedRoutes />
-                </Suspense>
-                <FlyBotWidget />
-                <Toaster position="bottom-right" richColors closeButton duration={4000} />
-                <Analytics />
-                <SpeedInsights />
+                  <Suspense fallback={<PageFallback />}>
+                    <AnimatedRoutes />
+                  </Suspense>
+                  <FlyBotWidget />
+                  <MusicWidget />
+                  <Toaster position="bottom-right" richColors closeButton duration={4000} />
+                  <Analytics />
+                  <SpeedInsights />
+                </MusicProvider>
               </ChatProvider>
             </ErrorBoundary>
           </Router>

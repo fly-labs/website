@@ -46,5 +46,8 @@ drafts/
 docs/content/
 *.private.*
 
+# Music source files (uploaded to Supabase Storage via setup-music.mjs)
+scripts/music/
+
 # Claude Code local files
 .claude/

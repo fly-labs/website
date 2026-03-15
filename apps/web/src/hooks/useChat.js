@@ -92,6 +92,12 @@ export function useChat() {
         if (data.limit !== undefined && data.limit !== null) {
           setMessageLimit(data.limit);
         }
+        if (data.metadata?.music_action) {
+          window.dispatchEvent(new CustomEvent('flybot-music-action', {
+            detail: data.metadata.music_action,
+          }));
+          trackEvent('music_flybot_control', { action: data.metadata.music_action.action });
+        }
         if (data.metadata?.evaluation) {
           setMessages(prev =>
             prev.map(m =>

@@ -31,6 +31,8 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
+**Vibe Coding Player** - Built-in lofi + bossa nova music player. 15 CC0 tracks on Supabase Storage, Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback via conversation.
+
 **Library** - Free ebooks from study notes. AI, business, mindset.
 
 **Newsletter** - Substack archive with engagement metrics, read time, and Notes.
@@ -107,6 +109,7 @@ npm run dev
 | `npm run sync:yc` | Sync dead YC startups |
 | `npm run score` | Score unscored ideas with Claude Sonnet |
 | `npm run enrich` | Validate top ideas with Grok + Reddit |
+| `npm run setup:music` | Upload tracks to Supabase Storage + generate tracks.js |
 
 ## Tech Stack
 
@@ -130,10 +133,11 @@ apps/web/
 │   │   ├── ui/           # shadcn/ui primitives
 │   │   ├── ideas/        # Idea Lab components (cards, filters, scoring)
 │   │   ├── chat/         # FlyBot chat (messages, input, evaluation cards)
-│   │   └── flybot/       # FlyBot widget (trigger, panel)
-│   ├── contexts/         # Auth, Chat, Theme
+│   │   ├── flybot/       # FlyBot widget (trigger, panel)
+│   │   └── music/        # Vibe Coding player (trigger, panel, visualizer)
+│   ├── contexts/         # Auth, Chat, Music, Theme
 │   ├── hooks/            # useIdeaFilters, useChat
-│   ├── lib/data/         # prompts, projects, ideas config, stats
+│   ├── lib/data/         # prompts, projects, ideas config, tracks, stats
 │   └── pages/            # 23 route pages (all lazy-loaded)
 ├── api/                  # Vercel serverless (chat, conversations)
 ├── scripts/              # Sync + scoring scripts (7 sources + Claude)

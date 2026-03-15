@@ -197,6 +197,22 @@
 }
 .flybot-trigger-amber { animation: flybot-pulse-amber 3s ease-in-out infinite; }
 
+/* Music player equalizer bars (organic: per-bar duration set inline) */
+@keyframes music-eq {
+  0%, 100% { height: 20%; }
+  25% { height: 80%; }
+  50% { height: 100%; }
+  75% { height: 60%; }
+}
+.music-eq-bar { animation: music-eq 0.8s ease-in-out infinite; height: 100%; }
+
+/* Music trigger pulse glow */
+@keyframes music-pulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(var(--glow-accent), 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(var(--glow-accent), 0.35); }
+}
+.music-trigger-pulse { animation: music-pulse 3s ease-in-out infinite; }
+
 /* Hide scrollbar utility */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { scrollbar-width: none; }

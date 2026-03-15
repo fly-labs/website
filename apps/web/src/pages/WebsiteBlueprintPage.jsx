@@ -4,7 +4,7 @@ import {
   ArrowLeft, Globe, Code, Zap, Palette, Layers, Navigation, Sparkles,
   Smile, Database, BarChart3, Layout, AtSign, ShieldCheck, CheckCircle2,
   GitBranch, Rocket, Moon, Sun, ArrowRight, MessageSquare, Brain, Search,
-  Users, BookOpen, Lightbulb, Terminal, Clock,
+  Users, BookOpen, Lightbulb, Terminal, Clock, Music,
 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
@@ -83,6 +83,15 @@ const platformSections = [
     color: 'border-accent',
   },
   {
+    stage: 'Building',
+    title: 'Vibe Coding',
+    route: null,
+    desc: 'Built-in lofi + bossa nova music player for coding sessions. 15 curated tracks, Web Audio visualizer, lock screen controls. FlyBot can start it for you.',
+    highlights: ['15 tracks', 'Visualizer', 'FlyBot integration'],
+    icon: Music,
+    color: 'border-primary',
+  },
+  {
     stage: 'Compounding',
     title: 'Library',
     route: '/library',
@@ -138,23 +147,28 @@ const scripts = [
   { name: 'score-ideas', desc: 'Claude Sonnet 4 frameworks' },
   { name: 'enrich-ideas', desc: 'Dual-source validation' },
   { name: 'clean-titles', desc: 'One-time DB cleanup' },
+  { name: 'setup-music', desc: 'Upload tracks to Supabase Storage' },
 ];
 
 const folderTree = `src/
   components/
     ui/             # shadcn/ui (button, avatar, input, tabs, toast)
     ideas/          # IdeaCard, IdeaFilterSheet, IdeaSubmitModal, ScoreUtils, SourceBadge
+    chat/           # FlyBot chat (messages, input, evaluation cards)
+    flybot/         # FlyBot widget (trigger, panel)
+    music/          # Vibe Coding player (widget, trigger, panel + visualizer)
     Header.jsx      # Sticky nav, blur backdrop
     PageLayout.jsx  # SEO + Header + Footer + ScrollProgress
     AuthModal.jsx   # Login/signup (tabs, Google OAuth)
   pages/            # ${ROUTE_COUNT} routes, one file each
   hooks/
     useIdeaFilters.js  # Server-side pagination, URL state, 7 filter dimensions
+    useChat.js         # FlyBot state (messages, streaming, conversations)
   lib/
-    data/           # projects, prompts, ideas, library
+    data/           # projects, prompts, ideas, library, tracks
     analytics.js    # GA4 helpers (${GA4_EVENT_COUNT} events)
     supabaseClient.js
-  contexts/         # Auth (Supabase) + Theme (dark/light)
+  contexts/         # Auth, Chat, Music, Theme
 scripts/            # ${SCRIPT_COUNT} scripts
 .github/workflows/  # ${WORKFLOW_COUNT} workflows`;
 
@@ -355,12 +369,14 @@ const WebsiteBlueprintPage = () => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 mb-2 flex-wrap">
                                 <h3 className="font-bold text-base">{item.title}</h3>
-                                <Link
-                                  to={item.route}
-                                  className="text-xs text-primary font-semibold hover:underline transition-colors inline-flex items-center gap-1"
-                                >
-                                  See it live <ArrowRight className="w-3 h-3" />
-                                </Link>
+                                {item.route && (
+                                  <Link
+                                    to={item.route}
+                                    className="text-xs text-primary font-semibold hover:underline transition-colors inline-flex items-center gap-1"
+                                  >
+                                    See it live <ArrowRight className="w-3 h-3" />
+                                  </Link>
+                                )}
                               </div>
                               <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-3">{item.desc}</p>
                               <div className="flex flex-wrap gap-2">

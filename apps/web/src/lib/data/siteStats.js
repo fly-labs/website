@@ -21,8 +21,8 @@ export { FRAMEWORK_COUNT } from '@/lib/data/constants.js';
 // These describe the codebase itself and can't be auto-computed at runtime.
 // Centralized here so there's ONE place to update.
 export const ROUTE_COUNT = 23;
-export const SCRIPT_COUNT = 10;
-export const GA4_EVENT_COUNT = 30;
+export const SCRIPT_COUNT = 11;
+export const GA4_EVENT_COUNT = 34;
 export const DB_TABLE_COUNT = 9;
 export const RPC_COUNT = 7;
 export const WORKFLOW_COUNT = 3;

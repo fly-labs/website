@@ -290,6 +290,17 @@ export default async function handler(req, res) {
       }
     }
 
+    // Parse music action metadata if present
+    const musicMatch = fullResponse.match(/<music_action>([\s\S]*?)<\/music_action>/);
+    if (musicMatch) {
+      try {
+        if (!metadata) metadata = {};
+        metadata.music_action = JSON.parse(musicMatch[1].trim());
+      } catch (e) {
+        // Failed to parse music action JSON, skip
+      }
+    }
+
     // Save assistant message
     await supabase.from('messages').insert({
       conversation_id: convId,

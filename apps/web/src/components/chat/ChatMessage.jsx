@@ -34,7 +34,10 @@ function isSafeUrl(url) {
  * HTML is escaped BEFORE markdown patterns are applied to prevent XSS.
  */
 function renderMarkdown(text) {
-  const clean = text.replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '').trim();
+  const clean = text
+    .replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '')
+    .replace(/<music_action>[\s\S]*?<\/music_action>/g, '')
+    .trim();
   if (!clean) return null;
 
   const parts = clean.split(/(```[\s\S]*?```|`[^`]+`)/g);
