@@ -641,63 +641,94 @@ const IdeasAnalyticsPage = () => {
     load();
   }, []);
 
-  // Generate smart insights
+  // Generate smart insights with cross-dimensional intelligence
   const insights = useMemo(() => {
     if (!stats) return [];
     const list = [];
 
+    // 1. Cross-source quality comparison
+    if (stats.sourceQualityData?.length >= 2) {
+      const best = stats.sourceQualityData[0];
+      const worst = stats.sourceQualityData[stats.sourceQualityData.length - 1];
+      const diff = best.avg - worst.avg;
+      if (diff > 5) {
+        list.push({
+          icon: TrendingUp, color: 'secondary',
+          text: `${best.name} ideas score ${diff} points higher than ${worst.name} on average. Quality varies dramatically by source.`,
+        });
+      }
+    }
+
+    // 2. Top opportunity industry
+    if (stats.industryIntelData?.length > 0) {
+      const topInd = stats.industryIntelData[0];
+      list.push({
+        icon: Target, color: 'primary',
+        text: `${topInd.name} has the highest opportunity score: ${topInd.buildRate}% BUILD rate across ${topInd.count} ideas, best source is ${topInd.bestSource}.`,
+      });
+    }
+
+    // 3. Score trend
+    if (stats.scoreTrend !== 0 && stats.scoreTrend != null) {
+      const direction = stats.scoreTrend > 0 ? 'climbing' : 'dropping';
+      list.push({
+        icon: TrendingUp, color: stats.scoreTrend > 0 ? 'primary' : 'accent',
+        text: `Average score is ${direction} ${Math.abs(stats.scoreTrend)}% vs the 4-week rolling average. ${stats.scoreTrend > 0 ? 'Pipeline quality is improving.' : 'More volume coming in, raw quality diluting slightly.'}`,
+      });
+    }
+
+    // 4. Framework disagreement highlight
+    if (stats.disagreements?.length > 0) {
+      const maxD = stats.disagreements[0];
+      list.push({
+        icon: GitCompare, color: 'accent',
+        text: `"${maxD.title}" has a ${maxD.spread}-point spread. ${maxD.highest[0]} scores ${maxD.highest[1]}, ${maxD.lowest[0]} only ${maxD.lowest[1]}. The experts can't agree.`,
+        link: `/ideas/${maxD.id}`,
+      });
+    }
+
+    // 5. Source momentum
+    if (stats.sourceMomentumData?.length > 0) {
+      const accelerating = stats.sourceMomentumData.filter(s => s.delta > 20);
+      if (accelerating.length > 0) {
+        list.push({
+          icon: Zap, color: 'secondary',
+          text: `${accelerating.map(s => s.source).join(' and ')} ${accelerating.length > 1 ? 'are' : 'is'} accelerating this week (${accelerating.map(s => `+${s.delta}%`).join(', ')}).`,
+        });
+      }
+    }
+
+    // 6. Hidden gem callout
+    if (stats.hiddenGems?.length > 0) {
+      const gem = stats.hiddenGems[0];
+      list.push({
+        icon: Gem, color: 'primary',
+        text: `Hidden gem: "${gem.title}" scores ${gem.composite}/100 but has only ${gem.votes} vote${gem.votes !== 1 ? 's' : ''}. Nobody's noticed it yet.`,
+        link: `/ideas/${gem.id}`,
+      });
+    }
+
+    // 7. BUILD rate analysis
     if (stats.buildRate > 0) {
       list.push({
-        icon: Target,
-        color: 'primary',
+        icon: Target, color: 'primary',
         text: `${stats.buildRate}% of scored ideas get a BUILD verdict. ${stats.buildRate > 30 ? 'The pipeline is quality-rich.' : stats.buildRate > 15 ? 'Most ideas need more validation.' : 'The AI is ruthless. Only the strongest survive.'}`,
       });
     }
 
-    if (stats.topScoredIdea) {
-      const src = sourceOptions.find(s => s.value === stats.topScoredIdea.source)?.label || stats.topScoredIdea.source;
-      list.push({
-        icon: Lightbulb,
-        color: 'primary',
-        text: `Top score: ${stats.topScoredIdea.composite_score}/100. "${stats.topScoredIdea.idea_title}" from ${src}.`,
-        link: `/ideas/${stats.topScoredIdea.id}`,
-      });
+    // 8. Framework correlation
+    if (stats.correlationData?.length > 0) {
+      const mostAligned = stats.correlationData[0];
+      const leastAligned = stats.correlationData[stats.correlationData.length - 1];
+      if (mostAligned.agreement - leastAligned.agreement > 10) {
+        list.push({
+          icon: Layers, color: 'accent',
+          text: `${mostAligned.label} agree ${mostAligned.agreement}% of the time. ${leastAligned.label} only ${leastAligned.agreement}%. Different lenses, different conclusions.`,
+        });
+      }
     }
 
-    if (stats.bestQualitySource) {
-      list.push({
-        icon: TrendingUp,
-        color: 'secondary',
-        text: `${stats.bestQualitySource.name} produces the highest quality ideas with an average score of ${stats.bestQualitySource.avg}/100 across ${stats.bestQualitySource.count} ideas.`,
-      });
-    }
-
-    if (stats.topIndustry) {
-      list.push({
-        icon: BarChart3,
-        color: 'accent',
-        text: `${stats.topIndustry.name} is the most common problem domain with ${stats.topIndustry.value} ideas. That's where people are hurting the most.`,
-      });
-    }
-
-    if (stats.thisWeek > 0) {
-      list.push({
-        icon: Zap,
-        color: 'secondary',
-        text: `${stats.thisWeek} new idea${stats.thisWeek > 1 ? 's' : ''} added in the last 7 days. The pipeline keeps growing.`,
-      });
-    }
-
-    if (stats.scoredCount > 0 && stats.total > stats.scoredCount) {
-      const scoredPct = Math.round((stats.scoredCount / stats.total) * 100);
-      list.push({
-        icon: Layers,
-        color: 'accent',
-        text: `${stats.scoredCount} of ${stats.total} ideas scored (${scoredPct}%). The rest are waiting in the queue.`,
-      });
-    }
-
-    return list;
+    return list.slice(0, 8);
   }, [stats]);
 
   if (loading) {
@@ -725,7 +756,7 @@ const IdeasAnalyticsPage = () => {
     <PageLayout
       seo={{
         title: "Idea Lab Analytics | Fly Labs",
-        description: "Live analytics from the Idea Lab. Score distributions, source breakdown, verdict analysis, and framework comparison across all scored ideas.",
+        description: "Business intelligence dashboard. Momentum tracking, opportunity map, industry intelligence, framework analysis, hidden gems. Real-time analytics from AI-scored ideas.",
         url: "https://flylabs.fun/ideas/analytics",
         noindex: true,
       }}
@@ -765,7 +796,7 @@ const IdeasAnalyticsPage = () => {
             Idea Lab Analytics
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-xl">
-            The intelligence layer behind every idea. Verdict distribution, source quality, industry trends, scoring patterns. All from real data, scored by AI.
+            Momentum tracking, opportunity mapping, framework disagreements, industry intelligence, hidden gems. Real-time business intelligence from {stats.total} ideas scored by AI.
           </p>
         </motion.div>
 
@@ -788,6 +819,49 @@ const IdeasAnalyticsPage = () => {
           </motion.div>
         </motion.div>
 
+        {/* ── Momentum Dashboard ── */}
+        <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4 mb-8 sm:mb-10" {...staggerContainer}>
+          <motion.div {...staggerItem}>
+            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
+              <ArrowUpRight className="w-4 h-4 text-primary mb-1.5" />
+              <p className="text-base sm:text-xl font-black text-foreground leading-tight truncate">
+                {stats.sourceMomentumData?.[0]?.source || '-'}
+              </p>
+              <DeltaBadge value={stats.sourceMomentumData?.[0]?.delta} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Fastest source</p>
+            </div>
+          </motion.div>
+          <motion.div {...staggerItem}>
+            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
+              <Zap className="w-4 h-4 text-secondary mb-1.5" />
+              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+                {stats.pipelineThisWeek}
+              </p>
+              <DeltaBadge value={stats.pipelineDelta} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Ideas this week</p>
+            </div>
+          </motion.div>
+          <motion.div {...staggerItem}>
+            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
+              <TrendingUp className="w-4 h-4 text-accent mb-1.5" />
+              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+                {stats.currentWeekAvg}<span className="text-sm text-muted-foreground font-normal">/100</span>
+              </p>
+              <DeltaBadge value={stats.scoreTrend} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Avg score this week</p>
+            </div>
+          </motion.div>
+          <motion.div {...staggerItem}>
+            <div className="glass-card p-4 sm:p-5 border border-border rounded-xl">
+              <GitCompare className="w-4 h-4 text-amber-500 mb-1.5" />
+              <p className="text-lg sm:text-2xl font-black text-foreground leading-tight tabular-nums">
+                {stats.disagreements?.length || 0}
+              </p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground font-medium mt-1">Expert disagreements</p>
+            </div>
+          </motion.div>
+        </motion.div>
+
         {/* ── Key Insights ── */}
         {insights.length > 0 && (
           <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
@@ -800,6 +874,77 @@ const IdeasAnalyticsPage = () => {
                 <InsightCard key={i} {...insight} />
               ))}
             </motion.div>
+          </motion.div>
+        )}
+
+        {/* ── Top 10 Leaderboard ── */}
+        {stats.leaderboard?.length > 0 && (
+          <motion.div className="mb-8 sm:mb-10" {...fadeUp}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary flex items-center gap-2">
+                <Trophy className="w-4 h-4" /> {leaderboardTab === 'top' ? 'Top BUILD Ideas' : 'Hidden Gems'}
+              </h2>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setLeaderboardTab('top')} className={cn("text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors", leaderboardTab === 'top' ? 'bg-primary/15 text-primary' : 'text-muted-foreground hover:text-foreground')}>Top 10</button>
+                <button onClick={() => setLeaderboardTab('gems')} className={cn("text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors", leaderboardTab === 'gems' ? 'bg-accent/15 text-accent' : 'text-muted-foreground hover:text-foreground')}>Hidden Gems</button>
+              </div>
+            </div>
+            <div className="card-glow overflow-x-auto">
+              {leaderboardTab === 'top' ? (
+                <table className="w-full text-left text-xs sm:text-sm">
+                  <thead>
+                    <tr className="border-b border-border/50">
+                      <th className="py-2 px-3 font-medium text-muted-foreground w-8">#</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground">Idea</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground text-center w-16">Score</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground text-center w-10 hidden sm:table-cell">FL</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground text-center w-10 hidden sm:table-cell">H</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground text-center w-10 hidden sm:table-cell">K</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground text-center w-10 hidden sm:table-cell">O</th>
+                      <th className="py-2 px-3 font-medium text-muted-foreground hidden md:table-cell">Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.leaderboard.map((idea, i) => {
+                      const srcLabel = sourceOptions.find(s => s.value === idea.source)?.label || idea.source;
+                      return (
+                        <tr key={idea.id} className="border-b border-border/30 last:border-0">
+                          <td className="py-2.5 px-3 text-muted-foreground font-bold tabular-nums">{i + 1}</td>
+                          <td className="py-2.5 px-3">
+                            <Link to={`/ideas/${idea.id}`} className="font-medium text-foreground hover:text-primary transition-colors line-clamp-1">{idea.title}</Link>
+                            <span className="block text-[10px] text-muted-foreground mt-0.5 sm:hidden">{srcLabel}</span>
+                          </td>
+                          <td className="py-2.5 px-3 text-center font-bold text-foreground tabular-nums">{idea.composite}</td>
+                          <td className="py-2.5 px-3 text-center text-[11px] text-muted-foreground tabular-nums hidden sm:table-cell">{idea.flylabs ?? '-'}</td>
+                          <td className="py-2.5 px-3 text-center text-[11px] text-muted-foreground tabular-nums hidden sm:table-cell">{idea.hormozi ?? '-'}</td>
+                          <td className="py-2.5 px-3 text-center text-[11px] text-muted-foreground tabular-nums hidden sm:table-cell">{idea.koe ?? '-'}</td>
+                          <td className="py-2.5 px-3 text-center text-[11px] text-muted-foreground tabular-nums hidden sm:table-cell">{idea.okamoto ?? '-'}</td>
+                          <td className="py-2.5 px-3 text-[11px] text-muted-foreground hidden md:table-cell">{srcLabel}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="p-4 sm:p-5 space-y-3">
+                  {stats.hiddenGems?.length > 0 ? stats.hiddenGems.map(gem => {
+                    const srcLabel = sourceOptions.find(s => s.value === gem.source)?.label || gem.source;
+                    return (
+                      <Link key={gem.id} to={`/ideas/${gem.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-2 px-2 py-2 rounded-lg transition-colors">
+                        <Gem className="w-4 h-4 text-accent shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{gem.title}</p>
+                          <p className="text-[11px] text-muted-foreground">{gem.composite}/100 · {gem.votes} vote{gem.votes !== 1 ? 's' : ''} · {srcLabel}</p>
+                        </div>
+                        <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", gem.verdict === 'BUILD' ? 'bg-primary/10 text-primary' : 'bg-amber-500/10 text-amber-600')}>
+                          {gem.verdict === 'VALIDATE_FIRST' ? 'VALIDATE' : gem.verdict}
+                        </span>
+                      </Link>
+                    );
+                  }) : <p className="text-sm text-muted-foreground text-center py-4">No hidden gems yet. High-scoring ideas with low visibility will appear here.</p>}
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
 
@@ -937,6 +1082,53 @@ const IdeasAnalyticsPage = () => {
               ))}
             </div>
           </ChartCard>
+
+          {/* Framework Disagreement */}
+          {stats.disagreements?.length > 0 && (
+            <ChartCard title="Where the experts disagree" subtitle="Ideas with 25+ point spread between frameworks" doodle={FlaskDoodle}>
+              <div className="space-y-2.5">
+                {stats.disagreements.slice(0, 5).map(d => (
+                  <Link key={d.id} to={`/ideas/${d.id}`} className="flex items-center gap-3 hover:bg-muted/30 -mx-1 px-1 py-2 rounded-lg transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">{d.title}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] font-bold text-primary">{d.highest[0]} {d.highest[1]}</span>
+                        <span className="text-[10px] text-muted-foreground/40">vs</span>
+                        <span className="text-[10px] font-bold text-red-500">{d.lowest[0]} {d.lowest[1]}</span>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black text-amber-500 tabular-nums shrink-0">{d.spread}pt</span>
+                  </Link>
+                ))}
+              </div>
+            </ChartCard>
+          )}
+
+          {/* Framework Correlation */}
+          {stats.correlationData?.length > 0 && (
+            <ChartCard title="Framework alignment" subtitle="How often the scoring brains agree">
+              <div className="space-y-3">
+                {stats.correlationData.map((pair, i) => (
+                  <div key={pair.label}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-foreground">{pair.label}</span>
+                      <div className="flex items-center gap-2">
+                        {i === 0 && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">Most aligned</span>}
+                        {i === stats.correlationData.length - 1 && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-accent/10 text-accent">Most independent</span>}
+                        <span className="text-xs font-bold text-foreground tabular-nums">{pair.agreement}%</span>
+                      </div>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted/50 overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700" style={{
+                        width: `${pair.agreement}%`,
+                        background: pair.agreement > 70 ? COLORS.primary : pair.agreement > 50 ? COLORS.amber : COLORS.red,
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ChartCard>
+          )}
 
           {/* Ideas Timeline (full width) - ComposedChart with toggle */}
           <ChartCard
@@ -1132,6 +1324,87 @@ const IdeasAnalyticsPage = () => {
               ))}
             </div>
           </ChartCard>
+
+          {/* Industry Intelligence Matrix */}
+          {stats.industryIntelData?.length > 0 && (
+            <ChartCard title="Industry intelligence" subtitle="Ranked by opportunity score (avg quality + BUILD rate + momentum)" className="md:col-span-2" doodle={LightbulbDoodle}>
+              <div className="overflow-x-auto -mx-1">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-border/50">
+                      <th className="text-left font-medium text-muted-foreground py-2 px-2">Industry</th>
+                      <th className="text-center font-medium text-muted-foreground py-2 px-2 w-14">Ideas</th>
+                      <th className="text-center font-medium text-muted-foreground py-2 px-2 w-14">Avg</th>
+                      <th className="text-center font-medium text-muted-foreground py-2 px-2 w-16">BUILD%</th>
+                      <th className="text-left font-medium text-muted-foreground py-2 px-2 hidden sm:table-cell">Top source</th>
+                      <th className="text-right font-medium text-muted-foreground py-2 px-2 w-16">Trend</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.industryIntelData.slice(0, 12).map(ind => (
+                      <tr key={ind.name} className="border-b border-border/30 last:border-0">
+                        <td className="py-2 px-2 font-medium text-foreground text-[11px] sm:text-xs">{ind.name}</td>
+                        <td className="py-2 px-2 text-center text-muted-foreground tabular-nums">{ind.count}</td>
+                        <td className="py-2 px-2 text-center font-bold text-foreground tabular-nums">{ind.avgScore}</td>
+                        <td className="py-2 px-2 text-center">
+                          <span className={cn("text-[10px] font-bold px-1.5 py-0.5 rounded", ind.buildRate >= 30 ? 'bg-primary/10 text-primary' : ind.buildRate >= 15 ? 'bg-amber-500/10 text-amber-600' : 'bg-muted text-muted-foreground')}>
+                            {ind.buildRate}%
+                          </span>
+                        </td>
+                        <td className="py-2 px-2 text-[11px] text-muted-foreground hidden sm:table-cell">{ind.bestSource}</td>
+                        <td className="py-2 px-2 text-right"><DeltaBadge value={ind.wowDelta} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ChartCard>
+          )}
+
+          {/* Opportunity Map */}
+          {stats.opportunityMapData?.length > 3 && (
+            <ChartCard title="Opportunity map" subtitle="Industry volume vs BUILD rate. Top-right = stars. Top-left = niche gold." className="md:col-span-2" doodle={StarDoodle}>
+              <div className="h-56 sm:h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ScatterChart margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis type="number" dataKey="volume" name="Ideas" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} label={{ value: 'Idea volume', position: 'insideBottom', offset: -2, style: { fontSize: 10, fill: 'hsl(var(--muted-foreground))' } }} />
+                    <YAxis type="number" dataKey="buildRate" name="BUILD %" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} label={{ value: 'BUILD rate %', angle: -90, position: 'insideLeft', style: { fontSize: 10, fill: 'hsl(var(--muted-foreground))' } }} width={40} />
+                    <ZAxis type="number" dataKey="avgScore" range={[40, 400]} name="Avg score" />
+                    <Tooltip content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d = payload[0].payload;
+                      return (
+                        <div className="bg-card border border-border rounded-lg px-3 py-2 shadow-lg text-sm">
+                          <p className="font-medium text-foreground">{d.name}</p>
+                          <p className="text-muted-foreground text-xs">{d.volume} ideas · {d.buildRate}% BUILD · avg {d.avgScore}</p>
+                          <p className="text-[10px] text-muted-foreground/60 mt-0.5">{d.quadrant}</p>
+                        </div>
+                      );
+                    }} />
+                    <Scatter data={stats.opportunityMapData} fill={COLORS.primary}>
+                      {stats.opportunityMapData.map((entry, i) => {
+                        const qColors = { Stars: COLORS.primary, 'Niche Gold': COLORS.accent, Crowded: COLORS.amber, Frontier: COLORS.secondary };
+                        return <Cell key={i} fill={qColors[entry.quadrant] || COLORS.primary} fillOpacity={0.7} />;
+                      })}
+                    </Scatter>
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap gap-3 mt-3 justify-center">
+                {[
+                  { label: 'Stars (high vol + high BUILD)', color: COLORS.primary },
+                  { label: 'Niche Gold (low vol + high BUILD)', color: COLORS.accent },
+                  { label: 'Crowded (high vol + low BUILD)', color: COLORS.amber },
+                  { label: 'Frontier (low vol + low BUILD)', color: COLORS.secondary },
+                ].map(q => (
+                  <span key={q.label} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <span className="w-2 h-2 rounded-full" style={{ background: q.color }} /> {q.label}
+                  </span>
+                ))}
+              </div>
+            </ChartCard>
+          )}
 
           {/* Verdict Over Time (last 12 weeks) */}
           {stats.verdictTimeData && stats.verdictTimeData.length > 1 && (
