@@ -49,6 +49,15 @@ export default [
 			'import/no-cycle': 'off', // AI rarely makes this error, and the rule is very slow to run
 		},
 	},
+	{
+		// Excalidraw's package.json exports don't expose index.css to Node resolvers,
+		// but Vite handles it fine at build time. Suppress false positives.
+		files: ['**/ExcalidrawCanvas.jsx'],
+		rules: {
+			'import/no-unresolved': ['error', { ignore: ['@excalidraw/excalidraw'] }],
+			'import/no-self-import': 'off',
+		},
+	},
 	{ files: ['tools/**/*.js', 'tailwind.config.js'], languageOptions: { globals: globals.node } },
 	{ files: ['api/**/*.js'], languageOptions: { globals: globals.node } },
 ];
