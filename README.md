@@ -31,7 +31,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
-**Vibe Coding Player** - Built-in lofi music player with 4 vibe modes (Ideate, Build, Create, Study). CC0 tracks on Supabase Storage, Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
+**Vibe Coding Player** - Built-in lofi music player with 5 vibe modes (Ideate, Build, Create, Study, Retro). 50 CC0 tracks on Cloudflare R2 (zero egress fees), Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
 
 **FlyBoard** - Collaborative whiteboard powered by Excalidraw. Pick a template, sketch your ideas, and export when ready.
 
@@ -94,6 +94,11 @@ npm run dev
 | `REDDIT_CLIENT_ID` | No | Higher Reddit rate limits |
 | `REDDIT_CLIENT_SECRET` | No | Reddit OAuth |
 | `GITHUB_TOKEN` | No | 5K req/hr vs 60 unauthenticated |
+| `R2_ACCOUNT_ID` | For music | Cloudflare account ID |
+| `R2_ACCESS_KEY_ID` | For music | R2 API token access key |
+| `R2_SECRET_ACCESS_KEY` | For music | R2 API token secret key |
+| `R2_BUCKET_NAME` | For music | R2 bucket name (default: flylabs-music) |
+| `R2_PUBLIC_URL` | For music | R2 public URL (e.g. https://pub-xxx.r2.dev) |
 
 ## Scripts
 
@@ -112,7 +117,7 @@ npm run dev
 | `npm run score` | Score unscored ideas with Claude Sonnet |
 | `npm run score:backfill` | Re-score ALL ideas (backfill-all.mjs) |
 | `npm run enrich` | Validate top ideas with Grok + Reddit |
-| `npm run setup:music` | Upload tracks to Supabase Storage + generate tracks.js |
+| `npm run setup:music` | Upload tracks to Cloudflare R2 + generate tracks.js |
 
 ## Tech Stack
 
@@ -123,7 +128,7 @@ npm run dev
 | Components | shadcn/ui (Radix UI + CVA) |
 | Animation | Framer Motion 11 |
 | Charts | Recharts (lazy-loaded) |
-| Backend | Supabase (PostgreSQL + Auth) |
+| Backend | Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage) |
 | AI | Claude API (scoring, coaching) + Grok (validation) |
 | Deploy | Vercel (auto-deploy on push) |
 

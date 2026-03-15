@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@aws-sdk/client-s3": "^3.1009.0",
     "@supabase/supabase-js": "^2.49.1",
     "dotenv": "^17.3.1"
   },

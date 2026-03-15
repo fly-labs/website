@@ -20,7 +20,7 @@ npm run lint     # ESLint (quiet mode)
 - **Animation:** Framer Motion 11
 - **Charts:** Recharts (lazy-loaded, separate vendor chunk)
 - **Icons:** Lucide React
-- **Backend:** Supabase (PostgreSQL + Auth + Storage)
+- **Backend:** Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage)
 - **Auth:** Email/password + Google OAuth via Supabase
 - **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root)
 - **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, setUserProperties, setUserId). Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
@@ -82,7 +82,7 @@ apps/web/
 │   │   ├── AuthContext.jsx   # Supabase auth state, login/signup/logout, profile CRUD (optimistic update), GA4 user props
 │   │   ├── BoardContext.jsx  # FlyBoard state management
 │   │   ├── ChatContext.jsx   # App-wide chat state (wraps useChat, widget open/close, page context, lazy init)
-│   │   ├── MusicContext.jsx  # Audio engine (HTML5 Audio + Web Audio API visualizer, 4 vibe modes, shuffle within vibe, volume, FlyBot bridge with vibe selection, MediaSession)
+│   │   ├── MusicContext.jsx  # Audio engine (HTML5 Audio + Web Audio API visualizer, 5 vibe modes, shuffle within vibe, volume, FlyBot bridge with vibe selection, MediaSession)
 │   │   └── ThemeContext.jsx  # Dark/light mode (localStorage + system preference)
 │   ├── hooks/
 │   │   ├── useIdeaFilters.js # Server-side paginated filter hook (Supabase queries, URL state, 7 filter dimensions, cascading counts)
@@ -182,7 +182,7 @@ apps/web/
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h. RLS enabled with honeypot defense in `log_idea_submission` RPC
 - **RPCs:** `increment_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Also: `scripts/clean-titles.mjs` (one-time DB cleanup to strip source prefixes like "Show HN:", "[Feature Request]" from idea titles). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study}/ subfolders to Supabase Storage public bucket, cleans up old flat-structure files, auto-generates src/lib/data/tracks.js with vibe modes). Run via `npm run setup:music`
+- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Also: `scripts/clean-titles.mjs` (one-time DB cleanup to strip source prefixes like "Show HN:", "[Feature Request]" from idea titles). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`
 - **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
 
 ## Design System
@@ -279,7 +279,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `music_player_toggled` | MusicWidget | `state` (open/close) |
 | `music_track_played` | MusicContext | `track_title`, `track_artist`, `vibe`, `source` (user/flybot) |
 | `music_track_skipped` | MusicContext | `track_title`, `direction` (next/prev) |
-| `music_vibe_changed` | MusicContext | `vibe` (ideate/build/create/study) |
+| `music_vibe_changed` | MusicContext | `vibe` (ideate/build/create/study/retro) |
 | `music_flybot_control` | useChat.js | `action` (play/pause/open) |
 
 ## Environment Variables
@@ -295,6 +295,11 @@ XAI_API_KEY=your-xai-api-key
 REDDIT_CLIENT_ID=your-reddit-client-id (optional)
 REDDIT_CLIENT_SECRET=your-reddit-client-secret (optional)
 GITHUB_TOKEN=your-github-pat (optional, for 5K req/hr vs 60)
+R2_ACCOUNT_ID=your-cloudflare-account-id (for music upload)
+R2_ACCESS_KEY_ID=your-r2-access-key
+R2_SECRET_ACCESS_KEY=your-r2-secret-key
+R2_BUCKET_NAME=flylabs-music
+R2_PUBLIC_URL=https://pub-xxx.r2.dev
 ```
 
 ## Git

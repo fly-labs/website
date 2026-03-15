@@ -1,18 +1,24 @@
 /**
  * Music Setup Script
  *
- * Uploads MP3 files from scripts/music/{vibe}/ subfolders to Supabase Storage
- * (public bucket), then auto-generates apps/web/src/lib/data/tracks.js with
- * vibe-based track metadata.
+ * Uploads MP3 files from scripts/music/{vibe}/ subfolders to Cloudflare R2
+ * (S3-compatible, zero egress fees), then auto-generates
+ * apps/web/src/lib/data/tracks.js with public URLs.
  *
  * Usage:
- *   1. Place CC0/royalty-free MP3s in scripts/music/{ideate,build,create,study}/
- *   2. Run: npm run setup:music
+ *   1. Place CC0/royalty-free MP3s in scripts/music/{ideate,build,create,study,retro}/
+ *   2. Set R2 env vars in apps/web/.env (see below)
+ *   3. Run: npm run setup:music
  *
- * Reads SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY from apps/web/.env
+ * Required env vars (in apps/web/.env):
+ *   R2_ACCOUNT_ID=your-cloudflare-account-id
+ *   R2_ACCESS_KEY_ID=your-r2-access-key
+ *   R2_SECRET_ACCESS_KEY=your-r2-secret-key
+ *   R2_BUCKET_NAME=flylabs-music
+ *   R2_PUBLIC_URL=https://pub-xxx.r2.dev (or custom domain)
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'fs';
 import { join, basename, extname } from 'path';
 import { fileURLToPath } from 'url';
@@ -38,16 +44,23 @@ for (const line of envContent.split('\n')) {
   env[trimmed.slice(0, eqIdx)] = trimmed.slice(eqIdx + 1);
 }
 
-const SUPABASE_URL = env.VITE_SUPABASE_URL || env.SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+// R2 config (required)
+const R2_ACCOUNT_ID = env.R2_ACCOUNT_ID;
+const R2_ACCESS_KEY_ID = env.R2_ACCESS_KEY_ID;
+const R2_SECRET_ACCESS_KEY = env.R2_SECRET_ACCESS_KEY;
+const R2_BUCKET_NAME = env.R2_BUCKET_NAME || 'flylabs-music';
+const R2_PUBLIC_URL = (env.R2_PUBLIC_URL || '').replace(/\/$/, '');
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in apps/web/.env');
+if (!R2_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_PUBLIC_URL) {
+  console.error('Missing R2 credentials. Set these in apps/web/.env:');
+  console.error('  R2_ACCOUNT_ID=your-cloudflare-account-id');
+  console.error('  R2_ACCESS_KEY_ID=your-r2-access-key');
+  console.error('  R2_SECRET_ACCESS_KEY=your-r2-secret-key');
+  console.error('  R2_BUCKET_NAME=flylabs-music');
+  console.error('  R2_PUBLIC_URL=https://pub-xxx.r2.dev');
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const BUCKET = 'music';
 const MUSIC_DIR = join(__dirname, 'music');
 const TRACKS_OUTPUT = join(__dirname, '..', 'apps', 'web', 'src', 'lib', 'data', 'tracks.js');
 
@@ -59,7 +72,7 @@ const VIBE_CONFIG = [
   { id: 'retro', name: 'Retro', description: 'Lan house era. Chiptune beats and 8-bit nostalgia.', icon: 'Gamepad2' },
 ];
 
-const MAX_TOTAL_SIZE_MB = 500;
+const MAX_TOTAL_SIZE_MB = 250;
 
 /**
  * Parse a filename like "01-chill-lofi-beats--artist-name.mp3" into title + artist
@@ -77,10 +90,8 @@ function toTitleCase(str) {
 
 function parseFilename(filename) {
   const name = basename(filename, extname(filename));
-  // Remove leading track number (e.g., "01-" or "01_")
   const cleaned = name.replace(/^\d+[-_]\s*/, '');
 
-  // Double dash separates title from artist
   if (cleaned.includes('--')) {
     const [titlePart, artistPart] = cleaned.split('--', 2);
     return {
@@ -95,33 +106,55 @@ function parseFilename(filename) {
   };
 }
 
+// ── R2 Upload ──
+
+function createR2Client() {
+  return new S3Client({
+    region: 'auto',
+    endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId: R2_ACCESS_KEY_ID,
+      secretAccessKey: R2_SECRET_ACCESS_KEY,
+    },
+  });
+}
+
+async function uploadToR2(r2, storagePath, fileBuffer) {
+  await r2.send(new PutObjectCommand({
+    Bucket: R2_BUCKET_NAME,
+    Key: storagePath,
+    Body: fileBuffer,
+    ContentType: 'audio/mpeg',
+    CacheControl: 'public, max-age=31536000, immutable',
+  }));
+  return `${R2_PUBLIC_URL}/${storagePath}`;
+}
+
+// ── Main ──
+
 async function main() {
-  // Check music directory exists
   if (!existsSync(MUSIC_DIR)) {
     console.error(`No scripts/music/ directory found.`);
     console.error(`Create it with vibe subfolders and add CC0/royalty-free MP3 files:`);
-    console.error(`  mkdir -p scripts/music/{ideate,build,create,study}`);
+    console.error(`  mkdir -p scripts/music/{ideate,build,create,study,retro}`);
     console.error(`  # Add MP3 files named like: 01-track-title--artist-name.mp3`);
     process.exit(1);
   }
 
-  // Detect mode: subfolder-based (new) or flat (legacy)
   const hasSubfolders = VIBE_CONFIG.some(v => {
     const dir = join(MUSIC_DIR, v.id);
     return existsSync(dir) && statSync(dir).isDirectory();
   });
 
   if (!hasSubfolders) {
-    // Legacy flat mode: check for MP3s directly in music/
     const flatFiles = readdirSync(MUSIC_DIR).filter(f => f.endsWith('.mp3'));
     if (flatFiles.length > 0) {
       console.error('Found MP3 files in scripts/music/ but no vibe subfolders.');
-      console.error('Move tracks into subfolders: scripts/music/{ideate,build,create,study}/');
-      console.error('Example: mv scripts/music/01-track.mp3 scripts/music/build/01-track.mp3');
+      console.error('Move tracks into subfolders: scripts/music/{ideate,build,create,study,retro}/');
       process.exit(1);
     }
     console.error('No vibe subfolders found in scripts/music/.');
-    console.error('Create them: mkdir -p scripts/music/{ideate,build,create,study}');
+    console.error('Create them: mkdir -p scripts/music/{ideate,build,create,study,retro}');
     process.exit(1);
   }
 
@@ -158,35 +191,8 @@ async function main() {
 
   console.log(`Found ${totalTracks} tracks across ${VIBE_CONFIG.length} vibes`);
 
-  // Create bucket (ignore error if exists)
-  const { error: bucketError } = await supabase.storage.createBucket(BUCKET, {
-    public: true,
-    fileSizeLimit: 20 * 1024 * 1024, // 20MB per file
-    allowedMimeTypes: ['audio/mpeg', 'audio/mp3'],
-  });
-  if (bucketError && !bucketError.message?.includes('already exists')) {
-    console.error('Failed to create bucket:', bucketError.message);
-    process.exit(1);
-  }
-  console.log(`Bucket "${BUCKET}" ready`);
-
-  // Clean up old flat-structure files (files at root, not in subfolders)
-  console.log('\nCleaning up old flat-structure files...');
-  const { data: existingFiles } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
-  if (existingFiles) {
-    const rootFiles = existingFiles.filter(f => f.name?.endsWith('.mp3'));
-    if (rootFiles.length > 0) {
-      const filesToDelete = rootFiles.map(f => f.name);
-      const { error: deleteError } = await supabase.storage.from(BUCKET).remove(filesToDelete);
-      if (deleteError) {
-        console.warn(`  Warning: could not delete old files: ${deleteError.message}`);
-      } else {
-        console.log(`  Removed ${filesToDelete.length} old flat-structure files`);
-      }
-    } else {
-      console.log('  No old files to clean up');
-    }
-  }
+  const r2 = createR2Client();
+  console.log(`Uploading to Cloudflare R2 (${R2_BUCKET_NAME})`);
 
   const vibesData = [];
 
@@ -208,29 +214,17 @@ async function main() {
 
       console.log(`  Uploading: ${storagePath} (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB)`);
 
-      // Upload (upsert to handle re-runs)
-      const { error: uploadError } = await supabase.storage
-        .from(BUCKET)
-        .upload(storagePath, fileBuffer, {
-          contentType: 'audio/mpeg',
-          upsert: true,
+      try {
+        const publicUrl = await uploadToR2(r2, storagePath, fileBuffer);
+        vibeTracks.push({
+          id: `${vibe.id}-${file.replace('.mp3', '')}`,
+          title,
+          artist,
+          src: publicUrl,
         });
-
-      if (uploadError) {
-        console.error(`  Failed to upload ${storagePath}:`, uploadError.message);
-        continue;
+      } catch (err) {
+        console.error(`  Failed to upload ${storagePath}:`, err.message);
       }
-
-      // Get public URL
-      const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(storagePath);
-      const publicUrl = urlData.publicUrl;
-
-      vibeTracks.push({
-        id: `${vibe.id}-${file.replace('.mp3', '')}`,
-        title,
-        artist,
-        src: publicUrl,
-      });
     }
 
     if (vibeTracks.length > 0) {
@@ -256,6 +250,7 @@ async function main() {
  * Auto-generated by scripts/setup-music.mjs
  *
  * ${vibesData.length} vibe modes, ${totalUploaded} tracks total.
+ * Hosted on Cloudflare R2 (zero egress fees).
  * All tracks are CC0/royalty-free (no attribution required).
  */
 
@@ -271,6 +266,7 @@ export const VIBE_COUNT = vibes.length;
   console.log(`\nGenerated ${TRACKS_OUTPUT}`);
   console.log(`  ${vibesData.length} vibes, ${totalUploaded} tracks total`);
   console.log(`  Total size: ${totalMB.toFixed(1)}MB`);
+  console.log(`  Storage: Cloudflare R2`);
   console.log('Done! Run npm run dev to test the player.');
 }
 

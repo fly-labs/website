@@ -86,8 +86,8 @@ const platformSections = [
     stage: 'Building',
     title: 'Vibe Coding',
     route: null,
-    desc: 'Built-in lofi music player with 4 vibe modes: Ideate, Build, Create, Study. Pick your mood, get matched beats. Web Audio visualizer, lock screen controls. FlyBot can start it for you.',
-    highlights: ['4 vibe modes', 'Visualizer', 'FlyBot integration'],
+    desc: 'Built-in lofi music player with 5 vibe modes: Ideate, Build, Create, Study, Retro. Pick your mood, get matched beats. CC0 tracks on Cloudflare R2, Web Audio visualizer, lock screen controls. FlyBot can start it for you.',
+    highlights: ['5 vibe modes', 'Cloudflare R2', 'FlyBot integration'],
     icon: Music,
     color: 'border-primary',
   },
@@ -148,7 +148,7 @@ const scripts = [
   { name: 'score-ideas', desc: 'Claude Sonnet 4 frameworks' },
   { name: 'enrich-ideas', desc: 'Dual-source validation' },
   { name: 'clean-titles', desc: 'One-time DB cleanup' },
-  { name: 'setup-music', desc: 'Upload tracks to Supabase Storage' },
+  { name: 'setup-music', desc: 'Upload tracks to Cloudflare R2' },
 ];
 
 const folderTree = `src/

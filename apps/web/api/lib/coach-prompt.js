@@ -571,6 +571,15 @@ export function buildSystemPrompt(context = {}) {
   return prompt;
 }
 
+// ── In-memory TTL caches (analytics changes once/day, no need to refetch per message) ──
+let analyticsCache = { data: null, ts: 0 };
+const ANALYTICS_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Cache similar ideas by normalized keyword set
+const similarIdeasCache = new Map();
+const SIMILAR_TTL = 3 * 60 * 1000; // 3 minutes
+const MAX_CACHE_ENTRIES = 50;
+
 /**
  * Search for similar ideas based on keywords
  */
@@ -583,6 +592,12 @@ export async function findSimilarIdeas(supabase, userMessage) {
     .slice(0, 5);
 
   if (words.length === 0) return [];
+
+  // Check cache by normalized keyword set
+  const cacheKey = words.sort().join('|');
+  const now = Date.now();
+  const cached = similarIdeasCache.get(cacheKey);
+  if (cached && now - cached.ts < SIMILAR_TTL) return cached.data;
 
   const { data: ideas } = await supabase
     .from('ideas')
@@ -606,6 +621,13 @@ export async function findSimilarIdeas(supabase, userMessage) {
     .filter(i => i.relevance > 0)
     .sort((a, b) => b.relevance - a.relevance)
     .slice(0, 5);
+
+  // Cache result (evict oldest if full)
+  if (similarIdeasCache.size >= MAX_CACHE_ENTRIES) {
+    const oldestKey = similarIdeasCache.keys().next().value;
+    similarIdeasCache.delete(oldestKey);
+  }
+  similarIdeasCache.set(cacheKey, { data: scored, ts: Date.now() });
 
   return scored;
 }
@@ -634,10 +656,16 @@ export async function searchIdeas(supabase, filters = {}) {
 }
 
 /**
- * Fetch real-time analytics from the ideas database
- * Returns comprehensive intelligence: basics + industry intel + momentum + framework analysis + hidden gems
+ * Fetch analytics from the ideas database (cached for 5 min to reduce bandwidth).
+ * Analytics data changes once daily when the sync job runs, so caching is safe.
  */
 export async function fetchIdeaAnalytics(supabase) {
+  // Return cached analytics if still fresh
+  const now = Date.now();
+  if (analyticsCache.data && now - analyticsCache.ts < ANALYTICS_TTL) {
+    return analyticsCache.data;
+  }
+
   try {
     const { data: ideas } = await supabase
       .from('ideas')
@@ -794,7 +822,7 @@ export async function fetchIdeaAnalytics(supabase) {
     const fourWeekAvg = fourWeekScored.length > 0 ? Math.round(fourWeekScored.reduce((a, i) => a + Number(i.flylabs_score), 0) / fourWeekScored.length) : 0;
     const scoreTrend = fourWeekAvg > 0 ? Math.round(((thisWeekAvg - fourWeekAvg) / fourWeekAvg) * 100) : 0;
 
-    return {
+    const result = {
       total,
       scored: scored.length,
       validated: validated.length,
@@ -813,6 +841,10 @@ export async function fetchIdeaAnalytics(supabase) {
       scoreTrend,
       thisWeekAvg,
     };
+
+    // Cache the result
+    analyticsCache = { data: result, ts: Date.now() };
+    return result;
   } catch (e) {
     return null;
   }
