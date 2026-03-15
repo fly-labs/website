@@ -64,7 +64,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={disabled ? 'Message limit reached' : 'Message FlyBot...'}
+            placeholder={disabled ? 'Message limit reached' : 'Describe an idea, ask for prompts, or just talk...'}
             disabled={disabled}
             rows={1}
             className={cn(

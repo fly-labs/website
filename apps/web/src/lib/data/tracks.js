@@ -4,7 +4,7 @@
  * 15 tracks from Supabase Storage (public bucket)
  *
  * All tracks are from Mixkit (Mixkit Free License, no attribution required).
- * Curated flow: mellow lofi openers -> bossa nova transition -> deep focus -> ambient wind-down.
+ * Curated flow: mellow lofi openers -> deep focus -> ambient wind-down.
  */
 
 export const tracks = [

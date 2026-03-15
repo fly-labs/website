@@ -4,8 +4,8 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Volume1, X } from
 import { cn } from '@/lib/utils.js';
 import { useMusic } from '@/contexts/MusicContext.jsx';
 
-function formatTime(seconds) {
-  if (!seconds || !isFinite(seconds)) return '0:00';
+function formatTime(seconds, showDash = false) {
+  if (!seconds || !isFinite(seconds)) return showDash ? '--:--' : '0:00';
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
@@ -51,6 +51,49 @@ function Visualizer({ analyserRef, isPlaying }) {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
+  const hasDrawnIdleRef = useRef(false);
+
+  const drawBars = useCallback((ctx, width, height, barWidth, color, idle) => {
+    const barCount = 16;
+    const idleHeights = [0.15, 0.22, 0.18, 0.25, 0.20, 0.28, 0.16, 0.23, 0.19, 0.26, 0.17, 0.24, 0.21, 0.27, 0.14, 0.22];
+
+    for (let i = 0; i < barCount; i++) {
+      let barHeight, alpha;
+      if (idle) {
+        barHeight = height * (idleHeights[i] || 0.2);
+        alpha = 0.2;
+      } else {
+        const value = barsRef.current[i];
+        barHeight = Math.max(height * 0.06, value * height * 0.95);
+        alpha = 0.4 + value * 0.6;
+      }
+
+      const x = i * (barWidth + 2);
+      const y = height - barHeight;
+      const radius = Math.min(barWidth / 2, 3);
+
+      ctx.fillStyle = color;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(x, y, barWidth, barHeight, radius);
+      } else {
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + barWidth - radius, y);
+        ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
+        ctx.lineTo(x + barWidth, y + barHeight - radius);
+        ctx.quadraticCurveTo(x + barWidth, y + barHeight, x + barWidth - radius, y + barHeight);
+        ctx.lineTo(x + radius, y + barHeight);
+        ctx.quadraticCurveTo(x, y + barHeight, x, y + barHeight - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+      }
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }, []);
+
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     const analyser = analyserRef?.current;
@@ -68,83 +111,49 @@ function Visualizer({ analyserRef, isPlaying }) {
     const color = colorRef.current || '#8b5cf6';
 
     if (analyser && isPlaying && !prefersReducedMotion.current) {
+      hasDrawnIdleRef.current = false;
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       analyser.getByteFrequencyData(dataArray);
 
       for (let i = 0; i < barCount; i++) {
-        // Map frequency bins to bars with slight overlap for smoother look
         const startBin = Math.floor(i * dataArray.length / barCount);
         const endBin = Math.floor((i + 1) * dataArray.length / barCount);
         let sum = 0;
         for (let b = startBin; b < endBin; b++) sum += dataArray[b];
         const avg = sum / (endBin - startBin) / 255;
-
-        // Lerp for smooth transitions (retain 70% of previous value)
         barsRef.current[i] = barsRef.current[i] * 0.7 + avg * 0.3;
-        const value = barsRef.current[i];
-
-        const barHeight = Math.max(height * 0.06, value * height * 0.95);
-        const x = i * (barWidth + 2);
-        const y = height - barHeight;
-        const radius = Math.min(barWidth / 2, 3);
-
-        ctx.fillStyle = color;
-        ctx.globalAlpha = 0.4 + value * 0.6;
-        ctx.beginPath();
-        // roundRect fallback for Safari < 16
-        if (ctx.roundRect) {
-          ctx.roundRect(x, y, barWidth, barHeight, radius);
-        } else {
-          ctx.moveTo(x + radius, y);
-          ctx.lineTo(x + barWidth - radius, y);
-          ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
-          ctx.lineTo(x + barWidth, y + barHeight - radius);
-          ctx.quadraticCurveTo(x + barWidth, y + barHeight, x + barWidth - radius, y + barHeight);
-          ctx.lineTo(x + radius, y + barHeight);
-          ctx.quadraticCurveTo(x, y + barHeight, x, y + barHeight - radius);
-          ctx.lineTo(x, y + radius);
-          ctx.quadraticCurveTo(x, y, x + radius, y);
-          ctx.closePath();
-        }
-        ctx.fill();
-        ctx.globalAlpha = 1;
       }
-    } else {
-      // Idle state: gentle static bars with varying heights
-      const idleHeights = [0.15, 0.22, 0.18, 0.25, 0.20, 0.28, 0.16, 0.23, 0.19, 0.26, 0.17, 0.24, 0.21, 0.27, 0.14, 0.22];
-      for (let i = 0; i < barCount; i++) {
-        const barHeight = height * (idleHeights[i] || 0.2);
-        const x = i * (barWidth + 2);
-        const y = height - barHeight;
-        const radius = Math.min(barWidth / 2, 3);
 
-        ctx.fillStyle = color;
-        ctx.globalAlpha = 0.2;
-        ctx.beginPath();
-        if (ctx.roundRect) {
-          ctx.roundRect(x, y, barWidth, barHeight, radius);
+      // Check if bars still need to lerp down to idle
+      const needsLerp = barsRef.current.some(v => v > 0.01);
+      drawBars(ctx, width, height, barWidth, color, false);
+      rafRef.current = requestAnimationFrame(draw);
+    } else {
+      // Lerp bars down to zero before drawing idle
+      let stillAnimating = false;
+      for (let i = 0; i < barCount; i++) {
+        if (barsRef.current[i] > 0.01) {
+          barsRef.current[i] *= 0.85;
+          stillAnimating = true;
         } else {
-          ctx.moveTo(x + radius, y);
-          ctx.lineTo(x + barWidth - radius, y);
-          ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
-          ctx.lineTo(x + barWidth, y + barHeight - radius);
-          ctx.quadraticCurveTo(x + barWidth, y + barHeight, x + barWidth - radius, y + barHeight);
-          ctx.lineTo(x + radius, y + barHeight);
-          ctx.quadraticCurveTo(x, y + barHeight, x, y + barHeight - radius);
-          ctx.lineTo(x, y + radius);
-          ctx.quadraticCurveTo(x, y, x + radius, y);
-          ctx.closePath();
+          barsRef.current[i] = 0;
         }
-        ctx.fill();
-        ctx.globalAlpha = 1;
+      }
+
+      if (stillAnimating) {
+        drawBars(ctx, width, height, barWidth, color, false);
+        rafRef.current = requestAnimationFrame(draw);
+      } else if (!hasDrawnIdleRef.current) {
+        drawBars(ctx, width, height, barWidth, color, true);
+        hasDrawnIdleRef.current = true;
+        // No more RAF needed, idle bars are static
       }
     }
-
-    rafRef.current = requestAnimationFrame(draw);
-  }, [analyserRef, isPlaying]);
+  }, [analyserRef, isPlaying, drawBars]);
 
   useEffect(() => {
     if (prefersReducedMotion.current) return;
+    hasDrawnIdleRef.current = false;
     rafRef.current = requestAnimationFrame(draw);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -230,7 +239,7 @@ function ProgressBar({ progress, duration, currentTime, onSeek }) {
           <div
             className={cn(
               'absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-accent shadow-sm',
-              'opacity-0 group-hover:opacity-100 transition-opacity duration-150',
+              'opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-150',
               isDragging && 'opacity-100 scale-110'
             )}
             style={{ left: `calc(${displayProgress * 100}% - 6px)` }}
@@ -238,8 +247,8 @@ function ProgressBar({ progress, duration, currentTime, onSeek }) {
         </div>
       </div>
       <div className="flex justify-between -mt-1.5">
-        <span className="text-[10px] text-muted-foreground tabular-nums">{formatTime(currentTime)}</span>
-        <span className="text-[10px] text-muted-foreground tabular-nums">-{formatTime(remaining)}</span>
+        <span className="text-[10px] text-muted-foreground tabular-nums">{duration === 0 ? '--:--' : formatTime(currentTime)}</span>
+        <span className="text-[10px] text-muted-foreground tabular-nums">{duration === 0 ? '--:--' : `-${formatTime(remaining)}`}</span>
       </div>
     </div>
   );
@@ -255,6 +264,8 @@ export function MusicPanel({ isOpen, onClose }) {
     currentTime,
     pendingPlay,
     trackTransition,
+    trackError,
+    isIOSDevice,
     analyserRef,
     trackCount,
     currentTrackIndex,
@@ -268,15 +279,19 @@ export function MusicPanel({ isOpen, onClose }) {
   const panelRef = useRef(null);
   const previousVolumeRef = useRef(volume);
 
-  // Escape key to close
+  // Escape key to close, spacebar to toggle play/pause
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e) => {
       if (e.key === 'Escape') onClose();
+      if (e.key === ' ' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        togglePlay();
+      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, togglePlay]);
 
   // Click outside to close
   useEffect(() => {
@@ -351,6 +366,20 @@ export function MusicPanel({ isOpen, onClose }) {
             </p>
           ) : (
             <>
+              {/* Track error feedback */}
+              <AnimatePresence>
+                {trackError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="text-[10px] text-red-400 mb-1"
+                  >
+                    Couldn't load {trackError}, skipping...
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
               {/* Track info with transition */}
               <div className={cn(
                 'mb-3 transition-opacity duration-200',
@@ -431,36 +460,43 @@ export function MusicPanel({ isOpen, onClose }) {
               </div>
 
               {/* Volume */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={toggleMute}
-                  className="p-3 -m-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
-                  aria-label={volume === 0 ? 'Unmute' : 'Mute'}
-                >
-                  <VolumeIcon className="w-4 h-4" />
-                </button>
-                <div className="flex-1 relative">
-                  {/* Volume fill track (behind the input) */}
-                  <div className="absolute inset-y-0 left-0 right-0 flex items-center pointer-events-none">
-                    <div className="w-full h-1.5 rounded-full bg-muted relative overflow-hidden">
-                      <div
-                        className="absolute inset-y-0 left-0 bg-accent/50 rounded-full"
-                        style={{ width: `${volume * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    className="relative w-full h-1.5 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-accent [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-sm [&::-moz-range-track]:bg-transparent"
-                    aria-label="Volume"
-                  />
+              {isIOSDevice ? (
+                <div className="flex items-center gap-2 justify-center py-1">
+                  <VolumeIcon className="w-4 h-4 text-muted-foreground/50" />
+                  <span className="text-[10px] text-muted-foreground/50">Use device volume</span>
                 </div>
-              </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={toggleMute}
+                    className="p-3 -m-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                    aria-label={volume === 0 ? 'Unmute' : 'Mute'}
+                  >
+                    <VolumeIcon className="w-4 h-4" />
+                  </button>
+                  <div className="flex-1 relative">
+                    {/* Volume fill track (behind the input) */}
+                    <div className="absolute inset-y-0 left-0 right-0 flex items-center pointer-events-none">
+                      <div className="w-full h-1.5 rounded-full bg-muted relative overflow-hidden">
+                        <div
+                          className="absolute inset-y-0 left-0 bg-accent/50 rounded-full"
+                          style={{ width: `${volume * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={volume}
+                      onChange={handleVolumeChange}
+                      className="relative w-full h-1.5 appearance-none bg-transparent cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-sm [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-10 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-accent [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow-sm [&::-moz-range-track]:bg-transparent"
+                      aria-label="Volume"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Footer */}
               <div className="flex justify-between mt-3 pt-2 border-t border-border/20">
@@ -468,7 +504,7 @@ export function MusicPanel({ isOpen, onClose }) {
                   {currentTrackIndex + 1} / {trackCount}
                 </span>
                 <span className="text-[10px] text-muted-foreground/50">
-                  lofi + bossa nova
+                  lofi beats
                 </span>
               </div>
             </>

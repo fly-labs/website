@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid, Bot } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
 import { PageLayout } from '@/components/PageLayout.jsx';
@@ -8,6 +8,7 @@ import supabase from '@/lib/supabaseClient.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
 
 import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { EXPERT_FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
@@ -45,6 +46,7 @@ const IdeaSubmissionPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { currentUser, profile, isAuthenticated } = useAuth();
+  const { openWidget } = useChatContext();
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votedIds, setVotedIds] = useState(() => {
@@ -745,6 +747,26 @@ const IdeaSubmissionPage = () => {
                   </div>
                 </div>
               </div>
+            </motion.div>
+
+            {/* FlyBot hint */}
+            <motion.div {...fadeUp} transition={{ duration: 0.5 }}>
+              <button
+                onClick={() => {
+                  openWidget();
+                  trackEvent('cta_click', { cta: 'flybot_from_ideas', location: 'ideas_hint' });
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors text-left group"
+              >
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Bot className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground">Want to dig deeper into an idea?</p>
+                  <p className="text-xs text-muted-foreground">Ask FlyBot. It can score your own ideas, search by source or verdict, and spot patterns across hundreds of scored problems.</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
+              </button>
             </motion.div>
 
           </div>

@@ -3,21 +3,20 @@ import { motion } from 'framer-motion';
 import { Bot, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
-import { PROMPT_COUNT, FRAMEWORK_COUNT } from '@/lib/data/siteStats.js';
 
 const SUGGESTED_PROMPTS = [
   'I have a business idea. Score it.',
-  'Help me write about what I\'m building',
-  'What are the highest-scoring ideas in the Idea Lab?',
   'I\'m stuck between two ideas. Help me decide.',
-  'Which prompts should I use for writing a landing page?',
+  'What are the highest-scoring ideas right now?',
+  'Which industries are trending this week?',
   'Am I falling for sunk cost on this project?',
+  'Play some lofi and let\'s build.',
 ];
 
 const COMPACT_PROMPTS = [
   'Score my business idea',
-  'What prompts fit my project?',
-  'Am I biased on this idea?',
+  'Show me BUILD ideas from Reddit',
+  'Play some lofi',
 ];
 
 export function ChatEmpty({ onPromptClick, compact = false }) {
@@ -50,8 +49,8 @@ export function ChatEmpty({ onPromptClick, compact = false }) {
             compact ? 'text-xs max-w-[240px]' : 'text-sm max-w-sm'
           )}>
             {compact
-              ? `Hundreds of scored ideas, ${PROMPT_COUNT} prompts, and ${FRAMEWORK_COUNT} frameworks loaded. What are you working on?`
-              : `I sit on top of hundreds of scored ideas and ${PROMPT_COUNT} prompts. Describe what you're building and I'll tell you what I've seen before, where the gaps are, and whether it's worth your weekend.`
+              ? 'Describe an idea. I\'ll score it and show you what I\'ve seen before.'
+              : 'Describe an idea and I\'ll score it against 4 frameworks, pull similar ones I\'ve already analyzed, and tell you if it\'s worth your weekend.'
             }
           </p>
           {!compact && (

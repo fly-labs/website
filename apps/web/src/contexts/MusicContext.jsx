@@ -36,6 +36,14 @@ export function MusicProvider({ children }) {
   const [pendingPlay, setPendingPlay] = useState(false);
   const [trackTransition, setTrackTransition] = useState(false);
 
+  const [trackError, setTrackError] = useState(null);
+
+  const isIOSDevice = useMemo(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }, []);
+
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
   const sourceNodeRef = useRef(null);
@@ -114,7 +122,17 @@ export function MusicProvider({ children }) {
       if (audio.duration) setProgress(audio.currentTime / audio.duration);
     };
     const onEnded = () => advanceTrack();
-    const onError = () => advanceTrack();
+    const onError = () => {
+      const idx = isShuffle && shuffleOrder.length > 0
+        ? shuffleOrder[currentTrackIndex % shuffleOrder.length]
+        : currentTrackIndex % tracks.length;
+      const failedTrack = tracks[idx];
+      if (failedTrack) {
+        setTrackError(failedTrack.title);
+        setTimeout(() => setTrackError(null), 3000);
+      }
+      advanceTrack();
+    };
 
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
     audio.addEventListener('timeupdate', onTimeUpdate);
@@ -287,6 +305,8 @@ export function MusicProvider({ children }) {
     isShuffle,
     pendingPlay,
     trackTransition,
+    trackError,
+    isIOSDevice,
     analyserRef,
     hasTracks: tracks.length > 0,
     trackCount: tracks.length,
@@ -304,6 +324,7 @@ export function MusicProvider({ children }) {
   }), [
     isPlaying, isPanelOpen, currentTrackIndex, currentTrack, volume,
     progress, duration, currentTime, isShuffle, pendingPlay, trackTransition,
+    trackError, isIOSDevice,
     play, pause, togglePlay, next, prev, setVolume, seekTo,
     openPanel, closePanel, togglePanel, playFromFlyBot,
   ]);

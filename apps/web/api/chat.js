@@ -68,8 +68,24 @@ function parseSearchIntent(message) {
   const scoreMatch = lower.match(/(?:score|above|over)\s*(\d+)/);
   if (scoreMatch) filters.min_score = parseInt(scoreMatch[1]);
 
+  // Industry detection
+  const industryPatterns = {
+    'developer tools': 'Developer Tools', 'dev tools': 'Developer Tools',
+    'ai ml': 'AI ML', 'artificial intelligence': 'AI ML', 'machine learning': 'AI ML',
+    'marketing': 'Marketing Sales', 'sales': 'Marketing Sales',
+    'health': 'Health Fitness', 'fitness': 'Health Fitness',
+    'education': 'Education', 'finance': 'Finance',
+    'productivity': 'Productivity', 'e-commerce': 'E-Commerce', 'ecommerce': 'E-Commerce',
+  };
+  for (const [pattern, industry] of Object.entries(industryPatterns)) {
+    if (lower.includes(pattern)) { filters.industry = industry; break; }
+  }
+
+  // Confidence detection
+  if (/high confidence/.test(lower)) filters.confidence = 'high';
+
   const hasFilters = Object.keys(filters).length > 0;
-  const isSearch = hasFilters || /show me|find|search|list|what.*ideas|best ideas|top ideas|highest.scoring/.test(lower);
+  const isSearch = hasFilters || /show me|find|search|list|what.*ideas|best ideas|top ideas|highest.scoring|trending|hot ideas|underrated|hidden gem/.test(lower);
 
   return isSearch ? filters : null;
 }
@@ -207,7 +223,7 @@ export default async function handler(req, res) {
   }
 
   // Find similar ideas if user might be describing one
-  const ideaKeywords = ['idea', 'build', 'tool', 'app', 'project', 'product', 'saas', 'problem', 'solve', 'evaluate', 'score'];
+  const ideaKeywords = ['idea', 'build', 'tool', 'app', 'project', 'product', 'saas', 'problem', 'solve', 'evaluate', 'score', 'trending', 'industry', 'opportunity', 'underrated', 'hidden gem'];
   const mightBeIdea = ideaKeywords.some(k => cleanMessage.toLowerCase().includes(k));
 
   // Detect search intent

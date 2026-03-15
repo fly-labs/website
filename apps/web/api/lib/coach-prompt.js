@@ -54,15 +54,36 @@ CRITICAL: You must ALWAYS produce text output. An empty response is a system fai
 
 ## IDENTITY
 
-You are FlyBot, the Fly Labs vibe building partner. You sit on top of a real database: hundreds of scored ideas, 80 prompts, 4 scoring frameworks, and 9 data sources that sync daily. When someone describes an idea, you don't guess. You pull up similar problems you've already scored, flag where theirs is strong or weak, and tell them if it's worth their weekend. When someone asks "show me BUILD ideas from Reddit", you search the database and share results with links. Smart friend at a bar who happens to have the data.
+You are FlyBot, the Fly Labs vibe building partner. You sit on top of a real database: hundreds of scored ideas, 80 prompts, 4 scoring frameworks, and 9 data sources that sync daily. When someone describes an idea, you don't guess. You pull up similar problems you've already scored, flag where theirs is strong or weak, and tell them if it's worth their weekend. When someone asks "show me BUILD ideas from Reddit", you search the database and share results with links. You know which industries are hot, which sources produce the best ideas, where the frameworks disagree, and which gems nobody has noticed yet. You have real-time analytics: momentum data, score trends, industry intelligence, source quality rankings. Smart friend at a bar who happens to have the data and the dashboards.
 
 Built by Luiz Alves, 13+ years in financial markets in Brazil. He builds Fly Labs (flylabs.fun), the vibe building hub. Documents the process on Substack (@falacomigo). This is a hobby, not his day job.
 
 ## MUSIC PLAYER
 
-Fly Labs has a built-in lofi + bossa nova music player for coding sessions. When contextually appropriate (user says "play music", "I need focus music", "put on some lofi", "start a session", "I'm about to build"), output: <music_action>{"action":"play"}</music_action>
+Fly Labs has a built-in lofi music player with 15 tracks for coding sessions. You control it.
+
+When contextually appropriate (user says "play music", "lofi", "focus music", "start a session", "let's build"), output: <music_action>{"action":"play"}</music_action>
 Available actions: "play" (opens player + starts), "pause", "open" (panel only).
 Keep it casual. "Lofi's on. Get building." then the tag. One sentence max. Tag goes at end of response.
+
+The full tracklist (all CC0, shuffle on by default):
+1. Lounging by Moonlight, Ahjay Stelino
+2. Sleepy Cat, Alejandro Magana
+3. Sweet September, Arulo
+4. Latin Lovers, Ahjay Stelino
+5. Smooth Like Jazz, Ahjay Stelino
+6. Lonely in the Bar, Diego Nava
+7. Beautiful Dream, Diego Nava
+8. Pondering, Arulo
+9. Finding Myself, Michael Ramir C.
+10. Nostalgic Night, Michael Ramir C.
+11. Day Dreamin' with U, Michael Ramir C.
+12. Charlotte, Eugenio Mininni
+13. Feedback Dreams, Eugenio Mininni
+14. Opalescent, Eugenio Mininni
+15. Nap Time, Arulo
+
+When asked "show me the playlist" or "what tracks?", share the full list. You can't see which track is currently active (it shuffles), so don't guess. If they ask for a vibe, recommend specific tracks by name.
 
 ## ABSOLUTE RULES (never break these)
 
@@ -477,6 +498,47 @@ export function buildSystemPrompt(context = {}) {
       prompt += ` (${change >= 0 ? '+' : ''}${change}% vs prior week)`;
     }
     prompt += `.\n`;
+
+    // Industry Intelligence
+    if (a.topIndustryIntel && a.topIndustryIntel.length > 0) {
+      prompt += `\nIndustry Intelligence (ranked by opportunity score):\n`;
+      for (const ind of a.topIndustryIntel) {
+        prompt += `- ${ind.name}: ${ind.count} ideas, avg ${ind.avg}/100, ${ind.buildRate}% BUILD rate, ${ind.builds} BUILDs, top source: ${ind.bestSource}`;
+        if (ind.wowDelta !== 0) prompt += `, ${ind.wowDelta > 0 ? '+' : ''}${ind.wowDelta}% week-over-week`;
+        prompt += `.\n`;
+      }
+      prompt += `Use this to answer "which industries are hot?" or "where should I build?" Link to filtered views: /ideas?industry=${encodeURIComponent(a.topIndustryIntel[0].name)}\n`;
+    }
+
+    // Source Momentum
+    if (a.acceleratingSources && a.acceleratingSources.length > 0) {
+      prompt += `\nAccelerating sources this week: ${a.acceleratingSources.map(s => `${s.source} (+${s.delta}%, ${s.thisWeek} new)`).join(', ')}.\n`;
+    }
+
+    // Score Trend
+    if (a.scoreTrend !== undefined && a.scoreTrend !== 0) {
+      prompt += `Score trend: this week's avg is ${a.thisWeekAvg}/100 (${a.scoreTrend > 0 ? '+' : ''}${a.scoreTrend}% vs 4-week rolling avg). ${a.scoreTrend > 0 ? 'Quality is improving.' : 'More volume coming in, raw quality diluting slightly.'}\n`;
+    }
+
+    // Framework Disagreements
+    if (a.disagreements && a.disagreements.length > 0) {
+      prompt += `\nFramework disagreements (ideas where experts diverge 25+ points):\n`;
+      for (const d of a.disagreements) {
+        prompt += `- "${sanitizeForPrompt(d.title)}": ${d.spread}pt spread. ${d.highest[0]} scores ${d.highest[1]}, ${d.lowest[0]} scores ${d.lowest[1]} → /ideas/${d.id}\n`;
+      }
+      prompt += `These are the most interesting ideas to discuss. When asked "what's controversial?" or "where do frameworks disagree?", share these.\n`;
+    }
+
+    // Hidden Gems
+    if (a.hiddenGems && a.hiddenGems.length > 0) {
+      prompt += `\nHidden gems (high score, barely noticed):\n`;
+      for (const g of a.hiddenGems) {
+        prompt += `- "${sanitizeForPrompt(g.title)}" (${g.score}/100, ${g.votes} votes, from ${g.source}) → /ideas/${g.id}\n`;
+      }
+      prompt += `Surface these when asked "what's underrated?" or when the user is exploring and needs a spark.\n`;
+    }
+
+    prompt += `\nYou also know about the live analytics dashboard at /ideas/analytics. When asked about trends, patterns, or data, you can point users there for the full visual breakdown. But give them the key insight first, then suggest the dashboard for deeper exploration.\n`;
   }
 
   // Search results (on-demand, from user query)
@@ -489,7 +551,7 @@ export function buildSystemPrompt(context = {}) {
   }
 
   prompt += `\n## FIRST MESSAGE\n\n`;
-  prompt += `If this is the start of a new conversation (no prior messages), greet briefly and signal the DATA advantage, not generic capabilities. Something like: "Hey. I've got hundreds of scored ideas and 80 prompts loaded. What are you working on?" Keep it under 25 words. Lead with what you KNOW, not what you DO. No capability lists.\n`;
+  prompt += `If this is the start of a new conversation (no prior messages), open with curiosity first, data second. Something like: "Hey. What are you building? I've got a few hundred scored ideas I can cross-reference against yours." Or: "What's on your mind? I can score ideas, recommend prompts, or just talk through what's stuck." Keep it under 30 words. The user should feel invited, not briefed. Ask what they're working on and hint at one specific thing you can do. Never list capabilities.\n`;
 
   return prompt;
 }
@@ -558,12 +620,13 @@ export async function searchIdeas(supabase, filters = {}) {
 
 /**
  * Fetch real-time analytics from the ideas database
+ * Returns comprehensive intelligence: basics + industry intel + momentum + framework analysis + hidden gems
  */
 export async function fetchIdeaAnalytics(supabase) {
   try {
     const { data: ideas } = await supabase
       .from('ideas')
-      .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, validation_score, created_at')
+      .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at')
       .eq('approved', true);
 
     if (!ideas || ideas.length === 0) return null;
@@ -633,6 +696,83 @@ export async function fetchIdeaAnalytics(supabase) {
       return age >= week && age < week * 2;
     }).length;
 
+    // ── Industry Intelligence ──
+    const industryIntel = {};
+    for (const i of ideas) {
+      if (!i.industry) continue;
+      if (!industryIntel[i.industry]) {
+        industryIntel[i.industry] = { count: 0, scoreSum: 0, scoreCount: 0, buildCount: 0, verdictCount: 0, sourceCounts: {}, thisWeek: 0, lastWeek: 0 };
+      }
+      const ind = industryIntel[i.industry];
+      ind.count++;
+      if (i.composite_score != null && i.composite_score > 0) { ind.scoreSum += Number(i.composite_score); ind.scoreCount++; }
+      if (i.verdict) { ind.verdictCount++; if (i.verdict === 'BUILD') ind.buildCount++; }
+      ind.sourceCounts[i.source || 'community'] = (ind.sourceCounts[i.source || 'community'] || 0) + 1;
+      const age = now - new Date(i.created_at).getTime();
+      if (age < week) ind.thisWeek++;
+      else if (age < week * 2) ind.lastWeek++;
+    }
+    const topIndustryIntel = Object.entries(industryIntel)
+      .filter(([, v]) => v.count >= 3 && v.scoreCount > 0)
+      .map(([name, v]) => {
+        const avg = Math.round(v.scoreSum / v.scoreCount);
+        const buildRate = v.verdictCount > 0 ? Math.round((v.buildCount / v.verdictCount) * 100) : 0;
+        const bestSrc = Object.entries(v.sourceCounts).sort((a, b) => b[1] - a[1])[0];
+        const wowDelta = v.lastWeek > 0 ? Math.round(((v.thisWeek - v.lastWeek) / v.lastWeek) * 100) : (v.thisWeek > 0 ? 100 : 0);
+        return { name, count: v.count, avg, buildRate, bestSource: bestSrc?.[0] || 'community', wowDelta, builds: v.buildCount };
+      })
+      .sort((a, b) => (b.avg * 0.4 + b.buildRate * 0.4) - (a.avg * 0.4 + a.buildRate * 0.4))
+      .slice(0, 6);
+
+    // ── Source Momentum ──
+    const sourceMomentum = {};
+    for (const i of ideas) {
+      const s = i.source || 'community';
+      if (!sourceMomentum[s]) sourceMomentum[s] = { thisWeek: 0, lastWeek: 0 };
+      const age = now - new Date(i.created_at).getTime();
+      if (age < week) sourceMomentum[s].thisWeek++;
+      else if (age < week * 2) sourceMomentum[s].lastWeek++;
+    }
+    const acceleratingSources = Object.entries(sourceMomentum)
+      .map(([source, { thisWeek, lastWeek }]) => ({
+        source,
+        delta: lastWeek > 0 ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100) : (thisWeek > 0 ? 100 : 0),
+        thisWeek,
+      }))
+      .filter(s => s.delta > 15 && s.thisWeek > 0)
+      .sort((a, b) => b.delta - a.delta)
+      .slice(0, 3);
+
+    // ── Framework Disagreements (top 3) ──
+    const disagreements = scored
+      .map(i => {
+        const scores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score].filter(s => s != null);
+        if (scores.length < 3) return null;
+        const spread = Math.max(...scores) - Math.min(...scores);
+        if (spread <= 25) return null;
+        const fwMap = { 'Fly Labs': i.flylabs_score, 'Hormozi': i.hormozi_score, 'Koe': i.koe_score, 'Okamoto': i.okamoto_score };
+        const sorted = Object.entries(fwMap).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
+        return { id: i.id, title: i.idea_title, spread, highest: sorted[0], lowest: sorted[sorted.length - 1] };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.spread - a.spread)
+      .slice(0, 3);
+
+    // ── Hidden Gems (high score, low votes) ──
+    const hiddenGems = ideas
+      .filter(i => i.composite_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP' && i.idea_title)
+      .sort((a, b) => Number(b.composite_score) - Number(a.composite_score))
+      .slice(0, 3)
+      .map(i => ({ id: i.id, title: i.idea_title, score: i.composite_score, votes: i.votes || 0, source: i.source }));
+
+    // ── Score Trend (this week avg vs 4-week rolling avg) ──
+    const recentScored = scored.filter(i => i.composite_score != null);
+    const thisWeekScored = recentScored.filter(i => now - new Date(i.created_at).getTime() < week);
+    const fourWeekScored = recentScored.filter(i => now - new Date(i.created_at).getTime() < week * 4);
+    const thisWeekAvg = thisWeekScored.length > 0 ? Math.round(thisWeekScored.reduce((a, i) => a + Number(i.composite_score), 0) / thisWeekScored.length) : 0;
+    const fourWeekAvg = fourWeekScored.length > 0 ? Math.round(fourWeekScored.reduce((a, i) => a + Number(i.composite_score), 0) / fourWeekScored.length) : 0;
+    const scoreTrend = fourWeekAvg > 0 ? Math.round(((thisWeekAvg - fourWeekAvg) / fourWeekAvg) * 100) : 0;
+
     return {
       total,
       scored: scored.length,
@@ -644,6 +784,13 @@ export async function fetchIdeaAnalytics(supabase) {
       topIdeas,
       sourceQuality,
       growth: { last7, prior7 },
+      // New intelligence fields
+      topIndustryIntel,
+      acceleratingSources,
+      disagreements,
+      hiddenGems,
+      scoreTrend,
+      thisWeekAvg,
     };
   } catch (e) {
     return null;

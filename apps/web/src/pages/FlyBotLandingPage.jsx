@@ -259,6 +259,13 @@ const FlyBotLandingPage = () => {
                 color: 'text-blue-500',
                 bgColor: 'bg-blue-500/10',
               },
+              {
+                icon: BarChart3,
+                title: 'Live analytics intelligence',
+                desc: 'Which industries are trending? Which sources produce the best ideas? Where do frameworks disagree? FlyBot has real-time analytics loaded and can surface patterns, hidden gems, and momentum shifts you\'d miss scrolling through ideas manually.',
+                color: 'text-cyan-500',
+                bgColor: 'bg-cyan-500/10',
+              },
             ].map((item) => (
               <motion.div
                 key={item.title}

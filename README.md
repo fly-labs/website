@@ -31,7 +31,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
-**Vibe Coding Player** - Built-in lofi + bossa nova music player. 15 CC0 tracks on Supabase Storage, Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback via conversation.
+**Vibe Coding Player** - Built-in lofi music player. 15 CC0 tracks on Supabase Storage, Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback via conversation.
 
 **Library** - Free ebooks from study notes. AI, business, mindset.
 

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Loader2, TrendingUp, Target, Zap, Layers, FlaskConical, Lightbulb, BarChart3, Clock, ExternalLink, Trophy, Gem, ArrowUpRight, ArrowDownRight, GitCompare } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -14,6 +14,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   AreaChart, Area,
   ComposedChart, Line,
+  ScatterChart, Scatter, ZAxis,
 } from 'recharts';
 
 // ── Chart color palette (matches design system) ──
@@ -220,10 +221,23 @@ const RecentIdeaRow = ({ idea }) => {
   );
 };
 
+// ── Delta badge for momentum indicators ──
+const DeltaBadge = ({ value }) => {
+  if (value == null || value === 0) return <span className="text-[10px] text-muted-foreground/60">no change</span>;
+  const positive = value > 0;
+  return (
+    <span className={cn("inline-flex items-center gap-0.5 text-[10px] font-bold", positive ? 'text-primary' : 'text-red-500')}>
+      {positive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+      {positive ? '+' : ''}{value}%
+    </span>
+  );
+};
+
 const IdeasAnalyticsPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [growthView, setGrowthView] = useState('combo'); // 'combo' | 'cumulative' | 'weekly'
+  const [leaderboardTab, setLeaderboardTab] = useState('top'); // 'top' | 'gems'
 
   useEffect(() => {
     async function load() {
@@ -449,6 +463,157 @@ const IdeasAnalyticsPage = () => {
           total: verdictTimeMap[week].BUILD + verdictTimeMap[week].VALIDATE_FIRST + verdictTimeMap[week].SKIP,
         }));
 
+        // ── Top 10 Leaderboard ──
+        const leaderboard = ideas
+          .filter(i => i.verdict === 'BUILD' && i.composite_score != null)
+          .sort((a, b) => b.composite_score - a.composite_score)
+          .slice(0, 10)
+          .map(i => ({
+            id: i.id, title: i.idea_title, composite: i.composite_score,
+            flylabs: i.flylabs_score, hormozi: i.hormozi_score,
+            koe: i.koe_score, okamoto: i.okamoto_score,
+            source: i.source, industry: i.industry, votes: i.votes || 0,
+          }));
+
+        // ── Hidden Gems (high score, low votes) ──
+        const hiddenGems = ideas
+          .filter(i => i.composite_score >= 60 && (i.votes || 0) <= 2 && i.verdict !== 'SKIP')
+          .sort((a, b) => b.composite_score - a.composite_score)
+          .slice(0, 5)
+          .map(i => ({
+            id: i.id, title: i.idea_title, composite: i.composite_score,
+            votes: i.votes || 0, source: i.source, verdict: i.verdict,
+          }));
+
+        // ── Industry Intelligence ──
+        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+        const industryIntelMap = {};
+        ideas.forEach(i => {
+          if (!i.industry) return;
+          if (!industryIntelMap[i.industry]) {
+            industryIntelMap[i.industry] = {
+              count: 0, scoreSum: 0, scoreCount: 0,
+              buildCount: 0, verdictCount: 0,
+              sourceCounts: {}, thisWeek: 0, lastWeek: 0,
+            };
+          }
+          const ind = industryIntelMap[i.industry];
+          ind.count++;
+          if (i.composite_score != null && i.composite_score > 0) { ind.scoreSum += i.composite_score; ind.scoreCount++; }
+          if (i.verdict) { ind.verdictCount++; if (i.verdict === 'BUILD') ind.buildCount++; }
+          const s = i.source || 'community';
+          ind.sourceCounts[s] = (ind.sourceCounts[s] || 0) + 1;
+          const created = new Date(i.created_at);
+          if (created >= oneWeekAgo) ind.thisWeek++;
+          else if (created >= twoWeeksAgo) ind.lastWeek++;
+        });
+
+        const industryIntelData = Object.entries(industryIntelMap)
+          .filter(([, v]) => v.count >= 3)
+          .map(([name, v]) => {
+            const avgScore = v.scoreCount > 0 ? Math.round(v.scoreSum / v.scoreCount) : 0;
+            const buildRateInd = v.verdictCount > 0 ? Math.round((v.buildCount / v.verdictCount) * 100) : 0;
+            const bestSrc = Object.entries(v.sourceCounts).sort((a, b) => b[1] - a[1])[0];
+            const wowDelta = v.lastWeek > 0
+              ? Math.round(((v.thisWeek - v.lastWeek) / v.lastWeek) * 100)
+              : (v.thisWeek > 0 ? 100 : 0);
+            const opportunityScore = Math.round(avgScore * 0.4 + buildRateInd * 0.4 + Math.min(Math.max(wowDelta, -50), 50) * 0.2);
+            return {
+              name: name.replace(/_/g, ' '), count: v.count, avgScore, buildRate: buildRateInd,
+              bestSource: bestSrc ? (sourceOptions.find(s => s.value === bestSrc[0])?.label || bestSrc[0]) : '-',
+              thisWeek: v.thisWeek, wowDelta,
+              trend: wowDelta > 10 ? 'up' : wowDelta < -10 ? 'down' : 'flat',
+              opportunityScore, builds: v.buildCount,
+            };
+          })
+          .sort((a, b) => b.opportunityScore - a.opportunityScore);
+
+        // ── Framework Disagreements ──
+        const disagreements = scored
+          .map(i => {
+            const fwScores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score].filter(s => s != null);
+            if (fwScores.length < 3) return null;
+            const spread = Math.max(...fwScores) - Math.min(...fwScores);
+            if (spread <= 25) return null;
+            const fwMap = { 'Fly Labs': i.flylabs_score, 'Hormozi': i.hormozi_score, 'Koe': i.koe_score, 'Okamoto': i.okamoto_score };
+            const sortedFw = Object.entries(fwMap).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
+            return {
+              id: i.id, title: i.idea_title, composite: i.composite_score,
+              spread, highest: sortedFw[0], lowest: sortedFw[sortedFw.length - 1], verdict: i.verdict,
+            };
+          })
+          .filter(Boolean)
+          .sort((a, b) => b.spread - a.spread)
+          .slice(0, 8);
+
+        // ── Source Momentum ──
+        const sourceMomentum = {};
+        ideas.forEach(i => {
+          const s = i.source || 'community';
+          if (!sourceMomentum[s]) sourceMomentum[s] = { thisWeek: 0, lastWeek: 0 };
+          const created = new Date(i.created_at);
+          if (created >= oneWeekAgo) sourceMomentum[s].thisWeek++;
+          else if (created >= twoWeeksAgo) sourceMomentum[s].lastWeek++;
+        });
+        const sourceMomentumData = Object.entries(sourceMomentum)
+          .map(([source, { thisWeek: tw, lastWeek: lw }]) => ({
+            source: sourceOptions.find(s => s.value === source)?.label || source,
+            thisWeek: tw, lastWeek: lw,
+            delta: lw > 0 ? Math.round(((tw - lw) / lw) * 100) : (tw > 0 ? 100 : 0),
+          }))
+          .filter(s => s.thisWeek > 0 || s.lastWeek > 0)
+          .sort((a, b) => b.delta - a.delta);
+
+        // ── Score Trend (rolling 4-week avg) ──
+        const weeklyAvgScores = [];
+        for (let w = 0; w < 4; w++) {
+          const wEnd = new Date(now.getTime() - w * 7 * 24 * 60 * 60 * 1000);
+          const wStart = new Date(wEnd.getTime() - 7 * 24 * 60 * 60 * 1000);
+          const wIdeas = scored.filter(i => { const d = new Date(i.created_at); return d >= wStart && d < wEnd; });
+          weeklyAvgScores.unshift({
+            avg: wIdeas.length > 0 ? Math.round(wIdeas.reduce((a, ii) => a + ii.composite_score, 0) / wIdeas.length) : null,
+          });
+        }
+        const validWeekAvgs = weeklyAvgScores.filter(w => w.avg != null);
+        const rollingAvg = validWeekAvgs.length > 0 ? Math.round(validWeekAvgs.reduce((a, w) => a + w.avg, 0) / validWeekAvgs.length) : 0;
+        const currentWeekAvg = weeklyAvgScores[weeklyAvgScores.length - 1]?.avg || 0;
+        const scoreTrend = rollingAvg > 0 ? Math.round(((currentWeekAvg - rollingAvg) / rollingAvg) * 100) : 0;
+
+        // ── Pipeline Velocity ──
+        const pipelineThisWeek = ideas.filter(i => new Date(i.created_at) >= oneWeekAgo).length;
+        const pipelineLastWeek = ideas.filter(i => { const d = new Date(i.created_at); return d >= twoWeeksAgo && d < oneWeekAgo; }).length;
+        const pipelineDelta = pipelineLastWeek > 0 ? Math.round(((pipelineThisWeek - pipelineLastWeek) / pipelineLastWeek) * 100) : 0;
+
+        // ── Framework Correlation ──
+        const frameworkPairs = [
+          ['flylabs', 'hormozi', 'FL + H'], ['flylabs', 'koe', 'FL + K'],
+          ['flylabs', 'okamoto', 'FL + O'], ['hormozi', 'koe', 'H + K'],
+          ['hormozi', 'okamoto', 'H + O'], ['koe', 'okamoto', 'K + O'],
+        ];
+        const correlationData = frameworkPairs.map(([a, b, label]) => {
+          const both = scored.filter(i => i[`${a}_score`] != null && i[`${b}_score`] != null);
+          if (both.length < 5) return { label, agreement: 0, count: both.length };
+          const scoresA = both.map(i => i[`${a}_score`]).sort((x, y) => x - y);
+          const scoresB = both.map(i => i[`${b}_score`]).sort((x, y) => x - y);
+          const medA = scoresA[Math.floor(scoresA.length / 2)];
+          const medB = scoresB[Math.floor(scoresB.length / 2)];
+          const agree = both.filter(i => (i[`${a}_score`] >= medA && i[`${b}_score`] >= medB) || (i[`${a}_score`] < medA && i[`${b}_score`] < medB)).length;
+          return { label, agreement: Math.round((agree / both.length) * 100), count: both.length };
+        }).sort((aa, bb) => bb.agreement - aa.agreement);
+
+        // ── Opportunity Map ──
+        const oppFiltered = industryIntelData.filter(ind => ind.count >= 3 && ind.avgScore > 0);
+        const medianCount = oppFiltered.length > 0 ? oppFiltered.map(i => i.count).sort((a, b) => a - b)[Math.floor(oppFiltered.length / 2)] : 0;
+        const medianBuildRate = oppFiltered.length > 0 ? oppFiltered.map(i => i.buildRate).sort((a, b) => a - b)[Math.floor(oppFiltered.length / 2)] : 0;
+        const opportunityMapData = oppFiltered.map(ind => ({
+          name: ind.name, volume: ind.count, buildRate: ind.buildRate, avgScore: ind.avgScore,
+          quadrant: ind.count >= medianCount
+            ? (ind.buildRate >= medianBuildRate ? 'Stars' : 'Crowded')
+            : (ind.buildRate >= medianBuildRate ? 'Niche Gold' : 'Frontier'),
+        }));
+
         setStats({
           total, scoredCount, avgComposite, totalVotes, activeSources,
           buildCount: verdictCounts.BUILD, buildRate,
@@ -462,6 +627,10 @@ const IdeasAnalyticsPage = () => {
           topSource, bestQualitySource, topIndustry,
           topScoredIdea, bestBuild, thisWeek,
           recentlyScored,
+          leaderboard, hiddenGems, industryIntelData, disagreements,
+          sourceMomentumData, scoreTrend, currentWeekAvg, rollingAvg,
+          pipelineThisWeek, pipelineLastWeek, pipelineDelta,
+          correlationData, opportunityMapData,
         });
       } catch (err) {
         console.error('Analytics load error:', err);
