@@ -380,10 +380,10 @@ const IdeasAnalyticsPage = () => {
           if (i.okamoto_score != null) { fwSums.okamoto += i.okamoto_score; fwCounts.okamoto++; }
         });
         const frameworkData = [
-          { framework: 'Fly Labs', score: fwCounts.flylabs > 0 ? Math.round(fwSums.flylabs / fwCounts.flylabs) : 0, full: 'Fly Labs Method (40%)', fill: FRAMEWORK_COLORS['Fly Labs'] },
-          { framework: 'Hormozi', score: fwCounts.hormozi > 0 ? Math.round(fwSums.hormozi / fwCounts.hormozi) : 0, full: 'Hormozi Value Equation (20%)', fill: FRAMEWORK_COLORS['Hormozi'] },
-          { framework: 'Koe', score: fwCounts.koe > 0 ? Math.round(fwSums.koe / fwCounts.koe) : 0, full: 'Dan Koe Filter (20%)', fill: FRAMEWORK_COLORS['Koe'] },
-          { framework: 'Okamoto', score: fwCounts.okamoto > 0 ? Math.round(fwSums.okamoto / fwCounts.okamoto) : 0, full: 'Okamoto MicroSaaS (20%)', fill: FRAMEWORK_COLORS['Okamoto'] },
+          { framework: 'Fly Labs', score: fwCounts.flylabs > 0 ? Math.round(fwSums.flylabs / fwCounts.flylabs) : 0, full: 'Fly Labs Method (THE score)', fill: FRAMEWORK_COLORS['Fly Labs'] },
+          { framework: 'Hormozi', score: fwCounts.hormozi > 0 ? Math.round(fwSums.hormozi / fwCounts.hormozi) : 0, full: 'Hormozi (expert)', fill: FRAMEWORK_COLORS['Hormozi'] },
+          { framework: 'Koe', score: fwCounts.koe > 0 ? Math.round(fwSums.koe / fwCounts.koe) : 0, full: 'Dan Koe (expert)', fill: FRAMEWORK_COLORS['Koe'] },
+          { framework: 'Okamoto', score: fwCounts.okamoto > 0 ? Math.round(fwSums.okamoto / fwCounts.okamoto) : 0, full: 'Okamoto (expert)', fill: FRAMEWORK_COLORS['Okamoto'] },
         ];
 
         // Confidence
@@ -1034,8 +1034,8 @@ const IdeasAnalyticsPage = () => {
 
           {/* Framework Averages */}
           <ChartCard
-            title="Framework averages"
-            subtitle="How the four scoring brains compare"
+            title="Scoring averages"
+            subtitle="FL Method decides the verdict. Experts add perspective."
             doodle={FlaskDoodle}
             doodleClass="top-3 right-3"
           >

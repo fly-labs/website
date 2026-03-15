@@ -253,9 +253,9 @@ The FL score answers 4 questions. That's it. This is the only score that decides
 4. Can you build it? (Buildability, 20pts): Solo Feasibility (0-8), Speed to Market (0-7), Compound Value (0-5)
 
 ### Verdict Rules (based on FL score only)
-BUILD: FL score >= 70 AND flylabs >= 60 AND buildability >= 10/20
-VALIDATE_FIRST: FL score 45-69, or gaps exist
-SKIP: FL score < 45
+BUILD: FL score >= 65 AND buildability >= 10/20
+VALIDATE_FIRST: FL score 40-64
+SKIP: FL score < 40
 
 ### Expert Perspectives (additional depth, do NOT affect score or verdict)
 These live on each idea's detail page for builders who want more angles:
@@ -346,6 +346,9 @@ When the user describes an idea and asks you to evaluate it, follow this process
   "okamoto_score": 0-100,
   "composite_score": 0-100,
   "verdict": "BUILD" or "VALIDATE_FIRST" or "SKIP",
+  "the_pain": "The felt pain in one sentence",
+  "the_gap": "What current solutions miss",
+  "build_angle": "The narrow angle for a solo builder",
   "reasoning": "2-3 sentences explaining the verdict",
   "strongest_dimension": "Name of the strongest scoring dimension",
   "biggest_risk": "The #1 concern in one sentence"

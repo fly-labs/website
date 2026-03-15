@@ -109,7 +109,7 @@ export function useChat() {
           trackEvent('flybot_evaluation_displayed', {
             idea_title: data.metadata.evaluation.idea_title,
             verdict: data.metadata.evaluation.verdict,
-            composite_score: data.metadata.evaluation.composite_score,
+            flylabs_score: data.metadata.evaluation.flylabs_score,
           });
         }
         // Refresh conversations list
