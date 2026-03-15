@@ -56,6 +56,7 @@ const VIBE_CONFIG = [
   { id: 'build', name: 'Build', description: 'Flow state. Driving rhythms for deep work.', icon: 'Hammer' },
   { id: 'create', name: 'Create', description: 'Cozy vibes. Warm beats for writing and creating.', icon: 'PenLine' },
   { id: 'study', name: 'Study', description: 'Focus mode. Calm sounds for reading and learning.', icon: 'BookOpen' },
+  { id: 'retro', name: 'Retro', description: 'Lan house era. Chiptune beats and 8-bit nostalgia.', icon: 'Gamepad2' },
 ];
 
 const MAX_TOTAL_SIZE_MB = 500;
