@@ -3,6 +3,7 @@ import { Route, Routes, Navigate, BrowserRouter as Router, useLocation } from 'r
 import { ThemeProvider } from '@/contexts/ThemeContext.jsx';
 import { AuthProvider } from '@/contexts/AuthContext.jsx';
 import { ChatProvider } from '@/contexts/ChatContext.jsx';
+import { BoardProvider } from '@/contexts/BoardContext.jsx';
 import { MusicProvider } from '@/contexts/MusicContext.jsx';
 import { Toaster } from 'sonner';
 import { Analytics } from '@vercel/analytics/react';
@@ -41,6 +42,7 @@ const ScoringFrameworksPage = lazy(() => import('@/pages/ScoringFrameworksPage.j
 const LibraryPage = lazy(() => import('@/pages/LibraryPage.jsx'));
 const FlyBotLandingPage = lazy(() => import('@/pages/FlyBotLandingPage.jsx'));
 const FlyBotPage = lazy(() => import('@/pages/FlyBotPage.jsx'));
+const FlyBoardPage = lazy(() => import('@/pages/FlyBoardPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
 const PageFallback = () => (
@@ -86,6 +88,7 @@ const AnimatedRoutes = () => {
         <Route path="/microsaas" element={<MicroSaasPage />} />
         <Route path="/flybot" element={<FlyBotLandingPage />} />
         <Route path="/flybot/chat" element={<ProtectedRoute><FlyBotPage /></ProtectedRoute>} />
+        <Route path="/flyboard" element={<FlyBoardPage />} />
         <Route path="/coach" element={<Navigate to="/flybot" replace />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
@@ -103,6 +106,7 @@ function App() {
           <Router>
             <ErrorBoundary>
               <ChatProvider>
+                <BoardProvider>
                 <MusicProvider>
                   <ScrollToTop />
                   <PageTracker />
@@ -117,6 +121,7 @@ function App() {
                   <Analytics />
                   <SpeedInsights />
                 </MusicProvider>
+                </BoardProvider>
               </ChatProvider>
             </ErrorBoundary>
           </Router>

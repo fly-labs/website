@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { FlyBotTrigger } from '@/components/flybot/FlyBotTrigger.jsx';
 
@@ -9,6 +10,8 @@ const FlyBotPanel = lazy(() =>
 
 export function FlyBotWidget() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { isWidgetOpen, toggleWidget, closeWidget, limitReached } = useChatContext();
   const [hasEverOpened, setHasEverOpened] = useState(false);
 
@@ -21,6 +24,11 @@ export function FlyBotWidget() {
   if (location.pathname === '/flybot/chat') return null;
 
   const handleToggle = () => {
+    // Guests see the trigger but get redirected to login when they click
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
     if (!hasEverOpened) setHasEverOpened(true);
     toggleWidget();
   };
@@ -30,7 +38,7 @@ export function FlyBotWidget() {
       <FlyBotTrigger isOpen={isWidgetOpen} onToggle={handleToggle} limitReached={limitReached} />
 
       {/* Panel stays mounted after first open for AnimatePresence exit animations */}
-      {hasEverOpened && (
+      {hasEverOpened && isAuthenticated && (
         <Suspense fallback={null}>
           <FlyBotPanel isOpen={isWidgetOpen} onClose={closeWidget} />
         </Suspense>

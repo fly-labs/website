@@ -230,6 +230,293 @@
 .geo-spin { animation: geo-spin 50s linear infinite; }
 .geo-drift { animation: geo-drift 28s ease-in-out infinite; }
 
+/* ============================
+   FlyBoard: Excalidraw integration
+   Dark mode = Bart Simpson chalkboard
+   Light mode = Moleskine/Leuchtturm1917 notebook
+   ============================ */
+
+/* Excalidraw theme overrides */
+.flyboard-canvas .excalidraw {
+  --color-primary: hsl(var(--primary));
+  --color-primary-darker: hsl(var(--primary) / 0.8);
+  --color-primary-darkest: hsl(var(--primary) / 0.6);
+  --island-bg-color: hsl(var(--card));
+  --default-bg-color: transparent;
+}
+.flyboard-canvas .excalidraw .Island {
+  border-color: hsl(var(--border));
+  background: hsl(var(--card));
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.flyboard-canvas .excalidraw .App-toolbar {
+  border-color: hsl(var(--border));
+}
+
+/* ---- DARK MODE: Disable Excalidraw's invert filter ---- */
+/* Excalidraw dark theme applies filter: invert(0.93) hue-rotate(180deg) to canvas,
+   which inverts our carefully chosen auto-contrast stroke colors. Since we handle
+   dark mode via our own background + auto-contrast logic, disable the filter. */
+.flyboard-canvas .theme--dark .excalidraw__canvas {
+  filter: none !important;
+}
+
+/* ---- DARK MODE: Clean dark canvas (default) ---- */
+.dark .flyboard-canvas {
+  background-color: #141414;
+  /* Subtle noise texture for depth */
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n1)' opacity='0.02'/%3E%3C/svg%3E");
+}
+
+/* Dark mode toolbar */
+.dark .flyboard-toolbar {
+  background: rgba(16, 16, 16, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- LIGHT MODE: Clean white canvas (default) ---- */
+.flyboard-canvas {
+  background-color: #ffffff;
+  position: relative;
+}
+
+/* Light mode toolbar: clean, modern, Duolingo-inspired */
+.flyboard-toolbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 20;
+}
+
+/* ---- Tool pill groups (Duolingo-style rounded containers) ---- */
+.flyboard-tool-pill {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 14px;
+  background: hsl(var(--muted) / 0.6);
+  border: 1px solid hsl(var(--border) / 0.4);
+  flex-shrink: 0;
+}
+.dark .flyboard-tool-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ---- Toolbar button base ---- */
+.flyboard-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: hsl(var(--muted-foreground));
+  transition: background-color 0.12s, color 0.12s, transform 0.1s, box-shadow 0.12s;
+  flex-shrink: 0;
+  cursor: pointer;
+  line-height: 1;
+  vertical-align: middle;
+}
+.flyboard-tb-btn:hover {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+.flyboard-tb-btn:active {
+  transform: scale(0.9);
+}
+.flyboard-tb-btn.active {
+  background: hsl(var(--primary) / 0.18);
+  color: hsl(var(--primary));
+  box-shadow: inset 0 0 0 1.5px hsl(var(--primary) / 0.3);
+}
+.dark .flyboard-tb-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: hsl(var(--foreground));
+}
+.dark .flyboard-tb-btn.active {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary));
+  box-shadow: inset 0 0 0 1.5px hsl(var(--primary) / 0.35);
+}
+
+/* Dropdown variant: wider to fit chevron */
+.flyboard-tb-dropdown {
+  width: auto;
+  padding: 0 8px;
+  gap: 2px;
+}
+
+/* Native toolbar toggle: subtle pulsing glow when OFF to hint it's available */
+.flyboard-native-toggle:not(.active) {
+  animation: flyboard-native-hint 3s ease-in-out 5s 3;
+}
+@keyframes flyboard-native-hint {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 0 2px hsl(var(--primary) / 0.15); }
+}
+
+/* ---- GRID STYLES ---- */
+
+/* Dot grid (Leuchtturm1917 style) - uses explicit colors instead of currentColor for reliability */
+.flyboard-grid-dot {
+  background-image:
+    radial-gradient(circle, rgba(0, 0, 0, 0.08) 0.8px, transparent 0.8px);
+  background-size: 24px 24px;
+  background-position: 12px 12px;
+}
+.dark .flyboard-grid-dot {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.1) 0.8px, transparent 0.8px);
+}
+
+/* Ruled lines (Moleskine style) */
+.flyboard-grid-ruled {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      rgba(0, 0, 0, 0.06) 31px,
+      rgba(0, 0, 0, 0.06) 32px
+    );
+  background-position: 0 8px;
+}
+.dark .flyboard-grid-ruled {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      rgba(255, 255, 255, 0.07) 31px,
+      rgba(255, 255, 255, 0.07) 32px
+    );
+}
+
+/* Square grid (graph paper) */
+.flyboard-grid-square {
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.dark .flyboard-grid-square {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+}
+
+/* Isometric dot grid (for 3D sketching) */
+.flyboard-grid-iso {
+  background-image:
+    radial-gradient(circle, rgba(0, 0, 0, 0.06) 0.7px, transparent 0.7px),
+    radial-gradient(circle, rgba(0, 0, 0, 0.06) 0.7px, transparent 0.7px);
+  background-size: 28px 48.5px;
+  background-position: 0 0, 14px 24.25px;
+}
+.dark .flyboard-grid-iso {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.08) 0.7px, transparent 0.7px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.08) 0.7px, transparent 0.7px);
+}
+
+/* ---- Grid overlay sits on top of canvas but below Excalidraw UI ---- */
+.flyboard-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- Save indicator ---- */
+@keyframes flyboard-save-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+.flyboard-saving { animation: flyboard-save-pulse 1.5s ease-in-out infinite; }
+
+/* ---- Grid toggle dropdown ---- */
+.flyboard-grid-toggle {
+  position: relative;
+}
+.flyboard-grid-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  min-width: 160px;
+  z-index: 100;
+  background: hsl(var(--card) / 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: flyboard-menu-enter 0.15s ease-out;
+}
+@keyframes flyboard-menu-enter {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.flyboard-grid-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: hsl(var(--foreground));
+  transition: background 0.12s;
+}
+.flyboard-grid-menu button:hover {
+  background: hsl(var(--muted));
+}
+.flyboard-grid-menu button.active {
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  font-weight: 500;
+}
+.flyboard-grid-menu button:active {
+  transform: scale(0.98);
+}
+
+/* ---- Reposition Excalidraw native UI to avoid overlapping FlyBot & Music triggers ---- */
+/* Help button (bottom-right) -> push up above FlyBot trigger (56px + 1.5rem gap + extra spacing) */
+.flyboard-canvas .excalidraw .HelpButton {
+  bottom: 5rem !important;
+}
+/* Zoom controls + undo/redo stack (bottom-left) -> push up above Music trigger */
+.flyboard-canvas .excalidraw .zoom-actions,
+.flyboard-canvas .excalidraw .undo-redo-buttons {
+  bottom: 5rem !important;
+}
+/* Footer bar that wraps both sides */
+.flyboard-canvas .excalidraw .layer-ui__wrapper__footer {
+  padding-bottom: 4rem;
+}
+
+/* ---- Hide Excalidraw native UI when toggled off ---- */
+/* Hides toolbar, footer (zoom/undo/help), and side panels but keeps the canvas interactive */
+.flyboard-hide-excalidraw-ui .excalidraw .layer-ui__wrapper__top-right,
+.flyboard-hide-excalidraw-ui .excalidraw .layer-ui__wrapper__footer,
+.flyboard-hide-excalidraw-ui .excalidraw .App-toolbar-container,
+.flyboard-hide-excalidraw-ui .excalidraw .App-toolbar,
+.flyboard-hide-excalidraw-ui .excalidraw .HelpButton,
+.flyboard-hide-excalidraw-ui .excalidraw .zoom-actions,
+.flyboard-hide-excalidraw-ui .excalidraw .undo-redo-buttons,
+.flyboard-hide-excalidraw-ui .excalidraw .layer-ui__wrapper .zen-mode-transition {
+  display: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

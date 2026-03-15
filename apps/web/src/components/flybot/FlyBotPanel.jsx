@@ -181,7 +181,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
             ) : hasMessages ? (
               <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} />
             ) : (
-              <ChatEmpty onPromptClick={handlePromptClick} compact />
+              <ChatEmpty onPromptClick={handlePromptClick} compact pageContext={currentPageContext} />
             )}
 
             {/* Error banner */}

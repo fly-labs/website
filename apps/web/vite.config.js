@@ -16,6 +16,7 @@ export default defineConfig({
 					motion: ['framer-motion'],
 					supabase: ['@supabase/supabase-js'],
 					recharts: ['recharts'],
+					excalidraw: ['@excalidraw/excalidraw'],
 				},
 			},
 		},
