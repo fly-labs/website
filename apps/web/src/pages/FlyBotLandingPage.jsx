@@ -247,8 +247,8 @@ const FlyBotLandingPage = () => {
               },
               {
                 icon: BookOpen,
-                title: 'The content engine behind @falacomigo',
-                desc: '12 title formulas, 5 article structures, 7 hook patterns for Notes. The same system that grew a newsletter to 460+ subscribers in 57 countries. Working on your content, not just mine.',
+                title: 'You built something. Now what do you say?',
+                desc: 'Most builders ship and then stare at a blank page. FlyBot has 12 title formulas, 5 article structures, and 7 hook patterns loaded. Tell it what you built and it helps you figure out how to talk about it.',
                 color: 'text-purple-500',
                 bgColor: 'bg-purple-500/10',
               },

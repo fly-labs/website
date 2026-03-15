@@ -1,21 +1,22 @@
 const API_URL = 'https://gh-calendar.rschristian.dev/user/fly-labs';
+const COMMITS_API_URL = 'https://api.github.com/repos/fly-labs/website/commits';
 const CACHE_KEY = 'gh_contributions';
+const COMMITS_CACHE_KEY = 'gh_commits';
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 
-function getCache() {
+function getCache(key = CACHE_KEY) {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
-    const cached = JSON.parse(raw);
-    return cached;
+    return JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-function setCache(data) {
+function setCache(data, key = CACHE_KEY) {
   try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+    localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
   } catch {
     // localStorage full or unavailable
   }
@@ -55,6 +56,36 @@ function computeStats(weeks) {
   const mostActiveDay = dayNames[maxIdx];
 
   return { total, currentStreak, longestStreak, mostActiveDay };
+}
+
+export async function fetchRecentCommits(count = 10) {
+  const cached = getCache(COMMITS_CACHE_KEY);
+
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    return cached.data;
+  }
+
+  try {
+    const res = await fetch(`${COMMITS_API_URL}?per_page=${count}`, {
+      signal: AbortSignal.timeout(10000),
+      headers: { Accept: 'application/vnd.github.v3+json' },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    const commits = json.map((c) => ({
+      sha: c.sha.slice(0, 7),
+      message: c.commit.message.split('\n')[0],
+      date: c.commit.committer.date,
+      url: c.html_url,
+    }));
+
+    setCache(commits, COMMITS_CACHE_KEY);
+    return commits;
+  } catch {
+    if (cached) return cached.data;
+    return null;
+  }
 }
 
 export async function fetchContributions() {

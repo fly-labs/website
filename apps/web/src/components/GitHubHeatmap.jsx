@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Flame, Trophy, Calendar, Github } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
-import { fetchContributions } from '@/lib/githubApi.js';
+import { fetchContributions, fetchRecentCommits } from '@/lib/githubApi.js';
+import { trackEvent } from '@/lib/analytics.js';
 
 const INTENSITY_CLASSES = [
   'bg-muted',
@@ -279,6 +280,92 @@ function Stats({ stats }) {
         <span>Most active:</span>
         <span className="font-semibold text-foreground">{stats.mostActiveDay}</span>
       </div>
+    </div>
+  );
+}
+
+function timeAgoShort(dateStr) {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = Math.floor((now - then) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  return `${Math.floor(diff / 604800)}w ago`;
+}
+
+function CommitSkeleton() {
+  return (
+    <div className="animate-pulse space-y-2.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex items-start gap-3">
+          <div className="w-14 h-3.5 bg-muted rounded shrink-0 mt-0.5" />
+          <div className="flex-1 h-3.5 bg-muted rounded" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function RecentCommits({ count = 10 }) {
+  const [commits, setCommits] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchRecentCommits(count).then((result) => {
+      if (!cancelled) {
+        setCommits(result);
+        setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [count]);
+
+  if (!loading && !commits) return null;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h4 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Recent updates</h4>
+        <a
+          href="https://github.com/fly-labs/website/commits/main"
+          target="_blank"
+          rel="noreferrer"
+          className="text-[11px] font-medium text-muted-foreground/50 hover:text-primary transition-colors"
+          onClick={() => trackEvent('outbound_click', { link_url: 'https://github.com/fly-labs/website/commits/main', link_label: 'View all commits', location: 'github_heatmap' })}
+        >
+          View all
+        </a>
+      </div>
+
+      {loading ? (
+        <CommitSkeleton />
+      ) : (
+        <div className="space-y-0">
+          {commits.map((commit) => (
+            <a
+              key={commit.sha}
+              href={commit.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-start gap-3 py-1.5 hover:bg-muted/30 -mx-2 px-2 rounded transition-colors"
+              onClick={() => trackEvent('outbound_click', { link_url: commit.url, link_label: commit.message, location: 'recent_commits' })}
+            >
+              <code className="text-[11px] font-mono text-primary/60 group-hover:text-primary shrink-0 mt-[1px] transition-colors">
+                {commit.sha}
+              </code>
+              <span className="text-[13px] text-muted-foreground group-hover:text-foreground leading-snug flex-1 min-w-0 truncate transition-colors">
+                {commit.message}
+              </span>
+              <span className="text-[10px] text-muted-foreground/40 shrink-0 mt-[2px] tabular-nums">
+                {timeAgoShort(commit.date)}
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, ChevronDown, FlaskConical, BarChart3, Rocket, Zap, Sparkles, Users, Terminal } from 'lucide-react';
-import { GitHubHeatmap } from '@/components/GitHubHeatmap.jsx';
+import { GitHubHeatmap, RecentCommits } from '@/components/GitHubHeatmap.jsx';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
@@ -218,6 +218,9 @@ const AboutPage = () => {
             </div>
             <div className="glass-card p-5 md:p-6 mt-4">
               <GitHubHeatmap variant="full" />
+            </div>
+            <div className="glass-card p-5 md:p-6 mt-4">
+              <RecentCommits count={10} />
             </div>
           </motion.section>
 
