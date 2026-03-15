@@ -28,8 +28,8 @@ export const QUESTION_COUNT = 4;
 // Centralized here so there's ONE place to update.
 export const ROUTE_COUNT = 24;
 export const SCRIPT_COUNT = 12;
-export const GA4_EVENT_COUNT = 61;
-export const DB_TABLE_COUNT = 11;
+export const GA4_EVENT_COUNT = 65;
+export const DB_TABLE_COUNT = 13;
 export const RPC_COUNT = 10;
 export const WORKFLOW_COUNT = 3;
 export const EXPERT_COUNT = 3; // Hormozi, Dan Koe, Okamoto

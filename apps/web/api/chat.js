@@ -237,6 +237,10 @@ export default async function handler(req, res) {
       name: page_context.name,
       path: String(page_context.path || '').replace(/[<>{}]/g, '').slice(0, 100),
     };
+    // Board content for FlyBoard context (max 2000 chars, plain text only)
+    if (page_context.board_content && typeof page_context.board_content === 'string') {
+      sanitizedPageContext.board_content = page_context.board_content.replace(/[<>{}]/g, '').slice(0, 2000);
+    }
   }
 
   // Find similar ideas if user might be describing one
@@ -260,6 +264,14 @@ export default async function handler(req, res) {
   // Find relevant prompts from our library
   const relevantPrompts = findRelevantPrompts(cleanMessage);
 
+  // Load user memories for cross-session context
+  const { data: userMemories } = await supabase
+    .from('flybot_memory')
+    .select('key, value')
+    .eq('user_id', user.id)
+    .order('updated_at', { ascending: false })
+    .limit(10);
+
   // Build system prompt with full knowledge base + live analytics
   const systemPrompt = buildSystemPrompt({
     similarIdeas,
@@ -268,6 +280,7 @@ export default async function handler(req, res) {
     pageContext: sanitizedPageContext,
     analytics,
     searchResults,
+    userMemories: userMemories || [],
   });
 
   // Build messages array
@@ -334,13 +347,78 @@ export default async function handler(req, res) {
       }
     }
 
+    // Parse board action metadata if present
+    const boardMatch = fullResponse.match(/<board_action>([\s\S]*?)<\/board_action>/);
+    if (boardMatch) {
+      try {
+        if (!metadata) metadata = {};
+        metadata.board_action = JSON.parse(boardMatch[1].trim());
+      } catch (e) {
+        // Failed to parse board action JSON, skip
+      }
+    }
+
+    // Parse memory tags before saving (strip from stored content)
+    const memoryMatches = [...fullResponse.matchAll(/<memory>([\s\S]*?)<\/memory>/g)];
+    if (memoryMatches.length > 0) {
+      const VALID_KEYS = new Set(['building', 'role', 'tools', 'goal', 'preference', 'background', 'industry', 'stage', 'audience', 'challenge']);
+      for (const match of memoryMatches) {
+        try {
+          const mem = JSON.parse(match[1].trim());
+          if (mem.key && mem.value && VALID_KEYS.has(mem.key) && typeof mem.value === 'string') {
+            const safeValue = mem.value.replace(/[<>{}\n\r]/g, ' ').trim().slice(0, 200);
+            // Check if key already exists (upsert is always safe for existing keys)
+            const { data: existing } = await supabase
+              .from('flybot_memory')
+              .select('id')
+              .eq('user_id', user.id)
+              .eq('key', mem.key)
+              .maybeSingle();
+
+            if (existing) {
+              // Update existing key
+              await supabase
+                .from('flybot_memory')
+                .update({ value: safeValue, updated_at: new Date().toISOString() })
+                .eq('id', existing.id);
+            } else {
+              // Only insert new key if under 10 total
+              const { count } = await supabase
+                .from('flybot_memory')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', user.id);
+              if ((count || 0) < 10) {
+                await supabase
+                  .from('flybot_memory')
+                  .insert({
+                    user_id: user.id,
+                    key: mem.key,
+                    value: safeValue,
+                  });
+              }
+            }
+          }
+        } catch {
+          // Skip malformed memory tags
+        }
+      }
+    }
+
+    // Strip all special tags from stored content (keeps history clean for future context)
+    const cleanResponse = fullResponse
+      .replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '')
+      .replace(/<memory>[\s\S]*?<\/memory>/g, '')
+      .replace(/<music_action>[\s\S]*?<\/music_action>/g, '')
+      .replace(/<board_action>[\s\S]*?<\/board_action>/g, '')
+      .trim();
+
     // Save assistant message
-    await supabase.from('messages').insert({
+    const { data: assistantMsg } = await supabase.from('messages').insert({
       conversation_id: convId,
       role: 'assistant',
-      content: fullResponse,
+      content: cleanResponse || fullResponse,
       metadata,
-    });
+    }).select('id').single();
 
     // Update conversation timestamp
     await supabase
@@ -348,11 +426,12 @@ export default async function handler(req, res) {
       .update({ last_message_at: new Date().toISOString() })
       .eq('id', convId);
 
-    // Send done event
+    // Send done event with real message ID
     const newCount = currentCount + 1;
     res.write(`data: ${JSON.stringify({
       type: 'done',
       conversation_id: convId,
+      message_id: assistantMsg?.id || null,
       message_count: newCount,
       limit: messageLimit === Infinity ? null : messageLimit,
       metadata,

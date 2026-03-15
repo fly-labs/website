@@ -66,6 +66,26 @@ const STROKE_COLORS = [
   { id: 'pink', label: 'Pink', hex: '#e64980' },
 ];
 
+// Fill color presets (transparent + 8 chalk colors)
+const FILL_COLORS = [
+  { id: 'transparent', label: 'No fill', hex: 'transparent' },
+  { id: 'yellow', label: 'Yellow', hex: '#f5e6a3' },
+  { id: 'blue', label: 'Blue', hex: '#a3c4e8' },
+  { id: 'pink', label: 'Pink', hex: '#e8a3b8' },
+  { id: 'green', label: 'Green', hex: '#a3d9b1' },
+  { id: 'white', label: 'White', hex: '#e8e4df' },
+  { id: 'red', label: 'Red', hex: '#e03131' },
+  { id: 'orange', label: 'Orange', hex: '#e8590c' },
+  { id: 'purple', label: 'Purple', hex: '#7048e8' },
+];
+
+// Fill style options
+const FILL_STYLES = [
+  { id: 'hachure', label: 'Hatch' },
+  { id: 'cross-hatch', label: 'Cross' },
+  { id: 'solid', label: 'Solid' },
+];
+
 // Font size steps for text elements
 const FONT_SIZES = [12, 16, 20, 24, 28, 36, 48, 64, 80];
 
@@ -199,6 +219,7 @@ export default function FlyBoardPage() {
     isLoading, error, initBoard, isInitialized, openBoard, createBoard,
     deleteBoard, updateBoardTitle, handleSceneChange, setError,
     toggleFavorite, createFolder, renameFolder, deleteFolder, moveBoard,
+    registerCanvas, lastBoardAction,
   } = useBoardContext();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -230,6 +251,10 @@ export default function FlyBoardPage() {
   // Stroke/text color state ('auto' = auto-contrast, or a hex color)
   const [strokeColorMode, setStrokeColorMode] = useState(() => localStorage.getItem('flyboard-stroke-color') || 'auto');
 
+  // Fill color and style state (persisted to localStorage)
+  const [fillColor, setFillColor] = useState(() => localStorage.getItem('flyboard-fill-color') || 'transparent');
+  const [fillStyle, setFillStyle] = useState(() => localStorage.getItem('flyboard-fill-style') || 'hachure');
+
   // Dropdown states
   const [gridMenuOpen, setGridMenuOpen] = useState(false);
   const [bgMenuOpen, setBgMenuOpen] = useState(false);
@@ -251,10 +276,12 @@ export default function FlyBoardPage() {
   const [inlineColorMenuOpen, setInlineColorMenuOpen] = useState(false);
   const [inlineFontMenuOpen, setInlineFontMenuOpen] = useState(false);
   const [arrowMenuOpen, setArrowMenuOpen] = useState(false);
+  const [fillMenuOpen, setFillMenuOpen] = useState(false);
   const strokeWidthMenuRef = useRef(null);
   const inlineColorMenuRef = useRef(null);
   const inlineFontMenuRef = useRef(null);
   const arrowMenuRef = useRef(null);
+  const fillMenuRef = useRef(null);
 
   // Modal states
   const [exportOpen, setExportOpen] = useState(false);
@@ -342,7 +369,7 @@ export default function FlyBoardPage() {
 
   // Close dropdowns and context menus on outside click
   useEffect(() => {
-    if (!gridMenuOpen && !bgMenuOpen && !fontMenuOpen && !colorMenuOpen && !symbolMenuOpen && !emojiMenuOpen && !boardContextMenu && !folderContextMenu && !strokeWidthMenuOpen && !inlineColorMenuOpen && !inlineFontMenuOpen && !arrowMenuOpen) return;
+    if (!gridMenuOpen && !bgMenuOpen && !fontMenuOpen && !colorMenuOpen && !symbolMenuOpen && !emojiMenuOpen && !boardContextMenu && !folderContextMenu && !strokeWidthMenuOpen && !inlineColorMenuOpen && !inlineFontMenuOpen && !arrowMenuOpen && !fillMenuOpen) return;
     const handler = (e) => {
       if (gridMenuOpen && gridMenuRef.current && !gridMenuRef.current.contains(e.target)) setGridMenuOpen(false);
       if (bgMenuOpen && bgMenuRef.current && !bgMenuRef.current.contains(e.target)) setBgMenuOpen(false);
@@ -356,10 +383,11 @@ export default function FlyBoardPage() {
       if (inlineColorMenuOpen && inlineColorMenuRef.current && !inlineColorMenuRef.current.contains(e.target)) setInlineColorMenuOpen(false);
       if (inlineFontMenuOpen && inlineFontMenuRef.current && !inlineFontMenuRef.current.contains(e.target)) setInlineFontMenuOpen(false);
       if (arrowMenuOpen && arrowMenuRef.current && !arrowMenuRef.current.contains(e.target)) setArrowMenuOpen(false);
+      if (fillMenuOpen && fillMenuRef.current && !fillMenuRef.current.contains(e.target)) setFillMenuOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [gridMenuOpen, bgMenuOpen, fontMenuOpen, colorMenuOpen, symbolMenuOpen, emojiMenuOpen, boardContextMenu, folderContextMenu, strokeWidthMenuOpen, inlineColorMenuOpen, inlineFontMenuOpen, arrowMenuOpen]);
+  }, [gridMenuOpen, bgMenuOpen, fontMenuOpen, colorMenuOpen, symbolMenuOpen, emojiMenuOpen, boardContextMenu, folderContextMenu, strokeWidthMenuOpen, inlineColorMenuOpen, inlineFontMenuOpen, arrowMenuOpen, fillMenuOpen]);
 
   // Init board context on mount (guests get localStorage mode automatically)
   useEffect(() => {
@@ -399,6 +427,44 @@ export default function FlyBoardPage() {
       setSearchParams({ b: activeBoard.id }, { replace: true });
     }
   }, [activeBoard?.id, setSearchParams]);
+
+  // Register canvas ref with BoardContext for FlyBot integration
+  // Re-register whenever active board changes (ensures ref is up to date)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (excalidrawRef.current) {
+        registerCanvas(excalidrawRef.current);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [activeBoard?.id, registerCanvas]);
+
+  // Handle FlyBot template load actions
+  useEffect(() => {
+    if (!lastBoardAction) return;
+    if (lastBoardAction.type === 'load_template') {
+      // Dynamically import templates and load the requested one
+      import('@/lib/data/boardTemplates.js').then(mod => {
+        const template = mod.boardTemplates?.find(t => t.id === lastBoardAction.template);
+        if (template) {
+          handleTemplateSelect(template);
+        } else {
+          setToast(`Template "${lastBoardAction.template}" not found`);
+          if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+          toastTimerRef.current = setTimeout(() => setToast(null), 2000);
+        }
+      });
+    } else if (lastBoardAction.type === 'add_elements') {
+      setToast(`FlyBot added ${lastBoardAction.count} element${lastBoardAction.count > 1 ? 's' : ''}`);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setToast(null), 2000);
+    } else if (lastBoardAction.type === 'clear') {
+      setToast('FlyBot cleared the board');
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => setToast(null), 2000);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastBoardAction]);
 
   // Fullscreen API integration
   useEffect(() => {
@@ -584,6 +650,30 @@ export default function FlyBoardPage() {
     }
     trackEvent('flyboard_stroke_color_changed', { color: colorId });
   }, [resolvedBgColor, getExcalidrawAPI, applyToSelected]);
+
+  const handleFillColorChange = useCallback((colorId) => {
+    setFillColor(colorId);
+    localStorage.setItem('flyboard-fill-color', colorId);
+    setFillMenuOpen(false);
+    const hex = FILL_COLORS.find(c => c.id === colorId)?.hex || 'transparent';
+    const api = getExcalidrawAPI();
+    if (api?.updateScene) {
+      api.updateScene({ appState: { currentItemBackgroundColor: hex } });
+    }
+    applyToSelected({ backgroundColor: hex }, el => el.type !== 'text' && el.type !== 'arrow' && el.type !== 'line');
+    trackEvent('flyboard_fill_color_changed', { color: colorId });
+  }, [getExcalidrawAPI, applyToSelected]);
+
+  const handleFillStyleChange = useCallback((styleId) => {
+    setFillStyle(styleId);
+    localStorage.setItem('flyboard-fill-style', styleId);
+    const api = getExcalidrawAPI();
+    if (api?.updateScene) {
+      api.updateScene({ appState: { currentItemFillStyle: styleId } });
+    }
+    applyToSelected({ fillStyle: styleId }, el => el.type !== 'text' && el.type !== 'arrow' && el.type !== 'line');
+    trackEvent('flyboard_fill_style_changed', { fill_style: styleId });
+  }, [getExcalidrawAPI, applyToSelected]);
 
   const handleStrokeWidthChange = useCallback((width) => {
     setStrokeWidth(width);
@@ -1234,6 +1324,80 @@ export default function FlyBoardPage() {
                     )}
                   </div>
 
+                  {/* Fill color picker (after stroke color, hidden on mobile) */}
+                  <div ref={fillMenuRef} className="relative hidden sm:block">
+                    <button
+                      onClick={() => { setFillMenuOpen(p => !p); setInlineColorMenuOpen(false); setStrokeWidthMenuOpen(false); setInlineFontMenuOpen(false); }}
+                      className="flyboard-tb-btn"
+                      title={`Fill: ${fillColor === 'transparent' ? 'None' : FILL_COLORS.find(c => c.id === fillColor)?.label || 'None'}`}
+                    >
+                      <span
+                        className="w-4 h-4 rounded"
+                        style={{
+                          backgroundColor: fillColor === 'transparent' ? 'transparent' : (FILL_COLORS.find(c => c.id === fillColor)?.hex || 'transparent'),
+                          border: `2px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'}`,
+                          ...(fillColor === 'transparent' ? {
+                            background: `linear-gradient(135deg, transparent 45%, ${isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)'} 45%, ${isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)'} 55%, transparent 55%)`,
+                          } : {}),
+                        }}
+                      />
+                    </button>
+                    {fillMenuOpen && (
+                      <div
+                        className="absolute top-full mt-1.5 z-[100] p-3 rounded-xl shadow-xl"
+                        style={{
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: isDark ? '#1e1e24' : '#ffffff',
+                          border: `1px solid ${isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'}`,
+                        }}
+                      >
+                        <div className="grid grid-cols-3 gap-2" style={{ width: 'max-content' }}>
+                          {FILL_COLORS.map(color => (
+                            <button
+                              key={color.id}
+                              onClick={() => handleFillColorChange(color.id)}
+                              className="flex items-center justify-center"
+                              title={color.label}
+                              style={{ width: 32, height: 32 }}
+                            >
+                              <span
+                                style={{
+                                  width: 24,
+                                  height: 24,
+                                  borderRadius: 4,
+                                  border: fillColor === color.id
+                                    ? '2.5px solid hsl(142 72% 50%)'
+                                    : `2px solid ${isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.12)'}`,
+                                  boxShadow: fillColor === color.id ? '0 0 0 3px rgba(50,190,100,0.25)' : 'none',
+                                  backgroundColor: color.hex === 'transparent' ? 'transparent' : color.hex,
+                                  ...(color.id === 'transparent' ? {
+                                    background: `linear-gradient(135deg, transparent 45%, ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'} 45%, ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'} 55%, transparent 55%)`,
+                                  } : {}),
+                                }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex gap-1 mt-2 pt-2 border-t border-border/30">
+                          {FILL_STYLES.map(style => (
+                            <button
+                              key={style.id}
+                              onClick={() => handleFillStyleChange(style.id)}
+                              className={`flex-1 py-1 rounded text-[10px] font-medium transition-colors ${
+                                fillStyle === style.id
+                                  ? 'bg-primary/15 text-primary'
+                                  : 'text-muted-foreground hover:bg-muted/50'
+                              }`}
+                            >
+                              {style.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Font size A-/A+ (always visible, compact on mobile) */}
                   <button
                     onClick={() => handleFontSizeChange('down')}
@@ -1460,6 +1624,8 @@ export default function FlyBoardPage() {
                   fontSize={fontSize}
                   startArrowhead={activeArrowPreset.startArrowhead}
                   endArrowhead={activeArrowPreset.endArrowhead}
+                  fillColor={FILL_COLORS.find(c => c.id === fillColor)?.hex || 'transparent'}
+                  fillStyle={fillStyle}
                   hideUI={!showExcalidrawUI}
                 />
               </Suspense>
@@ -1662,6 +1828,44 @@ export default function FlyBoardPage() {
                       ...(color.id === 'auto' ? { background: 'conic-gradient(#e8e4df 0deg, #e8e4df 180deg, #1e1e1e 180deg, #1e1e1e 360deg)' } : {}),
                     }}
                   />
+                </button>
+              ))}
+            </div>
+
+            {/* Fill Color */}
+            <p className="text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium mb-2">Fill Color</p>
+            <div className="flex items-center gap-2 mb-2">
+              {FILL_COLORS.map(color => (
+                <button
+                  key={color.id}
+                  onClick={() => handleFillColorChange(color.id)}
+                  className="flex items-center justify-center"
+                  title={color.label}
+                >
+                  <span
+                    className={`w-7 h-7 rounded border-2 transition-transform ${
+                      fillColor === color.id ? 'scale-110 border-primary ring-2 ring-primary/30' : 'border-border/50 active:scale-95'
+                    }`}
+                    style={{
+                      backgroundColor: color.hex === 'transparent' ? 'transparent' : color.hex,
+                      ...(color.id === 'transparent' ? {
+                        background: `linear-gradient(135deg, transparent 45%, ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'} 45%, ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.25)'} 55%, transparent 55%)`,
+                      } : {}),
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2 mb-4">
+              {FILL_STYLES.map(style => (
+                <button
+                  key={style.id}
+                  onClick={() => handleFillStyleChange(style.id)}
+                  className={`flex-1 flex items-center justify-center py-2 rounded-xl text-xs transition-colors ${
+                    fillStyle === style.id ? 'bg-primary/15 text-primary font-medium' : 'text-muted-foreground hover:bg-muted border border-border/50'
+                  }`}
+                >
+                  {style.label}
                 </button>
               ))}
             </div>

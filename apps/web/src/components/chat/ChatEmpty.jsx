@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, ArrowRight } from 'lucide-react';
+import { Bot, ArrowRight, Info } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
 
@@ -24,21 +24,33 @@ const COMPACT_PROMPTS = [
 const PAGE_CONFIGS = {
   'FlyBoard': {
     title: 'FlyBot for FlyBoard',
-    description: 'I can help you plan your canvas, suggest templates, or brainstorm what to draw next.',
-    compactDescription: 'Need help with your board? Ask me anything.',
+    description: 'I can add sticky notes, shapes, and text to your board. I can load templates and read what\'s on your canvas.',
+    compactDescription: 'I can add elements to your board and load templates.',
     prompts: [
-      'Which template should I use for my project?',
-      'Help me plan a mind map for my startup',
-      'What\'s the best canvas layout for a weekly review?',
-      'Create a new board for brainstorming',
-      'Help me organize my boards into folders',
-      'What fonts work best for a presentation?',
+      'Set up a lean canvas',
+      'Add sticky notes for brainstorming',
+      'What\'s on my board?',
+      'Clear and start fresh',
+      'Add a SWOT analysis layout',
+      'Help me plan a mind map',
     ],
     compactPrompts: [
-      'Suggest a template for my idea',
-      'Help me plan my canvas',
-      'Tips for a better board',
+      'Set up a lean canvas',
+      'Add sticky notes',
+      'What\'s on my board?',
     ],
+    capabilities: {
+      can: [
+        'Add sticky notes, shapes, text, and arrows',
+        'Load any of the 12 built-in templates',
+        'Read and describe what\'s on your board',
+      ],
+      cannot: [
+        'Move or resize existing elements',
+        'Change colors of existing shapes',
+        'Undo actions (use Ctrl+Z for that)',
+      ],
+    },
   },
   'Ideas Lab': {
     title: 'FlyBot for Ideas',
@@ -184,6 +196,29 @@ export function ChatEmpty({ onPromptClick, compact = false, pageContext = null }
             </motion.button>
           ))}
         </div>
+
+        {/* Capabilities card (board-specific) */}
+        {pageConfig?.capabilities && !compact && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35, duration: 0.3 }}
+            className="mt-4 p-3 rounded-xl border border-border/50 bg-muted/30"
+          >
+            <div className="flex items-center gap-1.5 mb-2">
+              <Info className="w-3.5 h-3.5 text-muted-foreground/60" />
+              <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-medium">FlyBoard mode (beta)</span>
+            </div>
+            <div className="text-[11px] text-muted-foreground/70 leading-relaxed space-y-1">
+              {pageConfig.capabilities.can.map((item, i) => (
+                <p key={`can-${i}`} className="text-muted-foreground/80">{item}.</p>
+              ))}
+              <p className="pt-1 text-muted-foreground/50">
+                {pageConfig.capabilities.cannot.map(c => c.toLowerCase()).join(', ')}.
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {/* Disclosure */}
         <motion.div

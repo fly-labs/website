@@ -41,6 +41,8 @@ export default function FlyBotPage() {
     clearError,
     initChat,
     currentPageContext,
+    feedbackMap,
+    submitMessageFeedback,
   } = useChatContext();
 
   useEffect(() => {
@@ -136,7 +138,7 @@ export default function FlyBotPage() {
             {limitReached ? (
               <ChatLimitReached messageCount={messageCount} />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} onNavigate={navigate} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} onNavigate={navigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} />
             )}

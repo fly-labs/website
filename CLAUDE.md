@@ -106,6 +106,7 @@ apps/web/
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
 │   │   ├── chatApi.js       # FlyBot API client (streamChat SSE, listConversations, createConversation, deleteConversation, loadMessages, joinFlyBotWaitlist)
+│   │   ├── boardBridge.js   # FlyBot x FlyBoard bridge (buildExcalidrawElements, extractBoardContent). CustomEvent bridge pattern
 │   │   └── utils.js          # cn(), timeAgo(), isValidEmail()
 │   └── pages/
 │       ├── HomePage.jsx          # Brand landing (hero, 6 live-stat pillars incl. FlyBot, how it works, newsletter preview, narrative closing)
@@ -132,11 +133,12 @@ apps/web/
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── api/                         # Vercel Serverless Functions (Node.js, server-side)
-│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Opus, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max)
+│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Opus, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max, cross-session memory, returns message_id)
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
+│   ├── feedback.js              # POST/DELETE - FlyBot message feedback (thumbs up/down with optional comment)
 │   └── lib/
 │       ├── auth.js              # Supabase JWT verification, admin email check
-│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context + page context)
+│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context + page context + board_action/music_action + user memory injection)
 ├── public/
 │   ├── images/luiz-alves.png
 │   ├── robots.txt
@@ -177,7 +179,7 @@ apps/web/
 
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
-- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, idea_rate_limits, conversations, messages, flybot_waitlist, boards, board_folders
+- **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, idea_rate_limits, conversations, messages, flybot_waitlist, boards, board_folders, flybot_feedback (message ratings), flybot_memory (cross-session user context)
 - **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github/yc), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized FL score, = flylabs_score for backward compat), published_at (original publication date), meta (JSONB, source-specific context, e.g. YC failure_analysis), created_at, updated_at (auto-updated via trigger)
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h. RLS enabled with honeypot defense in `log_idea_submission` RPC
 - **RPCs:** `increment_vote(idea_id)`, `decrement_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`, `init_flyboard_defaults(p_user_id)`, `move_board(p_board_id, p_folder_id)`
@@ -234,7 +236,7 @@ apps/web/
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (6-way: hot/new/oldest/top/score/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 
 ## Analytics Events (GA4)
-All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`. 62 events total.
+All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`. 65 events total.
 
 **Auth (2)**
 | Event | Fired From | Key Params |
@@ -264,7 +266,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `ideas_filter_removed` | useIdeaFilters | `filter_type`, `filter_value` |
 | `ideas_filters_cleared` | useIdeaFilters | `previous_count` |
 
-**FlyBot (7)**
+**FlyBot (8)**
 | Event | Fired From | Key Params |
 |-------|-----------|------------|
 | `flybot_message_sent` | FlyBotPage, FlyBotPanel | `conversation_id`, `message_length`, `source` (widget/full_page) |
@@ -274,8 +276,9 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `flybot_conversation_deleted` | useChat | `conversation_id` |
 | `flybot_evaluation_displayed` | useChat | `idea_title`, `verdict`, `composite_score` |
 | `flybot_waitlist_joined` | ChatLimitReached | `message_count` |
+| `flybot_feedback_submitted` | useChat | `rating`, `has_comment`, `message_id` |
 
-**FlyBoard (17)**
+**FlyBoard (20)**
 | Event | Fired From | Key Params |
 |-------|-----------|------------|
 | `flyboard_board_opened` | useBoard | `board_id`, `board_title` |
@@ -295,6 +298,9 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `flyboard_stroke_width_changed` | FlyBoardPage | `width` |
 | `flyboard_arrow_preset_changed` | FlyBoardPage | `preset` |
 | `flyboard_exported` | ExportMenu | `format`, `element_count` |
+| `flyboard_fill_color_changed` | FlyBoardPage | `color` |
+| `flyboard_fill_style_changed` | FlyBoardPage | `fill_style` |
+| `flyboard_board_action` | useChat.js | `action` (add_elements/load_template/clear) |
 
 **Music (5)**
 | Event | Fired From | Key Params |

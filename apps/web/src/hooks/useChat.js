@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { streamChat, loadMessages, listConversations, createConversation, deleteConversation } from '@/lib/chatApi.js';
+import { streamChat, loadMessages, listConversations, createConversation, deleteConversation, submitFeedback, deleteFeedback } from '@/lib/chatApi.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 export function useChat() {
@@ -12,6 +12,7 @@ export function useChat() {
   const [messageCount, setMessageCount] = useState(0);
   const [messageLimit, setMessageLimit] = useState(5);
   const [limitReached, setLimitReached] = useState(false);
+  const [feedbackMap, setFeedbackMap] = useState({});
   const abortRef = useRef(null);
 
   const clearError = useCallback(() => {
@@ -98,14 +99,22 @@ export function useChat() {
           }));
           trackEvent('music_flybot_control', { action: data.metadata.music_action.action });
         }
+        if (data.metadata?.board_action) {
+          window.dispatchEvent(new CustomEvent('flybot-board-action', {
+            detail: data.metadata.board_action,
+          }));
+          trackEvent('flybot_board_action', { action: data.metadata.board_action.action });
+        }
+        // Replace temp assistant ID with real DB ID + attach metadata
+        const realId = data.message_id || assistantId;
+        setMessages(prev =>
+          prev.map(m =>
+            m.id === assistantId
+              ? { ...m, id: realId, metadata: data.metadata || m.metadata }
+              : m
+          )
+        );
         if (data.metadata?.evaluation) {
-          setMessages(prev =>
-            prev.map(m =>
-              m.id === assistantId
-                ? { ...m, metadata: data.metadata }
-                : m
-            )
-          );
           trackEvent('flybot_evaluation_displayed', {
             idea_title: data.metadata.evaluation.idea_title,
             verdict: data.metadata.evaluation.verdict,
@@ -164,6 +173,37 @@ export function useChat() {
     }
   }, [activeConversationId, startNewChat]);
 
+  const submitMessageFeedback = useCallback(async (messageId, rating, comment = null) => {
+    // If same rating already exists, remove feedback (toggle off)
+    if (feedbackMap[messageId] === rating) {
+      setFeedbackMap(prev => {
+        const next = { ...prev };
+        delete next[messageId];
+        return next;
+      });
+      try { await deleteFeedback(messageId); } catch { /* silent */ }
+      return;
+    }
+
+    // Set new rating
+    setFeedbackMap(prev => ({ ...prev, [messageId]: rating }));
+    try {
+      await submitFeedback(messageId, rating, comment);
+      trackEvent('flybot_feedback_submitted', {
+        rating,
+        has_comment: !!comment,
+        message_id: messageId,
+      });
+    } catch {
+      // Revert on failure
+      setFeedbackMap(prev => {
+        const next = { ...prev };
+        delete next[messageId];
+        return next;
+      });
+    }
+  }, [feedbackMap]);
+
   const stopStreaming = useCallback(() => {
     if (abortRef.current) {
       abortRef.current();
@@ -189,5 +229,7 @@ export function useChat() {
     stopStreaming,
     retryLastMessage,
     clearError,
+    feedbackMap,
+    submitMessageFeedback,
   };
 }

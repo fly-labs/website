@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Bot } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bot, ThumbsUp, ThumbsDown, Send } from 'lucide-react';
 import { cn } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { ChatEvaluation } from '@/components/chat/ChatEvaluation.jsx';
@@ -37,6 +37,8 @@ function renderMarkdown(text) {
   const clean = text
     .replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '')
     .replace(/<music_action>[\s\S]*?<\/music_action>/g, '')
+    .replace(/<board_action>[\s\S]*?<\/board_action>/g, '')
+    .replace(/<memory>[\s\S]*?<\/memory>/g, '')
     .trim();
   if (!clean) return null;
 
@@ -115,7 +117,103 @@ function TypingIndicator() {
   );
 }
 
-export function ChatMessage({ message, isStreaming, compact = false, onNavigate }) {
+function FeedbackButtons({ messageId, currentRating, onFeedback, compact }) {
+  const [showComment, setShowComment] = useState(false);
+  const [comment, setComment] = useState('');
+
+  const handleRating = (rating) => {
+    if (rating === 'down' && currentRating !== 'down') {
+      setShowComment(true);
+    } else {
+      setShowComment(false);
+      setComment('');
+    }
+    onFeedback(messageId, rating);
+  };
+
+  const handleSubmitComment = () => {
+    if (comment.trim()) {
+      onFeedback(messageId, 'down', comment.trim());
+    }
+    setShowComment(false);
+    setComment('');
+  };
+
+  return (
+    <div className="pt-1.5">
+      <div className={cn(
+        'flex items-center gap-1',
+        'opacity-0 group-hover:opacity-100 transition-opacity duration-150',
+        'sm:opacity-0 sm:group-hover:opacity-100',
+        // Always slightly visible on mobile
+        currentRating ? 'opacity-100' : 'opacity-40 sm:opacity-0'
+      )}>
+        <button
+          onClick={() => handleRating('up')}
+          className={cn(
+            'p-1.5 rounded-md transition-colors',
+            currentRating === 'up'
+              ? 'text-primary bg-primary/10'
+              : 'text-muted-foreground/50 hover:text-primary hover:bg-primary/5'
+          )}
+          aria-label="Thumbs up"
+        >
+          <ThumbsUp className={cn(compact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />
+        </button>
+        <button
+          onClick={() => handleRating('down')}
+          className={cn(
+            'p-1.5 rounded-md transition-colors',
+            currentRating === 'down'
+              ? 'text-red-500 bg-red-500/10'
+              : 'text-muted-foreground/50 hover:text-red-500 hover:bg-red-500/5'
+          )}
+          aria-label="Thumbs down"
+        >
+          <ThumbsDown className={cn(compact ? 'w-3 h-3' : 'w-3.5 h-3.5')} />
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {showComment && currentRating === 'down' && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="overflow-hidden"
+          >
+            <div className="flex items-end gap-2 pt-2">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value.slice(0, 500))}
+                placeholder="What went wrong? (optional)"
+                rows={2}
+                className="flex-1 text-xs bg-background/60 border border-border/50 rounded-lg px-3 py-2 resize-none focus:outline-none focus:border-primary/30 placeholder:text-muted-foreground/40"
+              />
+              <button
+                onClick={handleSubmitComment}
+                disabled={!comment.trim()}
+                className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Submit comment"
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <button
+              onClick={() => { setShowComment(false); setComment(''); }}
+              className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground mt-1 transition-colors"
+            >
+              dismiss
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function ChatMessage({ message, isStreaming, compact = false, onNavigate, feedbackRating, onFeedback }) {
   const isUser = message.role === 'user';
   const hasEvaluation = message.metadata?.evaluation;
   const isEmpty = !message.content && isStreaming;
@@ -194,6 +292,16 @@ export function ChatMessage({ message, isStreaming, compact = false, onNavigate 
             <div className="pt-2">
               <ChatEvaluation evaluation={message.metadata.evaluation} />
             </div>
+          )}
+
+          {/* Feedback buttons (assistant messages with real DB IDs only) */}
+          {!isUser && !isStreaming && onFeedback && message.id && !String(message.id).startsWith('temp-') && (
+            <FeedbackButtons
+              messageId={message.id}
+              currentRating={feedbackRating}
+              onFeedback={onFeedback}
+              compact={compact}
+            />
           )}
         </div>
       </div>

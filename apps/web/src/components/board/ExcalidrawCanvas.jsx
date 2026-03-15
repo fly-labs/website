@@ -34,7 +34,7 @@ function getContrastStroke(bgHex) {
 const SINGLE_USE_TOOLS = new Set(['selection', 'eraser', 'hand']);
 
 const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
-  { board, onSceneChange, isDark, gridStyle = 'dot', gridVisible = true, bgColor, defaultFont = 1, strokeColor: strokeColorProp, strokeWidth: strokeWidthProp = 2, roughness: roughnessProp = 1, fontSize: fontSizeProp = 20, startArrowhead: startArrowheadProp = null, endArrowhead: endArrowheadProp = 'arrow', hideUI = false },
+  { board, onSceneChange, isDark, gridStyle = 'dot', gridVisible = true, bgColor, defaultFont = 1, strokeColor: strokeColorProp, strokeWidth: strokeWidthProp = 2, roughness: roughnessProp = 1, fontSize: fontSizeProp = 20, startArrowhead: startArrowheadProp = null, endArrowhead: endArrowheadProp = 'arrow', fillColor: fillColorProp = 'transparent', fillStyle: fillStyleProp = 'hachure', hideUI = false },
   ref
 ) {
   const [excalidrawAPI, setExcalidrawAPI] = useState(null);
@@ -108,7 +108,9 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
     currentItemFontSize: fontSizeProp,
     currentItemStartArrowhead: startArrowheadProp,
     currentItemEndArrowhead: endArrowheadProp,
-  }), [isDark, strokeColor, defaultFont, strokeWidthProp, roughnessProp, fontSizeProp, startArrowheadProp, endArrowheadProp]);
+    currentItemBackgroundColor: fillColorProp,
+    currentItemFillStyle: fillStyleProp,
+  }), [isDark, strokeColor, defaultFont, strokeWidthProp, roughnessProp, fontSizeProp, startArrowheadProp, endArrowheadProp, fillColorProp, fillStyleProp]);
 
   // onChange: debounce save + re-apply tool when Excalidraw resets to selection
   const handleChange = useCallback((elements, appState) => {
@@ -139,6 +141,8 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
           currentItemFontFamily: appState.currentItemFontFamily,
           currentItemStrokeColor: appState.currentItemStrokeColor,
           currentItemStrokeWidth: appState.currentItemStrokeWidth,
+          currentItemBackgroundColor: appState.currentItemBackgroundColor,
+          currentItemFillStyle: appState.currentItemFillStyle,
           gridSize: appState.gridSize,
         },
       });
@@ -172,6 +176,8 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
         currentItemFontSize: fontSizeProp,
         currentItemStartArrowhead: startArrowheadProp,
     currentItemEndArrowhead: endArrowheadProp,
+        currentItemBackgroundColor: fillColorProp,
+        currentItemFillStyle: fillStyleProp,
         zoom: { value: 1 },
       },
       scrollToContent: false,

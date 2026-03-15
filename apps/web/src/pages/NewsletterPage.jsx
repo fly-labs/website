@@ -32,7 +32,7 @@ const NewsletterPage = () => {
       seo={{
         title: "Fala Comigo! | Vibe Building in Public",
         description: "Building in public with AI. Projects, micro tools, prompts, templates, and what I figure out along the way. By Luiz Alves.",
-        keywords: "newsletter, vibe building, building in public, AI, digital assets, Luiz Alves, CFA, falacomigo, Substack",
+        keywords: "newsletter, vibe building, building in public, AI, digital assets, Luiz Alves, falacomigo, Substack",
         url: "https://flylabs.fun/newsletter",
         schema: {
           "@context": "https://schema.org",

@@ -1,9 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn, Info } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
+import { useBoardContext } from '@/contexts/BoardContext.jsx';
+import { extractBoardContent } from '@/lib/boardBridge.js';
 import { ChatMessages } from '@/components/chat/ChatMessages.jsx';
 import { ChatInput } from '@/components/chat/ChatInput.jsx';
 import { ChatEmpty } from '@/components/chat/ChatEmpty.jsx';
@@ -62,9 +64,12 @@ function AuthGate() {
 export function FlyBotPanel({ isOpen, onClose }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const isMobile = useIsMobile();
   const isAuthenticated = !!currentUser;
   const isAdmin = currentUser?.email === ADMIN_EMAIL;
+  const isOnFlyBoard = location.pathname === '/flyboard';
+  const { getCanvasRef } = useBoardContext();
 
   const {
     messages,
@@ -80,6 +85,8 @@ export function FlyBotPanel({ isOpen, onClose }) {
     retryLastMessage,
     clearError,
     currentPageContext,
+    feedbackMap,
+    submitMessageFeedback,
   } = useChatContext();
 
   const handleSend = useCallback((text) => {
@@ -88,8 +95,22 @@ export function FlyBotPanel({ isOpen, onClose }) {
       message_length: text.length,
       source: 'widget',
     });
-    sendMessage(text, currentPageContext);
-  }, [sendMessage, activeConversationId, currentPageContext]);
+    // Enrich page context with board content when on FlyBoard
+    let enrichedContext = currentPageContext;
+    if (isOnFlyBoard) {
+      try {
+        const canvas = getCanvasRef();
+        if (canvas) {
+          const elements = canvas.getSceneElements?.() || [];
+          const boardContent = extractBoardContent(elements);
+          enrichedContext = { ...currentPageContext, board_content: boardContent };
+        }
+      } catch {
+        // Fallback: no board content enrichment
+      }
+    }
+    sendMessage(text, enrichedContext);
+  }, [sendMessage, activeConversationId, currentPageContext, isOnFlyBoard, getCanvasRef]);
 
   const handlePromptClick = useCallback((prompt) => {
     trackEvent('flybot_prompt_clicked', { prompt, source: 'widget' });
@@ -179,7 +200,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
             ) : limitReached ? (
               <ChatLimitReached messageCount={messageCount} compact />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} compact pageContext={currentPageContext} />
             )}

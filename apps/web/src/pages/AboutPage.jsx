@@ -53,7 +53,7 @@ const AboutPage = () => {
           "name": "Luiz Alves",
           "url": "https://flylabs.fun/about",
           "image": "https://flylabs.fun/images/luiz-alves.png",
-          "jobTitle": "Vibe Builder & CFA Charterholder",
+          "jobTitle": "Vibe Builder",
           "sameAs": [
             "https://github.com/fly-labs",
             "https://x.com/alvesluizc",

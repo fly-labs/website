@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { ChatMessage } from '@/components/chat/ChatMessage.jsx';
 
-export function ChatMessages({ messages, isStreaming, compact = false, onNavigate }) {
+export function ChatMessages({ messages, isStreaming, compact = false, onNavigate, feedbackMap = {}, onFeedback }) {
   const containerRef = useRef(null);
   const [userScrolled, setUserScrolled] = useState(false);
 
@@ -44,6 +44,8 @@ export function ChatMessages({ messages, isStreaming, compact = false, onNavigat
               isStreaming={isStreaming && i === messages.length - 1 && msg.role === 'assistant'}
               compact={compact}
               onNavigate={onNavigate}
+              feedbackRating={feedbackMap[msg.id]}
+              onFeedback={onFeedback}
             />
           ))}
         </div>

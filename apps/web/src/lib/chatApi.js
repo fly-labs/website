@@ -138,6 +138,34 @@ export async function loadMessages(conversationId) {
 }
 
 /**
+ * Submit feedback on a FlyBot message
+ */
+export async function submitFeedback(messageId, rating, comment = null) {
+  const headers = await getAuthHeaders();
+  const response = await fetch('/api/feedback', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ message_id: messageId, rating, comment }),
+  });
+  if (!response.ok) throw new Error('Failed to submit feedback');
+  return response.json();
+}
+
+/**
+ * Remove feedback from a FlyBot message
+ */
+export async function deleteFeedback(messageId) {
+  const headers = await getAuthHeaders();
+  const response = await fetch('/api/feedback', {
+    method: 'DELETE',
+    headers,
+    body: JSON.stringify({ message_id: messageId }),
+  });
+  if (!response.ok) throw new Error('Failed to delete feedback');
+  return response.json();
+}
+
+/**
  * Join FlyBot waitlist
  */
 export async function joinFlyBotWaitlist(email, userId, messageCount) {
