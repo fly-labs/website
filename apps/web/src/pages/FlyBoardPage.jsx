@@ -829,20 +829,19 @@ export default function FlyBoardPage() {
       <div className="h-dvh flex flex-col bg-background">
         {!isFullscreen && <Header />}
 
-        <div className={`flex-1 flex overflow-hidden relative ${!isFullscreen ? 'pt-[60px]' : ''}`}>
-          {/* Sidebar: always overlay to maximize canvas space */}
-          {sidebarOpen && (
-            <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)}>
-              <div
-                className="absolute left-0 bottom-0 w-[280px] sm:w-[300px] bg-card border-r flex flex-col shadow-2xl"
-                style={{ top: isFullscreen ? 0 : '60px' }}
-                onClick={e => e.stopPropagation()}
-              >
-                {renderSidebarContent(true)}
-              </div>
+        {/* Sidebar overlay: lives outside overflow-hidden so fixed positioning works */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-40 bg-black/50" style={{ top: isFullscreen ? 0 : '60px' }} onClick={() => setSidebarOpen(false)}>
+            <div
+              className="absolute left-0 top-0 bottom-0 w-[280px] sm:w-[300px] bg-card border-r flex flex-col shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            >
+              {renderSidebarContent(true)}
             </div>
-          )}
+          </div>
+        )}
 
+        <div className={`flex-1 flex overflow-hidden relative ${!isFullscreen ? 'pt-[60px]' : ''}`}>
           {/* ---- Main canvas area ---- */}
           <div className="flex-1 flex flex-col min-w-0">
             {/* Toolbar: single clean row, overflow menu catches the rest */}
