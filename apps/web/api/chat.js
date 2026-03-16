@@ -289,8 +289,8 @@ export default async function handler(req, res) {
     content: m.content,
   }));
 
-  // Stream response
-  const model = isAdmin ? 'claude-opus-4-6' : 'claude-haiku-4-5-20251001';
+  // Stream response (Sonnet for admin, Haiku for free users)
+  const model = isAdmin ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
 
   const anthropic = new Anthropic();
 
