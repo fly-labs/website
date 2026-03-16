@@ -34,7 +34,7 @@ apps/web/
 │   ├── App.jsx               # Router + providers (AuthProvider, ThemeProvider, HelmetProvider)
 │   ├── index.css             # Tailwind base + design tokens (CSS vars)
 │   ├── components/
-│   │   ├── ui/               # shadcn/ui components (button, avatar, input, tabs, toast, toaster)
+│   │   ├── ui/               # shadcn/ui components (button, avatar, input, tabs)
 │   │   ├── Header.jsx        # Nav bar (sticky, blur backdrop)
 │   │   ├── Footer.jsx        # Footer with social links
 │   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD, noindex, array schema support)
@@ -66,7 +66,8 @@ apps/web/
 │   │       ├── ChatEvaluation.jsx # Rich score card (reuses ScoreUtils)
 │   │       ├── ChatSidebar.jsx   # Conversation list, new chat, mobile slide-in
 │   │       ├── ChatEmpty.jsx     # Landing with suggested prompt chips
-│   │       └── ChatLimitReached.jsx # Email capture waitlist with waitlist count
+│   │       ├── ChatLimitReached.jsx # Email capture waitlist with waitlist count
+│   │       └── FlyBotDisclosure.jsx # Disclaimer/transparency note
 │   │   └── flybot/          # FlyBot site-wide widget components
 │   │       ├── FlyBotWidget.jsx  # Orchestrator: trigger + lazy panel, hidden on /flybot. Guests see panel with AuthGate CTA (no redirect)
 │   │       ├── FlyBotTrigger.jsx # Floating action button (bottom-right, Cmd+K, pulse glow)
@@ -185,7 +186,7 @@ apps/web/
 - **RPCs:** `increment_vote(idea_id)`, `decrement_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`, `init_flyboard_defaults(p_user_id)`, `move_board(p_board_id, p_folder_id)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
 - **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 8 search prompts daily incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`
-- **GitHub Actions:** `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
+- **GitHub Actions:** `.github/workflows/ci.yml` ("CI") - runs on every push, lint + build. `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
 
 ## Design System
 **Colors (HSL via CSS vars, light/dark themes in index.css):**

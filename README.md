@@ -31,7 +31,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
-**Vibe Coding Player** - Built-in lofi music player with 6 vibe modes (Ideate, Build, Create, Cafe, Study, Retro). 58 CC0 tracks on Cloudflare R2 (zero egress fees), Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
+**Vibe Coding Player** - Built-in lofi music player with 6 vibe modes (Ideate, Build, Create, Cafe, Study, Retro). 88 CC0 tracks on Cloudflare R2 (zero egress fees), Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
 
 **FlyBoard** - Collaborative whiteboard powered by Excalidraw. Pick a template, sketch your ideas, and export when ready.
 
@@ -44,7 +44,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 Every day at 6 AM UTC, GitHub Actions runs 7 sync scripts and a scoring pass:
 
 ```
-Sources (8)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
+Sources (9)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
 ───────────          ──────────────────────          ──────────────────────────
 Reddit (19 subs)  →  Fly Labs Method (THE score)  →  x_search live evidence
 Product Hunt      →  + 3 expert perspectives      →  Reddit conversation mining
