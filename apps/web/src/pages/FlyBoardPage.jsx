@@ -37,16 +37,16 @@ const BG_PRESETS = [
   { id: 'warm', label: 'Warm Paper', dark: '#2a2218', light: '#faf8f5', swatch: { dark: '#2a2218', light: '#faf8f5' } },
 ];
 
-// Font options grouped by use case (Excalidraw built-in font IDs)
-// CSS font-family strings must match what Excalidraw registers internally
+// Font options grouped by use case (Excalidraw 0.18.0 font IDs)
+// IDs from: Virgil:1, Helvetica:2, Cascadia:3, Excalifont:5, Nunito:6, Lilita One:7, Comic Shanns:8
 const FONT_OPTIONS = [
   // Handwritten (sketchy, organic feel)
   { id: 1, label: 'Virgil', desc: 'Sketchy notes', category: 'Sketch', css: 'Virgil, cursive' },
-  { id: 4, label: 'Excalifont', desc: 'Whiteboard', category: 'Sketch', css: 'Excalifont, cursive' },
-  { id: 7, label: 'Comic Shanns', desc: 'Playful', category: 'Sketch', css: '"Comic Shanns", cursive' },
+  { id: 5, label: 'Excalifont', desc: 'Whiteboard', category: 'Sketch', css: 'Excalifont, cursive' },
+  { id: 8, label: 'Comic Shanns', desc: 'Playful', category: 'Sketch', css: '"Comic Shanns", cursive' },
   // Clean (presentations, exports, social)
-  { id: 5, label: 'Nunito', desc: 'Slides & thumbnails', category: 'Clean', css: 'Nunito, sans-serif' },
-  { id: 6, label: 'Lilita One', desc: 'Bold headlines', category: 'Clean', css: '"Lilita One", sans-serif' },
+  { id: 6, label: 'Nunito', desc: 'Slides & thumbnails', category: 'Clean', css: 'Nunito, sans-serif' },
+  { id: 7, label: 'Lilita One', desc: 'Bold headlines', category: 'Clean', css: '"Lilita One", sans-serif' },
   { id: 2, label: 'Helvetica', desc: 'Professional', category: 'Clean', css: '"Liberation Sans", Helvetica, sans-serif' },
   // Monospace (code, diagrams, data)
   { id: 3, label: 'Cascadia', desc: 'Code & data', category: 'Mono', css: 'Cascadia, monospace' },
@@ -246,7 +246,16 @@ export default function FlyBoardPage() {
   });
   const [gridVisible, setGridVisible] = useState(() => localStorage.getItem('flyboard-grid-visible') !== 'false');
   const [bgPreset, setBgPreset] = useState(() => localStorage.getItem('flyboard-bg-preset') || 'default');
-  const [fontFamily, setFontFamily] = useState(() => parseInt(localStorage.getItem('flyboard-font') || '1', 10));
+  const [fontFamily, setFontFamily] = useState(() => {
+    const stored = parseInt(localStorage.getItem('flyboard-font') || '1', 10);
+    // Migrate old font IDs (pre-0.18.0 mapping) to correct Excalidraw IDs
+    const migration = { 4: 5, 5: 6, 6: 7, 7: 8 };
+    if (migration[stored]) {
+      localStorage.setItem('flyboard-font', String(migration[stored]));
+      return migration[stored];
+    }
+    return stored;
+  });
 
   // Stroke/text color state ('auto' = auto-contrast, or a hex color)
   const [strokeColorMode, setStrokeColorMode] = useState(() => localStorage.getItem('flyboard-stroke-color') || 'auto');
@@ -607,7 +616,7 @@ export default function FlyBoardPage() {
       if (!selectedIds[el.id] || el.isDeleted) return el;
       if (filter && !filter(el)) return el;
       changed++;
-      return { ...el, ...props };
+      return { ...el, ...props, version: (el.version || 0) + 1 };
     });
     if (changed) api.updateScene({ elements: updated });
     return changed;
@@ -728,14 +737,14 @@ export default function FlyBoardPage() {
     const selectedText = elements.filter(el => selectedIds[el.id] && !el.isDeleted && el.type === 'text');
 
     if (selectedText.length > 0) {
-      // Resize selected text elements
+      // Resize selected text elements (version bump forces Excalidraw re-render)
       const updated = elements.map(el => {
         if (!selectedIds[el.id] || el.isDeleted || el.type !== 'text') return el;
         const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
         const newIdx = direction === 'up'
           ? Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)
           : Math.max((idx >= 0 ? idx : 3) - 1, 0);
-        return { ...el, fontSize: FONT_SIZES[newIdx] };
+        return { ...el, fontSize: FONT_SIZES[newIdx], version: (el.version || 0) + 1 };
       });
       api.updateScene({ elements: updated });
     }
