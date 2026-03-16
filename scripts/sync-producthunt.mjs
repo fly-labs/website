@@ -181,6 +181,7 @@ Set is_real_problem to false if:
       return JSON.parse(retryText);
     }
   } catch (err) {
+    if (err.message?.includes('credit balance is too low')) { console.error('Credits exhausted. Stopping sync.'); process.exit(1); }
     console.warn(`  Failed to extract problem from "${post.name}": ${err.message}`);
     return null;
   }

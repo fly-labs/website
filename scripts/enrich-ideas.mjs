@@ -504,6 +504,10 @@ async function enrichIdea(idea) {
 
       return analysis;
     } catch (err) {
+      if (err.message?.includes('credit balance is too low')) {
+        console.error('Credits exhausted. Stopping enrichment.');
+        process.exit(1);
+      }
       if (attempt < MAX_RETRIES) {
         console.warn(`  Retry ${attempt + 1}: ${err.message}`);
         await sleep(2000);

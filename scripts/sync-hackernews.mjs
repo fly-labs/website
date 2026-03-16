@@ -187,7 +187,7 @@ Return ONLY valid JSON (no markdown, no code fences):
         }
       }
     } catch (err) {
-      console.warn(`  AI batch filter failed: ${err.message}. Passing batch through.`);
+      if (err.message?.includes("credit balance is too low")) { console.error("Credits exhausted. Stopping sync."); process.exit(1); } console.warn(`  AI batch filter failed: ${err.message}. Passing batch through.`);
       for (const s of batch) {
         if (!s._ai) s._ai = { is_real_problem: false, category: 'Tool', reason: 'AI filter error' };
       }

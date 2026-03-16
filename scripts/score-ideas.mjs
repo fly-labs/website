@@ -231,6 +231,11 @@ async function scoreIdea(idea) {
 
       return parsed;
     } catch (err) {
+      // Stop immediately on credit exhaustion (no point retrying)
+      if (err.message?.includes('credit balance is too low')) {
+        console.error(`  Credits exhausted. Stopping.`);
+        process.exit(1);
+      }
       if (attempt < MAX_RETRIES) {
         console.warn(`  Retry ${attempt + 1} for "${idea.idea_title}": ${err.message}`);
         await sleep(2000);
@@ -252,12 +257,14 @@ async function main() {
   // default: only ideas missing any score
   let ideas = [];
   if (scoreAll) {
-    let query = supabase.from('ideas').select('*').eq('approved', true);
-    // Backfill mode scores everything (BUILD, VALIDATE, SKIP, and unscored)
-    query = query.limit(MAX_IDEAS_PER_RUN);
+    // --all: re-score already scored ideas (use sparingly, costs ~$0.05/idea with Sonnet)
+    // --all --backfill: re-score with Haiku (~$0.005/idea)
+    let query = supabase.from('ideas').select('*').eq('approved', true)
+      .limit(MAX_IDEAS_PER_RUN);
     const { data, error } = await query;
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
+    console.log(`WARNING: --all re-scores existing ideas. Cost: ~$${(data.length * (backfill ? 0.005 : 0.05)).toFixed(2)}`);
   } else {
     // Fetch ideas missing any score (flylabs, hormozi, koe, or okamoto)
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
@@ -313,7 +320,9 @@ async function main() {
     }
   }
 
+  const costPerIdea = backfill ? 0.005 : 0.05;
   console.log(`\nDone. Scored: ${scored}, Failed: ${failed}`);
+  console.log(`Estimated cost: ~$${(scored * costPerIdea).toFixed(2)} (${MODEL})`);
 }
 
 main();
