@@ -1642,19 +1642,7 @@ export default function FlyBoardPage() {
           </div>
         </div>
 
-        {/* Fullscreen floating toolbar overlay */}
-        {isFullscreen && (
-          <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-end px-4 h-10 bg-background/60 backdrop-blur-sm border-b border-border/50 opacity-0 hover:opacity-100 transition-opacity duration-200">
-            <span className="text-xs text-muted-foreground mr-auto">{boardTitle}</span>
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              title="Exit fullscreen (F11)"
-            >
-              <Minimize2 className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+        {/* Fullscreen: toolbar stays visible (h-dvh flex layout), no separate overlay needed */}
       </div>
 
       {/* Modals */}
