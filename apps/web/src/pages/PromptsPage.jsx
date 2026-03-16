@@ -452,7 +452,7 @@ const PromptsPage = () => {
               {isAuthenticated ? (
                 <><ShieldCheck className="w-4 h-4" /> Member Access</>
               ) : (
-                <><Sparkles className="w-4 h-4" /> 5 Sample Prompts</>
+                <><Sparkles className="w-4 h-4" /> {prompts.filter(p => p.featured).length} Free Prompts</>
               )}
             </div>
           </div>
@@ -633,14 +633,14 @@ const PromptsPage = () => {
                               type="button"
                               whileTap={{ scale: 1.3 }}
                               transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                              onClick={(e) => { e.stopPropagation(); handleVote(prompt.id); }}
-                              className={`flex flex-col items-center gap-0.5 shrink-0 w-10 cursor-pointer transition-colors ${
-                                hasVoted ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                              onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleVote(prompt.id); }}
+                              className={`flex flex-col items-center gap-0.5 shrink-0 w-11 p-1 -m-1 rounded-lg cursor-pointer transition-colors ${
+                                hasVoted ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-primary hover:bg-primary/5'
                               }`}
                               aria-label={`Vote for ${prompt.title}`}
                               title={!isAuthenticated ? 'Sign up to vote' : undefined}
                             >
-                              <ChevronUp className={`w-4 h-4 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
+                              <ChevronUp className={`w-5 h-5 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
                               <AnimatePresence mode="wait">
                                 <motion.span
                                   key={voteCount}

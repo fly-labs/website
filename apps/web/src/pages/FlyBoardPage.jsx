@@ -208,10 +208,23 @@ function ArrowPresetIcon({ preset, size = 18 }) {
  * Dark mode = Bart Simpson chalkboard
  * Light mode = Moleskine/Leuchtturm1917 notebook
  */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+}
+
 export default function FlyBoardPage() {
   const { currentUser, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
+  const isMobile = useIsMobile();
   const {
     boards, folders, activeBoard, isSaving, lastSavedAt,
     isLoading, error, initBoard, isInitialized, openBoard, createBoard,
@@ -1208,6 +1221,24 @@ export default function FlyBoardPage() {
         }}
       />
 
+      {isMobile ? (
+        <div className="h-dvh flex flex-col items-center justify-center bg-background px-6 text-center">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20">
+            <SmileLogo className="w-8 h-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-black mb-3">FlyBoard is desktop only</h1>
+          <p className="text-muted-foreground font-medium mb-8 max-w-sm">
+            The whiteboard canvas needs a bigger screen to work properly. Open flylabs.fun/flyboard on your computer for the full experience.
+          </p>
+          <Link
+            to="/explore"
+            className="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Explore Fly Labs
+          </Link>
+        </div>
+      ) : (
+      <>
       <div className="h-dvh flex flex-col bg-background">
         {/* Sidebar overlay */}
         {sidebarOpen && (
@@ -2178,6 +2209,8 @@ export default function FlyBoardPage() {
           animation: slide-in-left 0.2s ease-out forwards;
         }
       `}</style>
+      </>
+      )}
     </>
   );
 }
