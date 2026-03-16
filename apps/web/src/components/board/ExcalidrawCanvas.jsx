@@ -1,7 +1,10 @@
 import React, { useEffect, useCallback, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 
-import { Excalidraw, mutateElement } from '@excalidraw/excalidraw';
+import { Excalidraw, mutateElement, FONT_FAMILY } from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
+
+// Re-export for parent components to use the correct font IDs
+export { FONT_FAMILY };
 
 // Fallback stroke colors
 const CHALK_WHITE = '#e8e4df';
@@ -74,7 +77,7 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
     getSceneElementsIncludingDeleted: () => excalidrawAPI?.getSceneElementsIncludingDeleted?.() || excalidrawAPI?.getSceneElements() || [],
     getAppState: () => excalidrawAPI?.getAppState() || {},
     updateScene: (data) => excalidrawAPI?.updateScene(data),
-    mutateElement: (el, updates) => mutateElement(el, updates),
+    refresh: () => excalidrawAPI?.refresh?.(),
     undo: () => excalidrawAPI?.history?.undo?.(),
     redo: () => excalidrawAPI?.history?.redo?.(),
     zoomIn: () => {

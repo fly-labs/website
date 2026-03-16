@@ -16,6 +16,8 @@ import { useTheme } from '@/contexts/ThemeContext.jsx';
 import { useBoardContext } from '@/contexts/BoardContext.jsx';
 import { trackEvent } from '@/lib/analytics.js';
 
+import { FONT_FAMILY, mutateElement } from '@excalidraw/excalidraw';
+
 const ExcalidrawCanvas = lazy(() => import('@/components/board/ExcalidrawCanvas.jsx'));
 const ExportMenu = lazy(() => import('@/components/board/ExportMenu.jsx'));
 const TemplatePicker = lazy(() => import('@/components/board/TemplatePicker.jsx'));
@@ -37,19 +39,15 @@ const BG_PRESETS = [
   { id: 'warm', label: 'Warm Paper', dark: '#2a2218', light: '#faf8f5', swatch: { dark: '#2a2218', light: '#faf8f5' } },
 ];
 
-// Font options grouped by use case (Excalidraw 0.18.0 font IDs)
-// IDs from: Virgil:1, Helvetica:2, Cascadia:3, Excalifont:5, Nunito:6, Lilita One:7, Comic Shanns:8
+// Font options using Excalidraw's exported FONT_FAMILY constants (guaranteed correct IDs)
 const FONT_OPTIONS = [
-  // Handwritten (sketchy, organic feel)
-  { id: 1, label: 'Virgil', desc: 'Sketchy notes', category: 'Sketch', css: 'Virgil, cursive' },
-  { id: 5, label: 'Excalifont', desc: 'Whiteboard', category: 'Sketch', css: 'Excalifont, cursive' },
-  { id: 8, label: 'Comic Shanns', desc: 'Playful', category: 'Sketch', css: '"Comic Shanns", cursive' },
-  // Clean (presentations, exports, social)
-  { id: 6, label: 'Nunito', desc: 'Slides & thumbnails', category: 'Clean', css: 'Nunito, sans-serif' },
-  { id: 7, label: 'Lilita One', desc: 'Bold headlines', category: 'Clean', css: '"Lilita One", sans-serif' },
-  { id: 2, label: 'Helvetica', desc: 'Professional', category: 'Clean', css: '"Liberation Sans", Helvetica, sans-serif' },
-  // Monospace (code, diagrams, data)
-  { id: 3, label: 'Cascadia', desc: 'Code & data', category: 'Mono', css: 'Cascadia, monospace' },
+  { id: FONT_FAMILY.Virgil, label: 'Virgil', desc: 'Sketchy notes', category: 'Sketch', css: 'Virgil, cursive' },
+  { id: FONT_FAMILY.Excalifont, label: 'Excalifont', desc: 'Whiteboard', category: 'Sketch', css: 'Excalifont, cursive' },
+  { id: FONT_FAMILY["Comic Shanns"], label: 'Comic Shanns', desc: 'Playful', category: 'Sketch', css: '"Comic Shanns", cursive' },
+  { id: FONT_FAMILY.Nunito, label: 'Nunito', desc: 'Slides & thumbnails', category: 'Clean', css: 'Nunito, sans-serif' },
+  { id: FONT_FAMILY["Lilita One"], label: 'Lilita One', desc: 'Bold headlines', category: 'Clean', css: '"Lilita One", sans-serif' },
+  { id: FONT_FAMILY.Helvetica, label: 'Helvetica', desc: 'Professional', category: 'Clean', css: '"Liberation Sans", Helvetica, sans-serif' },
+  { id: FONT_FAMILY.Cascadia, label: 'Cascadia', desc: 'Code & data', category: 'Mono', css: 'Cascadia, monospace' },
 ];
 
 // Stroke/text color presets
@@ -247,12 +245,12 @@ export default function FlyBoardPage() {
   const [gridVisible, setGridVisible] = useState(() => localStorage.getItem('flyboard-grid-visible') !== 'false');
   const [bgPreset, setBgPreset] = useState(() => localStorage.getItem('flyboard-bg-preset') || 'default');
   const [fontFamily, setFontFamily] = useState(() => {
-    const stored = parseInt(localStorage.getItem('flyboard-font') || '1', 10);
-    // Migrate old font IDs (pre-0.18.0 mapping) to correct Excalidraw IDs
-    const migration = { 4: 5, 5: 6, 6: 7, 7: 8 };
-    if (migration[stored]) {
-      localStorage.setItem('flyboard-font', String(migration[stored]));
-      return migration[stored];
+    const stored = parseInt(localStorage.getItem('flyboard-font') || String(FONT_FAMILY.Virgil), 10);
+    // Validate: must be a known FONT_FAMILY value, otherwise reset to Virgil
+    const validIds = new Set(Object.values(FONT_FAMILY));
+    if (!validIds.has(stored)) {
+      localStorage.setItem('flyboard-font', String(FONT_FAMILY.Virgil));
+      return FONT_FAMILY.Virgil;
     }
     return stored;
   });
@@ -604,9 +602,8 @@ export default function FlyBoardPage() {
   }, []);
 
   // Shared utility: apply props to selected elements (optionally filter by type)
-  // Uses mutateElement for text props (fontSize, fontFamily) so Excalidraw recalculates dimensions
+  // Uses mutateElement (imported from @excalidraw/excalidraw) for in-place mutation
   const applyToSelected = useCallback((props, filter) => {
-    const handle = excalidrawRef.current;
     const api = getExcalidrawAPI();
     if (!api?.getSceneElements || !api?.getAppState) return 0;
     const appState = api.getAppState();
@@ -632,14 +629,11 @@ export default function FlyBoardPage() {
       if (!targetIds.has(el.id) || el.isDeleted) continue;
       if (filter && !filter(el)) continue;
       changed++;
-      // Use mutateElement for in-place mutation (triggers Excalidraw re-render + text dimension recalc)
-      if (handle?.mutateElement) {
-        handle.mutateElement(el, { ...props, autoResize: true });
-      }
+      mutateElement(el, { ...props, autoResize: true });
     }
     if (changed) {
-      // Trigger scene update to flush mutations
-      api.updateScene({ appState: { ...appState } });
+      // Force Excalidraw to re-render with mutated elements
+      api.refresh();
     }
     return changed;
   }, [getExcalidrawAPI]);
@@ -749,9 +743,8 @@ export default function FlyBoardPage() {
   const activeArrowPreset = ARROW_PRESETS.find(p => p.id === arrowPreset) || ARROW_PRESETS[0];
 
   // Font size change: applies to selected text + sets default for new text
-  // Uses mutateElement for in-place mutation so Excalidraw recalculates text dimensions
+  // Uses mutateElement (imported from @excalidraw/excalidraw) for proper text dimension recalc
   const handleFontSizeChange = useCallback((direction) => {
-    const handle = excalidrawRef.current;
     const api = getExcalidrawAPI();
     if (!api?.getSceneElements || !api?.getAppState) return;
 
@@ -759,8 +752,7 @@ export default function FlyBoardPage() {
     const elements = api.getSceneElements();
     const selectedIds = appState.selectedElementIds || {};
 
-    // Find all text elements that are either directly selected
-    // or bound to a selected container (text inside shapes/stickies)
+    // Find all text elements: directly selected OR bound to a selected container
     const selectedContainerIds = new Set(
       elements.filter(el => selectedIds[el.id] && !el.isDeleted).map(el => el.id)
     );
@@ -771,16 +763,15 @@ export default function FlyBoardPage() {
       )
     );
 
-    if (textToResize.length > 0 && handle?.mutateElement) {
+    if (textToResize.length > 0) {
       for (const el of textToResize) {
         const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
         const newIdx = direction === 'up'
           ? Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)
           : Math.max((idx >= 0 ? idx : 3) - 1, 0);
-        handle.mutateElement(el, { fontSize: FONT_SIZES[newIdx], autoResize: true });
+        mutateElement(el, { fontSize: FONT_SIZES[newIdx], autoResize: true });
       }
-      // Flush mutations
-      api.updateScene({ appState: { ...appState } });
+      api.refresh();
     }
 
     // Also update the default font size for new text
