@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, mutateElement } from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 
 // Fallback stroke colors
@@ -71,8 +71,10 @@ const ExcalidrawCanvas = forwardRef(function ExcalidrawCanvas(
   useImperativeHandle(ref, () => ({
     getAPI: () => excalidrawAPI,
     getSceneElements: () => excalidrawAPI?.getSceneElements() || [],
+    getSceneElementsIncludingDeleted: () => excalidrawAPI?.getSceneElementsIncludingDeleted?.() || excalidrawAPI?.getSceneElements() || [],
     getAppState: () => excalidrawAPI?.getAppState() || {},
     updateScene: (data) => excalidrawAPI?.updateScene(data),
+    mutateElement: (el, updates) => mutateElement(el, updates),
     undo: () => excalidrawAPI?.history?.undo?.(),
     redo: () => excalidrawAPI?.history?.redo?.(),
     zoomIn: () => {

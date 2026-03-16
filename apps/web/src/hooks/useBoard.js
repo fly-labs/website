@@ -634,14 +634,35 @@ export function useBoard() {
     return () => window.removeEventListener('beforeunload', handler);
   }, []);
 
-  // Cleanup save timer on unmount
+  // Interval autosave: flush unsaved changes every 5 seconds
+  const activeBoardIdRef = useRef(null);
+  useEffect(() => {
+    activeBoardIdRef.current = activeBoard?.id || null;
+  }, [activeBoard?.id]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const boardId = activeBoardIdRef.current;
+      if (boardId && hasUnsavedChangesRef.current && sceneDataRef.current) {
+        saveToSupabase(boardId);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [saveToSupabase]);
+
+  // Cleanup save timer on unmount + flush final save
   useEffect(() => {
     return () => {
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
       }
+      // Flush unsaved changes on unmount
+      const boardId = activeBoardIdRef.current;
+      if (boardId && hasUnsavedChangesRef.current && sceneDataRef.current) {
+        saveToSupabase(boardId);
+      }
     };
-  }, []);
+  }, [saveToSupabase]);
 
   return {
     boards,

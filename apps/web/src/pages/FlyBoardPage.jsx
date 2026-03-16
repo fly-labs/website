@@ -604,8 +604,9 @@ export default function FlyBoardPage() {
   }, []);
 
   // Shared utility: apply props to selected elements (optionally filter by type)
-  // Returns number of elements changed (0 = nothing selected/matched)
+  // Uses mutateElement for text props (fontSize, fontFamily) so Excalidraw recalculates dimensions
   const applyToSelected = useCallback((props, filter) => {
+    const handle = excalidrawRef.current;
     const api = getExcalidrawAPI();
     if (!api?.getSceneElements || !api?.getAppState) return 0;
     const appState = api.getAppState();
@@ -616,7 +617,6 @@ export default function FlyBoardPage() {
     const selectedSet = new Set(
       elements.filter(el => selectedIds[el.id] && !el.isDeleted).map(el => el.id)
     );
-    // For text-specific props (fontFamily), also include text inside selected containers
     const isTextProp = 'fontFamily' in props || 'fontSize' in props;
     const targetIds = new Set(selectedSet);
     if (isTextProp) {
@@ -628,13 +628,19 @@ export default function FlyBoardPage() {
     }
 
     let changed = 0;
-    const updated = elements.map(el => {
-      if (!targetIds.has(el.id) || el.isDeleted) return el;
-      if (filter && !filter(el)) return el;
+    for (const el of elements) {
+      if (!targetIds.has(el.id) || el.isDeleted) continue;
+      if (filter && !filter(el)) continue;
       changed++;
-      return { ...el, ...props, version: (el.version || 0) + 1, versionNonce: Math.random() * 1e9 | 0 };
-    });
-    if (changed) api.updateScene({ elements: updated });
+      // Use mutateElement for in-place mutation (triggers Excalidraw re-render + text dimension recalc)
+      if (handle?.mutateElement) {
+        handle.mutateElement(el, { ...props, autoResize: true });
+      }
+    }
+    if (changed) {
+      // Trigger scene update to flush mutations
+      api.updateScene({ appState: { ...appState } });
+    }
     return changed;
   }, [getExcalidrawAPI]);
 
@@ -743,7 +749,9 @@ export default function FlyBoardPage() {
   const activeArrowPreset = ARROW_PRESETS.find(p => p.id === arrowPreset) || ARROW_PRESETS[0];
 
   // Font size change: applies to selected text + sets default for new text
+  // Uses mutateElement for in-place mutation so Excalidraw recalculates text dimensions
   const handleFontSizeChange = useCallback((direction) => {
+    const handle = excalidrawRef.current;
     const api = getExcalidrawAPI();
     if (!api?.getSceneElements || !api?.getAppState) return;
 
@@ -763,23 +771,16 @@ export default function FlyBoardPage() {
       )
     );
 
-    if (textToResize.length > 0) {
-      const textIds = new Set(textToResize.map(el => el.id));
-      const updated = elements.map(el => {
-        if (!textIds.has(el.id)) return el;
+    if (textToResize.length > 0 && handle?.mutateElement) {
+      for (const el of textToResize) {
         const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
         const newIdx = direction === 'up'
           ? Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)
           : Math.max((idx >= 0 ? idx : 3) - 1, 0);
-        return {
-          ...el,
-          fontSize: FONT_SIZES[newIdx],
-          version: (el.version || 0) + 1,
-          versionNonce: Math.random() * 1e9 | 0,
-          autoResize: true,
-        };
-      });
-      api.updateScene({ elements: updated });
+        handle.mutateElement(el, { fontSize: FONT_SIZES[newIdx], autoResize: true });
+      }
+      // Flush mutations
+      api.updateScene({ appState: { ...appState } });
     }
 
     // Also update the default font size for new text
