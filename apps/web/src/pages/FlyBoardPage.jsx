@@ -611,12 +611,28 @@ export default function FlyBoardPage() {
     const appState = api.getAppState();
     const elements = api.getSceneElements();
     const selectedIds = appState.selectedElementIds || {};
+
+    // Build set of selected IDs + find text bound to selected containers
+    const selectedSet = new Set(
+      elements.filter(el => selectedIds[el.id] && !el.isDeleted).map(el => el.id)
+    );
+    // For text-specific props (fontFamily), also include text inside selected containers
+    const isTextProp = 'fontFamily' in props || 'fontSize' in props;
+    const targetIds = new Set(selectedSet);
+    if (isTextProp) {
+      for (const el of elements) {
+        if (!el.isDeleted && el.type === 'text' && el.containerId && selectedSet.has(el.containerId)) {
+          targetIds.add(el.id);
+        }
+      }
+    }
+
     let changed = 0;
     const updated = elements.map(el => {
-      if (!selectedIds[el.id] || el.isDeleted) return el;
+      if (!targetIds.has(el.id) || el.isDeleted) return el;
       if (filter && !filter(el)) return el;
       changed++;
-      return { ...el, ...props, version: (el.version || 0) + 1 };
+      return { ...el, ...props, version: (el.version || 0) + 1, versionNonce: Math.random() * 1e9 | 0 };
     });
     if (changed) api.updateScene({ elements: updated });
     return changed;
@@ -734,17 +750,34 @@ export default function FlyBoardPage() {
     const appState = api.getAppState();
     const elements = api.getSceneElements();
     const selectedIds = appState.selectedElementIds || {};
-    const selectedText = elements.filter(el => selectedIds[el.id] && !el.isDeleted && el.type === 'text');
 
-    if (selectedText.length > 0) {
-      // Resize selected text elements (version bump forces Excalidraw re-render)
+    // Find all text elements that are either directly selected
+    // or bound to a selected container (text inside shapes/stickies)
+    const selectedContainerIds = new Set(
+      elements.filter(el => selectedIds[el.id] && !el.isDeleted).map(el => el.id)
+    );
+    const textToResize = elements.filter(el =>
+      !el.isDeleted && el.type === 'text' && (
+        selectedIds[el.id] ||
+        (el.containerId && selectedContainerIds.has(el.containerId))
+      )
+    );
+
+    if (textToResize.length > 0) {
+      const textIds = new Set(textToResize.map(el => el.id));
       const updated = elements.map(el => {
-        if (!selectedIds[el.id] || el.isDeleted || el.type !== 'text') return el;
+        if (!textIds.has(el.id)) return el;
         const idx = FONT_SIZES.findIndex(s => s >= el.fontSize);
         const newIdx = direction === 'up'
           ? Math.min((idx >= 0 ? idx : 3) + 1, FONT_SIZES.length - 1)
           : Math.max((idx >= 0 ? idx : 3) - 1, 0);
-        return { ...el, fontSize: FONT_SIZES[newIdx], version: (el.version || 0) + 1 };
+        return {
+          ...el,
+          fontSize: FONT_SIZES[newIdx],
+          version: (el.version || 0) + 1,
+          versionNonce: Math.random() * 1e9 | 0,
+          autoResize: true,
+        };
       });
       api.updateScene({ elements: updated });
     }
@@ -759,11 +792,14 @@ export default function FlyBoardPage() {
     localStorage.setItem('flyboard-font-size', String(newSize));
     api.updateScene({ appState: { currentItemFontSize: newSize } });
 
-    if (selectedText.length === 0) {
-      setToast(`Default text size: ${newSize}px`);
-      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-      toastTimerRef.current = setTimeout(() => setToast(null), 1500);
+    const sizeLabel = `${newSize}px`;
+    if (textToResize.length > 0) {
+      setToast(`Resized ${textToResize.length} text element${textToResize.length > 1 ? 's' : ''} to ${sizeLabel}`);
+    } else {
+      setToast(`Default text size: ${sizeLabel}`);
     }
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setToast(null), 1500);
   }, [getExcalidrawAPI, fontSize]);
 
   // Insert a symbol/emoji: copies to clipboard and shows toast
