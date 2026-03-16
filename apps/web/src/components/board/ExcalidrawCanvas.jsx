@@ -3,11 +3,6 @@ import React, { useEffect, useCallback, useRef, useState, useMemo, forwardRef, u
 import { Excalidraw, mutateElement, FONT_FAMILY } from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 
-// Tell Excalidraw where to find font files (woff2).
-// Without this, fonts resolve relative to the JS bundle (/assets/) which doesn't have them.
-// Excalidraw falls back to its own CDN, but setting this explicitly avoids race conditions.
-window.EXCALIDRAW_ASSET_PATH = 'https://esm.sh/@excalidraw/excalidraw@0.18.0/dist/prod/';
-
 // Re-export for parent components to use the correct font IDs
 export { FONT_FAMILY };
 
