@@ -23,7 +23,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **FlyBot** - AI coach that sits on top of all the scored data. Evaluate your own ideas, get prompt recommendations, ask about patterns in the data. Claude-powered with streaming responses and conversation memory.
 
-**Prompt Library** - 81 copy-paste prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Voting, comments, and community suggestions.
+**Prompt Library** - Copy-paste prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Voting, comments, and community suggestions.
 
 **Analytics Dashboard** - 10 interactive charts: verdict distribution, source breakdown, score histograms, framework radar, growth timeline, source quality heatmap, and more.
 
@@ -31,7 +31,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
-**Vibe Coding Player** - Built-in lofi music player with 6 vibe modes (Ideate, Build, Create, Cafe, Study, Retro). 88 CC0 tracks on Cloudflare R2 (zero egress fees), Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
+**Vibe Coding Player** - Built-in lofi music player with 6 vibe modes (Ideate, Build, Create, Cafe, Study, Retro). CC0 tracks on Cloudflare R2 (zero egress fees), Web Audio API visualizer, drag-to-seek, lock screen controls. FlyBot can start playback and select vibes via conversation.
 
 **FlyBoard** - Collaborative whiteboard powered by Excalidraw. Pick a template, sketch your ideas, and export when ready.
 
@@ -163,7 +163,7 @@ apps/web/
 | `/ideas` | Ideas Lab (AI-scored, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scores, evidence) | Public |
 | `/ideas/analytics` | Analytics dashboard (10 charts) | Public |
-| `/prompts` | Prompt Library (81+ prompts) | Hybrid |
+| `/prompts` | Prompt Library | Hybrid |
 | `/flybot` | FlyBot landing | Public |
 | `/flybot/chat` | FlyBot full chat | Members |
 | `/flyboard` | FlyBoard whiteboard | Public |
@@ -178,7 +178,7 @@ apps/web/
 
 Supabase PostgreSQL with Row Level Security on every table. Schema in `supabase/migrations/`.
 
-**Tables:** profiles, ideas, idea_rate_limits, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist
+**Tables:** profiles, ideas, idea_rate_limits, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist, boards, board_folders, flybot_feedback, flybot_memory
 
 **Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 9 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
 
