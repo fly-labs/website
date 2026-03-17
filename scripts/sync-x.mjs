@@ -22,17 +22,27 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const MAX_RETRIES = 2;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// 6 search prompts, rotate 2 per daily run
+// 10 search prompts, rotate 2 per daily run (full cycle every 5 days)
+// Each prompt combines pain signals with builder community signals for richer results
 const SEARCH_PROMPTS = [
+  // Pain signals: missing tools
   '"I wish there was" OR "why is there no" OR "someone needs to build" - find tweets expressing pain about missing tools or solutions',
+  // Payment intent signals
   '"I would pay for" OR "shut up and take my money" OR "willing to pay" - find tweets showing willingness to pay for solutions',
+  // Frustration with existing tools
   '"so frustrating" OR "hate using" OR "terrible UX" OR "why does this suck" - find tweets expressing frustration with existing tools',
+  // Builder opportunity signals
   '"someone should make" OR "why hasn\'t anyone built" OR "billion dollar idea" - find tweets with builder/opportunity signals',
+  // Active search for solutions
   '"need a tool" OR "is there an app" OR "looking for a tool" OR "any recommendations for" - find tweets where people are actively searching for solutions',
+  // Automation needs
   '"manually doing" OR "waste so much time" OR "automate this" OR "repetitive task" - find tweets about automation needs and time waste',
+  // Builder community threads (goldmines of problems disguised as pitches)
+  '"pitch your startup" OR "what are you building" OR "roast my startup" OR "share your side project" - find builder community threads where people describe problems they are solving. Extract the UNDERLYING PROBLEM, not the product pitch.',
+  '"building in public" OR "what did you launch this week" OR "describe your startup in" OR "show me your project" - find building-in-public threads. Look for the PAIN POINT behind each project, not the product itself.',
   // Portuguese queries
   '"eu queria que existisse" OR "por que não tem" OR "alguém deveria criar" - find Portuguese tweets expressing pain about missing tools',
-  '"eu pagaria por" OR "muito frustrado com" OR "perda de tempo" - find Portuguese tweets showing frustration and willingness to pay',
+  '"eu pagaria por" OR "muito frustrado com" OR "perda de tempo" OR "construindo em público" - find Portuguese tweets showing frustration, willingness to pay, or building in public',
 ];
 
 const INDUSTRIES = [
@@ -56,10 +66,15 @@ Evaluate each problem through these lenses:
 Only include problems that pass at least 3 of these 5 lenses. Additional quality filter: Only include problems where the target group is clearly aware of the pain, current solutions are insufficient, and there's willingness to act (not just venting).
 
 Skip tweets that are:
-- Self-promotion or product launches
 - Jokes or memes
 - Generic complaints without actionable problems
 - Already well-solved problems with dominant solutions
+
+IMPORTANT for builder community threads ("pitch your startup", "building in public", "roast my startup"):
+- These are GOLDMINES. Each pitch describes a problem someone thought was worth building for.
+- Extract the UNDERLYING PROBLEM, not the product description. "I built a tool that auto-generates invoices from time logs" becomes "Freelancers lose billable hours because tracking time and generating invoices are separate manual tasks."
+- Self-promotion is OK here IF the underlying problem is real and specific. The tweet is evidence that someone found the problem painful enough to build for.
+- Skip pure vanity metrics posts ("hit 1K users!") with no problem context.
 
 Include Portuguese-language tweets. Translate all findings to English.
 
