@@ -61,7 +61,7 @@ const SignupPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Create a Free Account - Join the Community",
+        title: "Sign Up | Fly Labs",
         description: "Create a free Fly Labs account to unlock the full AI prompt library, Notion templates, and micro tools. Sign up with email or Google in seconds.",
         keywords: "sign up, create account, free account, fly labs, join community",
         url: "https://flylabs.fun/signup",

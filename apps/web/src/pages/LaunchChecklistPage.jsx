@@ -34,7 +34,7 @@ const LaunchChecklistPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Launch Checklist - From Idea to Shipped Product",
+        title: "Launch Checklist | Fly Labs",
         description: "A step-by-step Notion template to take your idea from zero to shipped. Four phases based on The $100 Startup framework. Plan, build, launch, and iterate.",
         keywords: "launch checklist, Notion template, startup launch, product launch, The $100 Startup, ship product",
         url: "https://flylabs.fun/templates/launch-checklist",

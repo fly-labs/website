@@ -236,7 +236,7 @@ const ScoringFrameworksPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "How We Score Ideas: Fly Labs Method + AI Validation",
+        title: "How We Score Ideas | Fly Labs",
         description: `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict. Here's how.`,
         keywords: "Fly Labs Method, vibe building, idea scoring, AI validation, Hormozi, Dan Koe, Bruno Okamoto, startup ideas, problem-solution fit",
         url: "https://flylabs.fun/scoring",

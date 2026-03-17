@@ -118,7 +118,7 @@ const ProfilePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Your Profile - Account Settings",
+        title: "Profile | Fly Labs",
         description: "Manage your Fly Labs profile. Update your name, photo, bio, and account settings. Customize your builder identity.",
         keywords: "profile, account settings, fly labs account, builder profile",
         url: "https://flylabs.fun/profile",

@@ -57,7 +57,7 @@ const TemplatesPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Notion Templates & Developer Resources",
+        title: "Templates | Fly Labs",
         description: "Systems, tools, and blueprints built for real use. Notion templates for launches, business plans, fitness tracking, and full website architecture breakdowns.",
         keywords: "Notion templates, developer resources, launch checklist, business plan template, website blueprint, Garmin Notion",
         url: "https://flylabs.fun/templates",

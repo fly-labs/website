@@ -39,7 +39,7 @@ const OnePageBusinessPlanPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "One-Page Business Plan - Free Notion Template",
+        title: "One-Page Business Plan | Fly Labs",
         description: "Answer five questions and get clarity on your entire business. A free Notion template inspired by The $100 Startup. No fluff, just the essentials that matter.",
         keywords: "business plan, one page business plan, Notion template, startup planning, The $100 Startup, free template",
         url: "https://flylabs.fun/templates/one-page-business-plan",

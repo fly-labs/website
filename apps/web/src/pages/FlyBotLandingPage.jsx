@@ -110,7 +110,7 @@ const FlyBotLandingPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "FlyBot: An AI That Already Did the Homework",
+        title: "FlyBot | Fly Labs",
         description: `Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across ${QUESTION_COUNT} questions and knows ${PROMPT_COUNT} prompts by name. Free during beta.`,
         keywords: "AI idea scoring, business idea evaluator, FlyBot, idea validation AI, vibe building, content strategy AI, solo builder tools",
         url: "https://flylabs.fun/flybot",

@@ -95,7 +95,7 @@ const LibraryPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Free Ebooks for Builders",
+        title: "Library | Fly Labs",
         description: "Free ebooks from my study notes on AI, business, and mindset. Written by Luiz Alves for people who build things.",
         keywords: "free ebooks, AI ebook, business ebook, mindset, builder resources, Luiz Alves",
         url: "https://flylabs.fun/library",

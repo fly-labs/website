@@ -70,7 +70,7 @@ const MicroSaasPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Micro Tools - Small Apps That Solve One Problem",
+        title: "Micro Tools | Fly Labs",
         description: "Small, focused tools that solve one problem really well. Open them, use them, done. Join the waitlist for upcoming micro tools from Fly Labs.",
         keywords: "micro tools, small apps, AI tools, automation, no-code tools, indie maker, waitlist",
         url: "https://flylabs.fun/microsaas",

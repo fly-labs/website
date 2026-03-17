@@ -21,7 +21,7 @@ const ExplorePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Explore AI Tools, Templates & Open Source Projects",
+        title: "Explore | Fly Labs",
         description: "Browse AI tools, Notion templates, automation workflows, and open source experiments. Organized by Business, Tools, and Learn.",
         keywords: "AI tools, Notion templates, automation, open source projects, indie maker tools, productivity tools, launch tools",
         url: "https://flylabs.fun/explore",

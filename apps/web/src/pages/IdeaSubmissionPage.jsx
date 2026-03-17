@@ -320,8 +320,8 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Ideas Lab - AI-Scored Problems with BUILD/VALIDATE/SKIP Verdicts",
-          description: "Real problems scored by the Fly Labs Method. BUILD, VALIDATE, or SKIP.",
+          title: "Ideas Lab | Fly Labs",
+          description: "Real problems scored by the Fly Labs Method. Browse, filter, and find what to build next.",
           keywords: "submit idea, project idea, community, vote, tool request, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}

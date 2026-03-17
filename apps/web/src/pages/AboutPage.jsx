@@ -43,7 +43,7 @@ const AboutPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "About Luiz Alves - Vibe Builder at Fly Labs",
+        title: "About | Fly Labs",
         description: "Finance background, vibe builder. I build digital assets with AI on nights and weekends. Tools, templates, and open source experiments at Fly Labs.",
         keywords: "Luiz Alves, indie maker, AI builder, open source, tools, templates, vibe building",
         url: "https://flylabs.fun/about",

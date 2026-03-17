@@ -420,7 +420,7 @@ const PromptsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "AI Prompts & Workflows - Coding, Writing, Strategy, SEO & More",
+        title: "Prompts | Fly Labs",
         description: "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more. Copy-paste ready for Claude, ChatGPT, Cowork, Lovable, and Gamma.",
         keywords: "AI prompts, AI workflows, coding prompts, writing prompts, strategy prompts, SEO prompts, Claude prompts, Claude Cowork workflows, prompt library",
         url: "https://flylabs.fun/prompts",

@@ -87,7 +87,7 @@ export default function FlyBotPage() {
   return (
     <>
       <SEO
-        title="FlyBot - Your Vibe Building Partner | Fly Labs"
+        title="FlyBot Chat | Fly Labs"
         description="Your AI-powered vibe building partner. Score ideas, write content, think through decisions. Built by Fly Labs."
         noindex
       />
