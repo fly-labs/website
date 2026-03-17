@@ -1170,10 +1170,10 @@ const IdeasAnalyticsPage = () => {
           >
             <div className="h-48 sm:h-52">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.scoreBuckets} margin={{ left: -16, right: 4, top: 8, bottom: 0 }}>
+                <BarChart data={stats.scoreBuckets} margin={{ left: 0, right: 4, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                  <XAxis dataKey="range" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
-                  <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} allowDecimals={false} width={28} />
+                  <XAxis dataKey="range" tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
+                  <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))', fontWeight: 500 }} allowDecimals={false} width={36} />
                   <Tooltip content={<ChartTooltip formatter={(e) => {
                     const bucket = stats.scoreBuckets.find(b => b.count === e.value);
                     return `${e.value} ideas${bucket ? ` (${bucket.label})` : ''}`;
