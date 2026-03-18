@@ -4,7 +4,7 @@ import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Za
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
-import { trackEvent } from '@/lib/analytics.js';
+import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
 import { prompts } from '@/lib/data/prompts.js';
 import { books } from '@/lib/data/library.js';
 import { SOURCE_COUNT, QUESTION_COUNT } from '@/lib/data/siteStats.js';
@@ -50,7 +50,7 @@ const pillars = [
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10',
     link: '/microsaas',
-    stat: 'Coming soon',
+    stat: 'Building next',
   },
   {
     title: 'Library',
@@ -59,7 +59,7 @@ const pillars = [
     color: 'text-purple-500',
     bgColor: 'bg-purple-500/10',
     link: '/library',
-    stat: availableBookCount > 0 ? `${availableBookCount} ebook${availableBookCount > 1 ? 's' : ''}` : 'Coming soon',
+    stat: availableBookCount > 0 ? `${availableBookCount} ebook${availableBookCount > 1 ? 's' : ''}` : 'Building next',
   },
   {
     title: 'FlyBot',
@@ -101,6 +101,8 @@ const HomePage = () => {
   const [ideaCount, setIdeaCount] = useState(null);
   const [articles, setArticles] = useState(null);
 
+  useEffect(() => trackScrollDepth('home'), []);
+
   useEffect(() => {
     supabase
       .from('ideas')
@@ -126,7 +128,7 @@ const HomePage = () => {
     >
 
       {/* ==================== HERO ==================== */}
-      <section className="relative pt-24 sm:pt-32 md:pt-36 pb-12 md:pb-16 px-6 overflow-hidden">
+      <section className="relative pt-20 sm:pt-28 md:pt-36 pb-10 md:pb-16 px-6 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,12 +159,12 @@ const HomePage = () => {
           </motion.div>
 
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-foreground leading-[1.05] mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-foreground leading-[1.05] mb-5 max-w-4xl mx-auto">
             The vibe building hub.
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-10">
             Open source tools for one-person builders. AI-scored ideas, prompts, templates, and everything I build along the way.
           </p>
 

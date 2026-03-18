@@ -1,0 +1,68 @@
+{
+  "seo": {
+    "title": "How We Score Ideas | Fly Labs",
+    "description": "The Ideas Lab finds real problems from {{sourceCount}} sources, asks {{questionCount}} questions, validates against X and Reddit, and gives a verdict. Here's how."
+  },
+  "hero": {
+    "title": "How We Score Ideas",
+    "subtitle": "{{sourceCount}} sources, {{questionCount}} questions, one verdict."
+  },
+  "steps": {
+    "find": "Find",
+    "findDesc": "Real problems from {{sourceCount}} sources daily",
+    "score": "Score",
+    "scoreDesc": "{{questionCount}} questions about each one",
+    "validate": "Validate",
+    "validateDesc": "Live evidence from X and Reddit",
+    "verdict": "Verdict",
+    "verdictDesc": "BUILD, VALIDATE, or SKIP"
+  },
+  "questions": {
+    "title": "The {{count}} questions",
+    "subtitle": "Each idea gets scored on these questions. The total is the FL score (0-100). That's the only score that decides the verdict.",
+    "q1": "Is the pain real?",
+    "q1Label": "Problem Clarity",
+    "q2": "Is there room for something new?",
+    "q2Label": "Solution Gap",
+    "q3": "Would someone pay?",
+    "q3Label": "Willingness to Act",
+    "q4": "Can you build it?",
+    "q4Label": "Buildability"
+  },
+  "verdicts": {
+    "title": "The verdict",
+    "buildRule": "FL >= 65 + buildable",
+    "validateRule": "FL 40-64",
+    "skipRule": "FL < 40",
+    "build": "BUILD",
+    "buildDesc": "Strong signal. Ship it.",
+    "validate": "VALIDATE FIRST",
+    "validateDesc": "Promising. Needs proof.",
+    "skip": "SKIP",
+    "skipDesc": "Weak signal. Move on."
+  },
+  "validation": {
+    "title": "Validation Layer",
+    "description": "Top-scoring ideas get validated against real conversations on X and Reddit.",
+    "xSearch": "X/Twitter live search",
+    "redditMining": "Reddit conversation mining",
+    "confidence": "Confidence scoring",
+    "competitors": "Competitive intelligence"
+  },
+  "experts": {
+    "title": "Want more depth?",
+    "subtitle": "{{count}} expert perspectives add angles the FL score doesn't cover. They live on each idea's detail page but don't affect the verdict.",
+    "hormozi": "Hormozi",
+    "hormoziDesc": "Alex Hormozi's $100M value equation.",
+    "koe": "Dan Koe",
+    "koeDesc": "One-person business lens.",
+    "okamoto": "Okamoto",
+    "okamotoDesc": "MicroSaaS validation.",
+    "yc": "YC Lens",
+    "ycDesc": "How Y Combinator evaluates products."
+  },
+  "dyor": {
+    "title": "Do your own research",
+    "text": "AI scores are opinions based on data. Good opinions, but opinions. Talk to real users before building."
+  }
+}

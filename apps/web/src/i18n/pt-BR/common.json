@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "explore": "Explorar",
+    "ideas": "Ideias",
+    "flyboard": "FlyBoard",
+    "prompts": "Prompts",
+    "newsletter": "Newsletter",
+    "library": "Biblioteca",
+    "about": "Sobre",
+    "logIn": "Entrar",
+    "logOut": "Sair",
+    "logout": "Sair",
+    "toggleMenu": "Abrir menu",
+    "skipToContent": "Ir para o conteúdo",
+    "loggedInAs": "Conectado como",
+    "you": "Você"
+  },
+  "footer": {
+    "brand": "Fly Labs",
+    "copyright": "\u00a9 {{year}} Fly Labs. O hub do vibe building.",
+    "builtWith": "Feito com Claude"
+  },
+  "gated": {
+    "title": "Crie uma conta grátis para desbloquear",
+    "cta": "Criar conta grátis",
+    "subtext": "Grátis para sempre. Sem cartão de crédito."
+  },
+  "auth": {
+    "goBack": "Voltar",
+    "unlockTitle": "Desbloqueie essa ferramenta",
+    "unlockSubtitle": "Crie uma conta grátis para acessar a biblioteca completa.",
+    "tabLogIn": "Entrar",
+    "tabSignUp": "Criar Conta",
+    "emailPlaceholder": "Seu email",
+    "passwordPlaceholder": "Senha",
+    "createPasswordPlaceholder": "Crie uma senha",
+    "confirmPasswordPlaceholder": "Confirme a senha",
+    "createAccount": "Criar Conta",
+    "orContinueWith": "Ou continue com",
+    "google": "Google",
+    "toastWelcome": "Bem-vindo de volta!",
+    "toastLoading": "Carregando suas ferramentas...",
+    "toastLoginFailed": "Falha no login",
+    "toastSignupSuccess": "Conta criada!",
+    "toastSignupFailed": "Falha ao criar conta",
+    "toastPasswordMismatch": "As senhas não conferem.",
+    "toastPasswordWeak": "A senha precisa ter pelo menos 8 caracteres.",
+    "toastGoogleSuccess": "Autenticado com Google.",
+    "toastGoogleFailed": "Falha na autenticação Google. Tente novamente.",
+    "toastAuthFailed": "Falha na autenticação",
+    "toastError": "Erro",
+    "toastSuccess": "Pronto!"
+  },
+  "error": {
+    "title": "Algo deu errado",
+    "description": "Tente recarregar a página. Se o problema continuar, fale com a gente em flylabs.fun/about.",
+    "goHome": "Voltar ao início"
+  },
+  "theme": {
+    "toggle": "Alternar tema"
+  },
+  "language": {
+    "toggle": "Trocar idioma"
+  },
+  "actions": {
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "share": "Compartilhar",
+    "vote": "Votar",
+    "voted": "Votado",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "search": "Buscar",
+    "clearAll": "Limpar tudo",
+    "showMore": "Ver mais",
+    "showLess": "Ver menos",
+    "tryAgain": "Tentar de novo",
+    "learnMore": "Saiba mais"
+  },
+  "toast": {
+    "somethingWrong": "Algo deu errado",
+    "linkCopied": "Link copiado",
+    "shareIdea": "Compartilhe essa ideia com qualquer pessoa.",
+    "copyFailed": "Falha ao copiar",
+    "couldNotCopy": "Não foi possível copiar."
+  }
+}

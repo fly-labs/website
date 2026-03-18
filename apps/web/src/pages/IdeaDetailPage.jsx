@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import supabase from '@/lib/supabaseClient.js';
 import { timeAgo } from '@/lib/utils.js';
-import { trackEvent } from '@/lib/analytics.js';
+import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
 import { industries, statusConfig } from '@/lib/data/ideas.js';
 import SourceBadge from '@/components/ideas/SourceBadge.jsx';
 import { getScoreTier, ScoreBar, verdictStyles, confidenceColors, FL_PILLARS, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
@@ -19,7 +19,7 @@ const IdeaDetailPage = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
-  const { openWidget } = useChatContext();
+  const { openWidget, setPageDetail } = useChatContext();
   const [idea, setIdea] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -27,6 +27,21 @@ const IdeaDetailPage = () => {
     try { return JSON.parse(localStorage.getItem('voted_ideas') || '[]'); } catch { return []; }
   });
   const [expanded, setExpanded] = useState({});
+
+  useEffect(() => trackScrollDepth('idea_detail'), []);
+
+  // Enrich FlyBot page context with current idea
+  useEffect(() => {
+    if (idea) {
+      setPageDetail({
+        ideaTitle: idea.idea_title,
+        verdict: idea.verdict,
+        score: idea.flylabs_score,
+        industry: idea.industry,
+        source: idea.source,
+      });
+    }
+  }, [idea, setPageDetail]);
 
   useEffect(() => {
     let cancelled = false;
@@ -156,6 +171,7 @@ const IdeaDetailPage = () => {
         title: `${idea.idea_title} - Ideas Lab`,
         description: synthesis?.one_liner || idea.idea_description || 'AI-scored idea analysis on Fly Labs',
         url: `https://flylabs.fun/ideas/${idea.id}`,
+        image: `/api/og?title=${encodeURIComponent(idea.idea_title)}${idea.flylabs_score != null ? `&score=${idea.flylabs_score}` : ''}${idea.verdict ? `&verdict=${idea.verdict}` : ''}`,
         schema: [
           {
             "@type": "BreadcrumbList",
@@ -543,7 +559,7 @@ const IdeaDetailPage = () => {
                 <div className="h-px flex-1 bg-border" />
               </div>
               <p className="text-xs text-muted-foreground/50 mb-3">
-                Three AI perspectives inspired by different business thinkers. These scores are for context only and do not affect the verdict.
+                {EXPERT_CONFIG.length} AI perspectives inspired by different business thinkers. These scores are for context only and do not affect the verdict.
               </p>
 
               <div className="space-y-3">
@@ -768,6 +784,108 @@ const IdeaDetailPage = () => {
               </div>
             )}
           </section>
+          {/* ─── Build From Here ─── */}
+          {rec && synthesis && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Build From Here</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              {rec === 'BUILD' && (
+                <div className="space-y-4">
+                  {synthesis.the_pain && (
+                    <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">The pain to solve</p>
+                      <p className="text-sm text-muted-foreground">{synthesis.the_pain}</p>
+                    </div>
+                  )}
+                  {synthesis.the_gap && (
+                    <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">The gap to fill</p>
+                      <p className="text-sm text-muted-foreground">{synthesis.the_gap}</p>
+                    </div>
+                  )}
+                  {synthesis.build_angle && (
+                    <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Your angle</p>
+                      <p className="text-sm text-muted-foreground">{synthesis.build_angle}</p>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => {
+                      openWidget();
+                      trackEvent('cta_click', { cta: 'build_from_here_flybot', location: 'idea_detail' });
+                    }}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                  >
+                    <Bot className="w-4 h-4" /> Ask FlyBot to scope the MVP
+                  </button>
+                </div>
+              )}
+
+              {rec === 'VALIDATE_FIRST' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    This idea has potential but needs validation. {synthesis.reasoning || 'Talk to real people before building.'}
+                  </p>
+                  {/* Show weakest YC lens questions as things to test */}
+                  {idea.score_breakdown?.yc && (() => {
+                    const yc = idea.score_breakdown.yc;
+                    const pillars = [
+                      { key: 'demand_reality', label: 'Would someone be upset if this disappeared?', score: yc.demand_reality?.score },
+                      { key: 'status_quo', label: 'What are users doing today to solve this badly?', score: yc.status_quo?.score },
+                      { key: 'desperate_specificity', label: 'Can you name the actual human who needs this most?', score: yc.desperate_specificity?.score },
+                      { key: 'narrowest_wedge', label: "What's the smallest version someone pays for THIS WEEK?", score: yc.narrowest_wedge?.score },
+                      { key: 'observation_surprise', label: 'Is there evidence of real usage?', score: yc.observation_surprise?.score },
+                      { key: 'future_fit', label: 'In 3 years, more essential or less?', score: yc.future_fit?.score },
+                    ].filter(p => p.score != null).sort((a, b) => a.score - b.score).slice(0, 3);
+
+                    if (pillars.length === 0) return null;
+                    return (
+                      <div>
+                        <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Test these first (weakest YC signals)</p>
+                        <div className="space-y-2">
+                          {pillars.map(p => (
+                            <div key={p.key} className="flex items-start gap-2 p-3 rounded-lg border border-amber-500/20 bg-amber-500/5">
+                              <AlertTriangle className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+                              <p className="text-sm text-muted-foreground">{p.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                  <button
+                    onClick={() => {
+                      openWidget();
+                      trackEvent('cta_click', { cta: 'validate_from_here_flybot', location: 'idea_detail' });
+                    }}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-amber-600 hover:underline"
+                  >
+                    <Bot className="w-4 h-4" /> Ask FlyBot what to validate
+                  </button>
+                </div>
+              )}
+
+              {rec === 'SKIP' && (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    The numbers say skip. {synthesis.reasoning || 'There are better ideas in the lab.'}
+                  </p>
+                  <Link
+                    to={`/ideas?verdict=BUILD${idea.industry ? `&industry=${idea.industry}` : ''}&sort=flylabs`}
+                    className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                    onClick={() => trackEvent('cta_click', { cta: 'skip_browse_build', location: 'idea_detail' })}
+                  >
+                    <ArrowRight className="w-4 h-4" /> Browse BUILD ideas{idea.industry ? ` in ${industries.find(i => i.value === idea.industry)?.label || idea.industry}` : ''}
+                  </Link>
+                </div>
+              )}
+            </section>
+          )}
+
           </>
           ) : (
           <GatedOverlay

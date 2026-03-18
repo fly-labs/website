@@ -22,17 +22,22 @@ npm run lint     # ESLint (quiet mode)
 - **Icons:** Lucide React
 - **Backend:** Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage)
 - **Auth:** Email/password + Google OAuth via Supabase
-- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root)
-- **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, setUserProperties, setUserId). Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
+- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root). Dynamic sitemap via `api/sitemap.js`, dynamic OG images via `api/og.js` (@vercel/og edge function), Core Web Vitals via web-vitals
+- **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, trackWebVitals, trackScrollDepth, trackEventOnce, setUserProperties, setUserId). UTM/referrer tracking on page view. Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
+- **i18n:** react-i18next + i18next (EN + PT-BR). State-based toggle (localStorage `language` key), browser language detection. 11 namespace files per language. `LanguageToggle.jsx` in Header. FlyBot responds in user's UI language via system prompt injection. `scripts/translate-missing.mjs` checks coverage and auto-translates with Claude Haiku
 - **Deploy:** Vercel (auto-deploy on push to `main`)
 
 ## Project Structure
 ```
 apps/web/
 ├── src/
-│   ├── main.jsx              # Entry point
+│   ├── main.jsx              # Entry point (imports i18n before App)
 │   ├── App.jsx               # Router + providers (AuthProvider, ThemeProvider, HelmetProvider)
 │   ├── index.css             # Tailwind base + design tokens (CSS vars)
+│   ├── i18n/
+│   │   ├── index.js          # i18next init (language detector, 11 namespaces, html lang sync)
+│   │   ├── en/               # English translations (11 namespace JSON files)
+│   │   └── pt-BR/            # Brazilian Portuguese translations (11 namespace JSON files)
 │   ├── components/
 │   │   ├── ui/               # shadcn/ui components (button, avatar, input, tabs)
 │   │   ├── Header.jsx        # Nav bar (sticky, blur backdrop)
@@ -45,6 +50,7 @@ apps/web/
 │   │   ├── ProtectedRoute.jsx # Redirects guests to AuthModal
 │   │   ├── GatedOverlay.jsx  # Reusable freemium gating (blur overlay + CTA card, inline lock badge). Used by Ideas, Analytics, Detail pages
 │   │   ├── ThemeToggle.jsx   # Dark/light switch
+│   │   ├── LanguageToggle.jsx # EN/PT language switch (localStorage + GA4 event)
 │   │   ├── GoogleIcon.jsx    # Shared Google "G" SVG
 │   │   ├── XIcon.jsx         # X/Twitter icon
 │   │   ├── GeometricBackground.jsx  # Hand-drawn doodle background (7 SVGs: flask, beaker, atom, plane, bulb, DNA, test tube)
@@ -57,7 +63,7 @@ apps/web/
 │   │       ├── IdeaTableRow.jsx  # Compact table row view (vote, title, verdict, FL score, source, age). showScores prop for freemium gating
 │   │       ├── IdeaFilterSheet.jsx # Bottom sheet (mobile) + inline panel (desktop) for type/industry/score/confidence/perPage
 │   │       ├── IdeaSubmitModal.jsx # 3-step submit form modal
-│   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, verdictStyles, confidenceColors)
+│   │       ├── ScoreUtils.jsx    # Shared scoring utilities (getScoreTier, ScoreBar, FRAMEWORK_CONFIG, EXPERT_CONFIG with 4 experts incl. YC Lens, verdictStyles, confidenceColors)
 │   │       └── SourceBadge.jsx    # Shared source link badge (used in IdeaCard + IdeaDetailPage)
 │   │   └── chat/            # FlyBot chat components
 │   │       ├── ChatMessages.jsx  # Scrollable message list, auto-scroll, typing indicator
@@ -102,7 +108,7 @@ apps/web/
 │   │   │   ├── boardTemplates.js # FlyBoard template definitions
 │   │   │   └── constants.js    # Shared constants (FRAMEWORK_COUNT) to prevent circular deps
 │   │   ├── supabaseClient.js # Supabase init (env vars: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
-│   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, setUserProperties, setUserId)
+│   │   ├── analytics.js      # GA4 (trackPageView, trackEvent, trackError, trackWebVitals, trackScrollDepth, trackEventOnce, setUserProperties, setUserId). UTM/referrer on page view
 │   │   ├── animations.js     # Shared animation variants (fadeUp, fadeIn, scaleIn, staggerContainer + staggerItem)
 │   │   ├── githubApi.js      # GitHub contribution API (fetchContributions, localStorage cache, 1h TTL)
 │   │   ├── substackApi.js   # Substack archive API + rss2json fallback (fetchArticles, localStorage cache, 1h TTL)
@@ -137,13 +143,14 @@ apps/web/
 │   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Sonnet, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max, cross-session memory, returns message_id)
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
 │   ├── feedback.js              # POST/DELETE - FlyBot message feedback (thumbs up/down with optional comment)
+│   ├── og.js                    # Edge function - dynamic OG images (@vercel/og) with verdict/score for idea sharing
+│   ├── sitemap.js               # Dynamic XML sitemap (static routes + all approved ideas from Supabase)
 │   └── lib/
 │       ├── auth.js              # Supabase JWT verification, admin email check
-│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks, dynamic context + page context + board_action/music_action + user memory injection)
+│       └── coach-prompt.js      # FlyBot system prompt builder (4 layers: philosophy, craft, frameworks incl. YC Lens, dynamic context + page context + board_action/music_action + user memory injection + conversation progression)
 ├── public/
 │   ├── images/luiz-alves.png
-│   ├── robots.txt
-│   └── sitemap.xml
+│   └── robots.txt
 ├── vite.config.js           # Port 3001, @ alias -> ./src, vendor/motion/supabase/recharts chunking
 ├── tailwind.config.js       # Design tokens, dark mode: 'class', tailwindcss-animate plugin
 ├── components.json          # shadcn/ui: new-york style, JSX, lucide icons
@@ -181,11 +188,11 @@ apps/web/
 ## Supabase
 - **Migrations:** `supabase/migrations/` (schema + RLS). Apply with `supabase db push`. See `docs/SUPABASE.md`
 - **Tables:** profiles, ideas, prompt_votes, prompt_comments, waitlist, idea_rate_limits, conversations, messages, flybot_waitlist, boards, board_folders, flybot_feedback (message ratings), flybot_memory (cross-session user context)
-- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github/yc), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized FL score, = flylabs_score for backward compat), published_at (original publication date), meta (JSONB, source-specific context, e.g. YC failure_analysis), created_at, updated_at (auto-updated via trigger)
+- **Ideas columns:** id, idea_title, idea_description (nullable), category (Type: Tool/Template/Prompt/Article/Other), industry (domain vertical, nullable), source (default 'community', values: community/problemhunt/reddit/producthunt/x/hackernews/github/yc), source_url, external_id (dedup key), tags, country, name, email (nullable), votes, approved, status, frequency, existing_solutions, flylabs_score, hormozi_score, koe_score, okamoto_score, yc_score, score_breakdown (JSONB with flylabs/hormozi/koe/okamoto/yc keys + synthesis with verdict/reasoning/next_steps + per-pillar reasoning), enrichment (JSONB with validation/competitors/summary + confidence/evidence_count + verdict with recommendation/reasoning/confidence), validation_score (integer 0-100), verdict (materialized: BUILD/VALIDATE_FIRST/SKIP), confidence (materialized: high/medium/low), composite_score (materialized FL score, = flylabs_score for backward compat), published_at (original publication date), meta (JSONB, source-specific context, e.g. YC failure_analysis), created_at, updated_at (auto-updated via trigger)
 - **idea_rate_limits table:** Rate limiting for submissions (email, created_at). Max 3 per email per 24h. RLS enabled with honeypot defense in `log_idea_submission` RPC
 - **RPCs:** `increment_vote(idea_id)`, `decrement_vote(idea_id)`, `toggle_prompt_vote(p_prompt_id)`, `get_prompt_vote_counts()`, `get_waitlist_count(p_source)`, `check_idea_rate_limit(p_email)`, `log_idea_submission(p_email)`, `get_user_message_count(p_user_id)`, `init_flyboard_defaults(p_user_id)`, `move_board(p_board_id, p_folder_id)`
 - **Seed data:** `supabase/seed-data/problemhunt.json` (171 ProblemHunt items). Import: `node supabase/seed-data/import-problemhunt.mjs`. Classify existing: `node supabase/seed-data/classify-existing.mjs`
-- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 10 search prompts daily (incl. builder community threads) incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`
+- **Scripts:** `scripts/score-ideas.mjs` (FL-primary scoring: Claude Sonnet scores with Fly Labs Method as the score, composite_score = flylabs_score for backward compat. Expert scores (Hormozi/Koe/Okamoto/YC Lens) stored in score_breakdown for detail page only. Verdict: FL >= 65 + buildable = BUILD, FL 40-64 = VALIDATE_FIRST, FL < 40 = SKIP. Passes YC meta context when available. Saturation-aware: Solution Gap penalizes crowded markets. Synthesis includes the_pain/the_gap/build_angle fields for actionable Quick Read display), `scripts/backfill-all.mjs` (scores ALL ideas, not just non-SKIPs), `scripts/check-backfill.mjs` (checks backfill progress and scoring coverage), `scripts/sync-problemhunt.mjs` (daily sync via Tilda feed API), `scripts/sync-reddit.mjs` (daily sync from 19 subreddits incl. 3 Portuguese, supports Reddit OAuth auto-upgrade, Haiku AI batch filtering for quality, bilingual prompt), `scripts/sync-producthunt.mjs` (Product Hunt GraphQL API sync - uses Haiku to extract the underlying PROBLEM from each product, filters non-problems), `scripts/sync-x.mjs` (X/Twitter sync via Grok xAI API with x_search tool, rotates 2 of 10 search prompts daily (incl. builder community threads) incl. 2 Portuguese, extracts tweet dates), `scripts/sync-hackernews.mjs` (Hacker News sync via Firebase API, fetches top+ask stories, Haiku AI batch filter for quality, keyword-based industry detection), `scripts/sync-github.mjs` (GitHub Issues + Discussions sync via Search API, rotates 4 of 8 market-level pain queries daily, pre-AI keyword scoring, Haiku AI batch filter, optional GITHUB_TOKEN for 5K req/hr), `scripts/sync-yc.mjs` (YC Graveyard sync via yc-oss API, filters ~1,700 dead startups through Haiku for solo builder viability, stores failure_analysis in meta JSONB), `scripts/enrich-ideas.mjs` (dual-source validation: Grok x_search primary + Reddit secondary with Portuguese evidence, Claude Sonnet synthesis with evidence confidence + enrichment verdict, avg score >= 40 threshold. Post-enrichment saturation cap: 5+ competitors caps verdict at VALIDATE_FIRST, 0-1 competitors boosts confidence to high. Stores competitor_count in enrichment JSONB). Run via `npm run score` / `npm run sync` / `npm run sync:reddit` / `npm run sync:producthunt` / `npm run sync:x` / `npm run sync:hackernews` / `npm run sync:github` / `npm run sync:yc` / `npm run enrich` / `npm run score:yc`. Also: `scripts/setup-music.mjs` (uploads CC0 MP3s from scripts/music/{ideate,build,create,study,retro}/ subfolders to Cloudflare R2 via S3-compatible API, auto-generates src/lib/data/tracks.js with vibe modes and R2 public URLs). Run via `npm run setup:music`. `scripts/translate-missing.mjs` (checks i18n translation coverage across en/ and pt-BR/ namespaces, with --translate flag auto-translates missing keys using Claude Haiku). Run via `npm run translate` / `npm run translate:auto`
 - **GitHub Actions:** `.github/workflows/ci.yml` ("CI") - runs on every push, lint + build. `.github/workflows/sync-problemhunt.yml` ("Sync Ideas") - runs daily at 6 AM UTC to sync ProblemHunt + Reddit + Product Hunt + X + Hacker News + GitHub Issues + YC Graveyard + score new ideas with Claude Sonnet. `.github/workflows/enrich-ideas.yml` ("Enrich Ideas") - runs daily at 4 AM UTC to validate top-scoring ideas with Grok x_search + Reddit
 
 ## Design System
@@ -223,6 +230,7 @@ apps/web/
 - **No layout-shifting transitions on tappable elements:** Never use `transition-all`, `hover:-translate-y-*`, or `hover:scale-*` on Links, buttons, or anchors. These shift touch targets on mobile tap, making elements untappable. Use `transition-colors` (or scoped like `transition-[color,background-color,border-color,box-shadow]`). `group-hover:scale-*` on child icons inside a tappable parent is fine. Framer Motion `layout` prop must not be used on card grid containers or individual card wrappers (causes persistent CSS transforms)
 - **Security headers:** CSP, COOP, HSTS, and Permissions-Policy in `vercel.json`. CSP uses `https://*.supabase.co` (no hardcoded project URL). GA4 requires `unsafe-inline` for script-src
 - **Validation:** Use `isValidEmail()` from `@/lib/utils.js` for email fields (waitlist, ideas)
+- **i18n:** All user-visible strings go in namespace JSON files under `src/i18n/{en,pt-BR}/`. Use `const { t } = useTranslation('namespace')` in components. Keys are dot-separated (e.g., `t('hero.title')`). Dynamic values use interpolation: `t('key', { count: 5 })`. When adding new strings, add to both en/ and pt-BR/ files, or add to en/ only and run `npm run translate:auto` to auto-translate missing keys. Product names (BUILD, SKIP, FL score, FlyBot, Ideas Lab) stay in English in both languages. Run `npm run translate` to check coverage
 
 ## Development Workflow
 - **Plan first:** For any change touching 3+ files or involving architectural decisions, write the plan before coding. If something breaks mid-implementation, stop and re-plan.
@@ -237,7 +245,7 @@ apps/web/
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (6-way: hot/new/oldest/top/score/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 
 ## Analytics Events (GA4)
-All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`. 65 events total.
+All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User properties (`auth_provider`, `is_member`) and `user_id` are set on auth state change in `AuthContext.jsx`. 66 events total.
 
 **Auth (2)**
 | Event | Fired From | Key Params |
@@ -347,6 +355,7 @@ All custom events use `trackEvent(name, params)` from `lib/analytics.js`. User p
 | `profile_updated` | ProfilePage | `fields_filled` |
 | `waitlist_joined` | MicroSaasPage | `source` |
 | `page_not_found` | NotFoundPage | `page_path`, `page_referrer` |
+| `language_changed` | LanguageToggle | `language` |
 
 **System (1)**
 | Event | Fired From | Key Params |

@@ -79,6 +79,20 @@ export const EXPERT_CONFIG = [
       { key: 'validation_readiness', label: 'Validation Readiness' },
     ],
   },
+  {
+    key: 'yc',
+    name: 'YC Lens',
+    question: 'How would YC evaluate this?',
+    color: 'text-foreground',
+    pillars: [
+      { key: 'demand_reality', label: 'Demand Reality' },
+      { key: 'status_quo', label: 'Status Quo' },
+      { key: 'desperate_specificity', label: 'Desperate Specificity' },
+      { key: 'narrowest_wedge', label: 'Narrowest Wedge' },
+      { key: 'observation_surprise', label: 'Observation & Surprise' },
+      { key: 'future_fit', label: 'Future-Fit' },
+    ],
+  },
 ];
 
 // Legacy compat: FRAMEWORK_CONFIG includes FL + experts for components that still use it

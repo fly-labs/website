@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Reusable freemium gating overlay.
@@ -18,20 +19,23 @@ import { trackEvent } from '@/lib/analytics.js';
  */
 export function GatedOverlay({
   children,
-  title = 'Sign up free to unlock',
+  title,
   description,
-  ctaText = 'Sign up free',
+  ctaText,
   variant = 'overlay',
   location: analyticsLocation = 'unknown',
   className = '',
   teaserCount,
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const resolvedTitle = title || t('gated.title');
+  const resolvedCta = ctaText || t('gated.cta');
 
   const handleCTA = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    trackEvent('gated_cta_click', { location: analyticsLocation, title });
+    trackEvent('gated_cta_click', { location: analyticsLocation, title: resolvedTitle });
     navigate('/signup');
   };
 
@@ -41,10 +45,10 @@ export function GatedOverlay({
       <button
         onClick={handleCTA}
         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[11px] font-semibold hover:bg-primary/20 transition-colors cursor-pointer ${className}`}
-        title={title}
+        title={resolvedTitle}
       >
         <Lock className="w-3 h-3" />
-        <span>{title}</span>
+        <span>{resolvedTitle}</span>
       </button>
     );
   }
@@ -68,7 +72,7 @@ export function GatedOverlay({
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Sparkles className="w-6 h-6 text-primary" />
           </div>
-          <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
+          <h3 className="text-lg font-bold text-foreground mb-2">{resolvedTitle}</h3>
           {description && (
             <p className="text-sm text-muted-foreground mb-1 leading-relaxed">{description}</p>
           )}
@@ -80,9 +84,9 @@ export function GatedOverlay({
             onClick={handleCTA}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:brightness-110 transition-[filter] active:translate-y-0.5"
           >
-            {ctaText}
+            {resolvedCta}
           </button>
-          <p className="text-xs text-muted-foreground/50 mt-3">Free forever. No credit card.</p>
+          <p className="text-xs text-muted-foreground/50 mt-3">{t('gated.subtext')}</p>
         </motion.div>
       </div>
     </div>

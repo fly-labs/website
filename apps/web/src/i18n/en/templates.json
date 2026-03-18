@@ -1,0 +1,40 @@
+{
+  "seo": {
+    "title": "Templates | Fly Labs",
+    "description": "Automation templates and blueprints. Set them up once, save hours every week."
+  },
+  "hero": {
+    "title": "Templates",
+    "subtitle": "Blueprints and automations I actually use."
+  },
+  "blueprint": {
+    "title": "Website Blueprint",
+    "subtitle": "How this site was built. Full stack breakdown.",
+    "builderNote": "Builder's Note",
+    "viewCode": "View on GitHub"
+  },
+  "garmin": {
+    "title": "Garmin to Notion",
+    "subtitle": "Auto-sync Garmin health data to Notion."
+  },
+  "launchChecklist": {
+    "title": "Launch Checklist",
+    "subtitle": "From zero to launched. Notion template.",
+    "comingSoon": "Coming soon"
+  },
+  "businessPlan": {
+    "title": "One-Page Business Plan",
+    "subtitle": "5 questions. One page. Notion template.",
+    "comingSoon": "Coming soon"
+  },
+  "microTools": {
+    "title": "Micro Tools",
+    "subtitle": "Small apps, big leverage."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "This page doesn't exist. Maybe it moved, or maybe it never did.",
+    "goHome": "Go home",
+    "goExplore": "Explore projects"
+  }
+}

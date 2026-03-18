@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut, User } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle.jsx';
+import { LanguageToggle } from '@/components/LanguageToggle.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { SmileLogo } from '@/components/SmileLogo.jsx';
 import { Button } from '@/components/ui/button';
@@ -14,15 +16,16 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, currentUser, profile, logout } = useAuth();
+  const { t } = useTranslation();
 
   const navLinks = [
-    { name: 'Explore', path: '/explore' },
-    { name: 'Ideas', path: '/ideas' },
-    { name: 'FlyBoard', path: '/flyboard' },
-    { name: 'Prompts', path: '/prompts' },
-    { name: 'Newsletter', path: '/newsletter' },
-    { name: 'Library', path: '/library' },
-    { name: 'About', path: '/about' },
+    { name: t('nav.explore'), path: '/explore' },
+    { name: t('nav.ideas'), path: '/ideas' },
+    { name: t('nav.flyboard'), path: '/flyboard' },
+    { name: t('nav.prompts'), path: '/prompts' },
+    { name: t('nav.newsletter'), path: '/newsletter' },
+    { name: t('nav.library'), path: '/library' },
+    { name: t('nav.about'), path: '/about' },
   ];
 
   const isActive = (path) => {
@@ -41,7 +44,7 @@ const Header = () => {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:text-sm focus:font-medium"
       >
-        Skip to content
+        {t('nav.skipToContent')}
       </a>
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
@@ -76,7 +79,8 @@ const Header = () => {
             ))}
             
             <div className="w-px h-6 bg-border mx-2"></div>
-            
+
+            <LanguageToggle />
             <ThemeToggle />
 
             {isAuthenticated ? (
@@ -90,16 +94,16 @@ const Header = () => {
                     <AvatarFallback className="bg-primary/20 text-primary text-xs"><User className="w-3 h-3" /></AvatarFallback>
                   </Avatar>
                   <span className="text-xs font-bold max-w-[100px] truncate">
-                    {profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You'}
+                    {profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || t('nav.you')}
                   </span>
                 </Link>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   size="icon"
                   onClick={handleLogout}
                   className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                  title="Logout"
-                  aria-label="Log out"
+                  title={t('nav.logout')}
+                  aria-label={t('nav.logOut')}
                 >
                   <LogOut className="w-4 h-4" />
                 </Button>
@@ -109,18 +113,19 @@ const Header = () => {
                 to="/login"
                 className="ml-2 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted font-medium text-sm transition-colors border border-transparent hover:border-border"
               >
-                Log In
+                {t('nav.logIn')}
               </Link>
             )}
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
+            <LanguageToggle />
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-3 rounded-xl text-muted-foreground hover:bg-muted transition-colors"
-              aria-label="Toggle menu"
+              aria-label={t('nav.toggleMenu')}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -148,8 +153,8 @@ const Header = () => {
                     <AvatarFallback className="bg-primary/20 text-primary"><User className="w-4 h-4" /></AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="text-xs text-muted-foreground">Logged in as</span>
-                    <span className="text-sm font-bold truncate">{profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You'}</span>
+                    <span className="text-xs text-muted-foreground">{t('nav.loggedInAs')}</span>
+                    <span className="text-sm font-bold truncate">{profile?.name || currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || t('nav.you')}</span>
                   </div>
                 </Link>
               )}
@@ -174,7 +179,7 @@ const Header = () => {
                     onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-xl text-destructive font-bold text-lg hover:bg-destructive/10 transition-colors flex items-center gap-2"
                   >
-                    <LogOut className="w-5 h-5" /> Log Out
+                    <LogOut className="w-5 h-5" /> {t('nav.logOut')}
                   </button>
                 ) : (
                   <Link 
@@ -182,7 +187,7 @@ const Header = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-center px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-bold text-lg transition-colors border border-border"
                   >
-                    Log In
+                    {t('nav.logIn')}
                   </Link>
                 )}
               </div>

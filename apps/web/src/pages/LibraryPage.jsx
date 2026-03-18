@@ -99,7 +99,17 @@ const LibraryPage = () => {
         description: "Free ebooks from my study notes on AI, business, and mindset. Written by Luiz Alves for people who build things.",
         keywords: "free ebooks, AI ebook, business ebook, mindset, builder resources, Luiz Alves",
         url: "https://flylabs.fun/library",
-        ...(bookSchemas.length > 0 && { schema: bookSchemas }),
+        schema: [
+          ...bookSchemas,
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Library" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >
@@ -204,7 +214,7 @@ const LibraryPage = () => {
                             ? 'text-primary bg-primary/10 border border-primary/20'
                             : 'text-muted-foreground bg-muted border border-border'
                         )}>
-                          {isAvailable ? 'Free' : 'Coming soon'}
+                          {isAvailable ? 'Free' : 'Building next'}
                         </span>
                       </div>
 

@@ -1,6 +1,9 @@
 {
   "installCommand": "npm install --prefix ../.. --force && npm install --prefix ../.. --force @rollup/rollup-linux-x64-gnu",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

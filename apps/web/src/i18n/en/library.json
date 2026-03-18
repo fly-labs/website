@@ -1,0 +1,31 @@
+{
+  "seo": {
+    "title": "Library | Fly Labs",
+    "description": "Free ebooks from study notes. AI, business, mindset, and everything I'm learning along the way."
+  },
+  "hero": {
+    "title": "Library",
+    "subtitle": "Free ebooks from my study notes. Whatever I'm reading and learning about."
+  },
+  "topics": {
+    "all": "All",
+    "ai": "AI",
+    "business": "Business",
+    "mindset": "Mindset",
+    "mindfulness": "Mindfulness",
+    "random": "Random"
+  },
+  "book": {
+    "comingSoon": "Coming soon",
+    "pages": "{{count}} pages",
+    "download": "Download free",
+    "notify": "Notify me",
+    "notifyDesc": "We'll email you when this drops."
+  },
+  "waitlist": {
+    "joinedTitle": "You're on the list!",
+    "joinedDesc": "We'll email you when this ebook is ready.",
+    "failedTitle": "Something went wrong",
+    "emailPlaceholder": "Your email"
+  }
+}

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ScoreBar, getScoreTier, verdictStyles, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 import { AlertTriangle, TrendingUp, Info } from 'lucide-react';
 
-export function ChatEvaluation({ evaluation }) {
+export function ChatEvaluation({ evaluation, onFollowUp }) {
   if (!evaluation) return null;
 
   const {
@@ -12,6 +12,7 @@ export function ChatEvaluation({ evaluation }) {
     hormozi_score,
     koe_score,
     okamoto_score,
+    yc_score,
     verdict,
     reasoning,
     the_pain,
@@ -28,6 +29,7 @@ export function ChatEvaluation({ evaluation }) {
     { key: 'hormozi', score: hormozi_score, config: EXPERT_CONFIG[0] },
     { key: 'koe', score: koe_score, config: EXPERT_CONFIG[1] },
     { key: 'okamoto', score: okamoto_score, config: EXPERT_CONFIG[2] },
+    { key: 'yc', score: yc_score, config: EXPERT_CONFIG[3] },
   ].filter(e => e.score != null);
 
   return (
@@ -114,6 +116,30 @@ export function ChatEvaluation({ evaluation }) {
           </p>
         </div>
       </div>
+
+      {/* What Now? CTAs */}
+      {verdict && onFollowUp && (
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {verdict === 'BUILD' && (
+            <>
+              <button onClick={() => onFollowUp('Help me scope the MVP for this idea')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Scope the MVP</button>
+              <button onClick={() => onFollowUp('Who specifically needs this? Help me find the first user')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-primary/10 text-primary hover:bg-primary/20 transition-colors">Find first user</button>
+            </>
+          )}
+          {verdict === 'VALIDATE_FIRST' && (
+            <>
+              <button onClick={() => onFollowUp('What should I validate first about this idea?')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 transition-colors">What to validate</button>
+              <button onClick={() => onFollowUp('Script a user interview for this idea')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 transition-colors">Script an interview</button>
+            </>
+          )}
+          {verdict === 'SKIP' && (
+            <>
+              <button onClick={() => onFollowUp('Show me hot BUILD ideas')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">Show hot ideas</button>
+              <button onClick={() => onFollowUp('Is there a different angle on this idea that could work?')} className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">Different angle</button>
+            </>
+          )}
+        </div>
+      )}
     </motion.div>
   );
 }

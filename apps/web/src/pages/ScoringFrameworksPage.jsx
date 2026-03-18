@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, Target, Lightbulb, BarChart3, Sparkles, MessageSquare,
@@ -10,7 +10,9 @@ import {
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
-import { EXPERT_COUNT, QUESTION_COUNT } from '@/lib/data/siteStats.js';
+import { trackScrollDepth } from '@/lib/analytics.js';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
+import { EXPERT_COUNT, QUESTION_COUNT, YC_QUESTION_COUNT } from '@/lib/data/siteStats.js';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 
 const flylabsQuestions = [
@@ -75,6 +77,15 @@ const okamotoPillars = [
   { title: 'Validation Readiness', points: 10, icon: FlaskConical, items: ['Experiment Feasibility', 'Evidence Availability'], color: 'border-accent' },
 ];
 
+const ycQuestions = [
+  { title: 'Demand Reality', points: 15, icon: Eye, desc: 'Would someone be genuinely upset if this product disappeared tomorrow?', color: 'border-orange-500' },
+  { title: 'Status Quo', points: 15, icon: Search, desc: 'What are users doing today to solve this badly? What does it cost them?', color: 'border-orange-500' },
+  { title: 'Desperate Specificity', points: 15, icon: User, desc: 'Can you name the actual human who needs this most?', color: 'border-orange-500' },
+  { title: 'Narrowest Wedge', points: 15, icon: Zap, desc: 'Smallest version someone would pay for THIS WEEK?', color: 'border-orange-500' },
+  { title: 'Observation & Surprise', points: 15, icon: Sparkles, desc: 'Evidence of real usage? What surprised people?', color: 'border-orange-500' },
+  { title: 'Future-Fit', points: 15, icon: TrendingUp, desc: 'In 3 years, more essential or less?', color: 'border-orange-500' },
+];
+
 const expertFrameworks = [
   {
     id: 'hormozi',
@@ -118,6 +129,21 @@ const expertFrameworks = [
       { label: 'Substack', url: 'https://microsaas.substack.com' },
       { label: 'microsaas.com.br', url: 'https://microsaas.com.br' },
     ],
+  },
+  {
+    id: 'yc',
+    name: 'YC Lens',
+    weight: '20%',
+    tagline: 'Distilled from how Y Combinator evaluates products. 6 forcing questions that separate vitamins from painkillers.',
+    disclaimer: 'Inspired by Garry Tan, Michael Seibel, and YC\'s public evaluation methodology. Not affiliated with Y Combinator.',
+    pillars: ycQuestions,
+    color: 'orange',
+    links: [
+      { label: 'ycombinator.com', url: 'https://www.ycombinator.com' },
+      { label: 'YouTube', url: 'https://www.youtube.com/@ycombinator' },
+      { label: 'Garry Tan', url: 'https://x.com/garrytan' },
+    ],
+    isDimension: true,
   },
 ];
 
@@ -177,6 +203,7 @@ const ExpertSection = ({ framework }) => {
     primary: { tag: 'bg-primary/10 text-primary border-primary/20', link: 'hover:text-primary' },
     secondary: { tag: 'bg-secondary/10 text-secondary border-secondary/20', link: 'hover:text-secondary' },
     accent: { tag: 'bg-accent/10 text-accent border-accent/20', link: 'hover:text-accent' },
+    orange: { tag: 'bg-orange-500/10 text-orange-500 border-orange-500/20', link: 'hover:text-orange-500' },
   };
   const colors = colorMap[framework.color];
 
@@ -232,23 +259,38 @@ const ExpertSection = ({ framework }) => {
 
 const ScoringFrameworksPage = () => {
   const [expertOpen, setExpertOpen] = useState(false);
+  const { setPageDetail } = useChatContext();
+
+  useEffect(() => trackScrollDepth('scoring'), []);
+  useEffect(() => { setPageDetail({ viewing: 'scoring_frameworks' }); }, [setPageDetail]);
 
   return (
     <PageLayout
       seo={{
         title: "How We Score Ideas | Fly Labs",
         description: `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict. Here's how.`,
-        keywords: "Fly Labs Method, vibe building, idea scoring, AI validation, Hormozi, Dan Koe, Bruno Okamoto, startup ideas, problem-solution fit",
+        keywords: "Fly Labs Method, vibe building, idea scoring, AI validation, Hormozi, Dan Koe, Bruno Okamoto, YC Lens, Y Combinator, startup ideas, problem-solution fit",
         url: "https://flylabs.fun/scoring",
-        schema: {
-          "@context": "https://schema.org",
-          "@type": "Article",
-          "headline": "How We Score Ideas: Fly Labs Method + AI Validation",
-          "description": `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict.`,
-          "url": "https://flylabs.fun/scoring",
-          "author": { "@type": "Person", "name": "Luiz Alves" },
-          "publisher": { "@type": "Organization", "name": "Fly Labs", "url": "https://flylabs.fun" }
-        },
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "How We Score Ideas: Fly Labs Method + AI Validation",
+            "description": `The Ideas Lab finds real problems from ${SOURCE_COUNT} sources, asks ${QUESTION_COUNT} questions, validates against X and Reddit, and gives a verdict.`,
+            "url": "https://flylabs.fun/scoring",
+            "author": { "@type": "Person", "name": "Luiz Alves" },
+            "publisher": { "@type": "Organization", "name": "Fly Labs", "url": "https://flylabs.fun" }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Ideas Lab", "item": "https://flylabs.fun/ideas" },
+              { "@type": "ListItem", "position": 3, "name": "How We Score" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >
@@ -503,7 +545,7 @@ const ScoringFrameworksPage = () => {
                   <div className="text-left">
                     <h2 className="text-xl font-black tracking-tight">Want more depth?</h2>
                     <p className="text-sm text-muted-foreground">
-                      {EXPERT_COUNT} expert perspectives (Hormozi, Dan Koe, Okamoto) add depth on the detail page. They do not affect the score or verdict.
+                      {EXPERT_COUNT} expert perspectives (Hormozi, Dan Koe, Okamoto, YC Lens) add depth on the detail page. They do not affect the score or verdict.
                     </p>
                   </div>
                 </div>

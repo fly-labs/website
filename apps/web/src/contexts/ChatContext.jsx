@@ -45,15 +45,35 @@ function getPageContext(pathname) {
 export const ChatProvider = ({ children }) => {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const hasInitializedRef = useRef(false);
+  const pageDetailRef = useRef(null);
   const location = useLocation();
 
   const chat = useChat();
+
+  // Reset page detail when navigating away
+  const prevPathRef = useRef(location.pathname);
+  if (prevPathRef.current !== location.pathname) {
+    prevPathRef.current = location.pathname;
+    pageDetailRef.current = null;
+  }
+
+  const setPageDetail = useCallback((detail) => {
+    pageDetailRef.current = detail;
+  }, []);
 
   const currentPageContext = useMemo(() => {
     const name = getPageContext(location.pathname);
     if (!name) return null;
     return { name, path: location.pathname };
   }, [location.pathname]);
+
+  // Getter that merges static page context with dynamic detail
+  const getPageContextWithDetail = useCallback(() => {
+    if (!currentPageContext) return null;
+    const detail = pageDetailRef.current;
+    if (!detail) return currentPageContext;
+    return { ...currentPageContext, detail };
+  }, [currentPageContext]);
 
   const initChat = useCallback(() => {
     if (hasInitializedRef.current) return;
@@ -85,6 +105,8 @@ export const ChatProvider = ({ children }) => {
     closeWidget,
     openWidget,
     currentPageContext,
+    setPageDetail,
+    getPageContextWithDetail,
     initChat,
   }), [
     chat,
@@ -93,6 +115,8 @@ export const ChatProvider = ({ children }) => {
     closeWidget,
     openWidget,
     currentPageContext,
+    setPageDetail,
+    getPageContextWithDetail,
     initChat,
   ]);
 

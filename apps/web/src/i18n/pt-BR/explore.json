@@ -1,0 +1,27 @@
+{
+  "seo": {
+    "title": "Explorar | Fly Labs",
+    "description": "Cada projeto nasceu de algo que eu realmente precisava. Feito com IA, open source."
+  },
+  "hero": {
+    "title": "Explorar",
+    "subtitle": "Cada projeto nasceu de algo que eu realmente precisava. Feito com IA, open source."
+  },
+  "categories": {
+    "all": "Todos",
+    "business": "Negócios",
+    "tools": "Ferramentas",
+    "learn": "Aprender"
+  },
+  "project": {
+    "checkItOut": "Conferir",
+    "gated": "Conta grátis necessária",
+    "noProjects": "Nenhum projeto nessa categoria ainda."
+  },
+  "status": {
+    "live": "Ativo",
+    "beta": "Beta",
+    "soon": "Em breve",
+    "open": "Aberto"
+  }
+}

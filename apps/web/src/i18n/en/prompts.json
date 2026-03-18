@@ -1,0 +1,74 @@
+{
+  "seo": {
+    "title": "Prompts | Fly Labs",
+    "description": "Copy-paste AI prompts for coding, writing, strategy, marketing, and more. Vote, comment, and suggest new prompts."
+  },
+  "hero": {
+    "title": "Prompts",
+    "subtitle": "Prompts I actually use."
+  },
+  "sort": {
+    "hot": "Hot",
+    "new": "New",
+    "az": "A-Z"
+  },
+  "search": {
+    "placeholder": "Search prompts..."
+  },
+  "prompt": {
+    "upvote": "Upvote",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "inspiredBy": "Inspired by {{author}}",
+    "tools": "Tools: {{tools}}",
+    "comments": "{{count}} Comment(s)",
+    "copiedCount": "Copied {{count}}x",
+    "addComment": "Add a comment...",
+    "deleteComment": "Delete comment"
+  },
+  "gate": {
+    "moreInside": "{{count}} more prompts inside",
+    "gateDescription": "The ones I actually use every day. Free account gets you the full library, voting, and comments.",
+    "value1": "{{count}} curated AI prompts",
+    "value2": "Ready-made Notion systems",
+    "value3": "First access to new tools",
+    "createAccount": "Create Free Account",
+    "logIn": "Log in"
+  },
+  "suggest": {
+    "title": "Suggest a Prompt",
+    "description": "Got a prompt that works great? Or an idea for one? Share it and help the library grow.",
+    "successTitle": "Prompt received.",
+    "successDesc": "I'll test it, add my spin, and credit you if it makes the cut.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "So I can follow up",
+    "categoryLabel": "Category",
+    "nameLabel": "Prompt name",
+    "namePlaceholder": "e.g. The Email Rewriter",
+    "contentLabel": "The prompt or describe the idea",
+    "contentPlaceholder": "Paste the full prompt text, or describe what it should do and when to use it.",
+    "submit": "Send suggestion"
+  },
+  "toast": {
+    "signUpToComment": "Sign up to comment",
+    "signUpToCommentDesc": "Create a free account to join the conversation.",
+    "commentTooLong": "Comment too long",
+    "commentMax": "Max 500 characters.",
+    "commentFailed": "Comment failed",
+    "signUpToVote": "Sign up to vote",
+    "signUpToVoteDesc": "Create a free account to upvote prompts.",
+    "voteFailed": "Vote failed",
+    "missingFields": "Missing fields",
+    "fillRequired": "Please fill in all required fields.",
+    "invalidEmail": "Invalid email",
+    "invalidEmailDesc": "Please enter a valid email address.",
+    "titleTooLong": "Title too long",
+    "titleMax": "Max 100 characters.",
+    "descTooLong": "Description too long",
+    "descMax": "Max 1000 characters.",
+    "slowDown": "Slow down",
+    "slowDownDesc": "Max 3 suggestions per day. Try again later.",
+    "failed": "Something went wrong",
+    "failedDesc": "Couldn't send your suggestion. Please try again."
+  }
+}

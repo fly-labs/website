@@ -9,7 +9,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
-import { trackEvent } from '@/lib/analytics.js';
+import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
 import { SOURCE_COUNT, QUESTION_COUNT, PROMPT_COUNT } from '@/lib/data/siteStats.js';
 import { ScoreBar, getScoreTier, verdictStyles, FRAMEWORK_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 import supabase from '@/lib/supabaseClient.js';
@@ -20,6 +20,7 @@ const exampleEval = {
   hormozi_score: 58,
   koe_score: 55,
   okamoto_score: 64,
+  yc_score: 57,
   composite_score: 62, // = flylabs_score (backward compat)
   verdict: 'VALIDATE_FIRST',
 };
@@ -83,6 +84,8 @@ const FlyBotLandingPage = () => {
   const navigate = useNavigate();
   const [ideaCount, setIdeaCount] = useState(null);
 
+  useEffect(() => trackScrollDepth('flybot_landing'), []);
+
   useEffect(() => {
     supabase
       .from('ideas')
@@ -105,6 +108,7 @@ const FlyBotLandingPage = () => {
     { key: 'hormozi', score: exampleEval.hormozi_score, config: FRAMEWORK_CONFIG[1] },
     { key: 'koe', score: exampleEval.koe_score, config: FRAMEWORK_CONFIG[2] },
     { key: 'okamoto', score: exampleEval.okamoto_score, config: FRAMEWORK_CONFIG[3] },
+    { key: 'yc', score: exampleEval.yc_score, config: FRAMEWORK_CONFIG[4] },
   ];
 
   return (
@@ -121,7 +125,7 @@ const FlyBotLandingPage = () => {
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web",
           "url": "https://flylabs.fun/flybot",
-          "description": "AI partner for solo builders. Scores ideas, writes content, catches blind spots. Loaded with hundreds of scored problems and 80 prompts.",
+          "description": `AI partner for solo builders. Scores ideas, writes content, catches blind spots. Loaded with hundreds of scored problems and ${PROMPT_COUNT} prompts.`,
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         },
       }}

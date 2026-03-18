@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
-import { Loader2, Mail, Lock } from 'lucide-react';
+import { Loader2, Mail, Lock, ShieldCheck } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { GoogleIcon } from '@/components/GoogleIcon.jsx';
@@ -185,6 +185,13 @@ const LoginPage = () => {
               <Link to="/signup" className="text-primary font-bold hover:underline">
                 Sign up free
               </Link>
+            </p>
+          </div>
+
+          <div className="mt-6 pt-5 border-t border-border flex flex-col items-center gap-2">
+            <p className="text-xs text-muted-foreground/60 font-medium">Free account. No credit card.</p>
+            <p className="text-xs text-muted-foreground/40 inline-flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" /> Secured by Supabase
             </p>
           </div>
         </div>

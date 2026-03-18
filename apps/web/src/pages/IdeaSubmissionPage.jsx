@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 
 import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
+import { QUESTION_COUNT } from '@/lib/data/siteStats.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { useIdeaFilters } from '@/hooks/useIdeaFilters.js';
@@ -59,7 +60,7 @@ const IdeaSubmissionPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { currentUser, profile, isAuthenticated } = useAuth();
-  const { openWidget } = useChatContext();
+  const { openWidget, setPageDetail } = useChatContext();
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [votedIds, setVotedIds] = useState(() => {
@@ -141,6 +142,17 @@ const IdeaSubmissionPage = () => {
   useEffect(() => {
     setSearchInput(searchQuery);
   }, [searchQuery]);
+
+  // Enrich FlyBot page context with current filter state
+  useEffect(() => {
+    setPageDetail({
+      source: activeSource !== 'all' ? activeSource : undefined,
+      verdict: verdict !== 'all' ? verdict : undefined,
+      searchQuery: searchQuery || undefined,
+      sort: sortBy,
+      resultCount: totalCount,
+    });
+  }, [activeSource, verdict, searchQuery, sortBy, totalCount, setPageDetail]);
 
   // Debounced search
   const handleSearchInput = useCallback((e) => {
@@ -340,8 +352,9 @@ const IdeaSubmissionPage = () => {
               <h1 className="text-4xl md:text-7xl font-black mb-3 tracking-tight">
                 The <span className="text-primary">Ideas Lab</span>
               </h1>
-              <p className="text-sm text-muted-foreground/50 font-medium">
-                {globalCount ? `${globalCount} real problems from ${SOURCE_COUNT} sources` : `Real problems from ${SOURCE_COUNT} sources`}, scored by AI daily.
+              <p className="text-sm text-muted-foreground font-medium max-w-lg mx-auto">
+                {globalCount ? `${globalCount}+ ideas` : 'Ideas'} from {SOURCE_COUNT} sources. Scored by {QUESTION_COUNT} questions. <span className="font-bold text-foreground/70">BUILD</span>, <span className="font-bold text-foreground/70">VALIDATE</span>, or <span className="font-bold text-foreground/70">SKIP</span>.{' '}
+                <Link to="/scoring" className="text-primary hover:underline">How it works</Link>
               </p>
               <Link
                 to="/ideas/analytics"

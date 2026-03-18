@@ -12,7 +12,7 @@ const XAI_API_KEY = process.env.XAI_API_KEY;
 const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID;
 const REDDIT_CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET;
 
-const MAX_IDEAS_PER_RUN = 30;
+const MAX_IDEAS_PER_RUN = 20;
 const MAX_RETRIES = 2;
 const REDDIT_DELAY = 6000; // 6s between requests (safer for unauthenticated)
 const USER_AGENT = 'FlyLabs-Sync/1.0 (https://flylabs.fun) Node.js';
@@ -480,8 +480,8 @@ async function enrichIdea(idea) {
       let searchPlan = null;
       try {
         searchPlan = await generateSearchQueries(idea);
-        searchPlan.queries = searchPlan.queries.slice(0, 3);
-        searchPlan.subreddits = searchPlan.subreddits.slice(0, 3);
+        searchPlan.queries = (searchPlan.queries || []).slice(0, 3);
+        searchPlan.subreddits = (searchPlan.subreddits || []).slice(0, 3);
       } catch (err) {
         console.warn(`search query generation failed: ${err.message}`);
       }

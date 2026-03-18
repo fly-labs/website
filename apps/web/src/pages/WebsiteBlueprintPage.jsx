@@ -12,19 +12,18 @@ import { fadeUp } from '@/lib/animations.js';
 import { trackEvent } from '@/lib/analytics.js';
 import {
   SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, CATEGORY_LIST,
-  ROUTE_COUNT, SCRIPT_COUNT, GA4_EVENT_COUNT, DB_TABLE_COUNT,
-  RPC_COUNT, WORKFLOW_COUNT,
+  VIBE_COUNT, TRACK_COUNT,
 } from '@/lib/data/siteStats.js';
 
 const GITHUB_URL = 'https://github.com/fly-labs/website';
 
 const heroStats = [
-  { label: 'Routes', value: String(ROUTE_COUNT) },
   { label: 'Data Sources', value: String(SOURCE_COUNT) },
   { label: 'Scoring Questions', value: '4' },
-  { label: 'Scripts', value: String(SCRIPT_COUNT) },
-  { label: 'GA4 Events', value: String(GA4_EVENT_COUNT) },
-  { label: 'DB Tables', value: String(DB_TABLE_COUNT) },
+  { label: 'Prompts', value: String(PROMPT_COUNT) },
+  { label: 'Vibe Modes', value: String(VIBE_COUNT) },
+  { label: 'Tracks', value: String(TRACK_COUNT) },
+  { label: 'Categories', value: String(CATEGORY_COUNT) },
 ];
 
 const platformSections = [
@@ -41,8 +40,8 @@ const platformSections = [
     stage: 'Ideation',
     title: 'Scoring Frameworks',
     route: '/scoring',
-    desc: 'The Fly Labs Method asks 4 questions, gives one score, one verdict. Hormozi, Dan Koe, and Okamoto add expert perspectives on the detail page. Per-pillar reasoning throughout.',
-    highlights: ['4 questions, 1 score', 'Per-pillar reasoning', '3 expert perspectives'],
+    desc: 'The Fly Labs Method asks 4 questions, gives one score, one verdict. Hormozi, Dan Koe, Okamoto, and the YC Lens add expert perspectives on the detail page. Per-pillar reasoning throughout.',
+    highlights: ['4 questions, 1 score', 'Per-pillar reasoning', '4 expert perspectives'],
     icon: BarChart3,
     color: 'border-secondary',
   },
@@ -69,7 +68,7 @@ const platformSections = [
     title: 'Micro Tools',
     route: '/microsaas',
     desc: 'Small, focused apps that do one thing well. Waitlist is live, first batch coming soon.',
-    highlights: ['Coming soon', 'Waitlist live'],
+    highlights: ['Building next', 'Waitlist live'],
     icon: Zap,
     color: 'border-secondary',
   },
@@ -86,8 +85,8 @@ const platformSections = [
     stage: 'Building',
     title: 'Vibe Coding',
     route: null,
-    desc: 'Built-in lofi music player with 5 vibe modes: Ideate, Build, Create, Study, Retro. Pick your mood, get matched beats. CC0 tracks on Cloudflare R2, Web Audio visualizer, lock screen controls. FlyBot can start it for you.',
-    highlights: ['5 vibe modes', 'Cloudflare R2', 'FlyBot integration'],
+    desc: `Built-in lofi music player with ${VIBE_COUNT} vibe modes and ${TRACK_COUNT} tracks. Pick your mood, get matched beats. CC0 tracks on Cloudflare R2, Web Audio visualizer, lock screen controls. FlyBot can start it for you.`,
+    highlights: [`${VIBE_COUNT} vibe modes`, `${TRACK_COUNT} tracks`, 'FlyBot integration'],
     icon: Music,
     color: 'border-primary',
   },
@@ -105,16 +104,16 @@ const platformSections = [
 const stackItems = [
   { name: 'Claude Sonnet 4', icon: Brain, desc: '4 questions per idea. Per-pillar reasoning. One score, one verdict.', color: 'border-accent' },
   { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
-  { name: 'Supabase', icon: Database, desc: `PostgreSQL + Auth + RLS. ${DB_TABLE_COUNT} tables, ${RPC_COUNT} RPCs.`, color: 'border-secondary' },
-  { name: 'GitHub Actions', icon: GitBranch, desc: `${WORKFLOW_COUNT} workflows. Sync + enrich daily, auto-deploy on push.`, color: 'border-accent' },
-  { name: 'React 18', icon: Code, desc: `UI framework. ${ROUTE_COUNT} lazy-loaded routes. JSX, no TypeScript.`, color: 'border-primary' },
+  { name: 'Supabase', icon: Database, desc: 'PostgreSQL + Auth + RLS. JSONB columns, materialized verdicts, atomic RPCs.', color: 'border-secondary' },
+  { name: 'GitHub Actions', icon: GitBranch, desc: `${workflows.length} workflows. Sync + enrich daily, auto-deploy on push.`, color: 'border-accent' },
+  { name: 'React 18', icon: Code, desc: 'UI framework. Lazy-loaded routes. JSX, no TypeScript.', color: 'border-primary' },
   { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Vendor/motion/supabase chunking.', color: 'border-secondary' },
   { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first with HSL theming. Light and dark mode.', color: 'border-accent' },
   { name: 'shadcn/ui', icon: Layers, desc: 'Radix primitives with CVA variants.', color: 'border-primary' },
   { name: 'React Router v7', icon: Navigation, desc: 'Client-side SPA. URL state persistence for filters.', color: 'border-secondary' },
   { name: 'Framer Motion 11', icon: Sparkles, desc: 'Scroll-triggered animations. No layout thrashing.', color: 'border-accent' },
   { name: 'Lucide React', icon: Smile, desc: 'Tree-shakeable icon library.', color: 'border-primary' },
-  { name: 'Google Analytics 4', icon: BarChart3, desc: `${GA4_EVENT_COUNT} custom events. User properties. Debug mode in dev.`, color: 'border-secondary' },
+  { name: 'Google Analytics 4', icon: BarChart3, desc: 'Custom events across every feature. User properties. Debug mode in dev.', color: 'border-secondary' },
   { name: 'react-helmet-async', icon: Globe, desc: 'SEO meta tags, Open Graph, JSON-LD schemas.', color: 'border-accent' },
   { name: 'Web Audio API', icon: Music, desc: 'Frequency visualizer. DPR-scaled canvas, 16-bar lerp smoothing.', color: 'border-accent' },
   { name: 'Vercel', icon: Rocket, desc: 'Push to main, deployed in seconds.', color: 'border-primary' },
@@ -145,7 +144,8 @@ const scripts = [
   { name: 'sync-hackernews', desc: 'Firebase API' },
   { name: 'sync-github', desc: 'GitHub Search API' },
   { name: 'sync-yc', desc: 'yc-oss dead startups' },
-  { name: 'score-ideas', desc: 'Claude Sonnet 4 frameworks' },
+  { name: 'score-ideas', desc: 'Claude Sonnet 5 frameworks' },
+  { name: 'backfill-yc', desc: 'YC Lens backfill (Haiku)' },
   { name: 'enrich-ideas', desc: 'Dual-source validation' },
   { name: 'clean-titles', desc: 'One-time DB cleanup' },
   { name: 'setup-music', desc: 'Upload tracks to Cloudflare R2' },
@@ -161,23 +161,23 @@ const folderTree = `src/
     Header.jsx      # Sticky nav, blur backdrop
     PageLayout.jsx  # SEO + Header + Footer + ScrollProgress
     AuthModal.jsx   # Login/signup (tabs, Google OAuth)
-  pages/            # ${ROUTE_COUNT} routes, one file each
+  pages/            # One file per route, lazy-loaded
   hooks/
     useIdeaFilters.js  # Server-side pagination, URL state, 7 filter dimensions
     useChat.js         # FlyBot state (messages, streaming, conversations)
   lib/
     data/           # projects, prompts, ideas, library, tracks
-    analytics.js    # GA4 helpers (${GA4_EVENT_COUNT} events)
+    analytics.js    # GA4 helpers
     supabaseClient.js
   contexts/         # Auth, Chat, Music, Theme
-scripts/            # ${SCRIPT_COUNT} scripts
-.github/workflows/  # ${WORKFLOW_COUNT} workflows`;
+scripts/            # ${scripts.length} scripts
+.github/workflows/  # ${workflows.length} workflows`;
 
 const dbHighlights = [
   { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), enrichment (validation evidence, competitors), meta (YC failure analysis).', icon: Layers },
   { title: 'Materialized Columns', desc: 'verdict, confidence, flylabs_score (= composite_score). Written by scripts, used for server-side filtering.', icon: Zap },
   { title: 'Row Level Security', desc: 'Every table has RLS. Public read for approved ideas, auth-gated writes.', icon: ShieldCheck },
-  { title: `${RPC_COUNT} RPCs`, desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
+  { title: 'RPCs', desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },
 ];
 
 const securityItems = [
@@ -263,7 +263,7 @@ const WebsiteBlueprintPage = () => {
                 Website <span className="text-primary">Blueprint</span>
               </h1>
               <p className="text-xl text-muted-foreground font-bold leading-relaxed">
-                {ROUTE_COUNT} routes, {SCRIPT_COUNT} scripts, {WORKFLOW_COUNT} automated workflows, {SOURCE_COUNT} data sources, 4 scoring questions. Built by one person. Open source.
+                {SOURCE_COUNT} data sources, {scripts.length} scripts, {workflows.length} automated workflows, {PROMPT_COUNT} prompts, 4 scoring questions. Built by one person. Open source.
               </p>
               <div className="flex flex-wrap gap-4 pt-4">
                 <a
@@ -466,7 +466,7 @@ const WebsiteBlueprintPage = () => {
               </h3>
               <div className="card-playful p-5 bg-card">
                 <p className="text-sm text-muted-foreground font-medium leading-relaxed mb-4">
-                  Every idea gets scored by asking 4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it? The FL score determines the verdict: BUILD, VALIDATE, or SKIP. Three expert perspectives (Hormozi, Dan Koe, Okamoto) add depth on the detail page.
+                  Every idea gets scored by asking 4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it? The FL score determines the verdict: BUILD, VALIDATE, or SKIP. Four expert perspectives (Hormozi, Dan Koe, Okamoto, YC Lens) add depth on the detail page.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {[
@@ -474,6 +474,7 @@ const WebsiteBlueprintPage = () => {
                     { name: 'Hormozi', tag: 'expert', color: 'bg-secondary/10 text-secondary border-secondary/30' },
                     { name: 'Dan Koe', tag: 'expert', color: 'bg-accent/10 text-accent border-accent/30' },
                     { name: 'Okamoto', tag: 'expert', color: 'bg-muted text-muted-foreground border-border' },
+                    { name: 'YC Lens', tag: 'expert', color: 'bg-orange-500/10 text-orange-500 border-orange-500/30' },
                   ].map((fw) => (
                     <span key={fw.name} className={`text-xs font-bold px-3 py-1.5 rounded-full border ${fw.color}`}>
                       {fw.name} ({fw.tag})
@@ -582,7 +583,7 @@ const WebsiteBlueprintPage = () => {
                 The Database
               </h2>
               <p className="text-lg text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
-                {DB_TABLE_COUNT} tables, {RPC_COUNT} RPCs, Row Level Security on everything. 30+ columns on the ideas table alone.
+                PostgreSQL with Row Level Security on everything. JSONB columns, materialized verdicts, 30+ columns on the ideas table alone.
               </p>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

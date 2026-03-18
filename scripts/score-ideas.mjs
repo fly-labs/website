@@ -62,6 +62,14 @@ Koe lens: Can one person run this? Score on problem clarity (25pts), creator fit
 
 Okamoto lens: Is this a viable micro-SaaS? Score on target audience specificity + reachability (20pts), value prop clarity + measurability (25pts), distribution channels (20pts), business model (15pts), assumption risk (10pts), validation readiness (10pts).
 
+YC lens (how Y Combinator evaluates products): 6 questions, each 0-15 (total 0-90, normalize to 0-100).
+1. Demand Reality (0-15): Would someone be upset if this disappeared?
+2. Status Quo (0-15): What are users doing today to solve this badly? What does it cost them?
+3. Desperate Specificity (0-15): Can you name the actual human who needs this most?
+4. Narrowest Wedge (0-15): Smallest version someone pays for THIS WEEK?
+5. Observation & Surprise (0-15): Evidence of real usage? What surprised people?
+6. Future-Fit (0-15): In 3 years, more essential or less?
+
 For each expert lens, provide total (0-100), summary (one line), and reasoning (1-2 sentences).
 
 **SYNTHESIS** - Cross-reference all four scores. The verdict is computed server-side from the numbers, so focus on quality scoring and the actionable fields below.
@@ -104,6 +112,17 @@ Return this JSON:
     "business_model": { "score": <0-15>, "max": 15, "reasoning": "..." },
     "assumption_risk": { "score": <0-10>, "max": 10, "reasoning": "..." },
     "validation_readiness": { "score": <0-10>, "max": 10, "reasoning": "..." },
+    "summary": "...", "reasoning": "..."
+  },
+  "yc": {
+    "total": <0-100>,
+    "raw_total": <0-90>,
+    "demand_reality": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "status_quo": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "desperate_specificity": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "narrowest_wedge": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "observation_surprise": { "score": <0-15>, "max": 15, "reasoning": "..." },
+    "future_fit": { "score": <0-15>, "max": 15, "reasoning": "..." },
     "summary": "...", "reasoning": "..."
   },
   "synthesis": {
@@ -169,7 +188,7 @@ async function scoreIdea(idea) {
       if (lastBrace > 0 && lastBrace < text.length - 1) text = text.slice(0, lastBrace + 1);
       const parsed = JSON.parse(text);
 
-      if (typeof parsed.flylabs?.total !== 'number' || typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number') {
+      if (typeof parsed.flylabs?.total !== 'number' || typeof parsed.hormozi?.total !== 'number' || typeof parsed.koe?.total !== 'number' || typeof parsed.okamoto?.total !== 'number' || typeof parsed.yc?.total !== 'number') {
         throw new Error('Invalid score structure');
       }
 
@@ -179,6 +198,7 @@ async function scoreIdea(idea) {
       parsed.hormozi.total = clamp(parsed.hormozi.total);
       parsed.koe.total = clamp(parsed.koe.total);
       parsed.okamoto.total = clamp(parsed.okamoto.total);
+      parsed.yc.total = clamp(parsed.yc.total);
 
       // Validate verdict
       const VALID_VERDICTS = ['BUILD', 'VALIDATE_FIRST', 'SKIP'];
@@ -268,7 +288,7 @@ async function main() {
   } else {
     // Fetch ideas missing any score (flylabs, hormozi, koe, or okamoto)
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
-      .or('flylabs_score.is.null,hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null')
+      .or('flylabs_score.is.null,hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null,yc_score.is.null')
       .limit(MAX_IDEAS_PER_RUN);
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
@@ -296,6 +316,7 @@ async function main() {
             hormozi_score: result.hormozi.total,
             koe_score: result.koe.total,
             okamoto_score: result.okamoto.total,
+            yc_score: result.yc.total,
             score_breakdown: result,
             verdict: result.synthesis?.verdict || null,
             composite_score: result.flylabs.total, // FL = the score (backward compat)
@@ -306,7 +327,7 @@ async function main() {
           console.log('DB error:', updateErr.message);
           failed++;
         } else {
-          console.log(`F:${result.flylabs.total} H:${result.hormozi.total} K:${result.koe.total} B:${result.okamoto.total}`);
+          console.log(`F:${result.flylabs.total} H:${result.hormozi.total} K:${result.koe.total} B:${result.okamoto.total} Y:${result.yc.total}`);
           scored++;
         }
       } else {

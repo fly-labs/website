@@ -41,6 +41,7 @@ export default function FlyBotPage() {
     clearError,
     initChat,
     currentPageContext,
+    getPageContextWithDetail,
     feedbackMap,
     submitMessageFeedback,
   } = useChatContext();
@@ -70,8 +71,8 @@ export default function FlyBotPage() {
       message_length: text.length,
       source: 'full_page',
     });
-    sendMessage(text, currentPageContext);
-  }, [sendMessage, activeConversationId, currentPageContext]);
+    sendMessage(text, getPageContextWithDetail());
+  }, [sendMessage, activeConversationId, getPageContextWithDetail]);
 
   const handlePromptClick = useCallback((prompt) => {
     trackEvent('flybot_prompt_clicked', { prompt, source: 'full_page' });
@@ -141,7 +142,7 @@ export default function FlyBotPage() {
             {limitReached ? (
               <ChatLimitReached messageCount={messageCount} />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} onNavigate={navigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} onNavigate={navigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} onFollowUp={handleSend} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} />
             )}

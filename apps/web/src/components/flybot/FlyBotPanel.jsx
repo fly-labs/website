@@ -85,6 +85,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
     retryLastMessage,
     clearError,
     currentPageContext,
+    getPageContextWithDetail,
     feedbackMap,
     submitMessageFeedback,
   } = useChatContext();
@@ -95,22 +96,23 @@ export function FlyBotPanel({ isOpen, onClose }) {
       message_length: text.length,
       source: 'widget',
     });
-    // Enrich page context with board content when on FlyBoard
-    let enrichedContext = currentPageContext;
+    // Start with page context enriched with detail from the active page
+    let enrichedContext = getPageContextWithDetail();
+    // Add board content when on FlyBoard (needs canvas ref at send-time)
     if (isOnFlyBoard) {
       try {
         const canvas = getCanvasRef();
         if (canvas) {
           const elements = canvas.getSceneElements?.() || [];
           const boardContent = extractBoardContent(elements);
-          enrichedContext = { ...currentPageContext, board_content: boardContent };
+          enrichedContext = { ...enrichedContext, board_content: boardContent };
         }
       } catch {
         // Fallback: no board content enrichment
       }
     }
     sendMessage(text, enrichedContext);
-  }, [sendMessage, activeConversationId, currentPageContext, isOnFlyBoard, getCanvasRef]);
+  }, [sendMessage, activeConversationId, getPageContextWithDetail, isOnFlyBoard, getCanvasRef]);
 
   const handlePromptClick = useCallback((prompt) => {
     trackEvent('flybot_prompt_clicked', { prompt, source: 'widget' });
@@ -200,7 +202,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
             ) : limitReached ? (
               <ChatLimitReached messageCount={messageCount} compact />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} onFollowUp={handleSend} />
             ) : (
               <ChatEmpty onPromptClick={handlePromptClick} compact pageContext={currentPageContext} />
             )}

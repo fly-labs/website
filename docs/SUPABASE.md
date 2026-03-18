@@ -48,7 +48,7 @@ User profiles, automatically created on signup and synced with `auth.users`.
 
 ### ideas
 
-Community submissions and automated imports from 8 external sources. Each idea goes through AI scoring (4 frameworks) and optional enrichment (dual-source validation).
+Community submissions and automated imports from 8 external sources. Each idea goes through AI scoring (5 frameworks) and optional enrichment (dual-source validation).
 
 | Column | Type | Default | Notes |
 |--------|------|---------|-------|
@@ -73,6 +73,7 @@ Community submissions and automated imports from 8 external sources. Each idea g
 | `hormozi_score` | integer | | 0-100, Hormozi Value Equation (expert perspective, detail page only) |
 | `koe_score` | integer | | 0-100, Dan Koe One-Person Business (expert perspective, detail page only) |
 | `okamoto_score` | integer | | 0-100, Okamoto MicroSaaS (expert perspective, detail page only) |
+| `yc_score` | integer | | 0-100, YC Lens (expert perspective, detail page only) |
 | `score_breakdown` | jsonb | | Per-framework pillar scores + reasoning + synthesis (verdict, reasoning, next_steps) |
 | `enrichment` | jsonb | | Validation data: evidence, competitors, summary, confidence level, evidence_count, enrichment verdict |
 | `validation_score` | integer | | 0-100, computed from enrichment evidence |
@@ -236,7 +237,7 @@ All tables have RLS enabled.
 
 ## Scoring System
 
-Ideas are scored by Claude Sonnet 4 across 4 frameworks via `scripts/score-ideas.mjs`.
+Ideas are scored by Claude Sonnet 4 across 5 frameworks via `scripts/score-ideas.mjs`.
 
 ### Frameworks
 

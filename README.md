@@ -6,7 +6,7 @@
 
 **The vibe building hub.** One person, AI tools, weekends. This is what comes out.
 
-Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 9 sources daily, scores them with AI using 4 frameworks, validates the best ones against live market data, and gives you an AI coach that knows all of it.
+Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 8 sources daily, scores them with AI using 5 frameworks, validates the best ones against live market data, and gives you an AI coach that knows all of it.
 
 [![CI](https://github.com/fly-labs/website/actions/workflows/ci.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/ci.yml)
 [![Sync Ideas](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml)
@@ -19,7 +19,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 ## What You Get
 
-**Ideas Lab** - 1,000+ real problems scraped daily from Reddit (19 subs), Product Hunt, Hacker News, X/Twitter, GitHub Issues, ProblemHunt, the YC Graveyard, and community submissions. 4 questions decide the verdict. 3 expert perspectives add depth. BUILD, VALIDATE, or SKIP verdict with reasoning. Card/table views, 7-dimension filtering, full-text search.
+**Ideas Lab** - 1,000+ real problems scraped daily from Reddit (19 subs), Product Hunt, Hacker News, X/Twitter, GitHub Issues, ProblemHunt, the YC Graveyard, and community submissions. 4 questions decide the verdict. 4 expert perspectives add depth (Hormozi, Dan Koe, Okamoto, YC Lens). BUILD, VALIDATE, or SKIP verdict with reasoning. Card/table views, 7-dimension filtering, full-text search.
 
 **FlyBot** - AI coach that sits on top of all the scored data. Evaluate your own ideas, get prompt recommendations, ask about patterns in the data. Claude-powered with streaming responses and conversation memory.
 
@@ -27,7 +27,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Analytics Dashboard** - 10 interactive charts: verdict distribution, source breakdown, score histograms, framework radar, growth timeline, source quality heatmap, and more.
 
-**Scoring Frameworks** - The full methodology: Fly Labs Method (4 questions, solo builder lens) + 3 expert perspectives (Hormozi, Dan Koe, Okamoto) for depth on the detail page.
+**Scoring Frameworks** - The full methodology: Fly Labs Method (4 questions, solo builder lens) + 4 expert perspectives (Hormozi, Dan Koe, Okamoto, YC Lens) for depth on the detail page.
 
 **Templates** - Website Blueprint (how this site was built), Garmin to Notion sync, Launch Checklist, One-Page Business Plan.
 
@@ -44,11 +44,12 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 Every day at 6 AM UTC, GitHub Actions runs 7 sync scripts and a scoring pass:
 
 ```
-Sources (9)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
+Sources (8)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
 ───────────          ──────────────────────          ──────────────────────────
 Reddit (19 subs)  →  Fly Labs Method (THE score)  →  x_search live evidence
-Product Hunt      →  + 3 expert perspectives      →  Reddit conversation mining
-Hacker News       →    (Hormozi, Koe, Okamoto)    →  Confidence scoring
+Product Hunt      →  + 4 expert perspectives      →  Reddit conversation mining
+Hacker News       →    (Hormozi, Koe, Okamoto,    →  Confidence scoring
+                  →     YC Lens)
 X/Twitter (Grok)  →  ─────────────────────        →  Competitive intelligence
 GitHub Issues     →  FL >= 65 → BUILD
 ProblemHunt       →  FL 40-64 → VALIDATE
@@ -116,6 +117,7 @@ npm run dev
 | `npm run sync:yc` | Sync dead YC startups |
 | `npm run score` | Score unscored ideas with Claude Sonnet |
 | `npm run score:backfill` | Re-score ALL ideas (backfill-all.mjs) |
+| `npm run score:yc` | Backfill YC Lens scores (Haiku) |
 | `npm run enrich` | Validate top ideas with Grok + Reddit |
 | `npm run setup:music` | Upload tracks to Cloudflare R2 + generate tracks.js |
 
@@ -130,6 +132,7 @@ npm run dev
 | Charts | Recharts (lazy-loaded) |
 | Backend | Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage) |
 | AI | Claude API (scoring, coaching) + Grok (validation) |
+| SEO | Dynamic sitemap (api/sitemap.js), dynamic OG images (@vercel/og), Core Web Vitals (web-vitals), UTM tracking, scroll depth, breadcrumb schemas |
 | Deploy | Vercel (auto-deploy on push) |
 
 ## Project Structure
@@ -147,7 +150,7 @@ apps/web/
 │   ├── hooks/            # useIdeaFilters, useChat
 │   ├── lib/data/         # prompts, projects, ideas config, tracks, stats
 │   └── pages/            # 24 route pages (all lazy-loaded)
-├── api/                  # Vercel serverless (chat, conversations)
+├── api/                  # Vercel serverless (chat, conversations, OG images, dynamic sitemap)
 ├── scripts/              # Sync + scoring scripts (7 sources + Claude)
 └── .github/workflows/    # CI, daily sync, daily enrichment
 ```
@@ -180,7 +183,7 @@ Supabase PostgreSQL with Row Level Security on every table. Schema in `supabase/
 
 **Tables:** profiles, ideas, idea_rate_limits, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist, boards, board_folders, flybot_feedback, flybot_memory
 
-**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 9 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
+**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 8 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
 
 ## Design
 

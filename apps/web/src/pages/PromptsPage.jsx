@@ -40,7 +40,7 @@ const lockedPreviewPrompts = prompts.filter(p => !p.featured).slice(0, 6);
 const PromptsPage = () => {
   const { toast } = useToast();
   const { currentUser, profile, isAuthenticated } = useAuth();
-  const { openWidget } = useChatContext();
+  const { openWidget, setPageDetail } = useChatContext();
 
   // UI state
   const [copiedId, setCopiedId] = useState(null);
@@ -408,6 +408,18 @@ const PromptsPage = () => {
     });
   }, [filtered, sortBy, voteCounts]);
 
+  // Enrich FlyBot page context with current filter state
+  useEffect(() => {
+    setPageDetail({
+      category: activeCategory,
+      searchQuery: searchQuery || undefined,
+      visibleCount: filtered.length,
+      expandedPrompt: expandedPromptId
+        ? { title: prompts.find(p => p.id === expandedPromptId)?.title, category: prompts.find(p => p.id === expandedPromptId)?.category }
+        : undefined,
+    });
+  }, [activeCategory, searchQuery, filtered.length, expandedPromptId, setPageDetail]);
+
   // Category counts for filter pills
   const categoryCounts = useMemo(() => {
     const counts = {};
@@ -424,15 +436,25 @@ const PromptsPage = () => {
         description: "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more. Copy-paste ready for Claude, ChatGPT, Cowork, Lovable, and Gamma.",
         keywords: "AI prompts, AI workflows, coding prompts, writing prompts, strategy prompts, SEO prompts, Claude prompts, Claude Cowork workflows, prompt library",
         url: "https://flylabs.fun/prompts",
-        schema: {
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          "name": "AI Prompts & Workflows",
-          "description": "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more.",
-          "url": "https://flylabs.fun/prompts",
-          "numberOfItems": prompts.length,
-          "author": { "@type": "Person", "name": "Luiz Alves" }
-        },
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "AI Prompts & Workflows",
+            "description": "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more.",
+            "url": "https://flylabs.fun/prompts",
+            "numberOfItems": prompts.length,
+            "author": { "@type": "Person", "name": "Luiz Alves" }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+              { "@type": "ListItem", "position": 2, "name": "Prompts" },
+            ],
+          },
+        ],
       }}
       className="pt-32 pb-24"
     >
@@ -463,8 +485,8 @@ const PromptsPage = () => {
               <Sparkles className="w-7 h-7 md:w-10 md:h-10 text-primary" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight">Prompts</h1>
-              <p className="text-lg md:text-xl text-muted-foreground font-bold mt-2">Prompts and workflows extracted from real building sessions. The ones I reach for every day when shipping code, writing copy, or thinking through a problem.</p>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tight">Prompt Library</h1>
+              <p className="text-base md:text-lg text-muted-foreground font-medium mt-2">{prompts.length} prompts across {CATEGORIES.length - 1} categories. Copy, customize, build.</p>
             </div>
           </div>
 

@@ -1,0 +1,83 @@
+{
+  "seo": {
+    "title": "Fly Labs | The Vibe Building Hub",
+    "description": "Tools, templates, and ideas for one-person builders. AI-scored idea pipeline, prompt library, open source templates. Built by one person with AI."
+  },
+  "hero": {
+    "headline": "The vibe building hub.",
+    "subheadline": "Open source tools for one-person builders. AI-scored ideas, prompts, templates, and everything I build along the way.",
+    "cta": "Explore the Ideas Lab",
+    "ctaSecondary": "Browse all projects"
+  },
+  "pillars": {
+    "title": "What's inside",
+    "subtitle": "Every project here started as a real problem I had. Built with AI, shipped open source.",
+    "ideasLab": {
+      "title": "Ideas Lab",
+      "description": "Real problems from {{sourceCount}} sources. {{questionCount}} questions. One verdict."
+    },
+    "prompts": {
+      "title": "Prompts",
+      "description": "Copy-paste AI prompts for coding, writing, and thinking. Built from workflows I actually use."
+    },
+    "templates": {
+      "title": "Templates",
+      "description": "Automation templates that connect your favorite tools. Set them up once, save hours every week.",
+      "stat": "Notion + GitHub"
+    },
+    "microTools": {
+      "title": "Micro Tools",
+      "description": "Small, focused apps that do one thing really well. Open them, use them, done.",
+      "stat": "Building next"
+    },
+    "library": {
+      "title": "Library",
+      "description": "Free ebooks from my study notes. AI, business, mindset, and the random stuff I can't stop learning about.",
+      "ebook": "ebook",
+      "ebooks": "ebooks"
+    },
+    "flybot": {
+      "title": "FlyBot",
+      "description": "Describe what you're building. FlyBot pulls up similar ideas it already scored, flags the gaps, and tells you if it's worth your weekend.",
+      "stat": "Beta"
+    },
+    "explore": "Explore"
+  },
+  "stats": {
+    "ideasScored": "ideas scored",
+    "prompts": "prompts",
+    "openSource": "Open source"
+  },
+  "cycle": {
+    "title": "The vibe building cycle",
+    "subtitle": "See a real problem. Build a solution with AI. Share it openly. Each project feeds the next one.",
+    "ideation": {
+      "title": "Ideation",
+      "description": "Real problems from Reddit, X, Product Hunt, GitHub, and more. AI asks four questions about each one. You pick the best ones."
+    },
+    "build": {
+      "title": "Build",
+      "description": "Pick your tools, ship fast, document what breaks. One person with AI can build what used to require a team."
+    },
+    "share": {
+      "title": "Share",
+      "description": "Open source the code, write about the process, put it out there. Feedback from real people sharpens everything."
+    },
+    "compound": {
+      "title": "Compound",
+      "description": "Skills stack, tools compound, each project sharpens the next one. Yesterday's side quest becomes tomorrow's shortcut."
+    }
+  },
+  "newsletter": {
+    "title": "From the newsletter",
+    "subtitle": "I write about what I build, what breaks, and what I learn along the way. Always free.",
+    "seeAll": "See all editions"
+  },
+  "closing": {
+    "headline": "One person. AI. Spare time.",
+    "subheadline": "That's the whole team.",
+    "text": "I document what I build, what breaks, and what I learn along the way. The newsletter covers the process. Everything else lives here.",
+    "ctaNewsletter": "Read the newsletter",
+    "ctaAbout": "How this started"
+  }
+}

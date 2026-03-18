@@ -145,7 +145,7 @@ export default async function handler(req, res) {
     return res.status(429).json({ error: 'Too many requests. Wait a minute.' });
   }
 
-  const { message, conversation_id, page_context } = req.body;
+  const { message, conversation_id, page_context, language } = req.body;
 
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required' });
@@ -241,6 +241,27 @@ export default async function handler(req, res) {
     if (page_context.board_content && typeof page_context.board_content === 'string') {
       sanitizedPageContext.board_content = page_context.board_content.replace(/[<>{}]/g, '').slice(0, 2000);
     }
+    // Page detail (structured context from the active page, max 500 chars)
+    if (page_context.detail && typeof page_context.detail === 'object') {
+      const detailStr = JSON.stringify(page_context.detail).replace(/[<>{}]/g, '').slice(0, 500);
+      try {
+        sanitizedPageContext.detail = JSON.parse(detailStr.replace(/[<>]/g, ''));
+      } catch {
+        // detail fields may break after slicing JSON, fall back to safe extraction
+        const d = page_context.detail;
+        sanitizedPageContext.detail = {};
+        for (const [k, v] of Object.entries(d)) {
+          if (typeof v === 'string') sanitizedPageContext.detail[k] = v.replace(/[<>{}]/g, '').slice(0, 100);
+          else if (typeof v === 'number') sanitizedPageContext.detail[k] = v;
+          else if (typeof v === 'object' && v) {
+            sanitizedPageContext.detail[k] = {};
+            for (const [k2, v2] of Object.entries(v)) {
+              if (typeof v2 === 'string') sanitizedPageContext.detail[k][k2] = v2.replace(/[<>{}]/g, '').slice(0, 100);
+            }
+          }
+        }
+      }
+    }
   }
 
   // Find similar ideas if user might be describing one
@@ -272,6 +293,9 @@ export default async function handler(req, res) {
     .order('updated_at', { ascending: false })
     .limit(10);
 
+  // Sanitize language (only allow known values)
+  const sanitizedLanguage = language === 'pt-BR' ? 'pt-BR' : 'en';
+
   // Build system prompt with full knowledge base + live analytics
   const systemPrompt = buildSystemPrompt({
     similarIdeas,
@@ -281,6 +305,7 @@ export default async function handler(req, res) {
     analytics,
     searchResults,
     userMemories: userMemories || [],
+    language: sanitizedLanguage,
   });
 
   // Build messages array

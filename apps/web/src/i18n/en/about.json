@@ -1,0 +1,106 @@
+{
+  "seo": {
+    "title": "About | Fly Labs",
+    "description": "Finance background, vibe builder. I build digital assets with AI on nights and weekends. Tools, templates, and open source experiments at Fly Labs."
+  },
+  "hero": {
+    "headline": "Nobody asked me to build any of this. I did it anyway, for fun.",
+    "text": "I'm Luiz Alves. Over a decade in finance. I build things with AI on nights and weekends because it's fun. Everything here is open source."
+  },
+  "manifesto": {
+    "label": "The Manifesto",
+    "quote": "I want to see what happens when one person builds in public, gives everything away, and lets the work speak for itself."
+  },
+  "story": {
+    "label": "The Story",
+    "originLabel": "The Origin",
+    "origin1": "I work in finance. Have for over a decade. It's a serious job and I take it seriously. But somewhere along the way I started playing with AI tools, and I realized I could actually build things. Real things. Apps, templates, automated pipelines. With zero engineering background.",
+    "origin2": "The first time I shipped something and a stranger used it, something clicked. I wasn't thinking about a business. I was just curious: what else can I build? What other problems can I solve? That curiosity turned into weekend mornings and late nights in front of the screen, and honestly, it doesn't feel like work.",
+    "grewLabel": "What Grew From That",
+    "libraryLink": "a library of free ebooks",
+    "templatesLink": "a templates section",
+    "promptLibraryText": "a prompt library with {{promptCount}} prompts across {{categoryCount}} categories, a proper search, and filters that actually help me find what I need.",
+    "ideasLabLabel": "The Ideas Lab",
+    "ideasLabText": "The Ideas Lab is a different beast. Every day it pulls real problems people are complaining about across {{sourceCount}} sources online. AI scores each one, validates the best against live conversations, and gives you a verdict. No guesswork. The whole point is to answer the question every solo builder asks: \"is this worth my time?\"",
+    "verdictBuild": "BUILD",
+    "verdictBuildDesc": "Strong signal. Ship it.",
+    "verdictValidate": "VALIDATE",
+    "verdictValidateDesc": "Promising. Needs proof.",
+    "verdictSkip": "SKIP",
+    "verdictSkipDesc": "Weak signal. Move on.",
+    "ideasCount": "Right now the lab has scored {{count}} ideas. That number goes up every day because the entire pipeline runs on autopilot. GitHub Actions wakes up at 6 AM UTC, syncs fresh problems, scores them with Claude, validates the best ones with Grok. About $30/month for the whole thing.",
+    "analyticsLink": "analytics dashboard",
+    "analyticsText": "There's also a full analytics dashboard with 10 interactive charts sitting on top of all that data. Which sources produce the best ideas, what industries are heating up, how scores distribute across verdicts. All there, updated live.",
+    "browseIdeas": "Browse the Ideas Lab",
+    "seeAnalytics": "See the analytics",
+    "coachLabel": "The AI Coach",
+    "flybot": "FlyBot",
+    "coachText": "I wanted something that could sit on top of all the scored data and have a real conversation about it. So I built FlyBot. Describe what you want to build, and it pulls up similar ideas the lab already scored, flags the gaps, tells you if it's worth your weekend. It knows every framework, every source, and it writes like a person, not a chatbot.",
+    "coachCard": "AI Coach",
+    "coachCardDesc": "Validates your idea against {{count}} scored entries. Real frameworks, real data.",
+    "musicCard": "Focus Music",
+    "musicCardDesc": "Four mood playlists. Pick your vibe: brainstorm, build, write, or study. Over ninety minutes of curated lofi, free.",
+    "musicReflection": "It sounds like a small thing, but it changed the whole vibe of spending time here. You open the lab, put on some music, start exploring ideas. It feels like a place you want to hang out in, not a tool you use and leave.",
+    "tryFlyBot": "Try FlyBot"
+  },
+  "vibeBuild": {
+    "label": "Vibe Building",
+    "intro1": "Here's what I keep hearing from people who want to build something on their own: they don't know where to start. They have ideas but no way to validate them. They feel like they need a team, a budget, a business plan. They read about indie hackers shipping things in a weekend and think \"that's not me.\"",
+    "intro2": "I think most of that friction is gone now. AI changed the equation. One person with curiosity and spare time can build things that used to take a team. Andrej Karpathy called the coding part \"vibe coding.\" I think the whole thing is bigger than code.",
+    "cycleIntro": "I call it vibe building. It's the full cycle:",
+    "ideation": "Ideation",
+    "ideationDesc": "Find real problems people already have",
+    "build": "Build",
+    "buildDesc": "Ship a solution with AI. Fast, scrappy, real",
+    "share": "Share",
+    "shareDesc": "Open source it. Document the process. Give it away",
+    "compound": "Compound",
+    "compoundDesc": "Each project feeds the next. Skills, audience, ideas",
+    "cycleRepeat": "The cycle repeats. Each loop gets faster.",
+    "closing1": "Fly Labs covers the entire cycle. The Ideas Lab handles ideation. The prompts, templates, and blueprints help you build. The newsletter documents the process. And the whole thing is open source, so every project compounds into the next one.",
+    "closing2": "If you've ever thought \"I want to build something but I don't know where to start,\" this is the place. Not a course. Not a community with paid tiers. Just the tools, the data, and an honest look at what it takes to build things as one person."
+  },
+  "pipeline": {
+    "label": "The Pipeline",
+    "description": "How ideas go from \"someone complained on Reddit\" to a scored, validated verdict. Every day, automatically.",
+    "sources": "Sources",
+    "sourcesSub": "{{count}} feeds",
+    "scoring": "Scoring",
+    "scoringSub": "4 questions, 1 verdict",
+    "validation": "Validation",
+    "validationSub": "Live evidence",
+    "q1": "Is the pain real?",
+    "q2": "Is there a gap?",
+    "q3": "Would someone pay?",
+    "q4": "Can you build it?",
+    "xSearch": "X/Twitter search",
+    "redditConvos": "Reddit conversations",
+    "confidenceScoring": "Confidence scoring",
+    "finalVerdict": "Final verdict",
+    "footer": "Runs on GitHub Actions, daily at 6 AM UTC"
+  },
+  "stats": {
+    "label": "By The Numbers",
+    "description": "Real numbers from a real project. All computed live from the codebase and database.",
+    "ideasScored": "Ideas scored",
+    "dataSources": "Data sources",
+    "aiPrompts": "AI prompts",
+    "scoringQuestions": "Scoring questions",
+    "promptCategories": "Prompt categories",
+    "lofiTracks": "Lofi tracks"
+  },
+  "openSource": {
+    "label": "Open Source",
+    "text1": "The entire platform is open source. MIT licensed. You can fork the repo, read every line of code, and build on top of it. The scoring scripts, the sync pipeline, the AI prompts: it's all there.",
+    "text2": "I believe the best way to build trust is to show the work. No black boxes, no gatekeeping. If something here is useful to you, take it.",
+    "viewGithub": "View on GitHub"
+  },
+  "closing": {
+    "label": "Your move",
+    "text1": "Fly Labs is where all of it lives. The tools I build, the templates I wish existed, the ideas I'm testing, the music I listen to while building. Everything is open, free, and documented. If you're curious about building with AI, or you just want to see what one person can ship in their spare time, this is the place.",
+    "text2": "Start with the Ideas Lab. Or just look around.",
+    "ctaIdeas": "Explore the Ideas Lab",
+    "or": "or",
+    "ctaNewsletter": "Read the newsletter"
+  }
+}

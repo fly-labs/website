@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 
 export const SEO = ({
   title,
@@ -12,6 +13,8 @@ export const SEO = ({
   schema = null,
   noindex = false
 }) => {
+  const { i18n } = useTranslation();
+  const ogLocale = i18n.language === 'pt-BR' ? 'pt_BR' : 'en_US';
   const siteTitle = title.toLowerCase().includes('fly labs') ? title : `${title} | Fly Labs`;
 
   const baseSchema = [
@@ -60,8 +63,12 @@ export const SEO = ({
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:alt" content={description ? description.slice(0, 120) : siteTitle} />
       <meta property="og:site_name" content="Fly Labs" />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:locale" content={ogLocale} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

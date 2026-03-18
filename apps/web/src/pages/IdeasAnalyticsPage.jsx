@@ -10,6 +10,7 @@ import { sourceOptions } from '@/lib/data/ideas.js';
 import { cn, timeAgo } from '@/lib/utils.js';
 import { verdictStyles, getScoreTier } from '@/components/ideas/ScoreUtils.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
+import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { GatedOverlay } from '@/components/GatedOverlay.jsx';
 import {
   ResponsiveContainer, PieChart, Pie, Cell, Tooltip,
@@ -53,6 +54,7 @@ const FRAMEWORK_COLORS = {
   'Hormozi': COLORS.amber,
   'Koe': COLORS.accent,
   'Okamoto': COLORS.secondary,
+  'YC': 'hsl(25, 95%, 53%)',
 };
 
 // Short labels for mobile
@@ -247,10 +249,13 @@ const DeltaBadge = ({ value }) => {
 
 const IdeasAnalyticsPage = () => {
   const { isAuthenticated } = useAuth();
+  const { setPageDetail } = useChatContext();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [growthView, setGrowthView] = useState('combo');
   const [leaderboardTab, setLeaderboardTab] = useState('top');
+
+  useEffect(() => { setPageDetail({ viewing: 'analytics' }); }, [setPageDetail]);
 
   useEffect(() => {
     async function load() {
@@ -266,7 +271,7 @@ const IdeasAnalyticsPage = () => {
           const to = from + PAGE_SIZE - 1;
           const { data, error } = await supabase
             .from('ideas')
-            .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, validation_score, votes, created_at, published_at, updated_at')
+            .select('id, idea_title, source, category, industry, verdict, confidence, composite_score, flylabs_score, hormozi_score, koe_score, okamoto_score, yc_score, validation_score, votes, created_at, published_at, updated_at')
             .eq('approved', true)
             .range(from, to);
 
@@ -384,19 +389,21 @@ const IdeasAnalyticsPage = () => {
         });
 
         // Framework averages (for horizontal bar chart)
-        const fwSums = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0 };
-        const fwCounts = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0 };
+        const fwSums = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0, yc: 0 };
+        const fwCounts = { flylabs: 0, hormozi: 0, koe: 0, okamoto: 0, yc: 0 };
         ideas.forEach(i => {
           if (i.flylabs_score != null) { fwSums.flylabs += i.flylabs_score; fwCounts.flylabs++; }
           if (i.hormozi_score != null) { fwSums.hormozi += i.hormozi_score; fwCounts.hormozi++; }
           if (i.koe_score != null) { fwSums.koe += i.koe_score; fwCounts.koe++; }
           if (i.okamoto_score != null) { fwSums.okamoto += i.okamoto_score; fwCounts.okamoto++; }
+          if (i.yc_score != null) { fwSums.yc += i.yc_score; fwCounts.yc++; }
         });
         const frameworkData = [
           { framework: 'Fly Labs', score: fwCounts.flylabs > 0 ? Math.round(fwSums.flylabs / fwCounts.flylabs) : 0, full: 'Fly Labs Method (THE score)', fill: FRAMEWORK_COLORS['Fly Labs'] },
           { framework: 'Hormozi', score: fwCounts.hormozi > 0 ? Math.round(fwSums.hormozi / fwCounts.hormozi) : 0, full: 'Hormozi (expert)', fill: FRAMEWORK_COLORS['Hormozi'] },
           { framework: 'Koe', score: fwCounts.koe > 0 ? Math.round(fwSums.koe / fwCounts.koe) : 0, full: 'Dan Koe (expert)', fill: FRAMEWORK_COLORS['Koe'] },
           { framework: 'Okamoto', score: fwCounts.okamoto > 0 ? Math.round(fwSums.okamoto / fwCounts.okamoto) : 0, full: 'Okamoto (expert)', fill: FRAMEWORK_COLORS['Okamoto'] },
+          { framework: 'YC', score: fwCounts.yc > 0 ? Math.round(fwSums.yc / fwCounts.yc) : 0, full: 'YC Lens (expert)', fill: FRAMEWORK_COLORS['YC'] || 'hsl(25, 95%, 53%)' },
         ];
 
         // Confidence
@@ -543,11 +550,11 @@ const IdeasAnalyticsPage = () => {
         // ── NEW: Where Experts Disagree ──
         const disagreements = scored
           .map(i => {
-            const fwScores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score].filter(s => s != null);
+            const fwScores = [i.flylabs_score, i.hormozi_score, i.koe_score, i.okamoto_score, i.yc_score].filter(s => s != null);
             if (fwScores.length < 3) return null;
             const spread = Math.max(...fwScores) - Math.min(...fwScores);
             if (spread <= 25) return null;
-            const fwMap = { 'Fly Labs': i.flylabs_score, 'Hormozi': i.hormozi_score, 'Koe': i.koe_score, 'Okamoto': i.okamoto_score };
+            const fwMap = { 'Fly Labs': i.flylabs_score, 'Hormozi': i.hormozi_score, 'Koe': i.koe_score, 'Okamoto': i.okamoto_score, 'YC': i.yc_score };
             const sortedFw = Object.entries(fwMap).filter(([, v]) => v != null).sort((a, b) => b[1] - a[1]);
             return {
               id: i.id, title: i.idea_title, composite: i.composite_score,

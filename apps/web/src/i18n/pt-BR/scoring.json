@@ -1,0 +1,68 @@
+{
+  "seo": {
+    "title": "Como Pontuamos Ideias | Fly Labs",
+    "description": "O Ideas Lab encontra problemas reais de {{sourceCount}} fontes, faz {{questionCount}} perguntas, valida contra X e Reddit, e dá um veredito. Veja como."
+  },
+  "hero": {
+    "title": "Como Pontuamos Ideias",
+    "subtitle": "{{sourceCount}} fontes, {{questionCount}} perguntas, um veredito."
+  },
+  "steps": {
+    "find": "Encontrar",
+    "findDesc": "Problemas reais de {{sourceCount}} fontes diariamente",
+    "score": "Pontuar",
+    "scoreDesc": "{{questionCount}} perguntas sobre cada um",
+    "validate": "Validar",
+    "validateDesc": "Evidência ao vivo do X e Reddit",
+    "verdict": "Veredito",
+    "verdictDesc": "BUILD, VALIDATE ou SKIP"
+  },
+  "questions": {
+    "title": "As {{count}} perguntas",
+    "subtitle": "Cada ideia é pontuada nessas perguntas. O total é o FL score (0-100). Essa é a única pontuação que decide o veredito.",
+    "q1": "A dor é real?",
+    "q1Label": "Clareza do Problema",
+    "q2": "Tem espaço pra algo novo?",
+    "q2Label": "Lacuna de Solução",
+    "q3": "Alguém pagaria?",
+    "q3Label": "Disposição para Agir",
+    "q4": "Dá pra construir?",
+    "q4Label": "Construtibilidade"
+  },
+  "verdicts": {
+    "title": "O veredito",
+    "buildRule": "FL >= 65 + construível",
+    "validateRule": "FL 40-64",
+    "skipRule": "FL < 40",
+    "build": "BUILD",
+    "buildDesc": "Sinal forte. Lança.",
+    "validate": "VALIDATE FIRST",
+    "validateDesc": "Promissor. Precisa de prova.",
+    "skip": "SKIP",
+    "skipDesc": "Sinal fraco. Segue em frente."
+  },
+  "validation": {
+    "title": "Camada de Validação",
+    "description": "As melhores ideias são validadas contra conversas reais no X e Reddit.",
+    "xSearch": "Busca ao vivo no X/Twitter",
+    "redditMining": "Mineração de conversas no Reddit",
+    "confidence": "Pontuação de confiança",
+    "competitors": "Inteligência competitiva"
+  },
+  "experts": {
+    "title": "Quer mais profundidade?",
+    "subtitle": "{{count}} perspectivas de especialistas adicionam ângulos que o FL score não cobre. Ficam na página de detalhe de cada ideia mas não afetam o veredito.",
+    "hormozi": "Hormozi",
+    "hormoziDesc": "A equação de valor $100M do Alex Hormozi.",
+    "koe": "Dan Koe",
+    "koeDesc": "Lente de negócio de uma pessoa só.",
+    "okamoto": "Okamoto",
+    "okamotoDesc": "Validação de MicroSaaS.",
+    "yc": "YC Lens",
+    "ycDesc": "Como a Y Combinator avalia produtos."
+  },
+  "dyor": {
+    "title": "Faça sua própria pesquisa",
+    "text": "Pontuações de IA são opiniões baseadas em dados. Boas opiniões, mas opiniões. Converse com usuários reais antes de construir."
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "nav": {
+    "explore": "Explore",
+    "ideas": "Ideas",
+    "flyboard": "FlyBoard",
+    "prompts": "Prompts",
+    "newsletter": "Newsletter",
+    "library": "Library",
+    "about": "About",
+    "logIn": "Log In",
+    "logOut": "Log Out",
+    "logout": "Logout",
+    "toggleMenu": "Toggle menu",
+    "skipToContent": "Skip to content",
+    "loggedInAs": "Logged in as",
+    "you": "You"
+  },
+  "footer": {
+    "brand": "Fly Labs",
+    "copyright": "\u00a9 {{year}} Fly Labs. The vibe building hub.",
+    "builtWith": "Built with Claude"
+  },
+  "gated": {
+    "title": "Sign up free to unlock",
+    "cta": "Sign up free",
+    "subtext": "Free forever. No credit card."
+  },
+  "auth": {
+    "goBack": "Go Back",
+    "unlockTitle": "Unlock this tool",
+    "unlockSubtitle": "Create a free account to unlock the full library.",
+    "tabLogIn": "Log In",
+    "tabSignUp": "Sign Up",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "createPasswordPlaceholder": "Create password",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "createAccount": "Create Account",
+    "orContinueWith": "Or continue with",
+    "google": "Google",
+    "toastWelcome": "Welcome back!",
+    "toastLoading": "Loading your tools...",
+    "toastLoginFailed": "Login Failed",
+    "toastSignupSuccess": "Account created!",
+    "toastSignupFailed": "Signup Failed",
+    "toastPasswordMismatch": "Passwords do not match.",
+    "toastPasswordWeak": "Password must be at least 8 characters.",
+    "toastGoogleSuccess": "Authenticated with Google.",
+    "toastGoogleFailed": "Google authentication failed. Please try again.",
+    "toastAuthFailed": "Auth Failed",
+    "toastError": "Error",
+    "toastSuccess": "Success!"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "Try refreshing the page. If the problem persists, reach out at flylabs.fun/about.",
+    "goHome": "Go home"
+  },
+  "theme": {
+    "toggle": "Toggle theme"
+  },
+  "language": {
+    "toggle": "Switch language"
+  },
+  "actions": {
+    "copy": "Copy",
+    "copied": "Copied!",
+    "share": "Share",
+    "vote": "Vote",
+    "voted": "Voted",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "close": "Close",
+    "search": "Search",
+    "clearAll": "Clear all",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "tryAgain": "Try again",
+    "learnMore": "Learn more"
+  },
+  "toast": {
+    "somethingWrong": "Something went wrong",
+    "linkCopied": "Link copied",
+    "shareIdea": "Share this idea with anyone.",
+    "copyFailed": "Copy failed",
+    "couldNotCopy": "Could not copy to clipboard."
+  }
+}

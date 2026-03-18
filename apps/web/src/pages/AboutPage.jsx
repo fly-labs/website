@@ -7,7 +7,7 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
-import { trackEvent } from '@/lib/analytics.js';
+import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
 import { SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, TRACK_COUNT } from '@/lib/data/siteStats.js';
 import supabase from '@/lib/supabaseClient.js';
 
@@ -29,6 +29,8 @@ const SectionLabel = ({ icon: Icon, label, color }) => (
 
 const AboutPage = () => {
   const [ideaCount, setIdeaCount] = useState(null);
+
+  useEffect(() => trackScrollDepth('about'), []);
 
   useEffect(() => {
     supabase

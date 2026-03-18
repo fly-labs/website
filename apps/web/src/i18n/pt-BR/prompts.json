@@ -1,0 +1,74 @@
+{
+  "seo": {
+    "title": "Prompts | Fly Labs",
+    "description": "Prompts de IA para código, escrita, estratégia, marketing e mais. Vote, comente e sugira novos prompts."
+  },
+  "hero": {
+    "title": "Prompts",
+    "subtitle": "Prompts que eu realmente uso."
+  },
+  "sort": {
+    "hot": "Em alta",
+    "new": "Novos",
+    "az": "A-Z"
+  },
+  "search": {
+    "placeholder": "Buscar prompts..."
+  },
+  "prompt": {
+    "upvote": "Votar",
+    "copy": "Copiar",
+    "copied": "Copiado!",
+    "inspiredBy": "Inspirado por {{author}}",
+    "tools": "Ferramentas: {{tools}}",
+    "comments": "{{count}} Comentário(s)",
+    "copiedCount": "Copiado {{count}}x",
+    "addComment": "Adicionar um comentário...",
+    "deleteComment": "Excluir comentário"
+  },
+  "gate": {
+    "moreInside": "mais {{count}} prompts lá dentro",
+    "gateDescription": "Os que eu realmente uso todo dia. Conta grátis libera a biblioteca completa, votação e comentários.",
+    "value1": "{{count}} prompts de IA curados",
+    "value2": "Sistemas prontos no Notion",
+    "value3": "Primeiro acesso a novas ferramentas",
+    "createAccount": "Criar Conta Grátis",
+    "logIn": "Entrar"
+  },
+  "suggest": {
+    "title": "Sugerir um Prompt",
+    "description": "Tem um prompt que funciona bem? Ou uma ideia pra um? Compartilhe e ajude a biblioteca a crescer.",
+    "successTitle": "Prompt recebido.",
+    "successDesc": "Vou testar, dar meu toque e creditar você se entrar pra biblioteca.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Pra eu poder entrar em contato",
+    "categoryLabel": "Categoria",
+    "nameLabel": "Nome do prompt",
+    "namePlaceholder": "ex. O Reescritor de Email",
+    "contentLabel": "O prompt ou descreva a ideia",
+    "contentPlaceholder": "Cole o texto completo do prompt, ou descreva o que ele deve fazer e quando usar.",
+    "submit": "Enviar sugestão"
+  },
+  "toast": {
+    "signUpToComment": "Crie uma conta para comentar",
+    "signUpToCommentDesc": "Conta grátis para participar da conversa.",
+    "commentTooLong": "Comentário muito longo",
+    "commentMax": "Máximo 500 caracteres.",
+    "commentFailed": "Falha no comentário",
+    "signUpToVote": "Crie uma conta para votar",
+    "signUpToVoteDesc": "Conta grátis para votar nos prompts.",
+    "voteFailed": "Falha ao votar",
+    "missingFields": "Campos obrigatórios",
+    "fillRequired": "Preencha todos os campos obrigatórios.",
+    "invalidEmail": "Email inválido",
+    "invalidEmailDesc": "Digite um email válido.",
+    "titleTooLong": "Título muito longo",
+    "titleMax": "Máximo 100 caracteres.",
+    "descTooLong": "Descrição muito longa",
+    "descMax": "Máximo 1000 caracteres.",
+    "slowDown": "Calma lá",
+    "slowDownDesc": "Máximo 3 sugestões por dia. Tente novamente depois.",
+    "failed": "Algo deu errado",
+    "failedDesc": "Não foi possível enviar sua sugestão. Tente novamente."
+  }
+}

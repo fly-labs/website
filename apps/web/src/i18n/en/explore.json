@@ -1,0 +1,27 @@
+{
+  "seo": {
+    "title": "Explore | Fly Labs",
+    "description": "Every project started as something I actually needed. Built with AI, shipped open source."
+  },
+  "hero": {
+    "title": "Explore",
+    "subtitle": "Every project started as something I actually needed. Built with AI, shipped open source."
+  },
+  "categories": {
+    "all": "All",
+    "business": "Business",
+    "tools": "Tools",
+    "learn": "Learn"
+  },
+  "project": {
+    "checkItOut": "Check it out",
+    "gated": "Free account required",
+    "noProjects": "No projects in this category yet."
+  },
+  "status": {
+    "live": "Live",
+    "beta": "Beta",
+    "soon": "Soon",
+    "open": "Open"
+  }
+}

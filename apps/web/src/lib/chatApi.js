@@ -25,9 +25,13 @@ export function streamChat(message, conversationId, pageContext, { onChunk, onDo
     try {
       const headers = await getAuthHeaders();
 
+      // Detect user's UI language for FlyBot response language
+      const uiLanguage = (typeof localStorage !== 'undefined' && localStorage.getItem('language')) || 'en';
+
       const body = {
         message,
         conversation_id: conversationId,
+        language: uiLanguage,
       };
       if (pageContext) {
         body.page_context = pageContext;

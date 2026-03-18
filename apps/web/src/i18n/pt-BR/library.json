@@ -1,0 +1,31 @@
+{
+  "seo": {
+    "title": "Biblioteca | Fly Labs",
+    "description": "Ebooks grátis das minhas notas de estudo. IA, negócios, mindset e tudo que estou aprendendo pelo caminho."
+  },
+  "hero": {
+    "title": "Biblioteca",
+    "subtitle": "Ebooks grátis das minhas notas de estudo. O que quer que eu esteja lendo e aprendendo."
+  },
+  "topics": {
+    "all": "Todos",
+    "ai": "IA",
+    "business": "Negócios",
+    "mindset": "Mindset",
+    "mindfulness": "Mindfulness",
+    "random": "Aleatório"
+  },
+  "book": {
+    "comingSoon": "Em breve",
+    "pages": "{{count}} páginas",
+    "download": "Baixar grátis",
+    "notify": "Avise-me",
+    "notifyDesc": "Vamos te avisar por email quando sair."
+  },
+  "waitlist": {
+    "joinedTitle": "Você está na lista!",
+    "joinedDesc": "Vamos te avisar por email quando esse ebook estiver pronto.",
+    "failedTitle": "Algo deu errado",
+    "emailPlaceholder": "Seu email"
+  }
+}

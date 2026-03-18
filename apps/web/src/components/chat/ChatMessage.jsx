@@ -221,7 +221,7 @@ function FeedbackButtons({ messageId, currentRating, onFeedback, compact }) {
   );
 }
 
-export function ChatMessage({ message, isStreaming, compact = false, onNavigate, feedbackRating, onFeedback }) {
+export function ChatMessage({ message, isStreaming, compact = false, onNavigate, feedbackRating, onFeedback, onFollowUp }) {
   const isUser = message.role === 'user';
   const hasEvaluation = message.metadata?.evaluation;
   const isEmpty = !message.content && isStreaming;
@@ -298,7 +298,7 @@ export function ChatMessage({ message, isStreaming, compact = false, onNavigate,
           {/* Evaluation card */}
           {hasEvaluation && (
             <div className="pt-2">
-              <ChatEvaluation evaluation={message.metadata.evaluation} />
+              <ChatEvaluation evaluation={message.metadata.evaluation} onFollowUp={onFollowUp} />
             </div>
           )}
 

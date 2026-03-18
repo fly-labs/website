@@ -1,0 +1,40 @@
+{
+  "seo": {
+    "title": "Templates | Fly Labs",
+    "description": "Templates de automação e blueprints. Configure uma vez, economize horas toda semana."
+  },
+  "hero": {
+    "title": "Templates",
+    "subtitle": "Blueprints e automações que eu realmente uso."
+  },
+  "blueprint": {
+    "title": "Website Blueprint",
+    "subtitle": "Como esse site foi construído. Stack completa.",
+    "builderNote": "Nota do Builder",
+    "viewCode": "Ver no GitHub"
+  },
+  "garmin": {
+    "title": "Garmin to Notion",
+    "subtitle": "Sincronize dados de saúde do Garmin com o Notion automaticamente."
+  },
+  "launchChecklist": {
+    "title": "Launch Checklist",
+    "subtitle": "Do zero ao lançamento. Template no Notion.",
+    "comingSoon": "Em breve"
+  },
+  "businessPlan": {
+    "title": "One-Page Business Plan",
+    "subtitle": "5 perguntas. Uma página. Template no Notion.",
+    "comingSoon": "Em breve"
+  },
+  "microTools": {
+    "title": "Micro Tools",
+    "subtitle": "Apps pequenos, grande alavancagem."
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "subtitle": "Essa página não existe. Talvez tenha mudado de lugar, ou talvez nunca tenha existido.",
+    "goHome": "Voltar ao início",
+    "goExplore": "Explorar projetos"
+  }
+}

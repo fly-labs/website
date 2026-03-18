@@ -1,0 +1,83 @@
+{
+  "seo": {
+    "title": "Fly Labs | O Hub do Vibe Building",
+    "description": "Ferramentas, templates e ideias para quem constrói sozinho. Pipeline de ideias com IA, biblioteca de prompts, templates open source. Feito por uma pessoa com IA."
+  },
+  "hero": {
+    "headline": "O hub do vibe building.",
+    "subheadline": "Ferramentas open source para quem constrói sozinho. Ideias pontuadas por IA, prompts, templates e tudo que eu construo pelo caminho.",
+    "cta": "Explorar o Ideas Lab",
+    "ctaSecondary": "Ver todos os projetos"
+  },
+  "pillars": {
+    "title": "O que tem aqui",
+    "subtitle": "Cada projeto nasceu de um problema real que eu tive. Feito com IA, open source.",
+    "ideasLab": {
+      "title": "Ideas Lab",
+      "description": "Problemas reais de {{sourceCount}} fontes. {{questionCount}} perguntas. Um veredito."
+    },
+    "prompts": {
+      "title": "Prompts",
+      "description": "Prompts de IA para código, escrita e estratégia. Construídos dos workflows que eu realmente uso."
+    },
+    "templates": {
+      "title": "Templates",
+      "description": "Templates de automação que conectam suas ferramentas favoritas. Configure uma vez, economize horas toda semana.",
+      "stat": "Notion + GitHub"
+    },
+    "microTools": {
+      "title": "Micro Tools",
+      "description": "Apps pequenos e focados que fazem uma coisa só, mas fazem bem. Abre, usa, pronto.",
+      "stat": "Em construção"
+    },
+    "library": {
+      "title": "Biblioteca",
+      "description": "Ebooks grátis das minhas notas de estudo. IA, negócios, mindset e as coisas aleatórias que eu não consigo parar de aprender.",
+      "ebook": "ebook",
+      "ebooks": "ebooks"
+    },
+    "flybot": {
+      "title": "FlyBot",
+      "description": "Descreva o que você está construindo. O FlyBot busca ideias similares que ele já pontuou, aponta as lacunas e diz se vale o seu fim de semana.",
+      "stat": "Beta"
+    },
+    "explore": "Explorar"
+  },
+  "stats": {
+    "ideasScored": "ideias pontuadas",
+    "prompts": "prompts",
+    "openSource": "Open source"
+  },
+  "cycle": {
+    "title": "O ciclo do vibe building",
+    "subtitle": "Vê um problema real. Constrói uma solução com IA. Compartilha abertamente. Cada projeto alimenta o próximo.",
+    "ideation": {
+      "title": "Ideação",
+      "description": "Problemas reais do Reddit, X, Product Hunt, GitHub e mais. A IA faz quatro perguntas sobre cada um. Você escolhe os melhores."
+    },
+    "build": {
+      "title": "Construir",
+      "description": "Escolha suas ferramentas, lance rápido, documente o que quebra. Uma pessoa com IA consegue construir o que antes exigia um time."
+    },
+    "share": {
+      "title": "Compartilhar",
+      "description": "Código open source, escreva sobre o processo, coloque no mundo. Feedback de pessoas reais melhora tudo."
+    },
+    "compound": {
+      "title": "Compor",
+      "description": "Habilidades acumulam, ferramentas compõem, cada projeto afina o próximo. O desvio de ontem vira o atalho de amanhã."
+    }
+  },
+  "newsletter": {
+    "title": "Da newsletter",
+    "subtitle": "Escrevo sobre o que construo, o que quebra e o que aprendo pelo caminho. Sempre grátis.",
+    "seeAll": "Ver todas as edições"
+  },
+  "closing": {
+    "headline": "Uma pessoa. IA. Tempo livre.",
+    "subheadline": "Esse é todo o time.",
+    "text": "Documento o que construo, o que quebra e o que aprendo pelo caminho. A newsletter cobre o processo. Todo o resto vive aqui.",
+    "ctaNewsletter": "Ler a newsletter",
+    "ctaAbout": "Como começou"
+  }
+}
