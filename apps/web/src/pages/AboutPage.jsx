@@ -8,7 +8,7 @@ import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
-import { SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, TRACK_COUNT } from '@/lib/data/siteStats.js';
+import { SOURCE_COUNT, PROMPT_COUNT, CATEGORY_COUNT, TRACK_COUNT, VIBE_COUNT } from '@/lib/data/siteStats.js';
 import supabase from '@/lib/supabaseClient.js';
 
 const socials = [
@@ -189,7 +189,7 @@ const AboutPage = () => {
                   Right now the lab has scored {ideaCount != null ? <span className="text-foreground font-semibold">{ideaCount.toLocaleString()}</span> : '...'} ideas. That number goes up every day because the entire pipeline runs on autopilot. GitHub Actions wakes up at 6 AM UTC, syncs fresh problems, scores them with Claude, validates the best ones with Grok. About $30/month for the whole thing.
                 </p>
                 <p>
-                  There's also a full <Link to="/ideas/analytics" className="text-foreground font-semibold hover:text-primary transition-colors">analytics dashboard</Link> with 10 interactive charts sitting on top of all that data. Which sources produce the best ideas, what industries are heating up, how scores distribute across verdicts. All there, updated live.
+                  There's also a full <Link to="/ideas/analytics" className="text-foreground font-semibold hover:text-primary transition-colors">analytics dashboard</Link> with 12 interactive visualizations sitting on top of all that data. Which sources produce the best ideas, what industries are heating up, how scores distribute across verdicts. All there, updated live.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 mt-4">
@@ -227,7 +227,7 @@ const AboutPage = () => {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-foreground">Focus Music</p>
-                      <p className="text-xs text-muted-foreground leading-snug mt-0.5">Four mood playlists. Pick your vibe: brainstorm, build, write, or study. Over ninety minutes of curated lofi, free.</p>
+                      <p className="text-xs text-muted-foreground leading-snug mt-0.5">{VIBE_COUNT} vibe modes. Pick yours: ideate, build, create, cafe, study, or retro. {TRACK_COUNT}+ tracks of curated lofi, free.</p>
                     </div>
                   </div>
                 </div>

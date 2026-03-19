@@ -30,7 +30,7 @@
     "verdictSkipDesc": "Sinal fraco. Segue em frente.",
     "ideasCount": "Agora o lab já pontuou {{count}} ideias. Esse número sobe todo dia porque o pipeline inteiro roda no piloto automático. GitHub Actions acorda às 6 da manhã UTC, sincroniza problemas novos, pontua com Claude, valida os melhores com Grok. Mais ou menos $30 por mês pela coisa toda.",
     "analyticsLink": "dashboard de analytics",
-    "analyticsText": "Também tem um dashboard completo de analytics com 10 gráficos interativos em cima de todos esses dados. Quais fontes produzem as melhores ideias, quais indústrias estão esquentando, como as pontuações se distribuem entre os vereditos. Tudo lá, atualizado ao vivo.",
+    "analyticsText": "Também tem um dashboard completo de analytics com 12 visualizações interativas em cima de todos esses dados. Quais fontes produzem as melhores ideias, quais indústrias estão esquentando, como as pontuações se distribuem entre os vereditos. Tudo lá, atualizado ao vivo.",
     "browseIdeas": "Navegar no Ideas Lab",
     "seeAnalytics": "Ver o analytics",
     "coachLabel": "O Coach de IA",
@@ -39,7 +39,7 @@
     "coachCard": "Coach de IA",
     "coachCardDesc": "Valida sua ideia contra {{count}} entradas pontuadas. Frameworks reais, dados reais.",
     "musicCard": "Música pra Focar",
-    "musicCardDesc": "Quatro playlists de humor. Escolha sua vibe: brainstorm, construir, escrever ou estudar. Mais de noventa minutos de lofi curado, grátis.",
+    "musicCardDesc": "Seis modos de vibe. Escolha o seu: ideate, build, create, cafe, study ou retro. 120+ faixas de lofi curado, grátis.",
     "musicReflection": "Parece pouca coisa, mas mudou toda a vibe de passar tempo aqui. Você abre o lab, coloca uma música, começa a explorar ideias. Parece um lugar onde você quer ficar, não uma ferramenta que você usa e sai.",
     "tryFlyBot": "Testar o FlyBot"
   },

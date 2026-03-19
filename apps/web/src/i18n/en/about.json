@@ -30,7 +30,7 @@
     "verdictSkipDesc": "Weak signal. Move on.",
     "ideasCount": "Right now the lab has scored {{count}} ideas. That number goes up every day because the entire pipeline runs on autopilot. GitHub Actions wakes up at 6 AM UTC, syncs fresh problems, scores them with Claude, validates the best ones with Grok. About $30/month for the whole thing.",
     "analyticsLink": "analytics dashboard",
-    "analyticsText": "There's also a full analytics dashboard with 10 interactive charts sitting on top of all that data. Which sources produce the best ideas, what industries are heating up, how scores distribute across verdicts. All there, updated live.",
+    "analyticsText": "There's also a full analytics dashboard with 12 interactive visualizations sitting on top of all that data. Which sources produce the best ideas, what industries are heating up, how scores distribute across verdicts. All there, updated live.",
     "browseIdeas": "Browse the Ideas Lab",
     "seeAnalytics": "See the analytics",
     "coachLabel": "The AI Coach",
@@ -39,7 +39,7 @@
     "coachCard": "AI Coach",
     "coachCardDesc": "Validates your idea against {{count}} scored entries. Real frameworks, real data.",
     "musicCard": "Focus Music",
-    "musicCardDesc": "Four mood playlists. Pick your vibe: brainstorm, build, write, or study. Over ninety minutes of curated lofi, free.",
+    "musicCardDesc": "Six vibe modes. Pick yours: ideate, build, create, cafe, study, or retro. 120+ tracks of curated lofi, free.",
     "musicReflection": "It sounds like a small thing, but it changed the whole vibe of spending time here. You open the lab, put on some music, start exploring ideas. It feels like a place you want to hang out in, not a tool you use and leave.",
     "tryFlyBot": "Try FlyBot"
   },

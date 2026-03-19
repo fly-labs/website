@@ -25,7 +25,7 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 
 **Prompt Library** - Copy-paste prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Voting, comments, and community suggestions.
 
-**Analytics Dashboard** - 10 interactive charts: verdict distribution, source breakdown, score histograms, framework radar, growth timeline, source quality heatmap, and more.
+**Analytics Dashboard** - 12 interactive visualizations: verdict distribution, source breakdown, score histograms, framework comparison, growth timeline, source quality, industry intelligence, opportunity map, and more.
 
 **Scoring Frameworks** - The full methodology: Fly Labs Method (4 questions, solo builder lens) + 4 expert perspectives (Hormozi, Dan Koe, Okamoto, YC Lens) for depth on the detail page.
 
