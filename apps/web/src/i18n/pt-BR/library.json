@@ -5,7 +5,7 @@
   },
   "hero": {
     "title": "Biblioteca",
-    "subtitle": "Ebooks grátis das minhas notas de estudo. O que quer que eu esteja lendo e aprendendo."
+    "subtitle": "Ebooks grátis de centenas de horas de leitura. IA, negócios, mindset. Escrito pra quem constrói."
   },
   "topics": {
     "all": "Todos",
@@ -20,12 +20,26 @@
     "pages": "{{count}} páginas",
     "download": "Baixar grátis",
     "notify": "Avise-me",
-    "notifyDesc": "Vamos te avisar por email quando sair."
+    "notifyDesc": "Vamos te avisar por email quando sair.",
+    "free": "Grátis",
+    "buildingNext": "Em construção",
+    "notified": "Você será notificado",
+    "go": "Ir"
   },
   "waitlist": {
     "joinedTitle": "Você está na lista!",
-    "joinedDesc": "Vamos te avisar por email quando esse ebook estiver pronto.",
+    "joinedDesc": "Vamos te avisar quando \"{{title}}\" estiver pronto pra baixar.",
+    "alreadyTitle": "Você já está na lista.",
+    "alreadyDesc": "Vamos te avisar quando sair.",
     "failedTitle": "Algo deu errado",
-    "emailPlaceholder": "Seu email"
+    "failedDesc": "Tente novamente.",
+    "invalidEmail": "Email inválido",
+    "invalidEmailDesc": "Digite um endereço de email válido.",
+    "emailPlaceholder": "seu@email.com",
+    "personWaiting_one": "{{count}} pessoa esperando",
+    "personWaiting_other": "{{count}} pessoas esperando"
+  },
+  "empty": {
+    "text": "Nenhum livro neste tópico ainda. Mais em breve."
   }
 }

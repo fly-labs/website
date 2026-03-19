@@ -5,7 +5,7 @@
   },
   "hero": {
     "title": "Library",
-    "subtitle": "Free ebooks from my study notes. Whatever I'm reading and learning about."
+    "subtitle": "Free ebooks from hundreds of hours of reading. AI, business, mindset. Written for people who build."
   },
   "topics": {
     "all": "All",
@@ -18,14 +18,28 @@
   "book": {
     "comingSoon": "Coming soon",
     "pages": "{{count}} pages",
-    "download": "Download free",
+    "download": "Download Free",
     "notify": "Notify me",
-    "notifyDesc": "We'll email you when this drops."
+    "notifyDesc": "We'll email you when this drops.",
+    "free": "Free",
+    "buildingNext": "Building next",
+    "notified": "You'll be notified",
+    "go": "Go"
   },
   "waitlist": {
     "joinedTitle": "You're on the list!",
-    "joinedDesc": "We'll email you when this ebook is ready.",
+    "joinedDesc": "We'll ping you when \"{{title}}\" is ready to download.",
+    "alreadyTitle": "You're already on the list.",
+    "alreadyDesc": "We'll let you know when it drops.",
     "failedTitle": "Something went wrong",
-    "emailPlaceholder": "Your email"
+    "failedDesc": "Please try again.",
+    "invalidEmail": "Invalid email",
+    "invalidEmailDesc": "Please enter a valid email address.",
+    "emailPlaceholder": "your@email.com",
+    "personWaiting_one": "{{count}} person waiting",
+    "personWaiting_other": "{{count}} people waiting"
+  },
+  "empty": {
+    "text": "No books in this topic yet. More coming soon."
   }
 }

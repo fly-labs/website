@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft, Sparkles, Copy, Check, Search, ShieldCheck, X,
   ChevronUp, ChevronDown, MessageCircle, Flame, Send, Trash2,
@@ -17,10 +18,10 @@ import { trackEvent } from '@/lib/analytics.js';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 
 const CATEGORIES = ['All', 'Coding', 'Writing', 'Strategy', 'Marketing', 'SEO', 'Research', 'Workflows', 'Thinking'];
-const SORT_OPTIONS = [
-  { value: 'hot', label: 'Hot' },
-  { value: 'new', label: 'New' },
-  { value: 'az', label: 'A-Z' },
+const SORT_KEYS = [
+  { value: 'hot', key: 'sort.hot' },
+  { value: 'new', key: 'sort.new' },
+  { value: 'az', key: 'sort.az' },
 ];
 const POPULAR_THRESHOLD = 3;
 
@@ -38,6 +39,7 @@ const CATEGORY_COLORS = {
 const lockedPreviewPrompts = prompts.filter(p => !p.featured).slice(0, 6);
 
 const PromptsPage = () => {
+  const { t } = useTranslation('prompts');
   const { toast } = useToast();
   const { currentUser, profile, isAuthenticated } = useAuth();
   const { openWidget, setPageDetail } = useChatContext();
@@ -168,19 +170,19 @@ const PromptsPage = () => {
     e.preventDefault();
 
     if (!suggestForm.email || !suggestForm.idea_title || !suggestForm.idea_description) {
-      toast({ title: 'Missing fields', description: 'Please fill in all required fields.', variant: 'destructive' });
+      toast({ title: t('toast.missingFields'), description: t('toast.fillRequired'), variant: 'destructive' });
       return;
     }
     if (!isValidEmail(suggestForm.email.trim())) {
-      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      toast({ title: t('toast.invalidEmail'), description: t('toast.invalidEmailDesc'), variant: 'destructive' });
       return;
     }
     if (suggestForm.idea_title.length > 100) {
-      toast({ title: 'Title too long', description: 'Max 100 characters.', variant: 'destructive' });
+      toast({ title: t('toast.titleTooLong'), description: t('toast.titleMax'), variant: 'destructive' });
       return;
     }
     if (suggestForm.idea_description.length > 1000) {
-      toast({ title: 'Description too long', description: 'Max 1000 characters.', variant: 'destructive' });
+      toast({ title: t('toast.descTooLong'), description: t('toast.descMax'), variant: 'destructive' });
       return;
     }
 
@@ -190,7 +192,7 @@ const PromptsPage = () => {
       const trimmedEmail = suggestForm.email.trim().toLowerCase();
       const { data: rateOk } = await supabase.rpc('check_idea_rate_limit', { p_email: trimmedEmail });
       if (rateOk === false) {
-        toast({ title: 'Slow down', description: 'Max 3 suggestions per day. Try again later.', variant: 'destructive' });
+        toast({ title: t('toast.slowDown'), description: t('toast.slowDownDesc'), variant: 'destructive' });
         setIsSuggesting(false);
         return;
       }
@@ -213,7 +215,7 @@ const PromptsPage = () => {
       setSuggestForm({ email: '', idea_title: '', idea_description: '', category: 'Coding' });
       setTimeout(() => setSuggestSuccess(false), 5000);
     } catch {
-      toast({ title: 'Something went wrong', description: "Couldn't send your suggestion. Please try again.", variant: 'destructive' });
+      toast({ title: t('toast.failed'), description: t('toast.failedDesc'), variant: 'destructive' });
     } finally {
       setIsSuggesting(false);
     }
@@ -235,7 +237,7 @@ const PromptsPage = () => {
         document.body.removeChild(textarea);
       }
       setCopiedId(id);
-      toast({ title: "Copied to clipboard!" });
+      toast({ title: t('toast.copiedToClipboard') });
       setTimeout(() => setCopiedId(null), 2000);
 
       const p = prompts.find(x => x.id === id);
@@ -251,14 +253,14 @@ const PromptsPage = () => {
         return updated;
       });
     } catch {
-      toast({ title: "Copy failed", description: "Could not copy to clipboard.", variant: "destructive" });
+      toast({ title: t('toast.copyFailed'), description: t('toast.copyFailedDesc'), variant: "destructive" });
     }
   };
 
   // Vote handler (optimistic) - only for authenticated users
   const handleVote = useCallback(async (promptId) => {
     if (!isAuthenticated) {
-      toast({ title: "Sign up to vote", description: "Create a free account to upvote prompts." });
+      toast({ title: t('toast.signUpToVote'), description: t('toast.signUpToVoteDesc') });
       return;
     }
     if (votingIds.has(promptId)) return;
@@ -290,7 +292,7 @@ const PromptsPage = () => {
         return next;
       });
       setVoteCounts(prev => ({ ...prev, [promptId]: prevCount }));
-      toast({ title: "Vote failed", variant: "destructive" });
+      toast({ title: t('toast.voteFailed'), variant: "destructive" });
     } else if (data) {
       setVoteCounts(prev => ({ ...prev, [promptId]: data.count }));
       if (!wasVoted) {
@@ -318,7 +320,7 @@ const PromptsPage = () => {
     const content = (commentInputs[promptId] || '').trim();
     if (!content || !currentUser) return;
     if (content.length > 500) {
-      toast({ title: "Comment too long", description: "Max 500 characters.", variant: "destructive" });
+      toast({ title: t('toast.commentTooLong'), description: t('toast.commentMax'), variant: "destructive" });
       return;
     }
 
@@ -331,7 +333,7 @@ const PromptsPage = () => {
       .single();
 
     if (error) {
-      toast({ title: "Comment failed", variant: "destructive" });
+      toast({ title: t('toast.commentFailed'), variant: "destructive" });
     } else {
       const newComment = { ...data, author_name: profile?.name || 'Anonymous' };
       setComments(prev => ({
@@ -362,7 +364,7 @@ const PromptsPage = () => {
       .eq('user_id', currentUser.id);
 
     if (error) {
-      toast({ title: "Delete failed", variant: "destructive" });
+      toast({ title: t('toast.deleteFailed'), variant: "destructive" });
     } else {
       setComments(prev => ({
         ...prev,
@@ -432,8 +434,8 @@ const PromptsPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Prompts | Fly Labs",
-        description: "Curated AI prompts and multi-step workflows for coding, writing, strategy, SEO, research, and more. Copy-paste ready for Claude, ChatGPT, Cowork, Lovable, and Gamma.",
+        title: t('seo.title'),
+        description: t('seo.description'),
         keywords: "AI prompts, AI workflows, coding prompts, writing prompts, strategy prompts, SEO prompts, Claude prompts, Claude Cowork workflows, prompt library",
         url: "https://flylabs.fun/prompts",
         schema: [
@@ -468,13 +470,13 @@ const PromptsPage = () => {
           {/* Top bar */}
           <div className="flex items-center justify-between mb-12">
             <Link to="/explore" className="inline-flex items-center text-muted-foreground hover:text-foreground font-bold transition-colors bg-card px-4 py-2 rounded-xl border border-border shadow-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
+              <ArrowLeft className="w-4 h-4 mr-2" /> {t('nav.backToExplore')}
             </Link>
             <div className="flex items-center gap-2 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
               {isAuthenticated ? (
-                <><ShieldCheck className="w-4 h-4" /> Member Access</>
+                <><ShieldCheck className="w-4 h-4" /> {t('nav.memberAccess')}</>
               ) : (
-                <><Sparkles className="w-4 h-4" /> {prompts.filter(p => p.featured).length} Free Prompts</>
+                <><Sparkles className="w-4 h-4" /> {t('nav.freePrompts', { count: prompts.filter(p => p.featured).length })}</>
               )}
             </div>
           </div>
@@ -485,8 +487,8 @@ const PromptsPage = () => {
               <Sparkles className="w-7 h-7 md:w-10 md:h-10 text-primary" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight">Prompt Library</h1>
-              <p className="text-base md:text-lg text-muted-foreground font-medium mt-2">{prompts.length} prompts across {CATEGORIES.length - 1} categories. Copy, customize, build.</p>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tight">{t('hero.title')}</h1>
+              <p className="text-base md:text-lg text-muted-foreground font-medium mt-2">{t('hero.subtitle', { count: prompts.length, categories: CATEGORIES.length - 1 })}</p>
             </div>
           </div>
 
@@ -494,11 +496,11 @@ const PromptsPage = () => {
           {isAuthenticated && (
             <div className="relative mb-4">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <label htmlFor="prompt-search" className="sr-only">Search prompts</label>
+              <label htmlFor="prompt-search" className="sr-only">{t('search.placeholder')}</label>
               <input
                 id="prompt-search"
                 type="text"
-                placeholder="Search by title, category, or description..."
+                placeholder={t('search.fullPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full h-12 pl-11 pr-10 rounded-2xl border border-border bg-card text-sm font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
@@ -527,8 +529,8 @@ const PromptsPage = () => {
                 <Bot className="w-4 h-4 text-secondary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">Not sure which prompt to use?</p>
-                <p className="text-xs text-muted-foreground">Ask FlyBot. It knows the full library and can recommend the right one for your situation.</p>
+                <p className="text-sm font-medium text-foreground">{t('flybot.hint')}</p>
+                <p className="text-xs text-muted-foreground">{t('flybot.hintDesc')}</p>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-secondary transition-colors shrink-0" />
             </button>
@@ -567,7 +569,7 @@ const PromptsPage = () => {
               {/* Sort + count */}
               <div className="flex items-center gap-3">
                 <div className="flex gap-1">
-                  {SORT_OPTIONS.map(opt => (
+                  {SORT_KEYS.map(opt => (
                     <button
                       key={opt.value}
                       onClick={() => setSortBy(opt.value)}
@@ -581,13 +583,13 @@ const PromptsPage = () => {
                         />
                       )}
                       <span className={`relative z-10 ${sortBy === opt.value ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                        {opt.label}
+                        {t(opt.key)}
                       </span>
                     </button>
                   ))}
                 </div>
                 <span className="text-xs text-muted-foreground/60 font-medium tabular-nums">
-                  {sorted.length} prompt{sorted.length !== 1 ? 's' : ''}
+                  {t('results.count', { count: sorted.length })}
                 </span>
               </div>
             </div>
@@ -595,10 +597,10 @@ const PromptsPage = () => {
 
           {/* Column header */}
           <div className="flex items-center gap-3 md:gap-4 px-4 md:px-5 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/50">
-            <span className="shrink-0 w-10 text-center">Votes</span>
-            <span className="flex-1 min-w-0">Prompt</span>
-            <span className="hidden sm:inline w-16 text-center">Comments</span>
-            <span className="w-20 text-center">Copy</span>
+            <span className="shrink-0 w-10 text-center">{t('columns.votes')}</span>
+            <span className="flex-1 min-w-0">{t('columns.prompt')}</span>
+            <span className="hidden sm:inline w-16 text-center">{t('columns.comments')}</span>
+            <span className="w-20 text-center">{t('columns.copy')}</span>
             <span className="w-4" />
           </div>
 
@@ -606,7 +608,7 @@ const PromptsPage = () => {
           <div className="rounded-2xl border border-border overflow-hidden bg-card">
             {sorted.length === 0 ? (
               <div className="text-center py-16 text-muted-foreground font-medium">
-                No prompts found matching your search.
+                {t('results.noResults')}
               </div>
             ) : (
               <div className="divide-y divide-border">
@@ -634,7 +636,7 @@ const PromptsPage = () => {
                               {prompt.category}
                             </span>
                             <span className="text-[10px] font-medium text-muted-foreground/50">
-                              {categoryCounts[prompt.category]} prompt{categoryCounts[prompt.category] !== 1 ? 's' : ''}
+                              {t('results.count', { count: categoryCounts[prompt.category] })}
                             </span>
                           </div>
                         )}
@@ -660,7 +662,7 @@ const PromptsPage = () => {
                                 hasVoted ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-primary hover:bg-primary/5'
                               }`}
                               aria-label={`Vote for ${prompt.title}`}
-                              title={!isAuthenticated ? 'Sign up to vote' : undefined}
+                              title={!isAuthenticated ? t('toast.signUpToVote') : undefined}
                             >
                               <ChevronUp className={`w-5 h-5 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
                               <AnimatePresence mode="wait">
@@ -692,7 +694,7 @@ const PromptsPage = () => {
                               )}
                               {isPopular && (
                                 <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-bold text-orange-500 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20 shrink-0">
-                                  <Flame className="w-3 h-3" /> Popular
+                                  <Flame className="w-3 h-3" /> {t('prompt.popular')}
                                 </span>
                               )}
                             </div>
@@ -719,7 +721,7 @@ const PromptsPage = () => {
                               }`}
                             >
                               {copiedId === prompt.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                              {copiedId === prompt.id ? 'Copied!' : 'Copy'}
+                              {copiedId === prompt.id ? t('prompt.copied') : t('prompt.copy')}
                             </button>
 
                             {/* Expand chevron */}
@@ -753,12 +755,12 @@ const PromptsPage = () => {
                                     </p>
                                     {prompt.author && (
                                       <p className="text-xs text-muted-foreground/50 font-medium mt-1">
-                                        Inspired by {prompt.author}
+                                        {t('prompt.inspiredBy', { author: prompt.author })}
                                       </p>
                                     )}
                                     {prompt.tools && (
                                       <div className="flex items-center gap-1.5 mt-1.5">
-                                        <span className="text-[10px] font-semibold text-muted-foreground/40">Tools:</span>
+                                        <span className="text-[10px] font-semibold text-muted-foreground/40">{t('prompt.tools')}</span>
                                         {prompt.tools.map(tool => (
                                           <span key={tool} className="text-[10px] font-bold px-2 py-0.5 rounded bg-fuchsia-500/10 text-fuchsia-500 border border-fuchsia-500/20">
                                             {tool}
@@ -779,7 +781,7 @@ const PromptsPage = () => {
                                         className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
                                       >
                                         {copiedId === prompt.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                                        {copiedId === prompt.id ? 'Copied!' : 'Copy'}
+                                        {copiedId === prompt.id ? t('prompt.copied') : t('prompt.copy')}
                                       </button>
                                     </div>
 
@@ -794,16 +796,16 @@ const PromptsPage = () => {
                                             ? 'bg-primary/10 text-primary border border-primary/30'
                                             : 'bg-muted/50 text-muted-foreground hover:text-primary hover:bg-primary/5 border border-border/50'
                                         }`}
-                                        title={!isAuthenticated ? 'Sign up to vote' : undefined}
+                                        title={!isAuthenticated ? t('toast.signUpToVote') : undefined}
                                       >
                                         <ChevronUp className={`w-4 h-4 ${hasVoted ? 'stroke-[2.5]' : ''}`} />
-                                        Upvote {voteCount > 0 && voteCount}
+                                        {t('prompt.upvote')} {voteCount > 0 && voteCount}
                                       </motion.button>
 
                                       <button
                                         onClick={() => {
                                           if (!isAuthenticated) {
-                                            toast({ title: "Sign up to comment", description: "Create a free account to join the conversation." });
+                                            toast({ title: t('toast.signUpToComment'), description: t('toast.signUpToCommentDesc') });
                                             return;
                                           }
                                           const el = document.getElementById(`comments-${prompt.id}`);
@@ -812,12 +814,12 @@ const PromptsPage = () => {
                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-muted/50 text-muted-foreground hover:text-foreground border border-border/50 transition-colors"
                                       >
                                         <MessageCircle className="w-4 h-4" />
-                                        {promptComments.length} Comment{promptComments.length !== 1 ? 's' : ''}
+                                        {t('prompt.comments', { count: promptComments.length })}
                                       </button>
 
                                       {copyCount > 0 && (
                                         <span className="text-xs font-medium text-muted-foreground/60 tabular-nums ml-auto">
-                                          Copied {copyCount}x
+                                          {t('prompt.copiedCount', { count: copyCount })}
                                         </span>
                                       )}
                                     </div>
@@ -826,7 +828,7 @@ const PromptsPage = () => {
                                     {isAuthenticated && (
                                       <div id={`comments-${prompt.id}`} className="border-t border-border/50 pt-4 space-y-3">
                                         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                                          {promptComments.length} Comment{promptComments.length !== 1 ? 's' : ''}
+                                          {t('prompt.comments', { count: promptComments.length })}
                                         </p>
 
                                         {promptComments.length > 0 && (
@@ -844,7 +846,7 @@ const PromptsPage = () => {
                                                   <button
                                                     onClick={() => handleDeleteComment(comment.id, prompt.id)}
                                                     className="opacity-60 sm:opacity-0 sm:group-hover/comment:opacity-100 shrink-0 p-2 text-muted-foreground/50 hover:text-destructive transition-colors"
-                                                    aria-label="Delete comment"
+                                                    aria-label={t('prompt.deleteComment')}
                                                   >
                                                     <Trash2 className="w-3.5 h-3.5" />
                                                   </button>
@@ -858,7 +860,7 @@ const PromptsPage = () => {
                                         <div className="flex gap-2">
                                           <input
                                             type="text"
-                                            placeholder="Add a comment..."
+                                            placeholder={t('prompt.addComment')}
                                             maxLength={500}
                                             value={commentInputs[prompt.id] || ''}
                                             onChange={(e) => setCommentInputs(prev => ({ ...prev, [prompt.id]: e.target.value }))}
@@ -938,25 +940,25 @@ const PromptsPage = () => {
                   <Lock className="w-7 h-7 text-primary" />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">
-                  {lockedCount} more prompts inside
+                  {t('gate.moreInside', { count: lockedCount })}
                 </h2>
                 <p className="text-muted-foreground font-medium mb-6 max-w-md mx-auto">
-                  The ones I actually use every day. Free account gets you the full library, voting, and comments.
+                  {t('gate.gateDescription')}
                 </p>
 
                 {/* Value bullets */}
                 <div className="flex flex-col gap-2 mb-8 max-w-xs mx-auto text-left">
                   <div className="flex items-center gap-3 text-sm">
                     <Sparkles className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-medium">{prompts.length} curated AI prompts</span>
+                    <span className="font-medium">{t('gate.value1', { count: prompts.length })}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <LayoutTemplate className="w-4 h-4 text-secondary shrink-0" />
-                    <span className="font-medium">Ready-made Notion systems</span>
+                    <span className="font-medium">{t('gate.value2')}</span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <Code className="w-4 h-4 text-blue-500 shrink-0" />
-                    <span className="font-medium">First access to new tools</span>
+                    <span className="font-medium">{t('gate.value3')}</span>
                   </div>
                 </div>
 
@@ -967,13 +969,13 @@ const PromptsPage = () => {
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
                     onClick={() => trackEvent('cta_click', { cta: 'signup', location: 'prompts_gate' })}
                   >
-                    Create Free Account <ArrowRight className="w-4 h-4 ml-2" />
+                    {t('gate.createAccount')} <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                   <Link
                     to="/login"
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors"
                   >
-                    Log in
+                    {t('gate.logIn')}
                   </Link>
                 </div>
               </div>
@@ -991,17 +993,17 @@ const PromptsPage = () => {
                 <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
                   <Lightbulb className="w-5 h-5" />
                 </div>
-                <h2 className="text-xl md:text-2xl font-black tracking-tight">Suggest a Prompt</h2>
+                <h2 className="text-xl md:text-2xl font-black tracking-tight">{t('suggest.title')}</h2>
               </div>
               <p className="text-sm text-muted-foreground font-medium mb-6">
-                Got a prompt that works great? Or an idea for one? Share it and help the library grow.
+                {t('suggest.description')}
               </p>
 
               {suggestSuccess ? (
                 <div className="text-center py-8">
                   <CheckCircle2 className="w-10 h-10 text-primary mx-auto mb-3" />
-                  <p className="font-semibold text-foreground mb-1">Prompt received.</p>
-                  <p className="text-sm text-muted-foreground">I'll test it, add my spin, and credit you if it makes the cut.</p>
+                  <p className="font-semibold text-foreground mb-1">{t('suggest.successTitle')}</p>
+                  <p className="text-sm text-muted-foreground">{t('suggest.successDesc')}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSuggestSubmit} className="space-y-4">
@@ -1019,20 +1021,20 @@ const PromptsPage = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label htmlFor="suggest-email" className="text-sm font-medium text-muted-foreground">Email</label>
+                      <label htmlFor="suggest-email" className="text-sm font-medium text-muted-foreground">{t('suggest.emailLabel')}</label>
                       <input
                         id="suggest-email"
                         type="email"
                         required
                         maxLength={254}
-                        placeholder="So I can follow up"
+                        placeholder={t('suggest.emailPlaceholder')}
                         value={suggestForm.email}
                         onChange={(e) => setSuggestForm(prev => ({ ...prev, email: e.target.value }))}
                         className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label htmlFor="suggest-category" className="text-sm font-medium text-muted-foreground">Category</label>
+                      <label htmlFor="suggest-category" className="text-sm font-medium text-muted-foreground">{t('suggest.categoryLabel')}</label>
                       <div className="relative">
                         <select
                           id="suggest-category"
@@ -1055,13 +1057,13 @@ const PromptsPage = () => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="suggest-title" className="text-sm font-medium text-muted-foreground">Prompt name</label>
+                    <label htmlFor="suggest-title" className="text-sm font-medium text-muted-foreground">{t('suggest.nameLabel')}</label>
                     <input
                       id="suggest-title"
                       type="text"
                       required
                       maxLength={100}
-                      placeholder="e.g. The Email Rewriter"
+                      placeholder={t('suggest.namePlaceholder')}
                       value={suggestForm.idea_title}
                       onChange={(e) => setSuggestForm(prev => ({ ...prev, idea_title: e.target.value }))}
                       className="w-full h-11 px-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
@@ -1069,13 +1071,13 @@ const PromptsPage = () => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="suggest-description" className="text-sm font-medium text-muted-foreground">The prompt or describe the idea</label>
+                    <label htmlFor="suggest-description" className="text-sm font-medium text-muted-foreground">{t('suggest.contentLabel')}</label>
                     <textarea
                       id="suggest-description"
                       required
                       rows={4}
                       maxLength={1000}
-                      placeholder="Paste the full prompt text, or describe what it should do and when to use it."
+                      placeholder={t('suggest.contentPlaceholder')}
                       value={suggestForm.idea_description}
                       onChange={(e) => setSuggestForm(prev => ({ ...prev, idea_description: e.target.value }))}
                       className="w-full p-4 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
@@ -1090,7 +1092,7 @@ const PromptsPage = () => {
                     {isSuggesting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
-                      <>Send suggestion <Send className="w-3.5 h-3.5" /></>
+                      <>{t('suggest.submit')} <Send className="w-3.5 h-3.5" /></>
                     )}
                   </button>
                 </form>

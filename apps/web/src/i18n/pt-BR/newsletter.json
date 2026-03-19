@@ -1,0 +1,37 @@
+{
+  "seo": {
+    "title": "Fala Comigo! | Construindo em Público",
+    "description": "Construindo em público com IA. Projetos, ferramentas, prompts, templates e o que eu descubro pelo caminho. Por Luiz Alves.",
+    "keywords": "newsletter, vibe building, construir em público, IA, ativos digitais, Luiz Alves, falacomigo, Substack",
+    "schemaDescription": "Um cara de finanças constrói coisas com IA nas horas vagas e escreve sobre o que acontece. Ferramentas, processo, opiniões honestas."
+  },
+  "hero": {
+    "badge": "Grátis no Substack",
+    "subtitle": "Um cara de finanças constrói coisas com IA nas horas vagas e escreve sobre o que acontece. O que funcionou, o que quebrou, o que eu faria diferente. Em inglês. Sempre grátis.",
+    "subscribe": "Assinar no Substack",
+    "subscribeAriaLabel": "Assinar no Substack (abre em nova aba)"
+  },
+  "articles": {
+    "sectionTitle": "Edições recentes",
+    "readAriaLabel": "Ler \"{{title}}\" no Substack (abre em nova aba)",
+    "minRead": "{{minutes}} min de leitura",
+    "readOnSubstack": "Ler no Substack"
+  },
+  "error": {
+    "message": "Não foi possível carregar os artigos agora.",
+    "fallback": "Ler direto no Substack",
+    "fallbackAriaLabel": "Ler direto no Substack (abre em nova aba)"
+  },
+  "notes": {
+    "title": "Pensamentos curtos ficam nas Notes",
+    "description": "Ideias rápidas, atualizações do que estou construindo, coisas que não precisam de um artigo inteiro.",
+    "browse": "Ver Notes",
+    "browseAriaLabel": "Ver Notes no Substack (abre em nova aba)"
+  },
+  "cta": {
+    "title": "Não perca nenhuma edição",
+    "description": "Eu construo coisas digitais por diversão usando IA e documento o processo. Assine no Substack e chega direto no seu email, sempre grátis.",
+    "subscribe": "Assinar no Substack",
+    "subscribeAriaLabel": "Assinar no Substack (abre em nova aba)"
+  }
+}

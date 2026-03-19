@@ -14,6 +14,7 @@ import enScoring from './en/scoring.json';
 import enLibrary from './en/library.json';
 import enExplore from './en/explore.json';
 import enTemplates from './en/templates.json';
+import enNewsletter from './en/newsletter.json';
 
 // Portuguese namespaces
 import ptCommon from './pt-BR/common.json';
@@ -27,6 +28,7 @@ import ptScoring from './pt-BR/scoring.json';
 import ptLibrary from './pt-BR/library.json';
 import ptExplore from './pt-BR/explore.json';
 import ptTemplates from './pt-BR/templates.json';
+import ptNewsletter from './pt-BR/newsletter.json';
 
 i18n
   .use(LanguageDetector)
@@ -45,6 +47,7 @@ i18n
         library: enLibrary,
         explore: enExplore,
         templates: enTemplates,
+        newsletter: enNewsletter,
       },
       'pt-BR': {
         common: ptCommon,
@@ -58,6 +61,7 @@ i18n
         library: ptLibrary,
         explore: ptExplore,
         templates: ptTemplates,
+        newsletter: ptNewsletter,
       },
     },
     fallbackLng: 'en',

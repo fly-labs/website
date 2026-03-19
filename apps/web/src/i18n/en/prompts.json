@@ -3,9 +3,15 @@
     "title": "Prompts | Fly Labs",
     "description": "Copy-paste AI prompts for coding, writing, strategy, marketing, and more. Vote, comment, and suggest new prompts."
   },
+  "nav": {
+    "backToExplore": "Back to Explore",
+    "memberAccess": "Member Access",
+    "freePrompts": "{{count}} Free Prompts"
+  },
   "hero": {
-    "title": "Prompts",
-    "subtitle": "Prompts I actually use."
+    "title": "Prompt Library",
+    "subtitle": "{{count}} prompts across {{categories}} categories. Copy, customize, build.",
+    "subtitleShort": "Prompts I actually use."
   },
   "sort": {
     "hot": "Hot",
@@ -13,15 +19,33 @@
     "az": "A-Z"
   },
   "search": {
-    "placeholder": "Search prompts..."
+    "placeholder": "Search prompts...",
+    "fullPlaceholder": "Search by title, category, or description..."
+  },
+  "flybot": {
+    "hint": "Not sure which prompt to use?",
+    "hintDesc": "Ask FlyBot. It knows the full library and can recommend the right one for your situation."
+  },
+  "columns": {
+    "votes": "Votes",
+    "prompt": "Prompt",
+    "comments": "Comments",
+    "copy": "Copy"
+  },
+  "results": {
+    "count_one": "{{count}} prompt",
+    "count_other": "{{count}} prompts",
+    "noResults": "No prompts found matching your search."
   },
   "prompt": {
     "upvote": "Upvote",
     "copy": "Copy",
     "copied": "Copied!",
+    "popular": "Popular",
     "inspiredBy": "Inspired by {{author}}",
-    "tools": "Tools: {{tools}}",
-    "comments": "{{count}} Comment(s)",
+    "tools": "Tools:",
+    "comments_one": "{{count}} Comment",
+    "comments_other": "{{count}} Comments",
     "copiedCount": "Copied {{count}}x",
     "addComment": "Add a comment...",
     "deleteComment": "Delete comment"
@@ -50,11 +74,15 @@
     "submit": "Send suggestion"
   },
   "toast": {
+    "copiedToClipboard": "Copied to clipboard!",
+    "copyFailed": "Copy failed",
+    "copyFailedDesc": "Could not copy to clipboard.",
     "signUpToComment": "Sign up to comment",
     "signUpToCommentDesc": "Create a free account to join the conversation.",
     "commentTooLong": "Comment too long",
     "commentMax": "Max 500 characters.",
     "commentFailed": "Comment failed",
+    "deleteFailed": "Delete failed",
     "signUpToVote": "Sign up to vote",
     "signUpToVoteDesc": "Create a free account to upvote prompts.",
     "voteFailed": "Vote failed",

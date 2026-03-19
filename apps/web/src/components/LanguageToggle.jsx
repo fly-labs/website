@@ -14,16 +14,16 @@ export const LanguageToggle = () => {
 
   return (
     <div
-      className="relative flex items-center bg-muted/50 rounded-lg border border-border p-0.5 gap-0"
+      className="relative flex items-center bg-muted/60 rounded-full p-[3px] gap-0 border border-border/50"
       role="radiogroup"
       aria-label="Language"
     >
       <button
         onClick={() => switchTo('en')}
-        className={`relative z-10 px-2 py-1 rounded-md text-[11px] font-bold tracking-wide transition-colors duration-200 ${
+        className={`relative z-10 min-w-[36px] py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-200 ${
           !isPt
             ? 'text-foreground'
-            : 'text-muted-foreground/60 hover:text-muted-foreground'
+            : 'text-muted-foreground/50 hover:text-muted-foreground'
         }`}
         role="radio"
         aria-checked={!isPt}
@@ -33,10 +33,10 @@ export const LanguageToggle = () => {
       </button>
       <button
         onClick={() => switchTo('pt-BR')}
-        className={`relative z-10 px-2 py-1 rounded-md text-[11px] font-bold tracking-wide transition-colors duration-200 ${
+        className={`relative z-10 min-w-[36px] py-1.5 rounded-full text-xs font-bold tracking-wide transition-all duration-200 ${
           isPt
             ? 'text-foreground'
-            : 'text-muted-foreground/60 hover:text-muted-foreground'
+            : 'text-muted-foreground/50 hover:text-muted-foreground'
         }`}
         role="radio"
         aria-checked={isPt}
@@ -44,12 +44,12 @@ export const LanguageToggle = () => {
       >
         PT
       </button>
-      {/* Sliding highlight */}
+      {/* Sliding pill */}
       <div
-        className="absolute top-0.5 bottom-0.5 rounded-md bg-background shadow-sm border border-border/50 transition-all duration-200 ease-out"
+        className="absolute top-[3px] bottom-[3px] rounded-full bg-background shadow-sm border border-border/80 transition-all duration-250 ease-[cubic-bezier(0.4,0,0.2,1)]"
         style={{
-          width: 'calc(50% - 2px)',
-          left: isPt ? 'calc(50% + 1px)' : '2px',
+          width: '36px',
+          left: isPt ? 'calc(100% - 36px - 3px)' : '3px',
         }}
       />
     </div>

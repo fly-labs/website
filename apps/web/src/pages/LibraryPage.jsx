@@ -10,8 +10,20 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { cn } from '@/lib/utils.js';
+import { useTranslation } from 'react-i18next';
+
+// Map topic names to translation keys
+const topicKeyMap = {
+  'All': 'all',
+  'AI': 'ai',
+  'Business': 'business',
+  'Mindset': 'mindset',
+  'Mindfulness': 'mindfulness',
+  'Random': 'random',
+};
 
 const LibraryPage = () => {
+  const { t } = useTranslation('library');
   const [activeTopic, setActiveTopic] = useState('All');
   const [waitlistCounts, setWaitlistCounts] = useState({});
   const [notifyingBook, setNotifyingBook] = useState(null);
@@ -52,7 +64,7 @@ const LibraryPage = () => {
       return;
     }
     if (!isValidEmail(trimmed)) {
-      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      toast({ title: t('waitlist.invalidEmail'), description: t('waitlist.invalidEmailDesc'), variant: 'destructive' });
       return;
     }
 
@@ -62,13 +74,13 @@ const LibraryPage = () => {
 
     if (error) {
       if (error.code === '23505') {
-        toast({ title: 'You\'re already on the list.', description: "We'll let you know when it drops." });
+        toast({ title: t('waitlist.alreadyTitle'), description: t('waitlist.alreadyDesc') });
       } else {
-        toast({ title: 'Something went wrong', description: 'Please try again.', variant: 'destructive' });
+        toast({ title: t('waitlist.failedTitle'), description: t('waitlist.failedDesc'), variant: 'destructive' });
         return;
       }
     } else {
-      toast({ title: 'You\'re on the list!', description: `We'll ping you when "${book.title}" is ready to download.` });
+      toast({ title: t('waitlist.joinedTitle'), description: t('waitlist.joinedDesc', { title: book.title }) });
       trackEvent('ebook_notify', { book_id: book.id, book_title: book.title, topic: book.topic });
     }
 
@@ -95,8 +107,8 @@ const LibraryPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Library | Fly Labs",
-        description: "Free ebooks from my study notes on AI, business, and mindset. Written by Luiz Alves for people who build things.",
+        title: t('seo.title'),
+        description: t('seo.description'),
         keywords: "free ebooks, AI ebook, business ebook, mindset, builder resources, Luiz Alves",
         url: "https://flylabs.fun/library",
         schema: [
@@ -124,10 +136,10 @@ const LibraryPage = () => {
             className="mb-12"
           >
             <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-4">
-              Library
+              {t('hero.title')}
             </h1>
             <p className="text-lg text-muted-foreground font-medium max-w-2xl leading-relaxed">
-              Free ebooks from hundreds of hours of reading. AI, business, mindset. Written for people who build.
+              {t('hero.subtitle')}
             </p>
           </motion.div>
 
@@ -140,6 +152,7 @@ const LibraryPage = () => {
             {topics.map((topic) => {
               const isActive = activeTopic === topic;
               const colors = topicColors[topic];
+              const topicKey = topicKeyMap[topic];
               return (
                 <button
                   key={topic}
@@ -156,7 +169,7 @@ const LibraryPage = () => {
                       : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   )}
                 >
-                  {topic}
+                  {topicKey ? t(`topics.${topicKey}`) : topic}
                 </button>
               );
             })}
@@ -166,7 +179,7 @@ const LibraryPage = () => {
           {filtered.length === 0 ? (
             <motion.div {...fadeUp} className="text-center py-20">
               <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground font-medium">No books in this topic yet. More coming soon.</p>
+              <p className="text-muted-foreground font-medium">{t('empty.text')}</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -175,6 +188,7 @@ const LibraryPage = () => {
                 const isAvailable = book.status === 'available';
                 const isNotified = notifiedBooks.has(book.id);
                 const waitCount = waitlistCounts[book.id];
+                const topicKey = topicKeyMap[book.topic];
 
                 return (
                   <motion.div
@@ -197,7 +211,7 @@ const LibraryPage = () => {
                           {book.title}
                         </h3>
                         {book.pageCount && (
-                          <p className="text-xs text-muted-foreground mt-2">{book.pageCount} pages</p>
+                          <p className="text-xs text-muted-foreground mt-2">{t('book.pages', { count: book.pageCount })}</p>
                         )}
                       </div>
                     </div>
@@ -206,7 +220,7 @@ const LibraryPage = () => {
                     <div className="flex flex-col flex-grow p-5">
                       <div className="flex items-center gap-2 mb-3">
                         <span className={cn("text-xs font-bold px-2.5 py-0.5 rounded-full border", colors.text, colors.bg, colors.border)}>
-                          {book.topic}
+                          {topicKey ? t(`topics.${topicKey}`) : book.topic}
                         </span>
                         <span className={cn(
                           "text-xs font-bold px-2.5 py-0.5 rounded-full",
@@ -214,7 +228,7 @@ const LibraryPage = () => {
                             ? 'text-primary bg-primary/10 border border-primary/20'
                             : 'text-muted-foreground bg-muted border border-border'
                         )}>
-                          {isAvailable ? 'Free' : 'Building next'}
+                          {isAvailable ? t('book.free') : t('book.buildingNext')}
                         </span>
                       </div>
 
@@ -227,11 +241,11 @@ const LibraryPage = () => {
                           onClick={() => handleDownload(book)}
                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors"
                         >
-                          <Download className="w-4 h-4" /> Download Free
+                          <Download className="w-4 h-4" /> {t('book.download')}
                         </button>
                       ) : isNotified ? (
                         <div className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-muted text-muted-foreground font-semibold text-sm">
-                          <CheckCircle2 className="w-4 h-4" /> You'll be notified
+                          <CheckCircle2 className="w-4 h-4" /> {t('book.notified')}
                         </div>
                       ) : notifyingBook === book.id ? (
                         <div className="flex gap-2">
@@ -239,7 +253,7 @@ const LibraryPage = () => {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="your@email.com"
+                            placeholder={t('waitlist.emailPlaceholder')}
                             className="flex-1 px-3 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                             onKeyDown={(e) => e.key === 'Enter' && handleNotify(book)}
                             autoFocus
@@ -248,7 +262,7 @@ const LibraryPage = () => {
                             onClick={() => handleNotify(book)}
                             className="px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors"
                           >
-                            Go
+                            {t('book.go')}
                           </button>
                         </div>
                       ) : (
@@ -263,11 +277,11 @@ const LibraryPage = () => {
                             }}
                             className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border font-semibold text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                           >
-                            <Bell className="w-4 h-4" /> Notify me
+                            <Bell className="w-4 h-4" /> {t('book.notify')}
                           </button>
                           {waitCount > 0 && (
                             <p className="text-xs text-muted-foreground text-center mt-2">
-                              {waitCount} {waitCount === 1 ? 'person' : 'people'} waiting
+                              {t('waitlist.personWaiting', { count: waitCount })}
                             </p>
                           )}
                         </div>

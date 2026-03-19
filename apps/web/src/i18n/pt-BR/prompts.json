@@ -3,9 +3,15 @@
     "title": "Prompts | Fly Labs",
     "description": "Prompts de IA para código, escrita, estratégia, marketing e mais. Vote, comente e sugira novos prompts."
   },
+  "nav": {
+    "backToExplore": "Voltar ao Explore",
+    "memberAccess": "Acesso de Membro",
+    "freePrompts": "{{count}} Prompts Grátis"
+  },
   "hero": {
-    "title": "Prompts",
-    "subtitle": "Prompts que eu realmente uso."
+    "title": "Biblioteca de Prompts",
+    "subtitle": "{{count}} prompts em {{categories}} categorias. Copie, personalize, construa.",
+    "subtitleShort": "Prompts que eu realmente uso."
   },
   "sort": {
     "hot": "Em alta",
@@ -13,15 +19,33 @@
     "az": "A-Z"
   },
   "search": {
-    "placeholder": "Buscar prompts..."
+    "placeholder": "Buscar prompts...",
+    "fullPlaceholder": "Buscar por título, categoria ou descrição..."
+  },
+  "flybot": {
+    "hint": "Não sabe qual prompt usar?",
+    "hintDesc": "Pergunte ao FlyBot. Ele conhece toda a biblioteca e pode recomendar o certo pra sua situação."
+  },
+  "columns": {
+    "votes": "Votos",
+    "prompt": "Prompt",
+    "comments": "Comentários",
+    "copy": "Copiar"
+  },
+  "results": {
+    "count_one": "{{count}} prompt",
+    "count_other": "{{count}} prompts",
+    "noResults": "Nenhum prompt encontrado para essa busca."
   },
   "prompt": {
     "upvote": "Votar",
     "copy": "Copiar",
     "copied": "Copiado!",
+    "popular": "Popular",
     "inspiredBy": "Inspirado por {{author}}",
-    "tools": "Ferramentas: {{tools}}",
-    "comments": "{{count}} Comentário(s)",
+    "tools": "Ferramentas:",
+    "comments_one": "{{count}} Comentário",
+    "comments_other": "{{count}} Comentários",
     "copiedCount": "Copiado {{count}}x",
     "addComment": "Adicionar um comentário...",
     "deleteComment": "Excluir comentário"
@@ -50,11 +74,15 @@
     "submit": "Enviar sugestão"
   },
   "toast": {
+    "copiedToClipboard": "Copiado!",
+    "copyFailed": "Falha ao copiar",
+    "copyFailedDesc": "Não foi possível copiar.",
     "signUpToComment": "Crie uma conta para comentar",
     "signUpToCommentDesc": "Conta grátis para participar da conversa.",
     "commentTooLong": "Comentário muito longo",
     "commentMax": "Máximo 500 caracteres.",
     "commentFailed": "Falha no comentário",
+    "deleteFailed": "Falha ao excluir",
     "signUpToVote": "Crie uma conta para votar",
     "signUpToVoteDesc": "Conta grátis para votar nos prompts.",
     "voteFailed": "Falha ao votar",
