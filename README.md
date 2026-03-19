@@ -165,7 +165,7 @@ apps/web/
 | `/explore` | Project catalog | Public |
 | `/ideas` | Ideas Lab (AI-scored, multi-filter) | Public |
 | `/ideas/:id` | Idea detail (verdict, scores, evidence) | Public |
-| `/ideas/analytics` | Analytics dashboard (10 charts) | Public |
+| `/ideas/analytics` | Analytics dashboard (12 visualizations) | Public |
 | `/prompts` | Prompt Library | Hybrid |
 | `/flybot` | FlyBot landing | Public |
 | `/flybot/chat` | FlyBot full chat | Members |

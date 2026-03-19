@@ -22,7 +22,7 @@ npm run lint     # ESLint (quiet mode)
 - **Icons:** Lucide React
 - **Backend:** Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage)
 - **Auth:** Email/password + Google OAuth via Supabase
-- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root). Dynamic sitemap via `api/sitemap.js`, dynamic OG images via `api/og.js` (@vercel/og edge function), Core Web Vitals via web-vitals
+- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root). Dynamic sitemap via `api/sitemap.js`, Core Web Vitals via web-vitals. OG image function (`api/og.js.disabled`) temporarily disabled due to @vercel/og edge runtime incompatibility
 - **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, trackWebVitals, trackScrollDepth, trackEventOnce, setUserProperties, setUserId). UTM/referrer tracking on page view. Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
 - **i18n:** react-i18next + i18next (EN + PT-BR). State-based toggle (localStorage `language` key), browser language detection. 11 namespace files per language. `LanguageToggle.jsx` in Header. FlyBot responds in user's UI language via system prompt injection. `scripts/translate-missing.mjs` checks coverage and auto-translates with Claude Haiku
 - **Deploy:** Vercel (auto-deploy on push to `main`)
@@ -143,7 +143,7 @@ apps/web/
 │   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Sonnet, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max, cross-session memory, returns message_id)
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
 │   ├── feedback.js              # POST/DELETE - FlyBot message feedback (thumbs up/down with optional comment)
-│   ├── og.js                    # Edge function - dynamic OG images (@vercel/og) with verdict/score for idea sharing
+│   ├── og.js.disabled            # Edge function - dynamic OG images (@vercel/og), temporarily disabled
 │   ├── sitemap.js               # Dynamic XML sitemap (static routes + all approved ideas from Supabase)
 │   └── lib/
 │       ├── auth.js              # Supabase JWT verification, admin email check
@@ -240,7 +240,7 @@ apps/web/
 ## Data Layer
 - **projects.js:** `projects` array (10 items), `categories` array (All/Business/Tools/Learn). Each project has: title, description, icon, link, color, bgColor, type, status (Live/Beta/Soon/Open), category, isGated (optional)
 - **prompts.js:** Prompts across 8 categories (Coding, Writing, Strategy, Marketing, SEO, Research, Workflows, Thinking). Each has: id, title, category, description, content, featured (optional - marks lead magnet for guest view), tools (optional - array of tool names for workflows)
-- **siteStats.js:** Centralized dynamic counts computed from data arrays (PROMPT_COUNT, CATEGORY_COUNT, BOOK_COUNT, TEMPLATE_COUNT, SOURCE_COUNT, EXPERT_COUNT, QUESTION_COUNT, etc.) plus architectural constants (ROUTE_COUNT, SCRIPT_COUNT, GA4_EVENT_COUNT, etc.). Imported by pages instead of hardcoding numbers
+- **siteStats.js:** Centralized dynamic counts computed from data arrays (PROMPT_COUNT, CATEGORY_COUNT, BOOK_COUNT, TEMPLATE_COUNT, SOURCE_COUNT, EXPERT_COUNT, QUESTION_COUNT, TRACK_COUNT, VIBE_COUNT, FRAMEWORK_COUNT, YC_QUESTION_COUNT). Imported by pages instead of hardcoding numbers
 - **library.js:** `books` array (id, title, description, topic, status, coverColor, downloadUrl, pageCount), `topics` array, `topicColors` map. Topics: AI, Business, Mindset, Mindfulness, Random
 - **ideas.js:** categories (Tool/Template/Prompt/Article/Other), industries (30 domain verticals from ProblemHunt/Reddit + Other), statusConfig (open/building/shipped), sortOptions (6-way: hot/new/oldest/top/score/verdict), sourceOptions (9: all/community/problemhunt/reddit/producthunt/x/hackernews/github/yc), verdictOptions (all/BUILD/VALIDATE_FIRST/SKIP), verdictColors + verdictLabels (shared constants), scoreThresholds (0/40/60/75), confidenceOptions (all/high/medium/low), perPageOptions (5/10/20/50), frequencyOptions (Daily/Weekly/Sometimes/Once), formSteps (3-step submit). Seven-dimension filtering: Search x Source x Type x Industry x Verdict x Score x Confidence. URL state persistence via useIdeaFilters hook
 
