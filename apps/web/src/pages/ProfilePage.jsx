@@ -7,8 +7,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, User, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
+import { useTranslation } from 'react-i18next';
 
 const ProfilePage = () => {
+  const { t } = useTranslation('auth');
   const { currentUser, profile, updateProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -49,31 +51,31 @@ const ProfilePage = () => {
     const parsedAge = form.age ? parseInt(form.age, 10) : null;
 
     if (form.name && form.name.length > 100) {
-      toast({ title: 'Name too long', description: 'Max 100 characters.', variant: 'destructive' });
+      toast({ title: t('profile.toastNameTooLong'), description: t('profile.toastNameTooLongDesc'), variant: 'destructive' });
       return;
     }
     if (form.phone && form.phone.length > 30) {
-      toast({ title: 'Phone too long', description: 'Max 30 characters.', variant: 'destructive' });
+      toast({ title: t('profile.toastPhoneTooLong'), description: t('profile.toastPhoneTooLongDesc'), variant: 'destructive' });
       return;
     }
     if (form.country && form.country.length > 60) {
-      toast({ title: 'Country too long', description: 'Max 60 characters.', variant: 'destructive' });
+      toast({ title: t('profile.toastCountryTooLong'), description: t('profile.toastCountryTooLongDesc'), variant: 'destructive' });
       return;
     }
     if (form.city && form.city.length > 60) {
-      toast({ title: 'City too long', description: 'Max 60 characters.', variant: 'destructive' });
+      toast({ title: t('profile.toastCityTooLong'), description: t('profile.toastCityTooLongDesc'), variant: 'destructive' });
       return;
     }
     if (parsedAge !== null && (parsedAge < 13 || parsedAge > 120)) {
-      toast({ title: 'Invalid age', description: 'Must be between 13 and 120.', variant: 'destructive' });
+      toast({ title: t('profile.toastInvalidAge'), description: t('profile.toastInvalidAgeDesc'), variant: 'destructive' });
       return;
     }
     if (form.gender && !VALID_GENDERS.includes(form.gender)) {
-      toast({ title: 'Invalid gender', description: 'Please select a valid option.', variant: 'destructive' });
+      toast({ title: t('profile.toastInvalidGender'), description: t('profile.toastInvalidGenderDesc'), variant: 'destructive' });
       return;
     }
     if (form.bio && form.bio.length > 200) {
-      toast({ title: 'Bio too long', description: 'Max 200 characters.', variant: 'destructive' });
+      toast({ title: t('profile.toastBioTooLong'), description: t('profile.toastBioTooLongDesc'), variant: 'destructive' });
       return;
     }
 
@@ -96,13 +98,13 @@ const ProfilePage = () => {
       const filledFields = Object.values(updates).filter(v => v !== null).length;
       trackEvent('profile_updated', { fields_filled: filledFields });
       toast({
-        title: 'Profile updated',
-        description: 'Your changes have been saved.',
+        title: t('profile.toastSaved'),
+        description: t('profile.toastSavedDesc'),
       });
     } else {
       toast({
-        title: 'Something went wrong',
-        description: result.error || 'Could not save your profile.',
+        title: t('profile.toastFailed'),
+        description: result.error || t('profile.toastFailedDesc'),
         variant: 'destructive',
       });
     }
@@ -118,8 +120,8 @@ const ProfilePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Profile | Fly Labs",
-        description: "Manage your Fly Labs profile. Update your name, photo, bio, and account settings. Customize your builder identity.",
+        title: t('profile.seoTitle'),
+        description: t('profile.seoDescription'),
         keywords: "profile, account settings, fly labs account, builder profile",
         url: "https://flylabs.fun/profile",
         noindex: true,
@@ -136,7 +138,7 @@ const ProfilePage = () => {
           onClick={() => navigate(-1)}
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
-          <ArrowLeft className="w-4 h-4" /> Back
+          <ArrowLeft className="w-4 h-4" /> {t('profile.back')}
         </button>
 
         <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl">
@@ -148,14 +150,14 @@ const ProfilePage = () => {
                 {initials || <User className="w-8 h-8" />}
               </AvatarFallback>
             </Avatar>
-            <h1 className="text-2xl font-black tracking-tight">Your Profile</h1>
-            <p className="text-muted-foreground font-medium mt-1 text-sm">Fill in what you want, skip what you don't.</p>
+            <h1 className="text-2xl font-black tracking-tight">{t('profile.title')}</h1>
+            <p className="text-muted-foreground font-medium mt-1 text-sm">{t('profile.subtitle')}</p>
 
             {/* Completeness indicator */}
             <div className="w-full mt-4">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs font-semibold text-muted-foreground">
-                  {completeness === 100 ? 'Profile complete' : `${completeness}% complete`}
+                  {completeness === 100 ? t('profile.completenessComplete') : t('profile.completenessPercent', { percent: completeness })}
                 </span>
                 <span className="text-xs font-bold text-primary">{filledCount}/{profileFields.length}</span>
               </div>
@@ -173,7 +175,7 @@ const ProfilePage = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email (read-only) */}
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-muted-foreground">Email</label>
+              <label className="text-sm font-medium text-muted-foreground">{t('profile.emailLabel')}</label>
               <input
                 type="email"
                 value={currentUser?.email || ''}
@@ -184,13 +186,13 @@ const ProfilePage = () => {
 
             {/* Name */}
             <div className="space-y-1.5">
-              <label htmlFor="profile-name" className="text-sm font-medium text-muted-foreground">Name</label>
+              <label htmlFor="profile-name" className="text-sm font-medium text-muted-foreground">{t('profile.nameLabel')}</label>
               <input
                 id="profile-name"
                 name="name"
                 type="text"
                 maxLength={100}
-                placeholder="What should we call you?"
+                placeholder={t('profile.namePlaceholder')}
                 value={form.name}
                 onChange={handleChange}
                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
@@ -200,26 +202,26 @@ const ProfilePage = () => {
             {/* Phone + Country */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label htmlFor="profile-phone" className="text-sm font-medium text-muted-foreground">Phone</label>
+                <label htmlFor="profile-phone" className="text-sm font-medium text-muted-foreground">{t('profile.phoneLabel')}</label>
                 <input
                   id="profile-phone"
                   name="phone"
                   type="text"
                   maxLength={30}
-                  placeholder="+1 234 567 890"
+                  placeholder={t('profile.phonePlaceholder')}
                   value={form.phone}
                   onChange={handleChange}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="profile-country" className="text-sm font-medium text-muted-foreground">Country</label>
+                <label htmlFor="profile-country" className="text-sm font-medium text-muted-foreground">{t('profile.countryLabel')}</label>
                 <input
                   id="profile-country"
                   name="country"
                   type="text"
                   maxLength={60}
-                  placeholder="e.g. Brazil"
+                  placeholder={t('profile.countryPlaceholder')}
                   value={form.country}
                   onChange={handleChange}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
@@ -230,27 +232,27 @@ const ProfilePage = () => {
             {/* City + Age */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label htmlFor="profile-city" className="text-sm font-medium text-muted-foreground">City</label>
+                <label htmlFor="profile-city" className="text-sm font-medium text-muted-foreground">{t('profile.cityLabel')}</label>
                 <input
                   id="profile-city"
                   name="city"
                   type="text"
                   maxLength={60}
-                  placeholder="e.g. Lisbon"
+                  placeholder={t('profile.cityPlaceholder')}
                   value={form.city}
                   onChange={handleChange}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="profile-age" className="text-sm font-medium text-muted-foreground">Age</label>
+                <label htmlFor="profile-age" className="text-sm font-medium text-muted-foreground">{t('profile.ageLabel')}</label>
                 <input
                   id="profile-age"
                   name="age"
                   type="number"
                   min="13"
                   max="120"
-                  placeholder="25"
+                  placeholder={t('profile.agePlaceholder')}
                   value={form.age}
                   onChange={handleChange}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
@@ -260,7 +262,7 @@ const ProfilePage = () => {
 
             {/* Gender */}
             <div className="space-y-1.5">
-              <label htmlFor="profile-gender" className="text-sm font-medium text-muted-foreground">Gender</label>
+              <label htmlFor="profile-gender" className="text-sm font-medium text-muted-foreground">{t('profile.genderLabel')}</label>
               <div className="relative">
                 <select
                   id="profile-gender"
@@ -269,11 +271,11 @@ const ProfilePage = () => {
                   onChange={handleChange}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="">Prefer not to say</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Non-binary">Non-binary</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
+                  <option value="">{t('profile.genderPreferNotToSay')}</option>
+                  <option value="Male">{t('profile.genderMale')}</option>
+                  <option value="Female">{t('profile.genderFemale')}</option>
+                  <option value="Non-binary">{t('profile.genderNonBinary')}</option>
+                  <option value="Prefer not to say">{t('profile.genderPreferNotToSay')}</option>
                 </select>
                 <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -286,14 +288,14 @@ const ProfilePage = () => {
             {/* Bio */}
             <div className="space-y-1.5">
               <label htmlFor="profile-bio" className="text-sm font-medium text-muted-foreground">
-                Bio <span className="text-muted-foreground/50">(max 200 chars)</span>
+                {t('profile.bioLabel')} <span className="text-muted-foreground/50">{t('profile.bioMax')}</span>
               </label>
               <textarea
                 id="profile-bio"
                 name="bio"
                 rows={3}
                 maxLength={200}
-                placeholder="A few words about yourself..."
+                placeholder={t('profile.bioPlaceholder')}
                 value={form.bio}
                 onChange={handleChange}
                 className="w-full p-4 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
@@ -307,7 +309,7 @@ const ProfilePage = () => {
               disabled={isSaving}
               className="w-full h-12 text-lg bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-xl transition-colors flex items-center justify-center mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : 'Save Changes'}
+              {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : t('profile.save')}
             </button>
           </form>
         </div>

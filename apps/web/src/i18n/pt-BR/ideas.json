@@ -5,6 +5,7 @@
   },
   "hero": {
     "title": "The Ideas Lab",
+    "ideas": "Ideias",
     "ideasCount": "{{count}}+ ideias",
     "from": "de {{sourceCount}} fontes. Pontuadas por {{questionCount}} perguntas.",
     "howItWorks": "Como funciona",
@@ -37,12 +38,19 @@
     "noMatch": "Nenhuma ideia encontrada com esses filtros. Tente afrouxar.",
     "tryClearFilter": "Tente remover {{filter}} para ver mais ideias.",
     "clearAllFilters": "Limpar todos os filtros",
-    "guestBanner": "Pontuações, vereditos e análise por IA estão disponíveis. Crie uma conta para desbloquear."
+    "guestBanner": "Pontuações, vereditos e análise por IA estão disponíveis.",
+    "guestBannerLink": "Crie uma conta",
+    "guestBannerSuffix": "para desbloquear.",
+    "clearAll": "Limpar todos"
   },
   "shipped": {
     "title": "Lançados do lab",
     "badge": "Lançado",
-    "checkItOut": "Conferir"
+    "checkItOut": "Conferir",
+    "flybotDesc": "Parceiro de IA que pontua ideias, encontra padrões entre fontes e responde perguntas sobre o lab. Construído com Claude.",
+    "flyboardDesc": "Quadro branco com 12 templates, 5 estilos de grade e exportações limpas. Powered by Excalidraw.",
+    "garminDesc": "Sincronização automática de dados de saúde do Garmin para o Notion. Nasceu de um pedido da comunidade, agora open source.",
+    "blueprintDesc": "Breakdown completo do stack de como esse site foi construído. Open source e livre para fork."
   },
   "howItWorks": {
     "title": "Como funciona",
@@ -128,9 +136,27 @@
     "guestTitle": "Crie uma conta grátis para ver a análise completa",
     "guestDescription": "Pontuação por IA, perspectivas de especialistas e evidência de mercado para cada ideia.",
     "guestScoreMessage": "Detalhamento da pontuação e análise disponível após criar conta.",
+    "guestPainPlaceholder": "As pessoas estão frustradas com as soluções existentes nesse espaço.",
+    "guestGapPlaceholder": "As ferramentas atuais não atendem necessidades que os usuários pedem.",
+    "guestBuildPlaceholder": "Uma solução focada no segmento mal atendido.",
     "loading": "Carregando - Ideas Lab",
     "notFoundTitle": "Ideia não encontrada - Ideas Lab",
-    "notFoundMessage": "Essa ideia não existe ou foi removida."
+    "notFoundMessage": "Essa ideia não existe ou foi removida.",
+    "seoFallback": "Análise de ideia pontuada por IA no Fly Labs",
+    "ideasLabSuffix": "Ideas Lab",
+    "share": "Compartilhar",
+    "vote": "Votar",
+    "voted": "Votado",
+    "people": "pessoas",
+    "linkCopied": "Link copiado",
+    "linkCopiedDesc": "Compartilhe essa ideia com qualquer pessoa.",
+    "copyFailed": "Falha ao copiar",
+    "copyFailedDesc": "Não foi possível copiar para a área de transferência.",
+    "talkToRealPeople": "Converse com pessoas reais antes de construir.",
+    "betterIdeas": "Existem ideias melhores no lab.",
+    "sources": "fontes",
+    "tweets": "tweets",
+    "posts": "posts"
   },
   "analytics": {
     "seoTitle": "Analytics do Ideas Lab | Fly Labs",

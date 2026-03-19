@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Loader2, CheckCircle2, Activity, Globe, PenLine, Send, ChevronDown, SlidersHorizontal, Search, X, LayoutList, LayoutGrid, Bot, Lock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast.js';
@@ -25,28 +26,28 @@ import IdeaFilterSheet from '@/components/ideas/IdeaFilterSheet.jsx';
 const SHIPPED_FALLBACK = [
   {
     title: 'FlyBot',
-    description: 'AI partner that scores ideas, finds patterns across sources, and answers questions about the lab. Built on Claude.',
+    descKey: 'shipped.flybotDesc',
     industry: 'AI',
     link: '/flybot',
     icon: 'bot',
   },
   {
     title: 'FlyBoard',
-    description: 'Whiteboard with 12 templates, 5 grid styles, and clean exports. Powered by Excalidraw.',
+    descKey: 'shipped.flyboardDesc',
     industry: 'Productivity',
     link: '/flyboard',
     icon: 'penline',
   },
   {
     title: 'Garmin to Notion Sync',
-    description: 'Auto-sync Garmin health data to Notion. Born from a community request, now open source.',
+    descKey: 'shipped.garminDesc',
     industry: 'Sport & Fitness',
     link: '/templates/garmin-to-notion',
     icon: 'activity',
   },
   {
     title: 'Website Blueprint',
-    description: 'Full stack breakdown of how this site was built. Open source and free to fork.',
+    descKey: 'shipped.blueprintDesc',
     industry: 'Dev',
     link: '/templates/website-blueprint',
     icon: 'globe',
@@ -57,6 +58,7 @@ const SHIPPED_FALLBACK = [
 const PRIMARY_SORTS = ['hot', 'new', 'top'];
 
 const IdeaSubmissionPage = () => {
+  const { t } = useTranslation('ideas');
   const { toast } = useToast();
   const navigate = useNavigate();
   const { currentUser, profile, isAuthenticated } = useAuth();
@@ -207,29 +209,29 @@ const IdeaSubmissionPage = () => {
     e.preventDefault();
 
     if (!formData.idea_title) {
-      toast({ title: 'Missing field', description: 'Please describe the problem.', variant: 'destructive' });
+      toast({ title: t('toast.missingField'), description: t('toast.describeProblem'), variant: 'destructive' });
       return;
     }
     if (!formData.email) {
-      toast({ title: 'Missing email', description: 'Please enter your email.', variant: 'destructive' });
+      toast({ title: t('toast.missingEmail'), description: t('toast.enterEmail'), variant: 'destructive' });
       return;
     }
     if (!isValidEmail(formData.email.trim())) {
-      toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+      toast({ title: t('toast.invalidEmail'), description: t('toast.enterValidEmail'), variant: 'destructive' });
       return;
     }
 
     const VALID_CATEGORIES = categories.map(c => c.value);
     if (!VALID_CATEGORIES.includes(formData.category)) {
-      toast({ title: 'Invalid category', variant: 'destructive' });
+      toast({ title: t('toast.invalidCategory'), variant: 'destructive' });
       return;
     }
     if (formData.idea_title.length > 100) {
-      toast({ title: 'Title too long', description: 'Max 100 characters.', variant: 'destructive' });
+      toast({ title: t('toast.titleTooLong'), description: t('toast.maxChars100'), variant: 'destructive' });
       return;
     }
     if (formData.idea_description && formData.idea_description.length > 1000) {
-      toast({ title: 'Description too long', description: 'Max 1000 characters.', variant: 'destructive' });
+      toast({ title: t('toast.descTooLong'), description: t('toast.maxChars1000'), variant: 'destructive' });
       return;
     }
 
@@ -238,7 +240,7 @@ const IdeaSubmissionPage = () => {
       // Check rate limit
       const { data: rateCount } = await supabase.rpc('check_idea_rate_limit', { p_email: formData.email.trim().toLowerCase() });
       if (rateCount && rateCount >= 3) {
-        toast({ title: "You've shared 3 ideas today", description: 'Come back tomorrow with more.', variant: 'destructive' });
+        toast({ title: t('toast.rateLimited'), description: t('toast.rateLimitedDesc'), variant: 'destructive' });
         setIsSubmitting(false);
         return;
       }
@@ -262,8 +264,8 @@ const IdeaSubmissionPage = () => {
       trackEvent('idea_submitted', { category: formData.category });
 
       toast({
-        title: 'Your idea is in the lab.',
-        description: "We'll score it, give it a verdict, and validate the best ones against real market conversations.",
+        title: t('toast.submitted'),
+        description: t('toast.submittedDesc'),
       });
 
       setFormData({
@@ -281,8 +283,8 @@ const IdeaSubmissionPage = () => {
       setShowModal(false);
     } catch (error) {
       toast({
-        title: 'Something went wrong',
-        description: "Couldn't send your idea. Please try again.",
+        title: t('toast.submitFailed'),
+        description: t('toast.submitFailedDesc'),
         variant: 'destructive',
       });
     } finally {
@@ -332,8 +334,8 @@ const IdeaSubmissionPage = () => {
     <>
       <PageLayout
         seo={{
-          title: "Ideas Lab | Fly Labs",
-          description: "Real problems scored by the Fly Labs Method. Browse, filter, and find what to build next.",
+          title: t('seo.title'),
+          description: t('seo.description', { sourceCount: SOURCE_COUNT }),
           keywords: "submit idea, project idea, community, vote, tool request, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
         }}
@@ -350,19 +352,19 @@ const IdeaSubmissionPage = () => {
               className="text-center mb-6"
             >
               <h1 className="text-4xl md:text-7xl font-black mb-3 tracking-tight">
-                The <span className="text-primary">Ideas Lab</span>
+                {t('hero.title').split('Ideas Lab')[0]}<span className="text-primary">Ideas Lab</span>
               </h1>
               <p className="text-sm text-muted-foreground font-medium max-w-lg mx-auto">
-                {globalCount ? `${globalCount}+ ideas` : 'Ideas'} from {SOURCE_COUNT} sources. Scored by {QUESTION_COUNT} questions. <span className="font-bold text-foreground/70">BUILD</span>, <span className="font-bold text-foreground/70">VALIDATE</span>, or <span className="font-bold text-foreground/70">SKIP</span>.{' '}
-                <Link to="/scoring" className="text-primary hover:underline">How it works</Link>
+                {globalCount ? t('hero.ideasCount', { count: globalCount }) : t('hero.ideas')} {t('hero.from', { sourceCount: SOURCE_COUNT, questionCount: QUESTION_COUNT })} <span className="font-bold text-foreground/70">{t('verdicts.build')}</span>, <span className="font-bold text-foreground/70">{t('verdicts.validate')}</span>, or <span className="font-bold text-foreground/70">{t('verdicts.skip')}</span>.{' '}
+                <Link to="/scoring" className="text-primary hover:underline">{t('hero.howItWorks')}</Link>
               </p>
               <Link
                 to="/ideas/analytics"
                 className="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/20 hover:bg-accent/15 transition-colors"
               >
                 <Activity className="w-3.5 h-3.5" />
-                <span className="sm:hidden">Live analytics</span>
-                <span className="hidden sm:inline">Live analytics: verdicts, sources, scoring patterns, industry trends</span>
+                <span className="sm:hidden">{t('hero.liveAnalytics')}</span>
+                <span className="hidden sm:inline">{t('hero.liveAnalyticsLong')}</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </motion.div>
@@ -380,7 +382,7 @@ const IdeaSubmissionPage = () => {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                   <input
                     type="text"
-                    placeholder="Search ideas..."
+                    placeholder={t('toolbar.searchPlaceholder')}
                     value={searchInput}
                     onChange={handleSearchInput}
                     className="w-full h-10 pl-9 pr-8 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors"
@@ -398,7 +400,7 @@ const IdeaSubmissionPage = () => {
                   onClick={openSubmitModal}
                   className="hidden sm:inline-flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors shrink-0"
                 >
-                  Submit an idea <ArrowRight className="w-3.5 h-3.5" />
+                  {t('toolbar.submitIdea')} <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 
@@ -419,7 +421,7 @@ const IdeaSubmissionPage = () => {
                         />
                       )}
                       <span className={`relative z-10 ${sortBy === opt.value ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}>
-                        {opt.label}
+                        {t('sort.' + opt.value)}
                       </span>
                     </button>
                   ))}
@@ -434,7 +436,7 @@ const IdeaSubmissionPage = () => {
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      {moreSortActive ? moreSortActive.label : 'More'}
+                      {moreSortActive ? t('sort.' + moreSortActive.value) : t('toolbar.more')}
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showMoreSort ? 'rotate-180' : ''}`} />
                     </button>
                     {showMoreSort && (
@@ -451,7 +453,7 @@ const IdeaSubmissionPage = () => {
                                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                               }`}
                             >
-                              {opt.label}
+                              {t('sort.' + opt.value)}
                             </button>
                           ))}
                         </div>
@@ -466,14 +468,14 @@ const IdeaSubmissionPage = () => {
                     <button
                       onClick={() => toggleView('cards')}
                       className={`p-1.5 rounded-full transition-colors ${viewMode === 'cards' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-                      aria-label="Card view"
+                      aria-label={t('toolbar.cardView')}
                     >
                       <LayoutGrid className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => toggleView('table')}
                       className={`p-1.5 rounded-full transition-colors ${viewMode === 'table' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-                      aria-label="Table view"
+                      aria-label={t('toolbar.tableView')}
                     >
                       <LayoutList className="w-3.5 h-3.5" />
                     </button>
@@ -488,7 +490,7 @@ const IdeaSubmissionPage = () => {
                     }`}
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5" />
-                    Filters
+                    {t('toolbar.filters')}
                     {activeFilterCount > 0 && (
                       <span className="w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
                         {activeFilterCount}
@@ -579,7 +581,7 @@ const IdeaSubmissionPage = () => {
                     onClick={clearAllFilters}
                     className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Clear all
+                    {t('results.clearAll')}
                   </button>
                 </div>
               )}
@@ -595,8 +597,8 @@ const IdeaSubmissionPage = () => {
             {/* Result counter */}
             {!loading && totalCount > 0 && (
               <div className="text-xs text-muted-foreground/60 font-medium mb-3 tabular-nums">
-                {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount} ideas
-                {sortBy !== 'hot' && <span className="text-muted-foreground/40"> &middot; sorted by {sortOptions.find(o => o.value === sortBy)?.label?.toLowerCase()}</span>}
+                {t('results.showing', { from: (currentPage - 1) * perPage + 1, to: Math.min(currentPage * perPage, totalCount), total: totalCount })}
+                {sortBy !== 'hot' && <span className="text-muted-foreground/40"> &middot; {t('results.sortedBy', { sort: t('sort.' + sortBy).toLowerCase() })}</span>}
               </div>
             )}
 
@@ -612,13 +614,15 @@ const IdeaSubmissionPage = () => {
                 className="text-center py-20"
               >
                 <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-                <p className="text-muted-foreground font-medium mb-3">No ideas match these filters. Try loosening up.</p>
+                <p className="text-muted-foreground font-medium mb-3">{t('results.noMatch')}</p>
                 {(() => {
                   const restrictive = getMostRestrictiveFilter();
                   if (restrictive) {
                     return (
                       <p className="text-sm text-muted-foreground/60 mb-3">
-                        Try removing <button onClick={restrictive.onRemove} className="text-primary font-medium hover:underline">{restrictive.label}: {restrictive.value}</button> to see more ideas.
+                        {t('results.tryClearFilter', { filter: `${restrictive.label}: ${restrictive.value}` }).split(`${restrictive.label}: ${restrictive.value}`)[0]}
+                        <button onClick={restrictive.onRemove} className="text-primary font-medium hover:underline">{restrictive.label}: {restrictive.value}</button>
+                        {t('results.tryClearFilter', { filter: `${restrictive.label}: ${restrictive.value}` }).split(`${restrictive.label}: ${restrictive.value}`)[1]}
                       </p>
                     );
                   }
@@ -628,7 +632,7 @@ const IdeaSubmissionPage = () => {
                   onClick={clearAllFilters}
                   className="text-sm text-primary font-medium hover:underline"
                 >
-                  Clear all filters
+                  {t('results.clearAllFilters')}
                 </button>
               </motion.div>
             ) : (
@@ -638,8 +642,8 @@ const IdeaSubmissionPage = () => {
                   <div className="mb-4 px-4 py-3 rounded-xl border border-primary/20 bg-primary/5 flex items-center gap-3 text-sm">
                     <Lock className="w-4 h-4 text-primary shrink-0" />
                     <span className="text-muted-foreground">
-                      Scores, verdicts, and AI analysis are available for free.{' '}
-                      <a href="/signup" className="text-primary font-semibold hover:underline">Sign up</a> to unlock.
+                      {t('results.guestBanner')}{' '}
+                      <a href="/signup" className="text-primary font-semibold hover:underline">{t('results.guestBannerLink')}</a> {t('results.guestBannerSuffix')}
                     </span>
                   </div>
                 )}
@@ -649,11 +653,11 @@ const IdeaSubmissionPage = () => {
                       <thead>
                         <tr className="border-b border-border/60 bg-muted/30">
                           <th className="py-2 px-2 w-12 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-wider"></th>
-                          <th className="py-2 px-2 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Problem</th>
-                          <th className="py-2 px-2 w-24 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">Verdict</th>
-                          <th className="py-2 px-2 w-16 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">FL</th>
-                          <th className="py-2 px-2 w-28 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden md:table-cell">Source</th>
-                          <th className="py-2 px-2 w-20 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Age</th>
+                          <th className="py-2 px-2 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t('table.problem')}</th>
+                          <th className="py-2 px-2 w-24 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">{t('table.verdict')}</th>
+                          <th className="py-2 px-2 w-16 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden sm:table-cell">{t('table.fl')}</th>
+                          <th className="py-2 px-2 w-28 text-[11px] font-medium text-muted-foreground uppercase tracking-wider hidden md:table-cell">{t('table.source')}</th>
+                          <th className="py-2 px-2 w-20 text-right text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{t('table.age')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -726,7 +730,7 @@ const IdeaSubmissionPage = () => {
                   </div>
 
                   <span className="text-xs text-muted-foreground/60 font-medium tabular-nums">
-                    {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, totalCount)} of {totalCount}
+                    {t('results.showing', { from: (currentPage - 1) * perPage + 1, to: Math.min(currentPage * perPage, totalCount), total: totalCount })}
                   </span>
                 </div>
               </>
@@ -735,7 +739,7 @@ const IdeaSubmissionPage = () => {
             {/* Below the fold: Shipped from the lab */}
             <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="mt-16 mb-10">
               <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">
-                Shipped from the lab
+                {t('shipped.title')}
               </p>
               <div className="flex flex-col gap-3">
                 {SHIPPED_FALLBACK.map((item) => (
@@ -753,17 +757,17 @@ const IdeaSubmissionPage = () => {
                             {item.title}
                           </h3>
                           <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                            <CheckCircle2 className="w-3 h-3" /> Shipped
+                            <CheckCircle2 className="w-3 h-3" /> {t('shipped.badge')}
                           </span>
                           <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                             {item.industry}
                           </span>
                         </div>
                         <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-                          {item.description}
+                          {t(item.descKey)}
                         </p>
                         <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                          Check it out <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
+                          {t('shipped.checkItOut')} <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                         </span>
                       </div>
                     </Link>
@@ -777,10 +781,10 @@ const IdeaSubmissionPage = () => {
                 <div className="flex items-start gap-3">
                   <Zap className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-foreground mb-1">How it works</p>
+                    <p className="text-sm font-semibold text-foreground mb-1">{t('howItWorks.title')}</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      We pull real problems from {SOURCE_COUNT} sources daily, score each one with 4 questions using the Fly Labs Method, then validate top ideas against real conversations on X and Reddit. Each idea gets a verdict: build it, validate first, or move on.
-                      {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
+                      {t('howItWorks.description', { sourceCount: SOURCE_COUNT })}
+                      {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">{t('howItWorks.link')}</Link>
                     </p>
                   </div>
                 </div>
@@ -800,8 +804,8 @@ const IdeaSubmissionPage = () => {
                   <Bot className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">Want to dig deeper into an idea?</p>
-                  <p className="text-xs text-muted-foreground">Ask FlyBot. It can score your own ideas, search by source or verdict, and spot patterns across hundreds of scored problems.</p>
+                  <p className="text-sm font-medium text-foreground">{t('flybot.hintTitle')}</p>
+                  <p className="text-xs text-muted-foreground">{t('flybot.hintDescription')}</p>
                 </div>
                 <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
               </button>
@@ -818,7 +822,7 @@ const IdeaSubmissionPage = () => {
           className="w-full flex items-center justify-center gap-2 h-11 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
         >
           <Send className="w-4 h-4" />
-          Submit an idea
+          {t('submit.mobileCta')}
         </button>
       </div>
 

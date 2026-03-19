@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronUp, ChevronLeft, ChevronDown, Zap, Loader2, ArrowRight, Info, Archive, ExternalLink, Share2, AlertTriangle, Sparkles, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast.js';
@@ -17,6 +18,7 @@ import { GatedOverlay } from '@/components/GatedOverlay.jsx';
 
 const IdeaDetailPage = () => {
   const { id } = useParams();
+  const { t } = useTranslation('ideas');
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const { openWidget, setPageDetail } = useChatContext();
@@ -114,16 +116,16 @@ const IdeaDetailPage = () => {
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
-      toast({ title: 'Link copied', description: 'Share this idea with anyone.' });
+      toast({ title: t('detail.linkCopied'), description: t('detail.linkCopiedDesc') });
       trackEvent('idea_shared', { idea_id: idea?.id, idea_title: idea?.idea_title });
     } catch {
-      toast({ title: 'Copy failed', description: 'Could not copy to clipboard.', variant: 'destructive' });
+      toast({ title: t('detail.copyFailed'), description: t('detail.copyFailedDesc'), variant: 'destructive' });
     }
   };
 
   if (loading) {
     return (
-      <PageLayout seo={{ title: 'Loading - Ideas Lab', noindex: true }}>
+      <PageLayout seo={{ title: t('detail.loading'), noindex: true }}>
         <div className="min-h-[60vh] flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -133,13 +135,13 @@ const IdeaDetailPage = () => {
 
   if (notFound || !idea) {
     return (
-      <PageLayout seo={{ title: 'Idea not found - Ideas Lab', noindex: true }}>
+      <PageLayout seo={{ title: t('detail.notFoundTitle'), noindex: true }}>
         <div className="container mx-auto px-6 pt-32 pb-20">
           <div className="max-w-3xl mx-auto text-center py-20">
             <Zap className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="text-lg font-medium text-muted-foreground mb-4">This idea doesn't exist or has been removed.</p>
+            <p className="text-lg font-medium text-muted-foreground mb-4">{t('detail.notFoundMessage')}</p>
             <Link to="/ideas" className="inline-flex items-center gap-2 text-primary font-medium hover:underline">
-              <ChevronLeft className="w-4 h-4" /> Back to Ideas Lab
+              <ChevronLeft className="w-4 h-4" /> {t('detail.backToIdeas')}
             </Link>
           </div>
         </div>
@@ -168,8 +170,8 @@ const IdeaDetailPage = () => {
   return (
     <PageLayout
       seo={{
-        title: `${idea.idea_title} - Ideas Lab`,
-        description: synthesis?.one_liner || idea.idea_description || 'AI-scored idea analysis on Fly Labs',
+        title: `${idea.idea_title} - ${t('detail.ideasLabSuffix')}`,
+        description: synthesis?.one_liner || idea.idea_description || t('detail.seoFallback'),
         url: `https://flylabs.fun/ideas/${idea.id}`,
         image: `/api/og?title=${encodeURIComponent(idea.idea_title)}${idea.flylabs_score != null ? `&score=${idea.flylabs_score}` : ''}${idea.verdict ? `&verdict=${idea.verdict}` : ''}`,
         schema: [
@@ -196,7 +198,7 @@ const IdeaDetailPage = () => {
 
           {/* Back link */}
           <Link to="/ideas" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-4 h-4" /> Back to Ideas Lab
+            <ChevronLeft className="w-4 h-4" /> {t('detail.backToIdeas')}
           </Link>
 
           {/* Hero */}
@@ -243,14 +245,14 @@ const IdeaDetailPage = () => {
               }`}
             >
               <ChevronUp className="w-4 h-4" />
-              {hasVoted ? 'Voted' : 'Vote'}
+              {hasVoted ? t('detail.voted') : t('detail.vote')}
               <span className="tabular-nums">{idea.votes || 0}</span>
             </button>
             <button
               onClick={handleShare}
               className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
             >
-              <Share2 className="w-4 h-4" /> Share
+              <Share2 className="w-4 h-4" /> {t('detail.share')}
             </button>
             {idea.source !== 'community' && idea.source_url && (
               <a
@@ -260,7 +262,7 @@ const IdeaDetailPage = () => {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
                 onClick={() => trackEvent('outbound_click', { link_url: idea.source_url, link_label: `${idea.source} source`, location: 'idea_detail' })}
               >
-                View source <ArrowRight className="w-3.5 h-3.5" />
+                {t('detail.viewSource')} <ArrowRight className="w-3.5 h-3.5" />
               </a>
             )}
             <button
@@ -270,7 +272,7 @@ const IdeaDetailPage = () => {
               }}
               className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary/30 bg-primary/5 text-sm font-medium text-primary hover:bg-primary/10 transition-colors ml-auto"
             >
-              <Bot className="w-4 h-4" /> Ask FlyBot
+              <Bot className="w-4 h-4" /> {t('detail.askFlyBot')}
             </button>
           </div>
 
@@ -289,25 +291,25 @@ const IdeaDetailPage = () => {
               <section className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="h-px flex-1 bg-border" />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Quick Read</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.quickRead')}</span>
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   {thePain && (
                     <div className="space-y-1.5">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">The Pain</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">{t('detail.thePain')}</p>
                       <p className="text-sm text-muted-foreground leading-relaxed">{thePain}</p>
                     </div>
                   )}
                   {theGap && (
                     <div className="space-y-1.5">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">The Gap</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">{t('detail.theGap')}</p>
                       <p className="text-sm text-muted-foreground leading-relaxed">{theGap}</p>
                     </div>
                   )}
                   {buildAngle && (
                     <div className="space-y-1.5">
-                      <p className="text-[11px] font-bold uppercase tracking-widest text-primary">What to Build</p>
+                      <p className="text-[11px] font-bold uppercase tracking-widest text-primary">{t('detail.whatToBuild')}</p>
                       <p className="text-sm text-muted-foreground leading-relaxed">{buildAngle}</p>
                     </div>
                   )}
@@ -320,14 +322,14 @@ const IdeaDetailPage = () => {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">The Score</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.theScore')}</span>
               <div className="h-px flex-1 bg-border" />
             </div>
 
             {!flData && !synthesis ? (
               <div className="text-center py-8">
                 <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground font-medium">Score pending. New ideas are scored daily.</p>
+                <p className="text-sm text-muted-foreground font-medium">{t('detail.scorePending')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -338,7 +340,7 @@ const IdeaDetailPage = () => {
                       <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
                       {(enrichVerdict?.confidence || idea.confidence) && (
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[enrichVerdict?.confidence || idea.confidence] || confidenceColors.medium}`}>
-                          {enrichVerdict?.confidence || idea.confidence} confidence
+                          {enrichVerdict?.confidence || idea.confidence} {t('detail.confidence')}
                         </span>
                       )}
                     </div>
@@ -360,7 +362,7 @@ const IdeaDetailPage = () => {
                       return (
                         <div className="flex items-center gap-2 text-xs font-medium text-amber-500">
                           <AlertTriangle className="w-3.5 h-3.5" />
-                          Crowded market: {compCount} known competitors
+                          {t('detail.crowdedMarket', { count: compCount })}
                         </div>
                       );
                     }
@@ -368,14 +370,14 @@ const IdeaDetailPage = () => {
                       return (
                         <div className="flex items-center gap-2 text-xs font-medium text-primary">
                           <Sparkles className="w-3.5 h-3.5" />
-                          Underserved market
+                          {t('detail.underservedMarket')}
                         </div>
                       );
                     }
                     return null;
                   })()}
                   {synthesis?.saturation_capped && (
-                    <p className="text-xs text-amber-500/80">Score capped due to market saturation. Real problem, crowded space.</p>
+                    <p className="text-xs text-amber-500/80">{t('detail.scoreCapped')}</p>
                   )}
                 </div>
 
@@ -388,8 +390,8 @@ const IdeaDetailPage = () => {
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm font-bold text-indigo-500">Fly Labs Method</span>
-                          <span className="text-[10px] font-medium text-muted-foreground/50">4 questions, one score</span>
+                          <span className="text-sm font-bold text-indigo-500">{t('detail.flyLabsMethod')}</span>
+                          <span className="text-[10px] font-medium text-muted-foreground/50">{t('detail.fourQuestions')}</span>
                         </div>
                         {flData.summary && (
                           <p className="text-xs text-muted-foreground line-clamp-1">{flData.summary}</p>
@@ -438,7 +440,7 @@ const IdeaDetailPage = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {synthesis?.strengths?.length > 0 && (
                       <div className="space-y-1.5">
-                        <p className="text-xs font-medium text-muted-foreground/60">Strengths</p>
+                        <p className="text-xs font-medium text-muted-foreground/60">{t('detail.strengths')}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {synthesis.strengths.map((s, i) => (
                             <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{s}</span>
@@ -448,7 +450,7 @@ const IdeaDetailPage = () => {
                     )}
                     {synthesis?.risks?.length > 0 && (
                       <div className="space-y-1.5">
-                        <p className="text-xs font-medium text-muted-foreground/60">Risks</p>
+                        <p className="text-xs font-medium text-muted-foreground/60">{t('detail.risks')}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {synthesis.risks.map((r, i) => (
                             <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">{r}</span>
@@ -462,7 +464,7 @@ const IdeaDetailPage = () => {
                 {/* Next Steps */}
                 {synthesis?.next_steps?.length > 0 && (
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground/60 mb-1.5">Next Steps</p>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-1.5">{t('detail.nextSteps')}</p>
                     <ol className="space-y-1">
                       {synthesis.next_steps.map((step, i) => (
                         <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
@@ -478,8 +480,8 @@ const IdeaDetailPage = () => {
                 <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/30 border border-border/40">
                   <Info className="w-4 h-4 text-muted-foreground/40 mt-0.5 shrink-0" />
                   <p className="text-xs text-muted-foreground/60 leading-relaxed">
-                    AI-generated scores and analysis. Always do your own research before building.
-                    {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">How scoring works</Link>
+                    {t('detail.disclaimer')}
+                    {' '}<Link to="/scoring" className="text-accent hover:underline font-medium">{t('detail.howScoringWorks')}</Link>
                   </p>
                 </div>
               </div>
@@ -494,7 +496,7 @@ const IdeaDetailPage = () => {
                 <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5 space-y-3">
                   <div className="flex items-center gap-2">
                     <Archive className="w-4 h-4 text-amber-500" />
-                    <h4 className="font-bold text-amber-500 text-sm">YC Graveyard</h4>
+                    <h4 className="font-bold text-amber-500 text-sm">{t('detail.ycGraveyard')}</h4>
                   </div>
                   {fa.original_one_liner && (
                     <p className="text-sm text-muted-foreground italic">"{fa.original_one_liner}"</p>
@@ -510,26 +512,26 @@ const IdeaDetailPage = () => {
                     {fa.team_size && (
                       <>
                         <span className="text-muted-foreground/40">&middot;</span>
-                        <span>{fa.team_size} people</span>
+                        <span>{fa.team_size} {t('detail.people')}</span>
                       </>
                     )}
                   </div>
                   <div className="space-y-2">
                     {fa.failure_reason && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">Why it failed</p>
+                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">{t('detail.whyItFailed')}</p>
                         <p className="text-sm text-muted-foreground">{fa.failure_reason}</p>
                       </div>
                     )}
                     {fa.what_changed && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">What's different now</p>
+                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">{t('detail.whatsDifferent')}</p>
                         <p className="text-sm text-muted-foreground">{fa.what_changed}</p>
                       </div>
                     )}
                     {fa.rebuild_angle && (
                       <div>
-                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">Rebuild angle</p>
+                        <p className="text-xs font-medium text-muted-foreground/60 mb-0.5">{t('detail.rebuildAngle')}</p>
                         <p className="text-sm text-muted-foreground">{fa.rebuild_angle}</p>
                       </div>
                     )}
@@ -542,7 +544,7 @@ const IdeaDetailPage = () => {
                       onClick={() => trackEvent('outbound_click', { link_url: 'startups.rip', link_label: `${fa.company_name} post-mortem`, location: 'idea_detail' })}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-500 hover:underline transition-colors pt-1"
                     >
-                      Read full post-mortem on startups.rip <ExternalLink className="w-3 h-3" />
+                      {t('detail.readPostmortem')} <ExternalLink className="w-3 h-3" />
                     </a>
                   )}
                 </div>
@@ -555,11 +557,11 @@ const IdeaDetailPage = () => {
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-px flex-1 bg-border" />
-                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Expert Perspectives</span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.expertPerspectives')}</span>
                 <div className="h-px flex-1 bg-border" />
               </div>
               <p className="text-xs text-muted-foreground/50 mb-3">
-                {EXPERT_CONFIG.length} AI perspectives inspired by different business thinkers. These scores are for context only and do not affect the verdict.
+                {t('detail.expertDescription', { count: EXPERT_CONFIG.length })}
               </p>
 
               <div className="space-y-3">
@@ -630,15 +632,15 @@ const IdeaDetailPage = () => {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Market Evidence</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.marketEvidence')}</span>
               <div className="h-px flex-1 bg-border" />
             </div>
 
             {!validation && !competitors ? (
               <div className="text-center py-8">
                 <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground font-medium mb-2">Market validation pending.</p>
-                <p className="text-xs text-muted-foreground/60">Top-scoring ideas are validated daily against real conversations on X and Reddit.</p>
+                <p className="text-sm text-muted-foreground font-medium mb-2">{t('detail.validationPending')}</p>
+                <p className="text-xs text-muted-foreground/60">{t('detail.validationPendingDesc')}</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -649,7 +651,7 @@ const IdeaDetailPage = () => {
                   return (
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold">Real-World Signals</h4>
+                        <h4 className="font-bold">{t('detail.realWorldSignals')}</h4>
                         <div className="flex items-center gap-2">
                           <span className={`text-2xl font-black tabular-nums ${tier.color}`}>{v.strength}</span>
                           <span className="text-xs text-muted-foreground/60">/100</span>
@@ -664,12 +666,12 @@ const IdeaDetailPage = () => {
                             v.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
                             'bg-muted text-muted-foreground'
                           }`}>
-                            {v.confidence} confidence
+                            {v.confidence} {t('detail.confidence')}
                           </span>
                         )}
                         {v.evidence_count && (
                           <span className="text-xs text-muted-foreground/60">
-                            ({v.evidence_count.total} sources: {v.evidence_count.x_tweets} tweets, {v.evidence_count.reddit_posts} posts)
+                            ({v.evidence_count.total} {t('detail.sources')}: {v.evidence_count.x_tweets} {t('detail.tweets')}, {v.evidence_count.reddit_posts} {t('detail.posts')})
                           </span>
                         )}
                       </div>
@@ -680,7 +682,7 @@ const IdeaDetailPage = () => {
 
                       {v.frustration_language?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">What people are saying</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whatPeopleSay')}</p>
                           <div className="flex flex-wrap gap-1.5">
                             {v.frustration_language.map((phrase, i) => (
                               <span key={i} className="bg-amber-500/10 text-amber-500 text-xs rounded-full px-2 py-0.5">{phrase}</span>
@@ -691,7 +693,7 @@ const IdeaDetailPage = () => {
 
                       {v.communities?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Where they talk about it</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whereTheyTalk')}</p>
                           <div className="space-y-1.5">
                             {v.communities.map((c, i) => (
                               <div key={i} className="flex items-center gap-2 text-sm">
@@ -706,7 +708,7 @@ const IdeaDetailPage = () => {
 
                       {v.recurring_themes?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">Recurring Themes</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.recurringThemes')}</p>
                           <ul className="space-y-1">
                             {v.recurring_themes.map((t, i) => (
                               <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
@@ -720,7 +722,7 @@ const IdeaDetailPage = () => {
 
                       {v.unmet_needs?.length > 0 && (
                         <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">What people want</p>
+                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whatPeopleWant')}</p>
                           <ul className="space-y-1">
                             {v.unmet_needs.map((n, i) => (
                               <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
@@ -740,8 +742,8 @@ const IdeaDetailPage = () => {
                   const c = competitors;
                   return (
                     <div className="space-y-4">
-                      <h4 className="font-bold">Who else is doing this</h4>
-                      <p className="text-xs text-muted-foreground">Competitors found from real conversations on X and Reddit.</p>
+                      <h4 className="font-bold">{t('detail.competitors')}</h4>
+                      <p className="text-xs text-muted-foreground">{t('detail.competitorsDesc')}</p>
 
                       {c.products?.length > 0 && (
                         <div className="space-y-3">
@@ -762,7 +764,7 @@ const IdeaDetailPage = () => {
                                   ))}
                                 </ul>
                               )}
-                              {p.gap && <p className="text-xs text-amber-500 font-medium">Gap: {p.gap}</p>}
+                              {p.gap && <p className="text-xs text-amber-500 font-medium">{t('detail.gap', { gap: p.gap })}</p>}
                             </div>
                           ))}
                         </div>
@@ -789,7 +791,7 @@ const IdeaDetailPage = () => {
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-px flex-1 bg-border" />
-                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Build From Here</span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.buildFromHere')}</span>
                 <div className="h-px flex-1 bg-border" />
               </div>
 
@@ -797,19 +799,19 @@ const IdeaDetailPage = () => {
                 <div className="space-y-4">
                   {synthesis.the_pain && (
                     <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
-                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">The pain to solve</p>
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">{t('detail.painToSolve')}</p>
                       <p className="text-sm text-muted-foreground">{synthesis.the_pain}</p>
                     </div>
                   )}
                   {synthesis.the_gap && (
                     <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
-                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">The gap to fill</p>
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">{t('detail.gapToFill')}</p>
                       <p className="text-sm text-muted-foreground">{synthesis.the_gap}</p>
                     </div>
                   )}
                   {synthesis.build_angle && (
                     <div className="p-4 rounded-xl border border-primary/20 bg-primary/5">
-                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Your angle</p>
+                      <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1">{t('detail.yourAngle')}</p>
                       <p className="text-sm text-muted-foreground">{synthesis.build_angle}</p>
                     </div>
                   )}
@@ -820,7 +822,7 @@ const IdeaDetailPage = () => {
                     }}
                     className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                   >
-                    <Bot className="w-4 h-4" /> Ask FlyBot to scope the MVP
+                    <Bot className="w-4 h-4" /> {t('detail.scopeMvp')}
                   </button>
                 </div>
               )}
@@ -828,7 +830,7 @@ const IdeaDetailPage = () => {
               {rec === 'VALIDATE_FIRST' && (
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    This idea has potential but needs validation. {synthesis.reasoning || 'Talk to real people before building.'}
+                    {t('detail.needsValidation')} {synthesis.reasoning || t('detail.talkToRealPeople')}
                   </p>
                   {/* Show weakest YC lens questions as things to test */}
                   {idea.score_breakdown?.yc && (() => {
@@ -845,7 +847,7 @@ const IdeaDetailPage = () => {
                     if (pillars.length === 0) return null;
                     return (
                       <div>
-                        <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Test these first (weakest YC signals)</p>
+                        <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">{t('detail.testTheseFirst')}</p>
                         <div className="space-y-2">
                           {pillars.map(p => (
                             <div key={p.key} className="flex items-start gap-2 p-3 rounded-lg border border-amber-500/20 bg-amber-500/5">
@@ -864,7 +866,7 @@ const IdeaDetailPage = () => {
                     }}
                     className="inline-flex items-center gap-2 text-sm font-medium text-amber-600 hover:underline"
                   >
-                    <Bot className="w-4 h-4" /> Ask FlyBot what to validate
+                    <Bot className="w-4 h-4" /> {t('detail.askWhatToValidate')}
                   </button>
                 </div>
               )}
@@ -872,14 +874,14 @@ const IdeaDetailPage = () => {
               {rec === 'SKIP' && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
-                    The numbers say skip. {synthesis.reasoning || 'There are better ideas in the lab.'}
+                    {t('detail.numbersSaySkip')} {synthesis.reasoning || t('detail.betterIdeas')}
                   </p>
                   <Link
                     to={`/ideas?verdict=BUILD${idea.industry ? `&industry=${idea.industry}` : ''}&sort=flylabs`}
                     className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                     onClick={() => trackEvent('cta_click', { cta: 'skip_browse_build', location: 'idea_detail' })}
                   >
-                    <ArrowRight className="w-4 h-4" /> Browse BUILD ideas{idea.industry ? ` in ${industries.find(i => i.value === idea.industry)?.label || idea.industry}` : ''}
+                    <ArrowRight className="w-4 h-4" /> {t('detail.browseBuildIdeas')}{idea.industry ? t('detail.inIndustry', { industry: industries.find(i => i.value === idea.industry)?.label || idea.industry }) : ''}
                   </Link>
                 </div>
               )}
@@ -889,36 +891,36 @@ const IdeaDetailPage = () => {
           </>
           ) : (
           <GatedOverlay
-            title="Sign up free to see the full analysis"
-            description="AI scoring, expert perspectives, and market evidence for every idea."
+            title={t('detail.guestTitle')}
+            description={t('detail.guestDescription')}
             location="idea_detail"
           >
             <div className="space-y-8">
               <section className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="h-px flex-1 bg-border" />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">Quick Read</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.quickRead')}</span>
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="space-y-1.5">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">The Pain</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">People are frustrated with existing solutions in this space.</p>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-red-500">{t('detail.thePain')}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{t('detail.guestPainPlaceholder')}</p>
                   </div>
                   <div className="space-y-1.5">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">The Gap</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">Current tools miss key needs that users keep asking for.</p>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-amber-500">{t('detail.theGap')}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{t('detail.guestGapPlaceholder')}</p>
                   </div>
                   <div className="space-y-1.5">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-primary">What to Build</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">A focused solution targeting the underserved segment.</p>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-primary">{t('detail.whatToBuild')}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{t('detail.guestBuildPlaceholder')}</p>
                   </div>
                 </div>
               </section>
               <section>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="h-px flex-1 bg-border" />
-                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">The Score</span>
+                  <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.theScore')}</span>
                   <div className="h-px flex-1 bg-border" />
                 </div>
                 <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 space-y-3">
@@ -929,7 +931,7 @@ const IdeaDetailPage = () => {
                       <span className="text-xs text-muted-foreground/60">/100</span>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">Score breakdown and expert analysis available after sign up.</p>
+                  <p className="text-sm text-muted-foreground">{t('detail.guestScoreMessage')}</p>
                 </div>
               </section>
             </div>
@@ -951,14 +953,14 @@ const IdeaDetailPage = () => {
             }`}
           >
             <ChevronUp className="w-4 h-4" />
-            {hasVoted ? 'Voted' : 'Vote'}
+            {hasVoted ? t('detail.voted') : t('detail.vote')}
             <span className="tabular-nums">{idea.votes || 0}</span>
           </button>
           <button
             onClick={handleShare}
             className="flex items-center justify-center gap-2 h-11 px-4 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
           >
-            <Share2 className="w-4 h-4" /> Share
+            <Share2 className="w-4 h-4" /> {t('detail.share')}
           </button>
         </div>
       </div>

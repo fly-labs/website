@@ -7,8 +7,10 @@ import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { GoogleIcon } from '@/components/GoogleIcon.jsx';
 import { PROMPT_COUNT } from '@/lib/data/siteStats.js';
+import { useTranslation } from 'react-i18next';
 
 const SignupPage = () => {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -28,12 +30,12 @@ const SignupPage = () => {
     e.preventDefault();
 
     if (password !== passwordConfirm) {
-      toast({ title: "Passwords don't match", description: "Please ensure both passwords are the same.", variant: "destructive" });
+      toast({ title: t('signup.toastPasswordMismatch'), description: t('signup.toastPasswordMismatchDesc'), variant: "destructive" });
       return;
     }
 
     if (password.length < 8) {
-      toast({ title: "Password too short", description: "Password must be at least 8 characters long.", variant: "destructive" });
+      toast({ title: t('signup.toastPasswordShort'), description: t('signup.toastPasswordShortDesc'), variant: "destructive" });
       return;
     }
 
@@ -42,10 +44,10 @@ const SignupPage = () => {
     setIsSubmitting(false);
 
     if (result.success) {
-      toast({ title: "Welcome to Fly Labs!", description: "Your account has been created. Tell us a bit about yourself!" });
+      toast({ title: t('signup.toastWelcome'), description: t('signup.toastWelcomeDesc') });
       navigate('/profile');
     } else {
-      toast({ title: "Signup Failed", description: result.error || "Could not create account. Email might be in use.", variant: "destructive" });
+      toast({ title: t('signup.toastFailed'), description: result.error || t('signup.toastFailedDesc'), variant: "destructive" });
     }
   };
 
@@ -54,15 +56,15 @@ const SignupPage = () => {
     const result = await loginWithGoogle();
     if (!result.success) {
       setIsGoogleLoading(false);
-      toast({ title: "Google signup failed", description: result.error, variant: "destructive" });
+      toast({ title: t('signup.toastGoogleFailed'), description: result.error, variant: "destructive" });
     }
   };
 
   return (
     <PageLayout
       seo={{
-        title: "Sign Up | Fly Labs",
-        description: "Create a free Fly Labs account to unlock the full AI prompt library, Notion templates, and micro tools. Sign up with email or Google in seconds.",
+        title: t('signup.seoTitle'),
+        description: t('signup.seoDescription'),
         keywords: "sign up, create account, free account, fly labs, join community",
         url: "https://flylabs.fun/signup",
         noindex: true,
@@ -77,23 +79,23 @@ const SignupPage = () => {
       >
         <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-black tracking-tight">Join the Lab</h1>
-            <p className="text-muted-foreground font-medium mt-2">Create a free account. Unlock everything:</p>
+            <h1 className="text-3xl font-black tracking-tight">{t('signup.title')}</h1>
+            <p className="text-muted-foreground font-medium mt-2">{t('signup.subtitle')}</p>
           </div>
 
           {/* Value proposition */}
           <div className="flex flex-col gap-2 mb-6 p-4 rounded-xl bg-muted/50 border border-border">
             <div className="flex items-center gap-3 text-sm">
               <Sparkles className="w-4 h-4 text-primary shrink-0" />
-              <span className="font-medium">{PROMPT_COUNT} AI prompts, copy-paste ready</span>
+              <span className="font-medium">{t('signup.valuePropPrompts', { count: PROMPT_COUNT })}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <LayoutTemplate className="w-4 h-4 text-secondary shrink-0" />
-              <span className="font-medium">Notion templates that actually save time</span>
+              <span className="font-medium">{t('signup.valuePropTemplates')}</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <Code className="w-4 h-4 text-blue-500 shrink-0" />
-              <span className="font-medium">Early access to everything we ship</span>
+              <span className="font-medium">{t('signup.valuePropEarlyAccess')}</span>
             </div>
           </div>
 
@@ -104,7 +106,7 @@ const SignupPage = () => {
             className="w-full h-12 flex items-center justify-center gap-3 border border-border rounded-xl hover:bg-muted transition-colors font-bold text-foreground mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGoogleLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <GoogleIcon />}
-            Continue with Google
+            {t('signup.continueGoogle')}
           </button>
 
           <div className="relative mb-6">
@@ -112,52 +114,52 @@ const SignupPage = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground font-bold">Or with email</span>
+              <span className="bg-card px-2 text-muted-foreground font-bold">{t('signup.orWithEmail')}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label htmlFor="signup-email" className="text-sm font-medium text-muted-foreground">Email</label>
+              <label htmlFor="signup-email" className="text-sm font-medium text-muted-foreground">{t('signup.emailLabel')}</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-                  placeholder="you@example.com" />
+                  placeholder={t('signup.emailPlaceholder')} />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="signup-password" className="text-sm font-medium text-muted-foreground">Password</label>
+              <label htmlFor="signup-password" className="text-sm font-medium text-muted-foreground">{t('signup.passwordLabel')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-password" type="password" required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-                  placeholder="Min. 8 characters" />
+                  placeholder={t('signup.passwordPlaceholder')} />
               </div>
-              <p className="text-xs text-muted-foreground/70 pl-1">Must be at least 8 characters</p>
+              <p className="text-xs text-muted-foreground/70 pl-1">{t('signup.passwordHint')}</p>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="signup-confirm" className="text-sm font-medium text-muted-foreground">Confirm password</label>
+              <label htmlFor="signup-confirm" className="text-sm font-medium text-muted-foreground">{t('signup.confirmLabel')}</label>
               <div className="relative">
                 <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input id="signup-confirm" type="password" required autoComplete="new-password" value={passwordConfirm} onChange={(e) => setPasswordConfirm(e.target.value)}
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-                  placeholder="Repeat password" />
+                  placeholder={t('signup.confirmPlaceholder')} />
               </div>
             </div>
 
             <button type="submit" disabled={isSubmitting}
               className="w-full h-12 text-lg bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-xl transition-colors flex items-center justify-center mt-2">
-              {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : "Create Free Account"}
+              {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : t('signup.submit')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-muted-foreground font-medium">
-              Already have an account?{' '}
-              <Link to="/login" className="text-primary font-bold hover:underline">Log in</Link>
+              {t('signup.haveAccount')}{' '}
+              <Link to="/login" className="text-primary font-bold hover:underline">{t('signup.logIn')}</Link>
             </p>
           </div>
         </div>

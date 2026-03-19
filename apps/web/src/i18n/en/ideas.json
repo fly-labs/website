@@ -5,6 +5,7 @@
   },
   "hero": {
     "title": "The Ideas Lab",
+    "ideas": "Ideas",
     "ideasCount": "{{count}}+ ideas",
     "from": "from {{sourceCount}} sources. Scored by {{questionCount}} questions.",
     "howItWorks": "How it works",
@@ -37,12 +38,19 @@
     "noMatch": "No ideas match these filters. Try loosening up.",
     "tryClearFilter": "Try removing {{filter}} to see more ideas.",
     "clearAllFilters": "Clear all filters",
-    "guestBanner": "Scores, verdicts, and AI analysis are available for free. Sign up to unlock."
+    "guestBanner": "Scores, verdicts, and AI analysis are available for free.",
+    "guestBannerLink": "Sign up",
+    "guestBannerSuffix": "to unlock.",
+    "clearAll": "Clear all"
   },
   "shipped": {
     "title": "Shipped from the lab",
     "badge": "Shipped",
-    "checkItOut": "Check it out"
+    "checkItOut": "Check it out",
+    "flybotDesc": "AI partner that scores ideas, finds patterns across sources, and answers questions about the lab. Built on Claude.",
+    "flyboardDesc": "Whiteboard with 12 templates, 5 grid styles, and clean exports. Powered by Excalidraw.",
+    "garminDesc": "Auto-sync Garmin health data to Notion. Born from a community request, now open source.",
+    "blueprintDesc": "Full stack breakdown of how this site was built. Open source and free to fork."
   },
   "howItWorks": {
     "title": "How it works",
@@ -128,9 +136,27 @@
     "guestTitle": "Sign up free to see the full analysis",
     "guestDescription": "AI scoring, expert perspectives, and market evidence for every idea.",
     "guestScoreMessage": "Score breakdown and expert analysis available after sign up.",
+    "guestPainPlaceholder": "People are frustrated with existing solutions in this space.",
+    "guestGapPlaceholder": "Current tools miss key needs that users keep asking for.",
+    "guestBuildPlaceholder": "A focused solution targeting the underserved segment.",
     "loading": "Loading - Ideas Lab",
     "notFoundTitle": "Idea not found - Ideas Lab",
-    "notFoundMessage": "This idea doesn't exist or has been removed."
+    "notFoundMessage": "This idea doesn't exist or has been removed.",
+    "seoFallback": "AI-scored idea analysis on Fly Labs",
+    "ideasLabSuffix": "Ideas Lab",
+    "share": "Share",
+    "vote": "Vote",
+    "voted": "Voted",
+    "people": "people",
+    "linkCopied": "Link copied",
+    "linkCopiedDesc": "Share this idea with anyone.",
+    "copyFailed": "Copy failed",
+    "copyFailedDesc": "Could not copy to clipboard.",
+    "talkToRealPeople": "Talk to real people before building.",
+    "betterIdeas": "There are better ideas in the lab.",
+    "sources": "sources",
+    "tweets": "tweets",
+    "posts": "posts"
   },
   "analytics": {
     "seoTitle": "Ideas Lab Analytics | Fly Labs",
