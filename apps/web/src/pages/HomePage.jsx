@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, LayoutTemplate, Code, Users, BookOpen, Github, Zap, Heart, MessageCircle, Repeat2, Clock, Bot } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import { trackEvent, trackScrollDepth } from '@/lib/analytics.js';
@@ -13,64 +14,6 @@ import { cn } from '@/lib/utils.js';
 import { fetchArticles } from '@/lib/substackApi.js';
 
 const availableBookCount = books.filter((b) => b.status === 'available').length;
-
-const pillars = [
-  {
-    title: 'Ideas Lab',
-    icon: Users,
-    description: `Real problems from ${SOURCE_COUNT} sources. ${QUESTION_COUNT} questions. One verdict.`,
-    color: 'text-primary',
-    bgColor: 'bg-primary/10',
-    link: '/ideas',
-    stat: null,
-    featured: true,
-  },
-  {
-    title: 'Prompts',
-    icon: Sparkles,
-    description: 'Copy-paste AI prompts for coding, writing, and thinking. Built from workflows I actually use.',
-    color: 'text-secondary',
-    bgColor: 'bg-secondary/10',
-    link: '/prompts',
-    stat: `${prompts.length} prompts`,
-  },
-  {
-    title: 'Templates',
-    icon: LayoutTemplate,
-    description: 'Automation templates that connect your favorite tools. Set them up once, save hours every week.',
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
-    link: '/templates',
-    stat: 'Notion + GitHub',
-  },
-  {
-    title: 'Micro Tools',
-    icon: Code,
-    description: 'Small, focused apps that do one thing really well. Open them, use them, done.',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
-    link: '/microsaas',
-    stat: 'Building next',
-  },
-  {
-    title: 'Library',
-    icon: BookOpen,
-    description: "Free ebooks from my study notes. AI, business, mindset, and the random stuff I can't stop learning about.",
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10',
-    link: '/library',
-    stat: availableBookCount > 0 ? `${availableBookCount} ebook${availableBookCount > 1 ? 's' : ''}` : 'Building next',
-  },
-  {
-    title: 'FlyBot',
-    icon: Bot,
-    description: 'Describe what you\'re building. FlyBot pulls up similar ideas it already scored, flags the gaps, and tells you if it\'s worth your weekend.',
-    color: 'text-accent',
-    bgColor: 'bg-accent/10',
-    link: '/flybot',
-    stat: 'Beta',
-  },
-];
 
 const AnimatedNumber = ({ value, suffix = '' }) => {
   const [display, setDisplay] = useState(0);
@@ -98,6 +41,7 @@ const AnimatedNumber = ({ value, suffix = '' }) => {
 };
 
 const HomePage = () => {
+  const { t } = useTranslation('home');
   const [ideaCount, setIdeaCount] = useState(null);
   const [articles, setArticles] = useState(null);
 
@@ -117,11 +61,76 @@ const HomePage = () => {
     }).catch(() => {});
   }, []);
 
+  const pillars = [
+    {
+      title: t('pillars.ideasLab.title'),
+      icon: Users,
+      description: t('pillars.ideasLab.description', { sourceCount: SOURCE_COUNT, questionCount: QUESTION_COUNT }),
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
+      link: '/ideas',
+      stat: null,
+      featured: true,
+    },
+    {
+      title: t('pillars.prompts.title'),
+      icon: Sparkles,
+      description: t('pillars.prompts.description'),
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/10',
+      link: '/prompts',
+      stat: `${prompts.length} prompts`,
+    },
+    {
+      title: t('pillars.templates.title'),
+      icon: LayoutTemplate,
+      description: t('pillars.templates.description'),
+      color: 'text-accent',
+      bgColor: 'bg-accent/10',
+      link: '/templates',
+      stat: t('pillars.templates.stat'),
+    },
+    {
+      title: t('pillars.microTools.title'),
+      icon: Code,
+      description: t('pillars.microTools.description'),
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-500/10',
+      link: '/microsaas',
+      stat: t('pillars.microTools.stat'),
+    },
+    {
+      title: t('pillars.library.title'),
+      icon: BookOpen,
+      description: t('pillars.library.description'),
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-500/10',
+      link: '/library',
+      stat: availableBookCount > 0 ? `${availableBookCount} ${availableBookCount > 1 ? t('pillars.library.ebooks') : t('pillars.library.ebook')}` : t('pillars.microTools.stat'),
+    },
+    {
+      title: t('pillars.flybot.title'),
+      icon: Bot,
+      description: t('pillars.flybot.description'),
+      color: 'text-accent',
+      bgColor: 'bg-accent/10',
+      link: '/flybot',
+      stat: t('pillars.flybot.stat'),
+    },
+  ];
+
+  const cycleSteps = [
+    { step: '01', title: t('cycle.ideation.title'), desc: t('cycle.ideation.description'), color: 'text-primary' },
+    { step: '02', title: t('cycle.build.title'), desc: t('cycle.build.description'), color: 'text-secondary' },
+    { step: '03', title: t('cycle.share.title'), desc: t('cycle.share.description'), color: 'text-accent' },
+    { step: '04', title: t('cycle.compound.title'), desc: t('cycle.compound.description'), color: 'text-primary' },
+  ];
+
   return (
     <PageLayout
       seo={{
-        title: "Fly Labs | The Vibe Building Hub",
-        description: "Tools, templates, and ideas for one-person builders. AI-scored idea pipeline, prompt library, open source templates. Built by one person with AI.",
+        title: t('seo.title'),
+        description: t('seo.description'),
         keywords: "vibe building, AI tools, idea validation, one person business, open source, indie maker, prompt library, build in public",
         url: "https://flylabs.fun",
       }}
@@ -145,27 +154,27 @@ const HomePage = () => {
             {ideaCount != null && (
               <span className="stat-pill">
                 <Zap className="w-3.5 h-3.5 text-primary" />
-                <AnimatedNumber value={ideaCount} suffix="+" /> ideas scored
+                <AnimatedNumber value={ideaCount} suffix="+" /> {t('stats.ideasScored')}
               </span>
             )}
             <span className="stat-pill">
               <Sparkles className="w-3.5 h-3.5 text-secondary" />
-              {prompts.length} prompts
+              {prompts.length} {t('stats.prompts')}
             </span>
             <span className="stat-pill">
               <Github className="w-3.5 h-3.5" />
-              Open source
+              {t('stats.openSource')}
             </span>
           </motion.div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-foreground leading-[1.05] mb-5 max-w-4xl mx-auto">
-            The vibe building hub.
+            {t('hero.headline')}
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-10">
-            Open source tools for one-person builders. AI-scored ideas, prompts, templates, and everything I build along the way.
+            {t('hero.subheadline')}
           </p>
 
           {/* CTA */}
@@ -175,14 +184,14 @@ const HomePage = () => {
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:brightness-110 transition-[filter,transform] duration-150 active:translate-y-0.5"
               onClick={() => trackEvent('cta_click', { cta: 'explore_ideas', location: 'home_hero' })}
             >
-              Explore the Ideas Lab <ArrowRight className="w-5 h-5 ml-2" />
+              {t('hero.cta')} <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
             <Link
               to="/explore"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               onClick={() => trackEvent('cta_click', { cta: 'explore', location: 'home_hero' })}
             >
-              Browse all projects
+              {t('hero.ctaSecondary')}
             </Link>
           </div>
         </motion.div>
@@ -197,10 +206,10 @@ const HomePage = () => {
             className="mb-10"
           >
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              What's inside
+              {t('pillars.title')}
             </h2>
             <p className="text-muted-foreground font-medium max-w-2xl">
-              Every project here started as a real problem I had. Built with AI, shipped open source.
+              {t('pillars.subtitle')}
             </p>
           </motion.div>
 
@@ -209,8 +218,8 @@ const HomePage = () => {
             {...staggerContainer}
           >
             {pillars.map((pillar) => {
-              const stat = pillar.title === 'Ideas Lab' && ideaCount != null
-                ? `${ideaCount} ideas scored`
+              const stat = pillar.title === t('pillars.ideasLab.title') && ideaCount != null
+                ? `${ideaCount} ${t('stats.ideasScored')}`
                 : pillar.stat;
               return (
                 <motion.div
@@ -248,7 +257,7 @@ const HomePage = () => {
                       {pillar.description}
                     </p>
                     <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors mt-auto">
-                      Explore
+                      {t('pillars.explore')}
                       <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                     </span>
                   </Link>
@@ -264,20 +273,15 @@ const HomePage = () => {
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeUp} transition={{ duration: 0.5 }} className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-              The vibe building cycle
+              {t('cycle.title')}
             </h2>
             <p className="text-muted-foreground font-medium max-w-2xl mx-auto">
-              See a real problem. Build a solution with AI. Share it openly. Each project feeds the next one.
+              {t('cycle.subtitle')}
             </p>
           </motion.div>
 
           <motion.div className="grid grid-cols-1 sm:grid-cols-2 gap-4" {...staggerContainer}>
-            {[
-              { step: '01', title: 'Ideation', desc: 'Real problems from Reddit, X, Product Hunt, GitHub, and more. AI asks four questions about each one. You pick the best ones.', color: 'text-primary' },
-              { step: '02', title: 'Build', desc: 'Pick your tools, ship fast, document what breaks. One person with AI can build what used to require a team.', color: 'text-secondary' },
-              { step: '03', title: 'Share', desc: 'Open source the code, write about the process, put it out there. Feedback from real people sharpens everything.', color: 'text-accent' },
-              { step: '04', title: 'Compound', desc: 'Skills stack, tools compound, each project sharpens the next one. Yesterday\'s side quest becomes tomorrow\'s shortcut.', color: 'text-primary' },
-            ].map((item) => (
+            {cycleSteps.map((item) => (
               <motion.div
                 key={item.step}
                 {...staggerItem}
@@ -304,10 +308,10 @@ const HomePage = () => {
               className="mb-10"
             >
               <h2 className="text-2xl md:text-3xl font-black tracking-tight text-foreground mb-3">
-                From the newsletter
+                {t('newsletter.title')}
               </h2>
               <p className="text-muted-foreground font-medium max-w-2xl">
-                I write about what I build, what breaks, and what I learn along the way. Always free.
+                {t('newsletter.subtitle')}
               </p>
             </motion.div>
 
@@ -382,7 +386,7 @@ const HomePage = () => {
                 className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => trackEvent('newsletter_click', { location: 'home_newsletter' })}
               >
-                See all editions <ArrowRight className="w-4 h-4 ml-1" />
+                {t('newsletter.seeAll')} <ArrowRight className="w-4 h-4 ml-1" />
               </Link>
             </motion.div>
           </div>
@@ -397,12 +401,12 @@ const HomePage = () => {
           className="relative z-10 max-w-3xl mx-auto text-center"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground mb-5">
-            One person. AI. Spare time.
+            {t('closing.headline')}
             <br />
-            <span className="text-muted-foreground">That's the whole team.</span>
+            <span className="text-muted-foreground">{t('closing.subheadline')}</span>
           </h2>
           <p className="text-lg text-muted-foreground font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
-            I document what I build, what breaks, and what I learn along the way. The newsletter covers the process. Everything else lives here.
+            {t('closing.text')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -410,13 +414,13 @@ const HomePage = () => {
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-lg hover:brightness-110 transition-[filter,transform] duration-150 active:translate-y-0.5"
               onClick={() => trackEvent('newsletter_click', { location: 'home_closing' })}
             >
-              Read the newsletter <ArrowRight className="w-5 h-5 ml-2" />
+              {t('closing.ctaNewsletter')} <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
             <Link
               to="/about"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl border border-border font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
-              How this started
+              {t('closing.ctaAbout')}
             </Link>
           </div>
         </motion.div>

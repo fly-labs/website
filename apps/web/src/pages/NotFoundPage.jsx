@@ -4,8 +4,10 @@ import { ArrowLeft, Ghost } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { trackEvent } from '@/lib/analytics.js';
+import { useTranslation } from 'react-i18next';
 
 const NotFoundPage = () => {
+  const { t } = useTranslation('templates');
   const location = useLocation();
 
   useEffect(() => {
@@ -42,13 +44,13 @@ const NotFoundPage = () => {
         </motion.div>
         <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-4">404</h1>
         <p className="text-xl text-muted-foreground font-medium mb-8">
-          This page doesn't exist. Maybe it was never built, or maybe it flew away.
+          {t('notFound.subtitle')}
         </p>
         <Link
           to="/"
           className="inline-flex items-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+          <ArrowLeft className="w-4 h-4 mr-2" /> {t('notFound.goHome')}
         </Link>
       </motion.div>
     </PageLayout>

@@ -6,9 +6,11 @@ import { Loader2, Mail, Lock, ShieldCheck } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { GoogleIcon } from '@/components/GoogleIcon.jsx';
+import { useTranslation } from 'react-i18next';
 import supabase from '@/lib/supabaseClient.js';
 
 const LoginPage = () => {
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,14 +36,14 @@ const LoginPage = () => {
 
     if (result.success) {
       toast({
-        title: "Welcome back!",
-        description: "Successfully logged in.",
+        title: t('login.toastWelcome'),
+        description: t('login.toastSuccess'),
       });
       navigate('/explore');
     } else {
       toast({
-        title: "Login Failed",
-        description: result.error || "Invalid email or password.",
+        title: t('login.toastFailed'),
+        description: result.error || t('login.toastInvalid'),
         variant: "destructive"
       });
     }
@@ -52,15 +54,15 @@ const LoginPage = () => {
     const result = await loginWithGoogle();
     if (!result.success) {
       setIsGoogleLoading(false);
-      toast({ title: "Google login failed", description: result.error, variant: "destructive" });
+      toast({ title: t('login.toastGoogleFailed'), description: result.error, variant: "destructive" });
     }
   };
 
   const handleForgotPassword = async () => {
     if (!email) {
       toast({
-        title: "Enter your email first",
-        description: "Type your email address above, then click forgot password.",
+        title: t('login.toastEnterEmail'),
+        description: t('login.toastEnterEmailDesc'),
         variant: "destructive",
       });
       return;
@@ -74,14 +76,14 @@ const LoginPage = () => {
 
     if (error) {
       toast({
-        title: "Something went wrong",
+        title: t('login.toastResetError'),
         description: error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Check your inbox",
-        description: "If an account exists for that email, we sent a reset link.",
+        title: t('login.toastResetSuccess'),
+        description: t('login.toastResetSuccessDesc'),
       });
     }
   };
@@ -89,8 +91,8 @@ const LoginPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Log In | Fly Labs",
-        description: "Log in to access your Fly Labs prompt library, Notion templates, and member-only tools. Email or Google sign-in supported.",
+        title: t('login.seoTitle'),
+        description: t('login.seoDescription'),
         keywords: "login, sign in, fly labs account, member access",
         url: "https://flylabs.fun/login",
         noindex: true,
@@ -105,8 +107,8 @@ const LoginPage = () => {
       >
         <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-xl">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-black tracking-tight">Welcome Back</h1>
-            <p className="text-muted-foreground font-medium mt-2">Pick up where you left off.</p>
+            <h1 className="text-3xl font-black tracking-tight">{t('login.title')}</h1>
+            <p className="text-muted-foreground font-medium mt-2">{t('login.subtitle')}</p>
           </div>
 
           {/* Google OAuth first, lowest friction */}
@@ -116,7 +118,7 @@ const LoginPage = () => {
             className="w-full h-12 flex items-center justify-center gap-3 border border-border rounded-xl hover:bg-muted transition-colors font-bold text-foreground mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isGoogleLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <GoogleIcon />}
-            Continue with Google
+            {t('login.continueGoogle')}
           </button>
 
           <div className="relative mb-6">
@@ -124,13 +126,13 @@ const LoginPage = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground font-bold">Or with email</span>
+              <span className="bg-card px-2 text-muted-foreground font-bold">{t('login.orWithEmail')}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label htmlFor="login-email" className="text-sm font-medium text-muted-foreground">Email</label>
+              <label htmlFor="login-email" className="text-sm font-medium text-muted-foreground">{t('login.emailLabel')}</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
@@ -141,13 +143,13 @@ const LoginPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-                  placeholder="you@example.com"
+                  placeholder={t('login.emailPlaceholder')}
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="login-password" className="text-sm font-medium text-muted-foreground">Password</label>
+              <label htmlFor="login-password" className="text-sm font-medium text-muted-foreground">{t('login.passwordLabel')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
@@ -158,7 +160,7 @@ const LoginPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-border bg-background text-foreground font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
-                  placeholder="Your password"
+                  placeholder={t('login.passwordPlaceholder')}
                 />
               </div>
             </div>
@@ -168,7 +170,7 @@ const LoginPage = () => {
               disabled={isSubmitting}
               className="w-full h-12 text-lg bg-primary text-primary-foreground hover:bg-primary/90 font-bold rounded-xl transition-colors flex items-center justify-center mt-2"
             >
-              {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : "Log In"}
+              {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : t('login.submit')}
             </button>
           </form>
 
@@ -178,20 +180,20 @@ const LoginPage = () => {
               disabled={isResetting}
               className="text-sm text-muted-foreground hover:text-foreground font-medium transition-colors disabled:opacity-50"
             >
-              {isResetting ? 'Sending...' : 'Forgot your password?'}
+              {isResetting ? t('login.sending') : t('login.forgotPassword')}
             </button>
             <p className="text-muted-foreground font-medium">
-              Don't have an account?{' '}
+              {t('login.noAccount')}{' '}
               <Link to="/signup" className="text-primary font-bold hover:underline">
-                Sign up free
+                {t('login.signUpFree')}
               </Link>
             </p>
           </div>
 
           <div className="mt-6 pt-5 border-t border-border flex flex-col items-center gap-2">
-            <p className="text-xs text-muted-foreground/60 font-medium">Free account. No credit card.</p>
+            <p className="text-xs text-muted-foreground/60 font-medium">{t('login.freeAccount')}</p>
             <p className="text-xs text-muted-foreground/40 inline-flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3" /> Secured by Supabase
+              <ShieldCheck className="w-3 h-3" /> {t('login.securedBy')}
             </p>
           </div>
         </div>

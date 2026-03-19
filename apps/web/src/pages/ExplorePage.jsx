@@ -7,8 +7,10 @@ import { useAuth } from '@/contexts/AuthContext.jsx';
 import { motion } from 'framer-motion';
 import { projects, categories } from '@/lib/data/projects.js';
 import { trackEvent } from '@/lib/analytics.js';
+import { useTranslation } from 'react-i18next';
 
 const ExplorePage = () => {
+  const { t } = useTranslation('explore');
   const { isAuthenticated } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = categories.includes(searchParams.get('category')) ? searchParams.get('category') : 'All';
@@ -21,8 +23,8 @@ const ExplorePage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Explore | Fly Labs",
-        description: "Browse AI tools, Notion templates, automation workflows, and open source experiments. Organized by Business, Tools, and Learn.",
+        title: t('seo.title'),
+        description: t('seo.description'),
         keywords: "AI tools, Notion templates, automation, open source projects, indie maker tools, productivity tools, launch tools",
         url: "https://flylabs.fun/explore",
       }}
@@ -38,9 +40,9 @@ const ExplorePage = () => {
             transition={{ duration: 0.5 }}
             className="max-w-3xl mx-auto text-center mb-14"
           >
-            <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">Explore</h1>
+            <h1 className="text-4xl md:text-7xl font-black mb-5 tracking-tight">{t('hero.title')}</h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-xl mx-auto leading-relaxed">
-              Every project started as something I actually needed. Built with AI, shipped open source.
+              {t('hero.subtitle')}
             </p>
           </motion.div>
 
@@ -81,7 +83,7 @@ const ExplorePage = () => {
                 animate={{ opacity: 1 }}
                 className="text-center text-muted-foreground py-20"
               >
-                No projects in this category yet.
+                {t('project.noProjects')}
               </motion.p>
             ) : (
               <motion.div
@@ -131,7 +133,7 @@ const ExplorePage = () => {
                         </p>
 
                         <span className="inline-flex items-center text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors mt-auto">
-                          {isLocked ? 'Free account required' : 'Check it out'}
+                          {isLocked ? t('project.gated') : t('project.checkItOut')}
                           <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-0.5 transition-transform duration-200" />
                         </span>
                       </Link>
