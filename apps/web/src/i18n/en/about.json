@@ -1,11 +1,11 @@
 {
   "seo": {
     "title": "About | Fly Labs",
-    "description": "Finance background, vibe builder. I build digital assets with AI on nights and weekends. Tools, templates, and open source experiments at Fly Labs."
+    "description": "I build things with AI in my spare time because it's fun. Tools, templates, and open source experiments at Fly Labs."
   },
   "hero": {
-    "headline": "Nobody asked me to build any of this. I did it anyway, for fun.",
-    "text": "I'm Luiz Alves. Over a decade in finance. I build things with AI on nights and weekends because it's fun. Everything here is open source."
+    "headline": "Nobody asked me to build any of this.",
+    "text": "I'm Luiz. I build things with AI in my spare time because it's fun. Everything here is open source."
   },
   "manifesto": {
     "label": "The Manifesto",

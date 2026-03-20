@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Youtube, Github, Linkedin, Mail, BookOpen, ArrowRight, ChevronDown, FlaskConical, BarChart3, Rocket, Zap, Sparkles, Terminal, Music, Brain, Globe, Database, GitBranch, Search, Filter, CheckCircle2, XCircle, AlertTriangle, Headphones, MessageSquare, TrendingUp, Repeat, Lightbulb, Hammer, Gift } from 'lucide-react';
 import { GitHubHeatmap, RecentCommits } from '@/components/GitHubHeatmap.jsx';
 import { PageLayout } from '@/components/PageLayout.jsx';
+import { SmileLogo } from '@/components/SmileLogo.jsx';
 import { XIcon } from '@/components/XIcon.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
@@ -56,7 +57,6 @@ const AboutPage = () => {
           "@type": "Person",
           "name": "Luiz Alves",
           "url": "https://flylabs.fun/about",
-          "image": "https://flylabs.fun/images/luiz-alves.png",
           "jobTitle": "Vibe Builder",
           "sameAs": [
             "https://github.com/fly-labs",
@@ -72,51 +72,73 @@ const AboutPage = () => {
       <div className="container mx-auto px-6">
 
         {/* 1. HERO */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center"
-        >
-          <div className="flex justify-center">
-            <img
-              src="/images/luiz-alves.png"
-              alt="Luiz Alves"
-              loading="lazy"
-              className="w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 object-cover rounded-2xl border-2 border-border shadow-xl grayscale hover:grayscale-0 transition-[filter] duration-700"
-            />
-          </div>
-          <div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground mb-4">
-              {t('hero.headline')}
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-6">
-              {t('hero.text')}
-            </p>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  {...(s.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-                  className="p-2.5 rounded-lg border border-border bg-card hover:bg-muted transition-colors"
-                  title={s.label}
-                  aria-label={s.label}
-                  onClick={() => trackEvent('outbound_click', { link_url: s.href, link_label: s.label, location: 'about_hero' })}
-                >
-                  <s.icon className={`w-4 h-4 ${s.color}`} />
-                </a>
-              ))}
+        <section className="max-w-3xl mx-auto text-center">
+          {/* SmileLogo with soft glow */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center mb-6"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl scale-150 pointer-events-none" />
+              <div className="relative">
+                <SmileLogo className="w-16 h-16 md:w-20 md:h-20" />
+              </div>
             </div>
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="hidden md:flex justify-start"
-            >
-              <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
-            </motion.div>
-          </div>
-        </motion.section>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-foreground mb-4"
+          >
+            {t('hero.headline')}
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed mb-6"
+          >
+            {t('hero.text')}
+          </motion.p>
+
+          {/* Social icons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.36, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-wrap justify-center gap-2 mb-6"
+          >
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                {...(s.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                className="p-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors"
+                title={s.label}
+                aria-label={s.label}
+                onClick={() => trackEvent('outbound_click', { link_url: s.href, link_label: s.label, location: 'about_hero' })}
+              >
+                <s.icon className={`w-4 h-4 ${s.color}`} />
+              </a>
+            ))}
+          </motion.div>
+
+          {/* Scroll hint */}
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="hidden md:flex justify-center"
+          >
+            <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
+          </motion.div>
+        </section>
 
         <div className="max-w-5xl mx-auto space-y-10 md:space-y-14">
 

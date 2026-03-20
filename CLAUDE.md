@@ -122,7 +122,7 @@ apps/web/
 │       ├── IdeaDetailPage.jsx    # Full idea detail page (/ideas/:id) with verdict, scoring breakdown, market evidence, YC graveyard, vote, share. Hybrid: scoring sections gated behind GatedOverlay for guests
 │       ├── IdeasAnalyticsPage.jsx # Ideas Lab analytics dashboard (recharts: verdict donut, source breakdown, score histogram, framework radar, growth timeline, source x verdict heatmap, verdict-over-time stacked bar, day-of-week activity, top industries, source quality). Hybrid: stats + verdict donut public, rest gated behind GatedOverlay for guests
 │       ├── NewsletterPage.jsx    # Substack archive API feed + engagement metrics + Notes section + subscribe CTA
-│       ├── AboutPage.jsx         # 5-act visual journey: hero, manifesto, story beat cards, by-the-numbers stats + GitHub heatmap, closing CTA
+│       ├── AboutPage.jsx         # Typography-forward hero (SmileLogo + centered headline), manifesto, story beat cards, by-the-numbers stats + GitHub heatmap, closing CTA
 │       ├── LoginPage.jsx         # Email + Google OAuth login
 │       ├── SignupPage.jsx        # Email + Google OAuth signup (password strength)
 │       ├── PromptsPage.jsx       # Hybrid: 10 public / full library for members (vote, comment, copy, suggest)
