@@ -22,7 +22,7 @@ export const AuthModal = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') navigate('/'); };
+    const handler = (e) => { if (e.key === 'Escape') navigate(-1); };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [navigate]);
@@ -85,7 +85,7 @@ export const AuthModal = () => {
 
   const handleGoogleAuth = () => {
     setIsGoogleLoading(true);
-    loginWithGoogle().then((result) => {
+    loginWithGoogle(window.location.pathname + window.location.search).then((result) => {
       if (result.success) {
         toast({ title: "Success!", description: "Authenticated with Google." });
       } else {
@@ -117,7 +117,7 @@ export const AuthModal = () => {
           variant="ghost"
           size="icon"
           className="absolute top-4 left-4 rounded-full hover:bg-muted"
-          onClick={() => navigate('/')}
+          onClick={() => navigate(-1)}
           title="Go Back"
           aria-label="Go back"
         >

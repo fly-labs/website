@@ -965,14 +965,14 @@ const PromptsPage = () => {
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                   <Link
-                    to="/signup"
+                    to="/signup?redirect=%2Fprompts"
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
                     onClick={() => trackEvent('cta_click', { cta: 'signup', location: 'prompts_gate' })}
                   >
                     {t('gate.createAccount')} <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                   <Link
-                    to="/login"
+                    to="/login?redirect=%2Fprompts"
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-border text-foreground font-semibold hover:bg-muted transition-colors"
                   >
                     {t('gate.logIn')}

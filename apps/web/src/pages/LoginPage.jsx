@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import { Loader2, Mail, Lock, ShieldCheck } from 'lucide-react';
@@ -18,13 +18,19 @@ const LoginPage = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { login, loginWithGoogle, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+
+  const rawRedirect = searchParams.get('redirect');
+  const redirectTo = (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//'))
+    ? rawRedirect
+    : '/explore';
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      navigate('/explore', { replace: true });
+      navigate(redirectTo, { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, redirectTo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +45,7 @@ const LoginPage = () => {
         title: t('login.toastWelcome'),
         description: t('login.toastSuccess'),
       });
-      navigate('/explore');
+      navigate(redirectTo, { replace: true });
     } else {
       toast({
         title: t('login.toastFailed'),
@@ -51,7 +57,7 @@ const LoginPage = () => {
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-    const result = await loginWithGoogle();
+    const result = await loginWithGoogle(redirectTo);
     if (!result.success) {
       setIsGoogleLoading(false);
       toast({ title: t('login.toastGoogleFailed'), description: result.error, variant: "destructive" });
@@ -184,7 +190,7 @@ const LoginPage = () => {
             </button>
             <p className="text-muted-foreground font-medium">
               {t('login.noAccount')}{' '}
-              <Link to="/signup" className="text-primary font-bold hover:underline">
+              <Link to={rawRedirect ? `/signup?redirect=${encodeURIComponent(rawRedirect)}` : '/signup'} className="text-primary font-bold hover:underline">
                 {t('login.signUpFree')}
               </Link>
             </p>

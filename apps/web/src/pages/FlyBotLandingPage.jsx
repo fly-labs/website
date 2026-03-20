@@ -100,7 +100,7 @@ const FlyBotLandingPage = () => {
 
   const handleCTA = () => {
     trackEvent('cta_click', { cta: 'flybot_start', location: 'flybot_landing' });
-    navigate(isAuthenticated ? '/flybot/chat' : '/login');
+    navigate(isAuthenticated ? '/flybot/chat' : '/login?redirect=%2Fflybot%2Fchat');
   };
 
   const vs = verdictStyles[exampleEval.verdict];

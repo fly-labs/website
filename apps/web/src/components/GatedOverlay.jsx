@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics.js';
@@ -28,6 +28,7 @@ export function GatedOverlay({
   teaserCount,
 }) {
   const navigate = useNavigate();
+  const loc = useLocation();
   const { t } = useTranslation();
   const resolvedTitle = title || t('gated.title');
   const resolvedCta = ctaText || t('gated.cta');
@@ -36,7 +37,7 @@ export function GatedOverlay({
     e.stopPropagation();
     e.preventDefault();
     trackEvent('gated_cta_click', { location: analyticsLocation, title: resolvedTitle });
-    navigate('/signup');
+    navigate('/signup?redirect=' + encodeURIComponent(loc.pathname + loc.search));
   };
 
   // Compact inline variant for cards and rows

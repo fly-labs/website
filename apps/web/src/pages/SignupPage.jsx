@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useToast } from '@/hooks/use-toast.js';
 import { Loader2, Mail, Lock, ShieldCheck, Sparkles, Code, LayoutTemplate } from 'lucide-react';
@@ -18,13 +18,19 @@ const SignupPage = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const { signup, loginWithGoogle, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+
+  const rawRedirect = searchParams.get('redirect');
+  const redirectTo = (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//'))
+    ? rawRedirect
+    : '/ideas';
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      navigate('/ideas', { replace: true });
+      navigate(redirectTo, { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, navigate, redirectTo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +51,7 @@ const SignupPage = () => {
 
     if (result.success) {
       toast({ title: t('signup.toastWelcome'), description: t('signup.toastWelcomeDesc') });
-      navigate('/ideas');
+      navigate(redirectTo, { replace: true });
     } else {
       toast({ title: t('signup.toastFailed'), description: result.error || t('signup.toastFailedDesc'), variant: "destructive" });
     }
@@ -53,7 +59,7 @@ const SignupPage = () => {
 
   const handleGoogleSignup = async () => {
     setIsGoogleLoading(true);
-    const result = await loginWithGoogle();
+    const result = await loginWithGoogle(redirectTo);
     if (!result.success) {
       setIsGoogleLoading(false);
       toast({ title: t('signup.toastGoogleFailed'), description: result.error, variant: "destructive" });
@@ -159,7 +165,7 @@ const SignupPage = () => {
           <div className="mt-6 text-center">
             <p className="text-muted-foreground font-medium">
               {t('signup.haveAccount')}{' '}
-              <Link to="/login" className="text-primary font-bold hover:underline">{t('signup.logIn')}</Link>
+              <Link to={rawRedirect ? `/login?redirect=${encodeURIComponent(rawRedirect)}` : '/login'} className="text-primary font-bold hover:underline">{t('signup.logIn')}</Link>
             </p>
           </div>
         </div>

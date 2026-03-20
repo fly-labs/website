@@ -109,8 +109,8 @@ const Header = () => {
                 </Button>
               </div>
             ) : (
-              <Link 
-                to="/login"
+              <Link
+                to={location.pathname === '/' ? '/login' : `/login?redirect=${encodeURIComponent(location.pathname + location.search)}`}
                 className="ml-2 px-4 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted font-medium text-sm transition-colors border border-transparent hover:border-border"
               >
                 {t('nav.logIn')}
@@ -182,8 +182,8 @@ const Header = () => {
                     <LogOut className="w-5 h-5" /> {t('nav.logOut')}
                   </button>
                 ) : (
-                  <Link 
-                    to="/login"
+                  <Link
+                    to={location.pathname === '/' ? '/login' : `/login?redirect=${encodeURIComponent(location.pathname + location.search)}`}
                     onClick={() => setMobileMenuOpen(false)}
                     className="block w-full text-center px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-bold text-lg transition-colors border border-border"
                   >

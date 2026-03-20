@@ -1656,7 +1656,7 @@ export default function FlyBoardPage() {
                 </button>
 
                 {!isAuthenticated && (
-                  <Link to="/login" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
+                  <Link to="/login?redirect=%2Fflyboard" className="text-[11px] text-primary hover:underline ml-1 whitespace-nowrap font-medium">
                     Sign in
                   </Link>
                 )}
