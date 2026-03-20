@@ -68,7 +68,7 @@ export function ChatLimitReached({ messageCount, compact = false }) {
           <Bot className={compact ? 'w-5 h-5 text-primary' : 'w-6 h-6 text-primary'} />
         </motion.div>
         <h3 className={compact ? 'font-semibold mb-1 text-sm' : 'font-semibold mb-1.5'}>
-          That was fun. 5 messages flew by.
+          That was fun. 10 messages flew by.
         </h3>
         <p className={compact ? 'text-xs text-muted-foreground/70 mb-4 leading-relaxed' : 'text-sm text-muted-foreground/70 mb-5 leading-relaxed'}>
           I'm still in beta, figuring things out (like you).

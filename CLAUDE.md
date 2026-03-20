@@ -140,7 +140,7 @@ apps/web/
 │       ├── ProfilePage.jsx         # Protected - user settings (name, phone, location, bio, avatar)
 │       └── NotFoundPage.jsx
 ├── api/                         # Vercel Serverless Functions (Node.js, server-side)
-│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Sonnet, JWT auth, rate limit 10req/min, 5 message limit, 10 conversation cap, 2000 char max, cross-session memory, returns message_id)
+│   ├── chat.js                  # POST streaming SSE - FlyBot chat (Claude Haiku/Sonnet, JWT auth, rate limit 10req/min, 10 message limit, 10 conversation cap, 2000 char max, cross-session memory, returns message_id)
 │   ├── conversations.js         # GET/POST/DELETE - conversation CRUD (soft delete)
 │   ├── feedback.js              # POST/DELETE - FlyBot message feedback (thumbs up/down with optional comment)
 │   ├── og.js.disabled            # Edge function - dynamic OG images (@vercel/og), temporarily disabled

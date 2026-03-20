@@ -39,7 +39,7 @@ function AuthGate() {
         </div>
         <h3 className="font-semibold mb-1.5 text-sm">Sign in to chat with FlyBot</h3>
         <p className="text-xs text-muted-foreground/70 mb-4 leading-relaxed">
-          Evaluate business ideas with AI scoring, get content strategy help, and think through building decisions. 5 free messages.
+          Evaluate business ideas with AI scoring, get content strategy help, and think through building decisions. 10 free messages.
         </p>
         <div className="flex gap-2 justify-center">
           <button

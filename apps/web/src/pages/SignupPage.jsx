@@ -22,7 +22,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      navigate('/profile', { replace: true });
+      navigate('/ideas', { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);
 
@@ -45,7 +45,7 @@ const SignupPage = () => {
 
     if (result.success) {
       toast({ title: t('signup.toastWelcome'), description: t('signup.toastWelcomeDesc') });
-      navigate('/profile');
+      navigate('/ideas');
     } else {
       toast({ title: t('signup.toastFailed'), description: result.error || t('signup.toastFailedDesc'), variant: "destructive" });
     }

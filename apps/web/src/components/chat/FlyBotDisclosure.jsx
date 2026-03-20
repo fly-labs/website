@@ -89,7 +89,7 @@ export function FlyBotDisclosure({ compact = false }) {
           not shared with third parties or used to train AI models.
         </p>
         <p>
-          5 free messages per account during beta. The full codebase is open
+          10 free messages per account during beta. The full codebase is open
           source at github.com/fly-labs/website.
         </p>
       </Section>
