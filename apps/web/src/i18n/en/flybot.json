@@ -114,7 +114,19 @@
     "gateTitle": "Liked that? There's more.",
     "gateSubtext": "Create a free account for 10 free messages.",
     "gateCta": "Sign up free",
-    "gateSignIn": "Sign in"
+    "gateSignIn": "Sign in",
+    "authEmail": "Email address",
+    "authPassword": "Password",
+    "authConfirmPassword": "Confirm password",
+    "authSignUp": "Create account",
+    "authLogIn": "Log in",
+    "authOrGoogle": "or",
+    "authGoogle": "Google",
+    "authSwitchToLogin": "Already have an account?",
+    "authSwitchToSignup": "No account yet?",
+    "authPasswordMismatch": "Passwords don't match",
+    "authPasswordShort": "At least 8 characters",
+    "authError": "Something went wrong. Try again."
   },
   "disclosure": {
     "trigger": "About FlyBot, limitations, and your data",

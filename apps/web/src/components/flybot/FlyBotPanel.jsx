@@ -1,12 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn } from 'lucide-react';
+import { Bot, Maximize2, X, AlertCircle, RotateCcw, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { useBoardContext } from '@/contexts/BoardContext.jsx';
 import { extractBoardContent } from '@/lib/boardBridge.js';
+import { GoogleIcon } from '@/components/GoogleIcon.jsx';
 import { ChatMessages } from '@/components/chat/ChatMessages.jsx';
 import { ChatInput } from '@/components/chat/ChatInput.jsx';
 import { ChatEmpty } from '@/components/chat/ChatEmpty.jsx';
@@ -28,71 +29,165 @@ function useIsMobile() {
   return isMobile;
 }
 
-function GuestTrialGate() {
-  const navigate = useNavigate();
-  const { closeWidget } = useChatContext();
+// Inline auth form that lives inside the panel - no navigation away
+function InlineAuth({ variant = 'compact', title, subtitle }) {
+  const { login, signup, loginWithGoogle } = useAuth();
   const { t } = useTranslation('flybot');
+  const [mode, setMode] = useState('signup');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    if (mode === 'signup') {
+      if (password.length < 8) {
+        setError(t('guest.authPasswordShort'));
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError(t('guest.authPasswordMismatch'));
+        return;
+      }
+      setIsLoading(true);
+      const result = await signup(email, password);
+      setIsLoading(false);
+      if (!result.success) {
+        setError(result.error || t('guest.authError'));
+      }
+    } else {
+      setIsLoading(true);
+      const result = await login(email, password);
+      setIsLoading(false);
+      if (!result.success) {
+        setError(result.error || t('guest.authError'));
+      }
+    }
+    // On success, AuthContext updates isAuthenticated -> this component unmounts
+  };
+
+  const handleGoogle = () => {
+    setIsGoogleLoading(true);
+    loginWithGoogle().catch(() => {
+      setIsGoogleLoading(false);
+      setError(t('guest.authError'));
+    });
+  };
+
+  const isCompact = variant === 'compact';
 
   return (
-    <div className="border-t border-border/50 bg-background px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-      <div className="text-center max-w-xs mx-auto">
-        <div className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 mb-3">
-          <Bot className="w-5 h-5 text-primary" />
+    <div className={isCompact
+      ? 'border-t border-border/50 bg-background px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]'
+      : 'flex-1 flex items-center justify-center p-6'
+    }>
+      <div className={isCompact ? 'max-w-xs mx-auto' : 'max-w-xs w-full'}>
+        {/* Header */}
+        <div className="text-center mb-4">
+          {!isCompact && (
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
+              <Bot className="w-6 h-6 text-primary" />
+            </div>
+          )}
+          {isCompact && (
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 mb-3">
+              <Bot className="w-5 h-5 text-primary" />
+            </div>
+          )}
+          <h3 className={isCompact ? 'font-semibold mb-1 text-sm' : 'font-semibold mb-1.5 text-sm'}>
+            {title}
+          </h3>
+          <p className="text-xs text-muted-foreground/70 leading-relaxed">
+            {subtitle}
+          </p>
         </div>
-        <h3 className="font-semibold mb-1 text-sm">{t('guest.gateTitle')}</h3>
-        <p className="text-xs text-muted-foreground/70 mb-3 leading-relaxed">
-          {t('guest.gateSubtext')}
-        </p>
-        <div className="flex gap-2 justify-center">
-          <button
-            onClick={() => { closeWidget(); navigate('/signup'); }}
-            className="px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
-          >
-            <LogIn className="w-3.5 h-3.5" />
-            {t('guest.gateCta')}
-          </button>
-          <button
-            onClick={() => { closeWidget(); navigate('/login'); }}
-            className="px-4 py-3 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
-          >
-            {t('guest.gateSignIn')}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function AuthGate() {
-  const navigate = useNavigate();
-  const { closeWidget } = useChatContext();
-  const { t } = useTranslation('flybot');
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-2.5">
+          <input
+            type="email"
+            placeholder={t('guest.authEmail')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            required
+            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-[border-color,box-shadow]"
+          />
+          <input
+            type="password"
+            placeholder={t('guest.authPassword')}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+            required
+            className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-[border-color,box-shadow]"
+          />
+          {mode === 'signup' && (
+            <input
+              type="password"
+              placeholder={t('guest.authConfirmPassword')}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+              required
+              className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-[border-color,box-shadow]"
+            />
+          )}
 
-  return (
-    <div className="flex-1 flex items-center justify-center p-6">
-      <div className="text-center max-w-xs">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
-          <Bot className="w-6 h-6 text-primary" />
+          {error && (
+            <p className="text-xs text-red-500 text-center">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {mode === 'signup' ? t('guest.authSignUp') : t('guest.authLogIn')}
+          </button>
+        </form>
+
+        {/* Google divider + button */}
+        <div className="relative my-3">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-border/50" />
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase">
+            <span className="bg-background px-2 text-muted-foreground/50">{t('guest.authOrGoogle')}</span>
+          </div>
         </div>
-        <h3 className="font-semibold mb-1.5 text-sm">{t('panel.signInTitle')}</h3>
-        <p className="text-xs text-muted-foreground/70 mb-4 leading-relaxed">
-          {t('panel.signInDesc')}
+
+        <button
+          type="button"
+          onClick={handleGoogle}
+          disabled={isGoogleLoading}
+          className="w-full py-2.5 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {isGoogleLoading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <GoogleIcon className="w-3.5 h-3.5" />
+          )}
+          {t('guest.authGoogle')}
+        </button>
+
+        {/* Toggle login/signup */}
+        <p className="text-center mt-3 text-xs text-muted-foreground/60">
+          {mode === 'signup' ? t('guest.authSwitchToLogin') : t('guest.authSwitchToSignup')}{' '}
+          <button
+            type="button"
+            onClick={() => { setMode(mode === 'signup' ? 'login' : 'signup'); setError(null); }}
+            className="text-primary hover:underline font-medium"
+          >
+            {mode === 'signup' ? t('guest.authLogIn') : t('guest.authSignUp')}
+          </button>
         </p>
-        <div className="flex gap-2 justify-center">
-          <button
-            onClick={() => { closeWidget(); navigate('/signup'); }}
-            className="px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
-          >
-            <LogIn className="w-3.5 h-3.5" />
-            {t('panel.signUpFree')}
-          </button>
-          <button
-            onClick={() => { closeWidget(); navigate('/login'); }}
-            className="px-4 py-3 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
-          >
-            {t('panel.signIn')}
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -239,7 +334,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
 
             {/* Content */}
             {!isAuthenticated && !hasMessages && guestTrialUsed ? (
-              <AuthGate />
+              <InlineAuth variant="full" title={t('panel.signInTitle')} subtitle={t('panel.signInDesc')} />
             ) : limitReached ? (
               <ChatLimitReached messageCount={messageCount} compact />
             ) : hasMessages ? (
@@ -273,9 +368,9 @@ export function FlyBotPanel({ isOpen, onClose }) {
               </div>
             )}
 
-            {/* Post-trial gate for guests (replaces input after response) */}
+            {/* Post-trial inline auth (replaces input after response) */}
             {!isAuthenticated && hasMessages && guestTrialUsed && !isStreaming && (
-              <GuestTrialGate />
+              <InlineAuth variant="compact" title={t('guest.gateTitle')} subtitle={t('guest.gateSubtext')} />
             )}
 
             {/* Input: show for authenticated users OR guests who haven't used their trial */}

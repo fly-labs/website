@@ -114,7 +114,19 @@
     "gateTitle": "Gostou? Tem mais.",
     "gateSubtext": "Crie uma conta grátis para 10 mensagens.",
     "gateCta": "Criar conta grátis",
-    "gateSignIn": "Entrar"
+    "gateSignIn": "Entrar",
+    "authEmail": "Email",
+    "authPassword": "Senha",
+    "authConfirmPassword": "Confirmar senha",
+    "authSignUp": "Criar conta",
+    "authLogIn": "Entrar",
+    "authOrGoogle": "ou",
+    "authGoogle": "Google",
+    "authSwitchToLogin": "Já tem uma conta?",
+    "authSwitchToSignup": "Não tem conta?",
+    "authPasswordMismatch": "As senhas não conferem",
+    "authPasswordShort": "Mínimo 8 caracteres",
+    "authError": "Algo deu errado. Tente de novo."
   },
   "disclosure": {
     "trigger": "Sobre o FlyBot, limitações e seus dados",
