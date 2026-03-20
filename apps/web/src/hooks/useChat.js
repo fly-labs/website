@@ -13,6 +13,12 @@ export function useChat() {
   const [messageLimit, setMessageLimit] = useState(5);
   const [limitReached, setLimitReached] = useState(false);
   const [feedbackMap, setFeedbackMap] = useState({});
+  const [guestTrialUsed, setGuestTrialUsed] = useState(() => {
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem('flybot_guest_used') === 'true';
+    }
+    return false;
+  });
   const abortRef = useRef(null);
 
   const clearError = useCallback(() => {
@@ -83,6 +89,30 @@ export function useChat() {
       },
       onDone: (data) => {
         setIsStreaming(false);
+        // Guest trial: mark as used so the gate appears
+        if (data.is_guest) {
+          setGuestTrialUsed(true);
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('flybot_guest_used', 'true');
+          }
+          // Attach metadata (evaluation cards) to the assistant message
+          if (data.metadata) {
+            setMessages(prev =>
+              prev.map(m =>
+                m.id === assistantId
+                  ? { ...m, metadata: data.metadata }
+                  : m
+              )
+            );
+            if (data.metadata.music_action) {
+              window.dispatchEvent(new CustomEvent('flybot-music-action', {
+                detail: data.metadata.music_action,
+              }));
+            }
+          }
+          // Keep the messages visible but don't track conversation
+          return;
+        }
         if (data.conversation_id && !activeConversationId) {
           setActiveConversationId(data.conversation_id);
           trackEvent('flybot_conversation_created', { conversation_id: data.conversation_id });
@@ -231,5 +261,6 @@ export function useChat() {
     clearError,
     feedbackMap,
     submitMessageFeedback,
+    guestTrialUsed,
   };
 }

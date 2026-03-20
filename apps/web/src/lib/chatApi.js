@@ -2,7 +2,13 @@ import supabase from '@/lib/supabaseClient.js';
 
 async function getAuthHeaders() {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.access_token) throw new Error('Not authenticated');
+  if (!session?.access_token) {
+    // No session - return guest headers
+    return {
+      'Content-Type': 'application/json',
+      'X-Guest': 'true',
+    };
+  }
   return {
     'Authorization': `Bearer ${session.access_token}`,
     'Content-Type': 'application/json',

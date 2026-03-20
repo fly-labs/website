@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, Cpu, Target, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { ChevronDown, Cpu, Target, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils.js';
 
 function Section({ icon: Icon, title, children, defaultOpen = false }) {
@@ -29,6 +30,7 @@ function Section({ icon: Icon, title, children, defaultOpen = false }) {
 
 export function FlyBotDisclosure({ compact = false }) {
   const [expanded, setExpanded] = useState(false);
+  const { t } = useTranslation('flybot');
 
   if (!expanded) {
     return (
@@ -39,7 +41,7 @@ export function FlyBotDisclosure({ compact = false }) {
           compact ? 'text-[10px] mt-3' : 'text-[11px] mt-4'
         )}
       >
-        About FlyBot, limitations, and your data
+        {t('disclosure.trigger')}
       </button>
     );
   }
@@ -54,44 +56,23 @@ export function FlyBotDisclosure({ compact = false }) {
         onClick={() => setExpanded(false)}
         className="w-full flex items-center justify-between px-3 py-2 text-[10px] text-muted-foreground/50 uppercase tracking-wider font-medium hover:text-muted-foreground/70 transition-colors"
       >
-        <span>About FlyBot</span>
+        <span>{t('disclosure.header')}</span>
         <ChevronDown className="w-3 h-3 rotate-180" />
       </button>
 
-      <Section icon={Cpu} title="What this is" defaultOpen>
-        <p>
-          FlyBot is an AI-powered vibe building partner, built on Claude (Anthropic).
-          It helps solo builders think through ideas, content,
-          and business decisions.
-        </p>
-        <p>
-          It's in beta. Responses can be inaccurate or incomplete. Always verify
-          important information on your own.
-        </p>
+      <Section icon={Cpu} title={t('disclosure.whatTitle')} defaultOpen>
+        <p>{t('disclosure.whatDesc1')}</p>
+        <p>{t('disclosure.whatDesc2')}</p>
       </Section>
 
-      <Section icon={Target} title="What it does and doesn't do">
-        <p>
-          Scores business ideas using multiple AI-powered frameworks. Helps with
-          content strategy, writing, and titles. Applies behavioral finance
-          concepts to building decisions.
-        </p>
-        <p>
-          It cannot help with: personal coaching, therapy, investment recommendations,
-          medical or legal advice, general knowledge, or code debugging. Scores
-          and verdicts are AI opinions, not guarantees.
-        </p>
+      <Section icon={Target} title={t('disclosure.canTitle')}>
+        <p>{t('disclosure.canDesc1')}</p>
+        <p>{t('disclosure.canDesc2')}</p>
       </Section>
 
-      <Section icon={ShieldCheck} title="Your data">
-        <p>
-          Conversations are stored securely and are only visible to you. They're
-          not shared with third parties or used to train AI models.
-        </p>
-        <p>
-          10 free messages per account during beta. The full codebase is open
-          source at github.com/fly-labs/website.
-        </p>
+      <Section icon={ShieldCheck} title={t('disclosure.dataTitle')}>
+        <p>{t('disclosure.dataDesc1')}</p>
+        <p>{t('disclosure.dataDesc2')}</p>
       </Section>
     </div>
   );

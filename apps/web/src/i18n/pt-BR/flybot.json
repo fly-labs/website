@@ -82,6 +82,8 @@
     "typing": "FlyBot está pensando...",
     "messagesLeft": "{{count}} mensagens restantes",
     "unlimited": "Ilimitado",
+    "footerBeta": "FlyBot está em beta e pode cometer erros.",
+    "limitPlaceholder": "Limite de mensagens atingido",
     "disclosure": "FlyBot é um assistente de IA. Pontuações são opiniões baseadas em dados. Sempre faça sua própria pesquisa.",
     "limitTitle": "Você usou todas as suas mensagens grátis",
     "limitSubtitle": "Entre na lista de espera para mais acesso quando abrirmos.",
@@ -104,6 +106,28 @@
   "empty": {
     "title": "O que você está construindo?",
     "subtitle": "Pontue uma ideia, encontre um prompt, ou fale sobre o que está travado."
+  },
+  "guest": {
+    "emptyTitle": "Teste. Descreva uma ideia de negócio.",
+    "emptySubtitle": "Uma mensagem grátis. Sem cadastro.",
+    "inputPlaceholder": "Descreva uma ideia...",
+    "gateTitle": "Gostou? Tem mais.",
+    "gateSubtext": "Crie uma conta grátis para 10 mensagens.",
+    "gateCta": "Criar conta grátis",
+    "gateSignIn": "Entrar"
+  },
+  "disclosure": {
+    "trigger": "Sobre o FlyBot, limitações e seus dados",
+    "header": "Sobre o FlyBot",
+    "whatTitle": "O que é",
+    "whatDesc1": "FlyBot é um parceiro de vibe building com IA, construído no Claude (Anthropic). Ajuda builders solo a pensar em ideias, conteúdo e decisões de negócio.",
+    "whatDesc2": "Está em beta. Respostas podem ser imprecisas ou incompletas. Sempre verifique informações importantes por conta própria.",
+    "canTitle": "O que faz e não faz",
+    "canDesc1": "Pontua ideias de negócio usando múltiplos frameworks com IA. Ajuda com estratégia de conteúdo, escrita e títulos. Aplica conceitos de finanças comportamentais em decisões de construção.",
+    "canDesc2": "Não pode ajudar com: coaching pessoal, terapia, recomendações de investimento, consultoria médica ou jurídica, conhecimento geral ou debugging de código. Pontuações e vereditos são opiniões de IA, não garantias.",
+    "dataTitle": "Seus dados",
+    "dataDesc1": "Conversas são armazenadas com segurança e só você pode ver. Não são compartilhadas com terceiros nem usadas para treinar modelos de IA.",
+    "dataDesc2": "10 mensagens grátis por conta durante o beta. Todo o código é open source em github.com/fly-labs/website."
   },
   "panel": {
     "title": "FlyBot",

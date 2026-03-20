@@ -82,6 +82,8 @@
     "typing": "FlyBot is thinking...",
     "messagesLeft": "{{count}} messages left",
     "unlimited": "Unlimited",
+    "footerBeta": "FlyBot is in beta and can make mistakes.",
+    "limitPlaceholder": "Message limit reached",
     "disclosure": "FlyBot is an AI assistant. Scores are opinions based on data. Always do your own research.",
     "limitTitle": "You've used all your free messages",
     "limitSubtitle": "Join the waitlist to get more access when we open up.",
@@ -104,6 +106,28 @@
   "empty": {
     "title": "What are you building?",
     "subtitle": "Score an idea, find a prompt, or talk through what's stuck."
+  },
+  "guest": {
+    "emptyTitle": "Try it. Describe a business idea.",
+    "emptySubtitle": "One free message. No signup needed.",
+    "inputPlaceholder": "Describe an idea...",
+    "gateTitle": "Liked that? There's more.",
+    "gateSubtext": "Create a free account for 10 free messages.",
+    "gateCta": "Sign up free",
+    "gateSignIn": "Sign in"
+  },
+  "disclosure": {
+    "trigger": "About FlyBot, limitations, and your data",
+    "header": "About FlyBot",
+    "whatTitle": "What this is",
+    "whatDesc1": "FlyBot is an AI-powered vibe building partner, built on Claude (Anthropic). It helps solo builders think through ideas, content, and business decisions.",
+    "whatDesc2": "It's in beta. Responses can be inaccurate or incomplete. Always verify important information on your own.",
+    "canTitle": "What it does and doesn't do",
+    "canDesc1": "Scores business ideas using multiple AI-powered frameworks. Helps with content strategy, writing, and titles. Applies behavioral finance concepts to building decisions.",
+    "canDesc2": "It cannot help with: personal coaching, therapy, investment recommendations, medical or legal advice, general knowledge, or code debugging. Scores and verdicts are AI opinions, not guarantees.",
+    "dataTitle": "Your data",
+    "dataDesc1": "Conversations are stored securely and are only visible to you. They're not shared with third parties or used to train AI models.",
+    "dataDesc2": "10 free messages per account during beta. The full codebase is open source at github.com/fly-labs/website."
   },
   "panel": {
     "title": "FlyBot",

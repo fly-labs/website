@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn, Info } from 'lucide-react';
+import { Bot, Maximize2, X, AlertCircle, RotateCcw, LogIn } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { useBoardContext } from '@/contexts/BoardContext.jsx';
@@ -27,9 +28,45 @@ function useIsMobile() {
   return isMobile;
 }
 
+function GuestTrialGate() {
+  const navigate = useNavigate();
+  const { closeWidget } = useChatContext();
+  const { t } = useTranslation('flybot');
+
+  return (
+    <div className="border-t border-border/50 bg-background px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="text-center max-w-xs mx-auto">
+        <div className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 mb-3">
+          <Bot className="w-5 h-5 text-primary" />
+        </div>
+        <h3 className="font-semibold mb-1 text-sm">{t('guest.gateTitle')}</h3>
+        <p className="text-xs text-muted-foreground/70 mb-3 leading-relaxed">
+          {t('guest.gateSubtext')}
+        </p>
+        <div className="flex gap-2 justify-center">
+          <button
+            onClick={() => { closeWidget(); navigate('/signup'); }}
+            className="px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            {t('guest.gateCta')}
+          </button>
+          <button
+            onClick={() => { closeWidget(); navigate('/login'); }}
+            className="px-4 py-3 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
+          >
+            {t('guest.gateSignIn')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AuthGate() {
   const navigate = useNavigate();
   const { closeWidget } = useChatContext();
+  const { t } = useTranslation('flybot');
 
   return (
     <div className="flex-1 flex items-center justify-center p-6">
@@ -37,23 +74,23 @@ function AuthGate() {
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
           <Bot className="w-6 h-6 text-primary" />
         </div>
-        <h3 className="font-semibold mb-1.5 text-sm">Sign in to chat with FlyBot</h3>
+        <h3 className="font-semibold mb-1.5 text-sm">{t('panel.signInTitle')}</h3>
         <p className="text-xs text-muted-foreground/70 mb-4 leading-relaxed">
-          Evaluate business ideas with AI scoring, get content strategy help, and think through building decisions. 10 free messages.
+          {t('panel.signInDesc')}
         </p>
         <div className="flex gap-2 justify-center">
           <button
             onClick={() => { closeWidget(); navigate('/signup'); }}
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
+            className="px-4 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:brightness-110 transition-colors flex items-center gap-1.5"
           >
             <LogIn className="w-3.5 h-3.5" />
-            Sign up free
+            {t('panel.signUpFree')}
           </button>
           <button
             onClick={() => { closeWidget(); navigate('/login'); }}
-            className="px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
+            className="px-4 py-3 rounded-lg border border-border text-sm font-medium hover:bg-muted/50 transition-colors"
           >
-            Sign in
+            {t('panel.signIn')}
           </button>
         </div>
       </div>
@@ -66,6 +103,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { t } = useTranslation('flybot');
   const isAuthenticated = !!currentUser;
   const isAdmin = currentUser?.email === ADMIN_EMAIL;
   const isOnFlyBoard = location.pathname === '/flyboard';
@@ -88,6 +126,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
     getPageContextWithDetail,
     feedbackMap,
     submitMessageFeedback,
+    guestTrialUsed,
   } = useChatContext();
 
   const handleSend = useCallback((text) => {
@@ -176,16 +215,18 @@ export function FlyBotPanel({ isOpen, onClose }) {
                   <Bot className="w-4 h-4 text-primary" />
                 </div>
                 <span className="text-sm font-semibold">FlyBot</span>
-                <span className="text-[10px] text-muted-foreground/50 bg-muted/50 px-1.5 py-0.5 rounded">beta</span>
+                <span className="text-[10px] text-muted-foreground/50 bg-muted/50 px-1.5 py-0.5 rounded">{t('panel.beta')}</span>
               </div>
               <div className="flex items-center gap-1">
-                <button
-                  onClick={handleExpand}
-                  className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
-                  aria-label="Open full page"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                </button>
+                {isAuthenticated && (
+                  <button
+                    onClick={handleExpand}
+                    className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+                    aria-label="Open full page"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   onClick={onClose}
                   className="p-2 rounded-lg hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
@@ -197,18 +238,18 @@ export function FlyBotPanel({ isOpen, onClose }) {
             </div>
 
             {/* Content */}
-            {!isAuthenticated ? (
+            {!isAuthenticated && !hasMessages && guestTrialUsed ? (
               <AuthGate />
             ) : limitReached ? (
               <ChatLimitReached messageCount={messageCount} compact />
             ) : hasMessages ? (
-              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} feedbackMap={feedbackMap} onFeedback={submitMessageFeedback} onFollowUp={handleSend} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} compact onNavigate={handleNavigate} feedbackMap={isAuthenticated ? feedbackMap : {}} onFeedback={isAuthenticated ? submitMessageFeedback : undefined} onFollowUp={isAuthenticated ? handleSend : undefined} />
             ) : (
-              <ChatEmpty onPromptClick={handlePromptClick} compact pageContext={currentPageContext} />
+              <ChatEmpty onPromptClick={handlePromptClick} compact pageContext={currentPageContext} isGuest={!isAuthenticated} />
             )}
 
             {/* Error banner */}
-            {isAuthenticated && error && (
+            {error && (
               <div className="mx-3 mb-2">
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-xs">
                   <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
@@ -232,16 +273,22 @@ export function FlyBotPanel({ isOpen, onClose }) {
               </div>
             )}
 
-            {/* Input */}
-            {isAuthenticated && !limitReached && (
+            {/* Post-trial gate for guests (replaces input after response) */}
+            {!isAuthenticated && hasMessages && guestTrialUsed && !isStreaming && (
+              <GuestTrialGate />
+            )}
+
+            {/* Input: show for authenticated users OR guests who haven't used their trial */}
+            {((isAuthenticated && !limitReached) || (!isAuthenticated && !guestTrialUsed)) && (
               <ChatInput
                 onSend={handleSend}
                 onStop={stopStreaming}
                 isStreaming={isStreaming}
-                disabled={limitReached}
-                messageCount={messageCount}
-                messageLimit={isAdmin ? null : messageLimit}
+                disabled={isAuthenticated ? limitReached : guestTrialUsed}
+                messageCount={isAuthenticated ? messageCount : undefined}
+                messageLimit={isAuthenticated && !isAdmin ? messageLimit : null}
                 compact
+                isGuest={!isAuthenticated}
               />
             )}
           </motion.div>

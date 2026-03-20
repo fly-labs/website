@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@supabase/supabase-js';
 import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
 import { buildSystemPrompt, findSimilarIdeas, fetchIdeaAnalytics, searchIdeas } from './lib/coach-prompt.js';
 import { prompts as promptLibrary } from '../src/lib/data/prompts.js';
@@ -131,17 +132,44 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let auth;
+  // Try auth - fall through to guest mode on failure
+  let auth = null;
+  let isGuest = false;
   try {
     auth = await verifyAuth(req);
   } catch (err) {
-    return res.status(err.status || 401).json({ error: err.message });
+    // No valid auth - check if this is a guest request
+    const guestHeader = req.headers['x-guest'];
+    if (guestHeader === 'true') {
+      isGuest = true;
+    } else {
+      return res.status(err.status || 401).json({ error: err.message });
+    }
   }
 
-  const { user, isAdmin, supabase } = auth;
+  const user = auth ? auth.user : null;
+  const isAdmin = auth ? auth.isAdmin : false;
+  const supabase = auth ? auth.supabase : null;
 
-  // Rate limit
-  if (!checkRateLimit(user.id)) {
+  // Guest rate limit: 1 message per IP per 24h
+  if (isGuest) {
+    const clientIP = (req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+    const guestKey = `guest-${clientIP}`;
+    const now = Date.now();
+    const windowMs = 24 * 60 * 60 * 1000; // 24 hours
+    const guestRates = rateLimits.get(guestKey) || [];
+    const recent = guestRates.filter(t => now - t < windowMs);
+
+    if (recent.length >= 1) {
+      return res.status(429).json({ error: 'Guest trial used. Sign up for 10 free messages.' });
+    }
+
+    recent.push(now);
+    rateLimits.set(guestKey, recent);
+  }
+
+  // Authenticated user rate limit
+  if (!isGuest && !checkRateLimit(user.id)) {
     return res.status(429).json({ error: 'Too many requests. Wait a minute.' });
   }
 
@@ -157,78 +185,88 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Message is empty' });
   }
 
-  // Check message count
-  // NOTE: get_user_message_count RPC must count ALL messages including from deleted conversations
-  // to prevent users from bypassing limits by deleting conversations.
-  const messageLimit = isAdmin ? Infinity : 10;
-  const { data: msgCount } = await supabase.rpc('get_user_message_count', { p_user_id: user.id });
-  const currentCount = msgCount || 0;
+  let convId = null;
+  let currentCount = 0;
+  let messageLimit = 10;
+  let userMsg = null;
+  let history = null;
 
-  if (currentCount >= messageLimit) {
-    return res.status(403).json({
-      error: 'limit_reached',
-      message_count: currentCount,
-      limit: messageLimit,
-    });
-  }
+  if (!isGuest) {
+    // Check message count
+    // NOTE: get_user_message_count RPC must count ALL messages including from deleted conversations
+    // to prevent users from bypassing limits by deleting conversations.
+    messageLimit = isAdmin ? Infinity : 10;
+    const { data: msgCount } = await supabase.rpc('get_user_message_count', { p_user_id: user.id });
+    currentCount = msgCount || 0;
 
-  // Conversation cap (spam protection)
-  if (!isAdmin) {
-    const { count: convCount } = await supabase
-      .from('conversations')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id);
-    if (convCount >= 10) {
+    if (currentCount >= messageLimit) {
       return res.status(403).json({
-        error: 'conversation_limit',
-        message: 'Maximum conversations reached. Contact support for more access.',
+        error: 'limit_reached',
+        message_count: currentCount,
+        limit: messageLimit,
       });
     }
-  }
 
-  // Validate conversation ownership
-  let convId = conversation_id;
-  if (convId) {
-    const { data: conv } = await supabase
-      .from('conversations')
-      .select('id')
-      .eq('id', convId)
-      .eq('user_id', user.id)
-      .is('deleted_at', null)
-      .single();
-    if (!conv) {
-      return res.status(403).json({ error: 'Conversation not found' });
+    // Conversation cap (spam protection)
+    if (!isAdmin) {
+      const { count: convCount } = await supabase
+        .from('conversations')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      if (convCount >= 10) {
+        return res.status(403).json({
+          error: 'conversation_limit',
+          message: 'Maximum conversations reached. Contact support for more access.',
+        });
+      }
     }
-  }
 
-  // Ensure conversation exists
-  if (!convId) {
-    const { data: conv, error: convError } = await supabase
-      .from('conversations')
-      .insert({ user_id: user.id, title: cleanMessage.slice(0, 100) })
-      .select('id')
-      .single();
-
-    if (convError) {
-      return res.status(500).json({ error: 'Failed to create conversation' });
+    // Validate conversation ownership
+    convId = conversation_id;
+    if (convId) {
+      const { data: conv } = await supabase
+        .from('conversations')
+        .select('id')
+        .eq('id', convId)
+        .eq('user_id', user.id)
+        .is('deleted_at', null)
+        .single();
+      if (!conv) {
+        return res.status(403).json({ error: 'Conversation not found' });
+      }
     }
-    convId = conv.id;
+
+    // Ensure conversation exists
+    if (!convId) {
+      const { data: conv, error: convError } = await supabase
+        .from('conversations')
+        .insert({ user_id: user.id, title: cleanMessage.slice(0, 100) })
+        .select('id')
+        .single();
+
+      if (convError) {
+        return res.status(500).json({ error: 'Failed to create conversation' });
+      }
+      convId = conv.id;
+    }
+
+    // Save user message (keep ID for rollback on error)
+    const { data: savedMsg } = await supabase.from('messages').insert({
+      conversation_id: convId,
+      role: 'user',
+      content: cleanMessage,
+    }).select('id').single();
+    userMsg = savedMsg;
+
+    // Load conversation history (last 20 messages)
+    const { data: historyData } = await supabase
+      .from('messages')
+      .select('role, content')
+      .eq('conversation_id', convId)
+      .order('created_at', { ascending: true })
+      .limit(20);
+    history = historyData;
   }
-
-  // Save user message (keep ID for rollback on error)
-  const { data: userMsg } = await supabase.from('messages').insert({
-    conversation_id: convId,
-    role: 'user',
-    content: cleanMessage,
-  }).select('id').single();
-
-  // Load conversation history (last 20 messages)
-  const { data: history } = await supabase
-    .from('messages')
-    .select('role, content')
-    .eq('conversation_id', convId)
-    .order('created_at', { ascending: true })
-    .limit(20);
 
   // Sanitize page_context: only allow whitelisted page names
   let sanitizedPageContext = null;
@@ -271,27 +309,38 @@ export default async function handler(req, res) {
   // Detect search intent
   const searchFilters = parseSearchIntent(cleanMessage);
 
+  // For guests, use service-role supabase for read-only queries (similar ideas, analytics)
+  // For authenticated users, use their scoped client
+  const queryClient = supabase || createClient(
+    process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+
   // Run parallel: similar ideas + analytics + search results
   const [similarIdeas, analytics, searchResults] = await Promise.all([
     mightBeIdea
-      ? findSimilarIdeas(supabase, cleanMessage).catch(() => [])
+      ? findSimilarIdeas(queryClient, cleanMessage).catch(() => [])
       : Promise.resolve([]),
-    fetchIdeaAnalytics(supabase),
+    fetchIdeaAnalytics(queryClient).catch(() => null),
     searchFilters
-      ? searchIdeas(supabase, searchFilters).catch(() => [])
+      ? searchIdeas(queryClient, searchFilters).catch(() => [])
       : Promise.resolve([]),
   ]);
 
   // Find relevant prompts from our library
   const relevantPrompts = findRelevantPrompts(cleanMessage);
 
-  // Load user memories for cross-session context
-  const { data: userMemories } = await supabase
-    .from('flybot_memory')
-    .select('key, value')
-    .eq('user_id', user.id)
-    .order('updated_at', { ascending: false })
-    .limit(10);
+  // Load user memories for cross-session context (skip for guests)
+  let userMemories = [];
+  if (!isGuest) {
+    const { data: memories } = await supabase
+      .from('flybot_memory')
+      .select('key, value')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(10);
+    userMemories = memories || [];
+  }
 
   // Sanitize language (only allow known values)
   const sanitizedLanguage = language === 'pt-BR' ? 'pt-BR' : 'en';
@@ -304,17 +353,16 @@ export default async function handler(req, res) {
     pageContext: sanitizedPageContext,
     analytics,
     searchResults,
-    userMemories: userMemories || [],
+    userMemories,
     language: sanitizedLanguage,
   });
 
-  // Build messages array
-  const messages = (history || []).map(m => ({
-    role: m.role,
-    content: m.content,
-  }));
+  // Build messages array (empty for guests - single stateless exchange)
+  const messages = isGuest
+    ? [{ role: 'user', content: cleanMessage }]
+    : (history || []).map(m => ({ role: m.role, content: m.content }));
 
-  // Stream response (Sonnet for admin, Haiku for free users)
+  // Stream response (Sonnet for admin, Haiku for free/guest users)
   const model = isAdmin ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
 
   const anthropic = new Anthropic();
@@ -323,7 +371,9 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Conversation-Id', convId);
+  if (convId) {
+    res.setHeader('X-Conversation-Id', convId);
+  }
 
   let fullResponse = '';
   let metadata = null;
@@ -383,90 +433,103 @@ export default async function handler(req, res) {
       }
     }
 
-    // Parse memory tags before saving (strip from stored content)
-    const memoryMatches = [...fullResponse.matchAll(/<memory>([\s\S]*?)<\/memory>/g)];
-    if (memoryMatches.length > 0) {
-      const VALID_KEYS = new Set(['building', 'role', 'tools', 'goal', 'preference', 'background', 'industry', 'stage', 'audience', 'challenge']);
-      for (const match of memoryMatches) {
-        try {
-          const mem = JSON.parse(match[1].trim());
-          if (mem.key && mem.value && VALID_KEYS.has(mem.key) && typeof mem.value === 'string') {
-            const safeValue = mem.value.replace(/[<>{}\n\r]/g, ' ').trim().slice(0, 200);
-            // Check if key already exists (upsert is always safe for existing keys)
-            const { data: existing } = await supabase
-              .from('flybot_memory')
-              .select('id')
-              .eq('user_id', user.id)
-              .eq('key', mem.key)
-              .maybeSingle();
+    // Skip memory parsing and DB writes for guests
+    let assistantMsg = null;
+    if (!isGuest) {
+      // Parse memory tags before saving (strip from stored content)
+      const memoryMatches = [...fullResponse.matchAll(/<memory>([\s\S]*?)<\/memory>/g)];
+      if (memoryMatches.length > 0) {
+        const VALID_KEYS = new Set(['building', 'role', 'tools', 'goal', 'preference', 'background', 'industry', 'stage', 'audience', 'challenge']);
+        for (const match of memoryMatches) {
+          try {
+            const mem = JSON.parse(match[1].trim());
+            if (mem.key && mem.value && VALID_KEYS.has(mem.key) && typeof mem.value === 'string') {
+              const safeValue = mem.value.replace(/[<>{}\n\r]/g, ' ').trim().slice(0, 200);
+              // Check if key already exists (upsert is always safe for existing keys)
+              const { data: existing } = await supabase
+                .from('flybot_memory')
+                .select('id')
+                .eq('user_id', user.id)
+                .eq('key', mem.key)
+                .maybeSingle();
 
-            if (existing) {
-              // Update existing key
-              await supabase
-                .from('flybot_memory')
-                .update({ value: safeValue, updated_at: new Date().toISOString() })
-                .eq('id', existing.id);
-            } else {
-              // Only insert new key if under 10 total
-              const { count } = await supabase
-                .from('flybot_memory')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', user.id);
-              if ((count || 0) < 10) {
+              if (existing) {
+                // Update existing key
                 await supabase
                   .from('flybot_memory')
-                  .insert({
-                    user_id: user.id,
-                    key: mem.key,
-                    value: safeValue,
-                  });
+                  .update({ value: safeValue, updated_at: new Date().toISOString() })
+                  .eq('id', existing.id);
+              } else {
+                // Only insert new key if under 10 total
+                const { count } = await supabase
+                  .from('flybot_memory')
+                  .select('id', { count: 'exact', head: true })
+                  .eq('user_id', user.id);
+                if ((count || 0) < 10) {
+                  await supabase
+                    .from('flybot_memory')
+                    .insert({
+                      user_id: user.id,
+                      key: mem.key,
+                      value: safeValue,
+                    });
+                }
               }
             }
+          } catch {
+            // Skip malformed memory tags
           }
-        } catch {
-          // Skip malformed memory tags
         }
       }
+
+      // Strip all special tags from stored content (keeps history clean for future context)
+      const cleanResponse = fullResponse
+        .replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '')
+        .replace(/<memory>[\s\S]*?<\/memory>/g, '')
+        .replace(/<music_action>[\s\S]*?<\/music_action>/g, '')
+        .replace(/<board_action>[\s\S]*?<\/board_action>/g, '')
+        .trim();
+
+      // Save assistant message
+      const { data: savedAssistant } = await supabase.from('messages').insert({
+        conversation_id: convId,
+        role: 'assistant',
+        content: cleanResponse || fullResponse,
+        metadata,
+      }).select('id').single();
+      assistantMsg = savedAssistant;
+
+      // Update conversation timestamp
+      await supabase
+        .from('conversations')
+        .update({ last_message_at: new Date().toISOString() })
+        .eq('id', convId);
     }
 
-    // Strip all special tags from stored content (keeps history clean for future context)
-    const cleanResponse = fullResponse
-      .replace(/<evaluation>[\s\S]*?<\/evaluation>/g, '')
-      .replace(/<memory>[\s\S]*?<\/memory>/g, '')
-      .replace(/<music_action>[\s\S]*?<\/music_action>/g, '')
-      .replace(/<board_action>[\s\S]*?<\/board_action>/g, '')
-      .trim();
-
-    // Save assistant message
-    const { data: assistantMsg } = await supabase.from('messages').insert({
-      conversation_id: convId,
-      role: 'assistant',
-      content: cleanResponse || fullResponse,
-      metadata,
-    }).select('id').single();
-
-    // Update conversation timestamp
-    await supabase
-      .from('conversations')
-      .update({ last_message_at: new Date().toISOString() })
-      .eq('id', convId);
-
-    // Send done event with real message ID
-    const newCount = currentCount + 1;
-    res.write(`data: ${JSON.stringify({
-      type: 'done',
-      conversation_id: convId,
-      message_id: assistantMsg?.id || null,
-      message_count: newCount,
-      limit: messageLimit === Infinity ? null : messageLimit,
-      metadata,
-    })}\n\n`);
+    // Send done event
+    if (isGuest) {
+      res.write(`data: ${JSON.stringify({
+        type: 'done',
+        is_guest: true,
+        metadata,
+      })}\n\n`);
+    } else {
+      const newCount = currentCount + 1;
+      res.write(`data: ${JSON.stringify({
+        type: 'done',
+        conversation_id: convId,
+        message_id: assistantMsg?.id || null,
+        message_count: newCount,
+        limit: messageLimit === Infinity ? null : messageLimit,
+        metadata,
+      })}\n\n`);
+    }
 
   } catch (err) {
     console.error('FlyBot API error:', err?.status, err?.error?.type, err?.message);
 
-    // Always clean up the orphan user message on error
-    if (userMsg?.id) {
+    // Always clean up the orphan user message on error (skip for guests)
+    if (!isGuest && userMsg?.id) {
       await supabase.from('messages').delete().eq('id', userMsg.id);
     }
 

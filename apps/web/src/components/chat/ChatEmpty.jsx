@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Bot, ArrowRight, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils.js';
 import { FlyBotDisclosure } from '@/components/chat/FlyBotDisclosure.jsx';
 
@@ -18,6 +19,12 @@ const COMPACT_PROMPTS = [
   'Score my business idea',
   'Show me BUILD ideas from Reddit',
   'Set the vibe',
+];
+
+const GUEST_PROMPTS = [
+  'Score my business idea',
+  'What are the hottest ideas right now?',
+  'Help me pick between two ideas',
 ];
 
 // Page-specific prompts and descriptions
@@ -115,20 +122,27 @@ function getPageConfig(pageContext) {
   return null;
 }
 
-export function ChatEmpty({ onPromptClick, compact = false, pageContext = null }) {
+export function ChatEmpty({ onPromptClick, compact = false, pageContext = null, isGuest = false }) {
+  const { t } = useTranslation('flybot');
   const pageConfig = getPageConfig(pageContext);
 
-  const prompts = compact
-    ? (pageConfig?.compactPrompts || COMPACT_PROMPTS)
-    : (pageConfig?.prompts || SUGGESTED_PROMPTS);
+  const prompts = isGuest
+    ? GUEST_PROMPTS
+    : compact
+      ? (pageConfig?.compactPrompts || COMPACT_PROMPTS)
+      : (pageConfig?.prompts || SUGGESTED_PROMPTS);
 
-  const title = compact
-    ? (pageConfig?.title || 'FlyBot')
-    : (pageConfig?.title ? `Hey, I'm ${pageConfig.title.replace('FlyBot for ', '')}'s FlyBot.` : 'Hey, I\'m FlyBot.');
+  const title = isGuest
+    ? t('guest.emptyTitle')
+    : compact
+      ? (pageConfig?.title || 'FlyBot')
+      : (pageConfig?.title ? `Hey, I'm ${pageConfig.title.replace('FlyBot for ', '')}'s FlyBot.` : 'Hey, I\'m FlyBot.');
 
-  const description = compact
-    ? (pageConfig?.compactDescription || 'Describe an idea. I\'ll score it and show you what I\'ve seen before.')
-    : (pageConfig?.description || 'Describe an idea. I\'ll ask 4 questions, pull similar ones I\'ve already analyzed, and tell you if it\'s worth your weekend.');
+  const description = isGuest
+    ? t('guest.emptySubtitle')
+    : compact
+      ? (pageConfig?.compactDescription || 'Describe an idea. I\'ll score it and show you what I\'ve seen before.')
+      : (pageConfig?.description || 'Describe an idea. I\'ll ask 4 questions, pull similar ones I\'ve already analyzed, and tell you if it\'s worth your weekend.');
 
   return (
     <div className="flex-1 flex items-center justify-center p-6 overflow-y-auto">
@@ -150,7 +164,7 @@ export function ChatEmpty({ onPromptClick, compact = false, pageContext = null }
             'font-bold tracking-tight',
             compact ? 'text-lg mb-1.5' : 'text-2xl mb-2'
           )}>
-            {compact ? (pageConfig?.title || 'FlyBot') : title}
+            {isGuest ? title : compact ? (pageConfig?.title || 'FlyBot') : title}
           </h1>
           <p className={cn(
             'text-muted-foreground/70 leading-relaxed mx-auto',

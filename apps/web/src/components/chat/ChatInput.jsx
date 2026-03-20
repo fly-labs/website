@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUp, Square } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils.js';
 
-export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount, messageLimit, compact = false }) {
+export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount, messageLimit, compact = false, isGuest = false }) {
   const [text, setText] = useState('');
   const textareaRef = useRef(null);
 
@@ -30,7 +31,8 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
     }
   };
 
-  const showCounter = messageLimit && messageLimit !== Infinity;
+  const { t } = useTranslation('flybot');
+  const showCounter = !isGuest && messageLimit && messageLimit !== Infinity;
   const hasText = text.trim().length > 0;
 
   return (
@@ -64,7 +66,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={disabled ? 'Message limit reached' : 'Describe an idea, ask for prompts, or just talk...'}
+            placeholder={disabled ? t('chat.limitPlaceholder') : isGuest ? t('guest.inputPlaceholder') : t('chat.inputPlaceholder')}
             disabled={disabled}
             rows={1}
             className={cn(
@@ -105,7 +107,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled, messageCount,
 
         {/* Footer text */}
         <p className="text-[10px] text-muted-foreground/30 text-center">
-          FlyBot is in beta and can make mistakes.
+          {t('chat.footerBeta')}
         </p>
       </div>
     </div>
