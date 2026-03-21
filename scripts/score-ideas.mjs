@@ -207,7 +207,16 @@ Return a JSON object:
     if (text.startsWith('```')) {
       text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
     }
-    return JSON.parse(text);
+    try {
+      return JSON.parse(text);
+    } catch {
+      const jsonStart = text.indexOf('{');
+      const jsonEnd = text.lastIndexOf('}');
+      if (jsonStart >= 0 && jsonEnd > jsonStart) {
+        try { return JSON.parse(text.slice(jsonStart, jsonEnd + 1)); } catch { /* fall through */ }
+      }
+      return null;
+    }
   } catch (err) {
     console.warn(`  X evidence error: ${err.message}`);
     return null;
@@ -291,7 +300,19 @@ Return a JSON object:
     if (text.startsWith('```')) {
       text = text.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
     }
-    return JSON.parse(text);
+    try {
+      return JSON.parse(text);
+    } catch {
+      // Grok sometimes returns slightly malformed JSON - try to salvage
+      const jsonStart = text.indexOf('{');
+      const jsonEnd = text.lastIndexOf('}');
+      if (jsonStart >= 0 && jsonEnd > jsonStart) {
+        try {
+          return JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+        } catch { /* fall through */ }
+      }
+      return null;
+    }
   } catch (err) {
     console.warn(`  X competitor error: ${err.message}`);
     return null;
