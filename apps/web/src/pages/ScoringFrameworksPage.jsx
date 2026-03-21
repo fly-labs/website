@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';
 import { trackScrollDepth } from '@/lib/analytics.js';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
-import { EXPERT_COUNT, QUESTION_COUNT, YC_QUESTION_COUNT } from '@/lib/data/siteStats.js';
+import { EXPERT_COUNT, QUESTION_COUNT } from '@/lib/data/siteStats.js';
 import { SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { useTranslation } from 'react-i18next';
 
@@ -225,28 +225,12 @@ const ScoringFrameworksPage = () => {
       border: 'border-secondary/20',
     },
     {
-      label: t('steps.scout'),
-      detail: t('steps.scoutDesc'),
-      icon: Eye,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10',
-      border: 'border-orange-500/20',
-    },
-    {
-      label: t('steps.score'),
-      detail: t('steps.scoreDesc', { questionCount: QUESTION_COUNT }),
+      label: t('steps.researchAndScore'),
+      detail: t('steps.researchAndScoreDesc', { questionCount: QUESTION_COUNT }),
       icon: BarChart3,
       color: 'text-indigo-500',
       bg: 'bg-indigo-500/10',
       border: 'border-indigo-500/20',
-    },
-    {
-      label: t('steps.validate'),
-      detail: t('steps.validateDesc'),
-      icon: Globe,
-      color: 'text-yellow-600',
-      bg: 'bg-yellow-500/10',
-      border: 'border-yellow-500/20',
     },
     {
       label: t('steps.verdict'),
@@ -334,7 +318,7 @@ const ScoringFrameworksPage = () => {
                 "name": "Is the scoring free?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes, all scoring is free and automated. Ideas are scored by AI using Claude Sonnet across multiple frameworks, validated against X and Reddit, and given a verdict."
+                  "text": "Yes, all scoring is free and automated. Ideas are scored by AI across multiple frameworks, validated against X and Reddit, and given a verdict."
                 }
               }
             ]

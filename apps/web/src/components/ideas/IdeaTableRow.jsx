@@ -1,7 +1,7 @@
 
 import { ChevronUp, Flame, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { timeAgo } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
 import { verdictColors, verdictLabels } from '@/lib/data/ideas.js';

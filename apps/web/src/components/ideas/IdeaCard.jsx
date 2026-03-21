@@ -106,9 +106,9 @@ const IdeaCard = ({ idea, hasVoted, onVote, index, showScores = true }) => {
                       FL {idea.flylabs_score}
                     </span>
                   )}
-                  {idea.enrichment?.competitors?.products?.length > 0 && (
+                  {idea.meta?.research?.x_competitors?.competitor_count > 0 && (
                     <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-[11px] font-medium">
-                      {idea.enrichment.competitors.products.length} competitor{idea.enrichment.competitors.products.length !== 1 ? 's' : ''}
+                      {idea.meta.research.x_competitors.competitor_count} competitor{idea.meta.research.x_competitors.competitor_count !== 1 ? 's' : ''}
                     </span>
                   )}
                   {idea.confidence && (

@@ -102,10 +102,10 @@ const platformSections = [
 ];
 
 const stackItems = [
-  { name: 'Claude Sonnet 4', icon: Brain, desc: '4 questions per idea. Per-pillar reasoning. One score, one verdict.', color: 'border-accent' },
-  { name: 'Grok xAI', icon: Search, desc: 'Market validation via x_search. Real conversation evidence.', color: 'border-primary' },
+  { name: 'Gemini 2.5 Flash', icon: Brain, desc: '4 questions per idea. Per-pillar reasoning. One score, one verdict. Google Search for web intelligence.', color: 'border-accent' },
+  { name: 'Grok xAI', icon: Search, desc: 'X/Twitter research via x_search. Real conversation evidence and competitor landscape.', color: 'border-primary' },
   { name: 'Supabase', icon: Database, desc: 'PostgreSQL + Auth + RLS. JSONB columns, materialized verdicts, atomic RPCs.', color: 'border-secondary' },
-  { name: 'GitHub Actions', icon: GitBranch, desc: `${workflows.length} workflows. Sync + enrich daily, auto-deploy on push.`, color: 'border-accent' },
+  { name: 'GitHub Actions', icon: GitBranch, desc: `${workflows.length} workflows. Sync + score daily, auto-deploy on push.`, color: 'border-accent' },
   { name: 'React 18', icon: Code, desc: 'UI framework. Lazy-loaded routes. JSX, no TypeScript.', color: 'border-primary' },
   { name: 'Vite 7', icon: Zap, desc: 'Dev server and builds. Vendor/motion/supabase chunking.', color: 'border-secondary' },
   { name: 'Tailwind CSS', icon: Palette, desc: 'Utility-first with HSL theming. Light and dark mode.', color: 'border-accent' },
@@ -131,8 +131,7 @@ const dataSources = [
 ];
 
 const workflows = [
-  { name: 'Sync Ideas', schedule: 'Daily', desc: 'ProblemHunt, Reddit, Product Hunt, X, HN, GitHub, YC, then score with Claude.' },
-  { name: 'Enrich Ideas', schedule: 'Daily', desc: 'Grok x_search + Reddit validation for top-scoring ideas.' },
+  { name: 'Sync Ideas', schedule: 'Daily', desc: 'ProblemHunt, Reddit, Product Hunt, X, HN, GitHub, YC. Then research (Grok + Reddit + Google Search) and score with Gemini.' },
   { name: 'CI', schedule: 'Every PR', desc: 'Lint + build. Catches breaks before deploy.' },
 ];
 
@@ -144,9 +143,8 @@ const scripts = [
   { name: 'sync-hackernews', desc: 'Firebase API' },
   { name: 'sync-github', desc: 'GitHub Search API' },
   { name: 'sync-yc', desc: 'yc-oss dead startups' },
-  { name: 'score-ideas', desc: 'Claude Sonnet 5 frameworks' },
+  { name: 'score-ideas', desc: 'Research + Gemini 2.5 Flash scoring' },
   { name: 'backfill-yc', desc: 'YC Lens backfill (Haiku)' },
-  { name: 'enrich-ideas', desc: 'Dual-source validation' },
   { name: 'clean-titles', desc: 'One-time DB cleanup' },
   { name: 'setup-music', desc: 'Upload tracks to Cloudflare R2' },
 ];
@@ -174,7 +172,7 @@ scripts/            # ${scripts.length} scripts
 .github/workflows/  # ${workflows.length} workflows`;
 
 const dbHighlights = [
-  { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), enrichment (validation evidence, competitors), meta (YC failure analysis).', icon: Layers },
+  { title: 'JSONB Columns', desc: 'score_breakdown (per-framework reasoning), meta.research (X evidence, competitors, Reddit, web intelligence), meta.failure_analysis (YC context).', icon: Layers },
   { title: 'Materialized Columns', desc: 'verdict, confidence, flylabs_score (= composite_score). Written by scripts, used for server-side filtering.', icon: Zap },
   { title: 'Row Level Security', desc: 'Every table has RLS. Public read for approved ideas, auth-gated writes.', icon: ShieldCheck },
   { title: 'RPCs', desc: 'Atomic operations: vote incrementing, rate limiting, waitlist counts, prompt votes.', icon: Code },

@@ -4,6 +4,19 @@ All notable changes to FlyLabs (flylabs.fun) are documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.26.0] - 2026-03-21
+
+### One Pipeline, Deep Research, Simple Verdict
+- Merged 3 pipeline jobs (scout + score + enrich) into one "research then score" pass
+- Switched scoring from Claude Sonnet to Gemini 2.5 Flash (17x cheaper per idea)
+- Every scored idea now has rich evidence data (X tweets, competitors, Reddit posts) in meta.research
+- IdeaDetailPage: new "What People Are Saying" and "Who Else Is Doing This" sections
+- ScoringFrameworksPage: simplified pipeline to 3 steps (Find -> Research & Score -> Verdict)
+- Retired enrichment workflow (enrich-ideas.yml disabled, script kept as manual tool)
+- Dead import cleanup across 7 files
+- i18n: updated EN + PT-BR scoring/ideas translations
+- Cost: ~$57/mo -> ~$17/mo (70% savings)
+
 ## [1.25.0] - 2026-03-21
 
 ### Added

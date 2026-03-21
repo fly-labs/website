@@ -6,11 +6,10 @@
 
 **The vibe building hub.** One person, AI tools, weekends. This is what comes out.
 
-Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 8 sources daily, scores them with AI using 5 frameworks, validates the best ones against live market data, and gives you an AI coach that knows all of it.
+Fly Labs is an open source platform for builders who want to find ideas worth building, score them with real frameworks, and ship faster. It scrapes problems from 8 sources daily, researches real market evidence, scores them with AI using 5 frameworks, and gives you an AI coach that knows all of it.
 
 [![CI](https://github.com/fly-labs/website/actions/workflows/ci.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/ci.yml)
 [![Sync Ideas](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/sync-problemhunt.yml)
-[![Enrich Ideas](https://github.com/fly-labs/website/actions/workflows/enrich-ideas.yml/badge.svg)](https://github.com/fly-labs/website/actions/workflows/enrich-ideas.yml)
 ![License](https://img.shields.io/github/license/fly-labs/website)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
@@ -44,20 +43,20 @@ Fly Labs is an open source platform for builders who want to find ideas worth bu
 Every day at 6 AM UTC, GitHub Actions runs 7 sync scripts and a scoring pass:
 
 ```
-Sources (8)          Scoring (Claude Sonnet)         Validation (Grok + Reddit)
-───────────          ──────────────────────          ──────────────────────────
-Reddit (19 subs)  →  Fly Labs Method (THE score)  →  x_search live evidence
-Product Hunt      →  + 4 expert perspectives      →  Reddit conversation mining
-Hacker News       →    (Hormozi, Koe, Okamoto,    →  Confidence scoring
-                  →     YC Lens)
-X/Twitter (Grok)  →  ─────────────────────        →  Competitive intelligence
-GitHub Issues     →  FL >= 65 → BUILD
-ProblemHunt       →  FL 40-64 → VALIDATE
-YC Graveyard      →  FL < 40  → SKIP
-Community         →
+Sources (8)              Research & Score (Gemini 2.5 Flash)
+───────────              ──────────────────────────────────
+Reddit (19 subs)      →  Grok x_search + Reddit + Google Search
+Product Hunt          →  Competitor intelligence
+Hacker News           →  Fly Labs Method (THE score)
+X/Twitter (Grok)      →  + 4 expert perspectives
+GitHub Issues         →    (Hormozi, Koe, Okamoto, YC Lens)
+ProblemHunt           →  ─────────────────────────────────
+YC Graveyard          →  FL >= 65 → BUILD
+Community             →  FL 40-64 → VALIDATE
+                      →  FL < 40  → SKIP
 ```
 
-Cost: ~$30/month for the entire pipeline.
+Cost: ~$17/month for the entire pipeline.
 
 ## Quick Start
 
@@ -94,6 +93,7 @@ npm run dev
 | `PRODUCTHUNT_API_SECRET` | Yes | Product Hunt API secret |
 | `REDDIT_CLIENT_ID` | No | Higher Reddit rate limits |
 | `REDDIT_CLIENT_SECRET` | No | Reddit OAuth |
+| `GEMINI_API_KEY` | Yes | Gemini 2.5 Flash (scoring + research) |
 | `GITHUB_TOKEN` | No | 5K req/hr vs 60 unauthenticated |
 | `R2_ACCOUNT_ID` | For music | Cloudflare account ID |
 | `R2_ACCESS_KEY_ID` | For music | R2 API token access key |
@@ -115,10 +115,10 @@ npm run dev
 | `npm run sync:hackernews` | Sync from HN (Firebase API) |
 | `npm run sync:github` | Sync from GitHub Issues |
 | `npm run sync:yc` | Sync dead YC startups |
-| `npm run score` | Score unscored ideas with Claude Sonnet |
+| `npm run score` | Research and score unscored ideas (Gemini 2.5 Flash) |
 | `npm run score:backfill` | Re-score ALL ideas (backfill-all.mjs) |
 | `npm run score:yc` | Backfill YC Lens scores (Haiku) |
-| `npm run enrich` | Validate top ideas with Grok + Reddit |
+| `npm run enrich` | Validate top ideas with Grok + Reddit (standalone) |
 | `npm run setup:music` | Upload tracks to Cloudflare R2 + generate tracks.js |
 
 ## Tech Stack
@@ -131,7 +131,7 @@ npm run dev
 | Animation | Framer Motion 11 |
 | Charts | Recharts (lazy-loaded) |
 | Backend | Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage) |
-| AI | Claude API (scoring, coaching) + Grok (validation) |
+| AI | Gemini 2.5 Flash (scoring) + Claude (coaching, sync filters) + Grok (research) |
 | SEO | Dynamic sitemap (api/sitemap.js), dynamic OG images (@vercel/og), Core Web Vitals (web-vitals), UTM tracking, scroll depth, breadcrumb schemas |
 | Deploy | Vercel (auto-deploy on push) |
 
@@ -183,7 +183,7 @@ Supabase PostgreSQL with Row Level Security on every table. Schema in `supabase/
 
 **Tables:** profiles, ideas, idea_rate_limits, prompt_votes, prompt_comments, waitlist, conversations, messages, flybot_waitlist, boards, board_folders, flybot_feedback, flybot_memory
 
-**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 8 sources, scores with Claude, enriches top ideas with Grok. See `.github/workflows/` for the full pipeline.
+**Automation:** Daily sync at 6 AM UTC (GitHub Actions) pulls from 8 sources, researches and scores with Gemini (X evidence, competitor search, Reddit, Google Search). See `.github/workflows/` for the full pipeline.
 
 ## Design
 

@@ -10,7 +10,7 @@
     "headline1": "We find real problems.",
     "headline2": "We ask <1>{{count}} questions</1>.",
     "headline3": "We give a verdict.",
-    "description": "The Ideas Lab pulls problems from {{sourceCount}} sources, scores them through the Fly Labs Method, validates against real conversations on X and Reddit, and tells you: build it, validate it, or skip it."
+    "description": "The Ideas Lab pulls problems from {{sourceCount}} sources, researches the market on X and Reddit, scores them through the Fly Labs Method, and tells you: build it, validate it, or skip it."
   },
   "nav": {
     "backToIdeas": "Back to Ideas Lab"
@@ -18,12 +18,8 @@
   "steps": {
     "find": "Find",
     "findDesc": "Real problems from {{sourceCount}} sources daily",
-    "scout": "Scout",
-    "scoutDesc": "Live competitor search before scoring",
-    "score": "Score",
-    "scoreDesc": "{{questionCount}} questions with real competitor data",
-    "validate": "Validate",
-    "validateDesc": "Live evidence from X and Reddit",
+    "researchAndScore": "Research & Score",
+    "researchAndScoreDesc": "Search X and Reddit for evidence, map competitors, then score with AI",
     "verdict": "Verdict",
     "verdictDesc": "BUILD, VALIDATE, or SKIP"
   },
@@ -77,7 +73,7 @@
   "validationSection": {
     "badge": "Validation",
     "title": "Then We Check the Real World",
-    "description": "Scores tell you what frameworks think. Validation tells you what actual people are saying. We search X and Reddit for real frustration, real complaints, real conversations about the problem.",
+    "description": "The scoring step does homework first. Before giving a grade, we search X for real complaints and competitor discussions, and Reddit for community evidence. All that research feeds into the score.",
     "evidenceTitle": "Evidence Search",
     "evidenceDesc": "We search X and Reddit for real people experiencing this pain. Tweets with engagement, Reddit threads with upvotes and comments, frustration language from actual users.",
     "competitiveTitle": "Competitive Intelligence",

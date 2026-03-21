@@ -371,7 +371,7 @@ Pattern: behavior first -> name it -> undercut (I did the same thing). One conce
 
 Products and tools you know inside out:
 
-Ideas Lab (/ideas): Pulls real problems from ${SOURCE_COUNT} sources (community submissions, ProblemHunt, Reddit, Product Hunt, X/Twitter, Hacker News, GitHub Issues, YC Graveyard). Each idea scored by the FL score (4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it?). Expert perspectives from Hormozi, Dan Koe, Okamoto, and the YC Lens on each detail page for more depth. Dual-source market validation via Grok x_search + Reddit. Verdicts: BUILD, VALIDATE_FIRST, SKIP. Analytics dashboard at /ideas/analytics. Users can submit ideas, vote, filter by 7 dimensions.
+Ideas Lab (/ideas): Pulls real problems from ${SOURCE_COUNT} sources (community submissions, ProblemHunt, Reddit, Product Hunt, X/Twitter, Hacker News, GitHub Issues, YC Graveyard). Each idea scored by the FL score (4 questions: Is the pain real? Is there a gap? Would someone pay? Can you build it?). Expert perspectives from Hormozi, Dan Koe, Okamoto, and the YC Lens on each detail page for more depth. Each idea is researched on X and Reddit before scoring: real complaints, competitor landscape, pricing, feature gaps. All that evidence feeds into the score. Verdicts: BUILD, VALIDATE_FIRST, SKIP. Analytics dashboard at /ideas/analytics. Users can submit ideas, vote, filter by 7 dimensions.
 
 Prompt Library (/prompts): ${PROMPT_COUNT} prompts across ${PROMPT_CATEGORIES.length} categories. Members get full access, guests see 5 featured prompts. Users can vote, comment, copy, and suggest new prompts. The prompt catalog is loaded dynamically into your context (see below).
 
@@ -601,9 +601,6 @@ export function buildSystemPrompt(context = {}) {
       if (idea.score_breakdown?.synthesis?.reasoning) {
         prompt += ` - ${idea.score_breakdown.synthesis.reasoning}`;
       }
-      if (idea.enrichment?.verdict?.reasoning) {
-        prompt += ` [Market validation: ${idea.enrichment.verdict.reasoning}]`;
-      }
       if (idea.meta?.failure_analysis) {
         const fa = idea.meta.failure_analysis;
         prompt += ` [YC Graveyard: failed because ${fa.failure_reason || 'unknown'}, what changed: ${fa.what_changed || 'unknown'}]`;
@@ -645,7 +642,7 @@ export function buildSystemPrompt(context = {}) {
         if (theGap) prompt += `\n  Gap: ${sanitizeForPrompt(theGap)}`;
         if (buildAngle) prompt += `\n  Build angle: ${sanitizeForPrompt(buildAngle)}`;
         if (synthesis?.saturation_capped) prompt += `\n  ⚠ Score capped (crowded market)`;
-        const compCount = idea.enrichment?.competitors?.competitor_count || idea.enrichment?.competitors?.products?.length;
+        const compCount = idea.meta?.research?.x_competitors?.competitor_count;
         if (compCount >= 5) prompt += `\n  ⚠ ${compCount} known competitors`;
         prompt += `\n`;
       }
@@ -765,7 +762,7 @@ export async function findSimilarIdeas(supabase, userMessage) {
 
   const { data: ideas } = await supabase
     .from('ideas')
-    .select('id, idea_title, flylabs_score, hormozi_score, koe_score, okamoto_score, yc_score, composite_score, verdict, confidence, score_breakdown, enrichment, industry, source, meta')
+    .select('id, idea_title, flylabs_score, hormozi_score, koe_score, okamoto_score, yc_score, composite_score, verdict, confidence, score_breakdown, industry, source, meta')
     .not('verdict', 'is', null)
     .order('flylabs_score', { ascending: false, nullsFirst: false })
     .limit(50);
@@ -890,7 +887,7 @@ export async function fetchIdeaAnalytics(supabase) {
       .map(i => i.id);
     const { data: topIdeasFull } = await supabase
       .from('ideas')
-      .select('id, idea_title, flylabs_score, composite_score, verdict, industry, source, score_breakdown, enrichment')
+      .select('id, idea_title, flylabs_score, composite_score, verdict, industry, source, score_breakdown, meta')
       .in('id', topIdeaIds);
     const topIdeas = (topIdeasFull || []).sort((a, b) => Number(b.flylabs_score) - Number(a.flylabs_score));
 

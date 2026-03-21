@@ -10,7 +10,7 @@
     "headline1": "Encontramos problemas reais.",
     "headline2": "Fazemos <1>{{count}} perguntas</1>.",
     "headline3": "Damos um veredito.",
-    "description": "O Ideas Lab puxa problemas de {{sourceCount}} fontes, pontua pelo Fly Labs Method, valida contra conversas reais no X e Reddit, e diz: construa, valide ou pule."
+    "description": "O Ideas Lab busca problemas reais de {{sourceCount}} fontes, pesquisa o mercado no X e Reddit, pontua com o Fly Labs Method e te diz: construa, valide primeiro ou pule."
   },
   "nav": {
     "backToIdeas": "Voltar ao Ideas Lab"
@@ -18,12 +18,8 @@
   "steps": {
     "find": "Encontrar",
     "findDesc": "Problemas reais de {{sourceCount}} fontes diariamente",
-    "scout": "Pesquisar",
-    "scoutDesc": "Busca de competidores antes da pontuação",
-    "score": "Pontuar",
-    "scoreDesc": "{{questionCount}} perguntas com dados reais de competidores",
-    "validate": "Validar",
-    "validateDesc": "Evidência ao vivo do X e Reddit",
+    "researchAndScore": "Pesquisar e Pontuar",
+    "researchAndScoreDesc": "Busca no X e Reddit por evidencias, mapeia concorrentes e pontua com IA",
     "verdict": "Veredito",
     "verdictDesc": "BUILD, VALIDATE ou SKIP"
   },
@@ -77,7 +73,7 @@
   "validationSection": {
     "badge": "Validação",
     "title": "Depois Checamos o Mundo Real",
-    "description": "Pontuações dizem o que os frameworks acham. Validação diz o que pessoas reais estão falando. Buscamos no X e Reddit por frustração real, reclamações reais, conversas reais sobre o problema.",
+    "description": "A etapa de pontuacao faz o dever de casa primeiro. Antes de dar uma nota, buscamos no X reclamacoes reais e discussoes sobre concorrentes, e no Reddit evidencias da comunidade. Toda essa pesquisa alimenta a nota.",
     "evidenceTitle": "Busca de Evidências",
     "evidenceDesc": "Buscamos no X e Reddit por pessoas reais experimentando essa dor. Tweets com engajamento, threads do Reddit com upvotes e comentários, linguagem de frustração de usuários reais.",
     "competitiveTitle": "Inteligência Competitiva",

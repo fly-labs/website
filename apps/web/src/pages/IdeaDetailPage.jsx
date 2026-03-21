@@ -153,17 +153,12 @@ const IdeaDetailPage = () => {
   const showStatus = idea.source === 'reddit' ? false : idea.status === 'building' || idea.status === 'shipped';
   const status = statusConfig[idea.status] || statusConfig.open;
   const synthesis = idea.score_breakdown?.synthesis;
-  const enrichVerdict = idea.enrichment?.verdict;
-  // Use materialized verdict column (source of truth, enforced by scoring + enrichment scripts)
+  // Use materialized verdict column (source of truth, enforced by scoring script)
   const rec = idea.verdict || synthesis?.verdict;
   const vs = verdictStyles[rec] || verdictStyles.VALIDATE_FIRST;
 
   const flData = idea.score_breakdown?.flylabs;
   const flTier = flData ? getScoreTier(flData.total) : null;
-
-  const validation = idea.enrichment?.validation;
-  const competitors = idea.enrichment?.competitors;
-  const relevanceDot = { high: 'bg-primary', medium: 'bg-amber-500', low: 'bg-muted-foreground/40' };
 
   const toggleExpanded = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
 
@@ -281,8 +276,8 @@ const IdeaDetailPage = () => {
           {/* ─── Quick Read ─── */}
           {(() => {
             const thePain = synthesis?.the_pain || synthesis?.one_liner || idea.idea_description || flData?.problem_clarity?.reasoning;
-            const theGap = synthesis?.the_gap || flData?.solution_gap?.reasoning || competitors?.market_gap;
-            const buildAngle = synthesis?.build_angle || competitors?.differentiation_angle || synthesis?.next_steps?.[0] || flData?.buildability?.reasoning;
+            const theGap = synthesis?.the_gap || flData?.solution_gap?.reasoning;
+            const buildAngle = synthesis?.build_angle || synthesis?.next_steps?.[0] || flData?.buildability?.reasoning;
             const hasQuickRead = thePain || theGap || buildAngle;
 
             if (!hasQuickRead) return null;
@@ -338,9 +333,14 @@ const IdeaDetailPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
                       <span className={`text-xl font-black ${vs.text}`}>{vs.label}</span>
-                      {(enrichVerdict?.confidence || idea.confidence) && (
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[enrichVerdict?.confidence || idea.confidence] || confidenceColors.medium}`}>
-                          {enrichVerdict?.confidence || idea.confidence} {t('detail.confidence')}
+                      {idea.confidence && (
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${confidenceColors[idea.confidence] || confidenceColors.medium}`}>
+                          {idea.confidence} {t('detail.confidence')}
+                        </span>
+                      )}
+                      {synthesis?.market_potential && (
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-secondary/10 text-secondary">
+                          {synthesis.market_potential} market
                         </span>
                       )}
                     </div>
@@ -351,12 +351,12 @@ const IdeaDetailPage = () => {
                       </div>
                     )}
                   </div>
-                  {(enrichVerdict?.reasoning || synthesis?.reasoning) && (
-                    <p className="text-sm text-muted-foreground">{enrichVerdict?.reasoning || synthesis?.reasoning}</p>
+                  {synthesis?.reasoning && (
+                    <p className="text-sm text-muted-foreground">{synthesis?.reasoning}</p>
                   )}
                   {/* Competitor warning badge */}
                   {(() => {
-                    const compCount = idea.enrichment?.competitors?.competitor_count || idea.enrichment?.competitors?.products?.length;
+                    const compCount = idea.meta?.research?.x_competitors?.competitor_count;
                     if (compCount == null) return null;
                     if (compCount >= 5) {
                       return (
@@ -379,17 +379,11 @@ const IdeaDetailPage = () => {
                   {synthesis?.saturation_capped && (
                     <p className="text-xs text-amber-500/80">{t('detail.scoreCapped')}</p>
                   )}
-                  {idea.enrichment?.fl_adjustment && (
+                  {idea.meta?.research?.x_competitors && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Info className="w-3.5 h-3.5 shrink-0" />
-                      <span>{t('detail.scoreAdjusted', { original: idea.enrichment.fl_adjustment.original, adjusted: idea.enrichment.fl_adjustment.adjusted, reason: idea.enrichment.fl_adjustment.reason })}</span>
-                    </div>
-                  )}
-                  {idea.meta?.competitor_scout && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="px-1.5 py-0.5 rounded bg-muted/50 font-medium capitalize">{idea.meta.competitor_scout.market_maturity}</span>
-                      {idea.meta.competitor_scout.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 font-medium">Big Tech</span>}
-                      {idea.meta.competitor_scout.has_funded_players && !idea.meta.competitor_scout.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 font-medium">Funded</span>}
+                      <span className="px-1.5 py-0.5 rounded bg-muted/50 font-medium capitalize">{idea.meta.research.x_competitors.market_maturity}</span>
+                      {idea.meta.research.x_competitors.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 font-medium">Big Tech</span>}
+                      {idea.meta.research.x_competitors.has_funded_players && !idea.meta.research.x_competitors.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 font-medium">Funded</span>}
                     </div>
                   )}
                 </div>
@@ -641,164 +635,165 @@ const IdeaDetailPage = () => {
             </section>
           )}
 
-          {/* ─── Market Evidence ─── */}
-          <section>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.marketEvidence')}</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            {!validation && !competitors ? (
-              <div className="text-center py-8">
-                <Zap className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground font-medium mb-2">{t('detail.validationPending')}</p>
-                <p className="text-xs text-muted-foreground/60">{t('detail.validationPendingDesc')}</p>
+          {/* ── What People Are Saying ── */}
+          {idea.meta?.research && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.whatPeopleAreSaying')}</span>
+                <div className="h-px flex-1 bg-border" />
               </div>
-            ) : (
-              <div className="space-y-6">
-                {/* Market Validation */}
-                {validation && (() => {
-                  const v = validation;
-                  const tier = getScoreTier(v.strength);
+
+              {(() => {
+                const xEv = idea.meta.research.x_evidence;
+                const reddit = idea.meta.research.reddit;
+                const hasX = xEv?.highlights?.length > 0;
+                const hasReddit = reddit?.highlights?.length > 0;
+
+                if (!hasX && !hasReddit) {
                   return (
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-bold">{t('detail.realWorldSignals')}</h4>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-2xl font-black tabular-nums ${tier.color}`}>{v.strength}</span>
-                          <span className="text-xs text-muted-foreground/60">/100</span>
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${tier.bg} ${tier.color}`}>{tier.label}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 flex-wrap">
-                        {v.confidence && (
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                            v.confidence === 'high' ? 'bg-primary/10 text-primary' :
-                            v.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
-                            'bg-muted text-muted-foreground'
-                          }`}>
-                            {v.confidence} {t('detail.confidence')}
-                          </span>
-                        )}
-                        {v.evidence_count && (
-                          <span className="text-xs text-muted-foreground/60">
-                            ({v.evidence_count.total} {t('detail.sources')}: {v.evidence_count.x_tweets} {t('detail.tweets')}, {v.evidence_count.reddit_posts} {t('detail.posts')})
-                          </span>
-                        )}
-                      </div>
-
-                      {v.evidence_summary && (
-                        <p className="text-sm text-muted-foreground italic">"{v.evidence_summary}"</p>
-                      )}
-
-                      {v.frustration_language?.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whatPeopleSay')}</p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {v.frustration_language.map((phrase, i) => (
-                              <span key={i} className="bg-amber-500/10 text-amber-500 text-xs rounded-full px-2 py-0.5">{phrase}</span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {v.communities?.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whereTheyTalk')}</p>
-                          <div className="space-y-1.5">
-                            {v.communities.map((c, i) => (
-                              <div key={i} className="flex items-center gap-2 text-sm">
-                                <span className={`w-2 h-2 rounded-full ${relevanceDot[c.relevance] || relevanceDot.low}`} />
-                                <span className="font-medium">{c.subreddit}</span>
-                                <span className="text-muted-foreground/60 text-xs">{c.post_count} posts</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {v.recurring_themes?.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.recurringThemes')}</p>
-                          <ul className="space-y-1">
-                            {v.recurring_themes.map((t, i) => (
-                              <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
-                                <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
-                                {t}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {v.unmet_needs?.length > 0 && (
-                        <div>
-                          <p className="text-xs font-medium text-muted-foreground/60 mb-2">{t('detail.whatPeopleWant')}</p>
-                          <ul className="space-y-1">
-                            {v.unmet_needs.map((n, i) => (
-                              <li key={i} className="text-sm text-muted-foreground flex items-center gap-1.5">
-                                <span className="w-1 h-1 rounded-full bg-amber-500 shrink-0" />
-                                {n}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+                    <p className="text-sm text-muted-foreground text-center py-4">{t('detail.noConversationsFound')}</p>
                   );
-                })()}
+                }
 
-                {/* Competitive Landscape */}
-                {competitors && (() => {
-                  const c = competitors;
-                  return (
-                    <div className="space-y-4">
-                      <h4 className="font-bold">{t('detail.competitors')}</h4>
-                      <p className="text-xs text-muted-foreground">{t('detail.competitorsDesc')}</p>
-
-                      {c.products?.length > 0 && (
-                        <div className="space-y-3">
-                          {c.products.map((p, i) => (
-                            <div key={i} className="border-l-2 border-amber-500 pl-3 space-y-1 min-w-0">
-                              <div className="flex items-center justify-between gap-2 min-w-0">
-                                <span className="text-sm font-bold truncate">{p.name}</span>
-                                {p.pricing && <span className="text-xs text-muted-foreground">{p.pricing}</span>}
-                              </div>
-                              {p.positioning && <p className="text-xs text-muted-foreground">{p.positioning}</p>}
-                              {p.top_complaints?.length > 0 && (
-                                <ul className="space-y-0.5">
-                                  {p.top_complaints.map((complaint, j) => (
-                                    <li key={j} className="text-xs text-muted-foreground flex items-center gap-1.5">
-                                      <span className="w-1 h-1 rounded-full bg-red-500 shrink-0" />
-                                      {complaint}
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                              {p.gap && <p className="text-xs text-amber-500 font-medium">{t('detail.gap', { gap: p.gap })}</p>}
+                return (
+                  <div className="space-y-4">
+                    {hasX && (
+                      <div className="space-y-2">
+                        {xEv.highlights.slice(0, 5).map((h, i) => (
+                          <div key={i} className="p-3 rounded-lg border border-border/40 bg-card/50">
+                            <p className="text-sm text-muted-foreground">"{h.text}"</p>
+                            <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-foreground/60">
+                              <span className="font-medium">{h.author}</span>
+                              {h.engagement > 0 && <span>{h.engagement} engagement</span>}
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                                h.sentiment === 'frustration' ? 'bg-red-500/10 text-red-500' :
+                                h.sentiment === 'need' ? 'bg-amber-500/10 text-amber-500' :
+                                h.sentiment === 'complaint' ? 'bg-orange-500/10 text-orange-500' :
+                                'bg-muted text-muted-foreground'
+                              }`}>{h.sentiment}</span>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {hasReddit && (
+                      <div className="space-y-2">
+                        {reddit.highlights.slice(0, 4).map((p, i) => (
+                          <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border/40 bg-card/50">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
+                              <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground/60">
+                                <span className="font-medium text-orange-500">r/{p.subreddit}</span>
+                                <span>{p.upvotes} upvotes</span>
+                                <span>{p.comments} comments</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground/50">
+                      {t('detail.relevantConversations', { xCount: xEv?.total_found || 0, redditCount: reddit?.total_found || 0 })}
+                    </p>
+                  </div>
+                );
+              })()}
+            </section>
+          )}
+
+          {/* ── Who Else Is Doing This ── */}
+          {idea.meta?.research?.x_competitors?.competitors?.length > 0 && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.competitors')}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              <div className="space-y-3">
+                {idea.meta.research.x_competitors.competitors.slice(0, 6).map((c, i) => (
+                  <div key={i} className="border-l-2 border-amber-500 pl-3 space-y-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm font-bold truncate">{c.name}</span>
+                        {c.funded && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-500">Funded</span>
+                        )}
+                      </div>
+                      {c.pricing && c.pricing !== 'unknown' && (
+                        <span className="text-xs text-muted-foreground shrink-0">{c.pricing}</span>
                       )}
-
-                      {c.market_gap && <p className="text-sm font-bold text-foreground">{c.market_gap}</p>}
-                      {c.pricing_opportunity && <p className="text-sm text-muted-foreground">{c.pricing_opportunity}</p>}
-                      {c.differentiation_angle && <p className="text-sm text-muted-foreground">{c.differentiation_angle}</p>}
                     </div>
-                  );
-                })()}
+                    {c.description && <p className="text-xs text-muted-foreground">{c.description}</p>}
+                    {c.complaints?.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {c.complaints.slice(0, 3).map((complaint, j) => (
+                          <span key={j} className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-500">{complaint}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
 
-                {/* Validation summary */}
-                {idea.enrichment?.summary && (
-                  <p className="text-sm text-muted-foreground italic border-l-2 border-amber-500 pl-3">
-                    {idea.enrichment.summary}
-                  </p>
+                {/* Market badges */}
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  <span className="px-1.5 py-0.5 rounded bg-muted/50 text-xs font-medium capitalize">{idea.meta.research.x_competitors.market_maturity}</span>
+                  {idea.meta.research.x_competitors.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 text-xs font-medium">Big Tech</span>}
+                  {idea.meta.research.x_competitors.has_funded_players && !idea.meta.research.x_competitors.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 text-xs font-medium">Funded</span>}
+                </div>
+
+                {idea.meta.research.x_competitors.feature_gaps?.length > 0 && (
+                  <div className="pt-1">
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-1">Feature gaps</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {idea.meta.research.x_competitors.feature_gaps.map((gap, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">{gap}</span>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-            )}
-          </section>
+            </section>
+          )}
+          {/* ── Web Intelligence ── */}
+          {idea.meta?.research?.web && (idea.meta.research.web.product_hunt_launches > 0 || idea.meta.research.web.recent_news?.length > 0) && (
+            <section>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">{t('detail.webIntelligence')}</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              <div className="space-y-3">
+                {idea.meta.research.web.product_hunt_launches > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="px-2 py-0.5 rounded bg-orange-500/10 text-orange-500 text-xs font-bold">PH</span>
+                    <span>{idea.meta.research.web.product_hunt_launches} {t('detail.productHuntLaunches')}</span>
+                  </div>
+                )}
+
+                {idea.meta.research.web.recent_news?.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground/60">{t('detail.recentNews')}</p>
+                    {idea.meta.research.web.recent_news.slice(0, 3).map((n, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
+                        <div>
+                          <span className="text-muted-foreground">{n.title}</span>
+                          <span className="text-xs text-muted-foreground/50 ml-2">{n.source}{n.date ? `, ${n.date}` : ''}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {idea.meta.research.web.market_signals && (
+                  <p className="text-xs text-muted-foreground/60 italic">{idea.meta.research.web.market_signals}</p>
+                )}
+              </div>
+            </section>
+          )}
           {/* ─── Build From Here ─── */}
           {rec && synthesis && (
             <section>

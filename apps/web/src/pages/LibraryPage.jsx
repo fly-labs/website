@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Download, Bell, Loader2, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Download, Bell, CheckCircle2 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout.jsx';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/lib/animations.js';

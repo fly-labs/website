@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ScoreBar, getScoreTier, verdictStyles, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
+import { getScoreTier, verdictStyles, EXPERT_CONFIG } from '@/components/ideas/ScoreUtils.jsx';
 import { AlertTriangle, TrendingUp, Info } from 'lucide-react';
 
 export function ChatEvaluation({ evaluation, onFollowUp }) {
@@ -53,6 +53,13 @@ export function ChatEvaluation({ evaluation, onFollowUp }) {
         <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wide border ${vs.bg} ${vs.border} ${vs.text}`}>
           {vs.label}
         </span>
+        {evaluation.confidence && (
+          <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium ${
+            evaluation.confidence === 'high' ? 'bg-primary/10 text-primary' :
+            evaluation.confidence === 'medium' ? 'bg-amber-500/10 text-amber-500' :
+            'bg-muted text-muted-foreground'
+          }`}>{evaluation.confidence}</span>
+        )}
       </div>
 
       {/* Quick Read */}

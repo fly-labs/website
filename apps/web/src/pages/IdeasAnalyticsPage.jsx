@@ -8,7 +8,7 @@ import { fadeUp, staggerContainer, staggerItem } from '@/lib/animations.js';
 import supabase from '@/lib/supabaseClient.js';
 import { sourceOptions } from '@/lib/data/ideas.js';
 import { cn, timeAgo } from '@/lib/utils.js';
-import { verdictStyles, getScoreTier } from '@/components/ideas/ScoreUtils.jsx';
+import { verdictStyles } from '@/components/ideas/ScoreUtils.jsx';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 import { GatedOverlay } from '@/components/GatedOverlay.jsx';

@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useRef, useState, useMemo, forwardRef, useImperativeHandle } from 'react';
 
-import { Excalidraw, mutateElement, FONT_FAMILY } from '@excalidraw/excalidraw';
+import { Excalidraw, FONT_FAMILY } from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 
 // Re-export for parent components to use the correct font IDs

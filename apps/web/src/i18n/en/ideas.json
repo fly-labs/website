@@ -47,14 +47,14 @@
     "title": "Shipped from the lab",
     "badge": "Shipped",
     "checkItOut": "Check it out",
-    "flybotDesc": "AI partner that scores ideas, finds patterns across sources, and answers questions about the lab. Built on Claude.",
+    "flybotDesc": "AI partner that scores ideas, finds patterns across sources, and answers questions about the lab. AI-powered.",
     "flyboardDesc": "Whiteboard with 12 templates, 5 grid styles, and clean exports. Powered by Excalidraw.",
     "garminDesc": "Auto-sync Garmin health data to Notion. Born from a community request, now open source.",
     "blueprintDesc": "Full stack breakdown of how this site was built. Open source and free to fork."
   },
   "howItWorks": {
     "title": "How it works",
-    "description": "We pull real problems from {{sourceCount}} sources daily, score each one with 4 questions using the Fly Labs Method, then validate top ideas against real conversations on X and Reddit. Each idea gets a verdict: build it, validate first, or move on.",
+    "description": "We pull real problems from {{sourceCount}} sources daily, research the market on X and Reddit, then score each one with {{questionCount}} questions. Each idea gets a verdict: build it, validate first, or move on.",
     "link": "How scoring works"
   },
   "flybot": {
@@ -113,8 +113,10 @@
     "expertPerspectives": "Expert Perspectives",
     "expertDescription": "{{count}} AI perspectives inspired by different business thinkers. These scores are for context only and do not affect the verdict.",
     "marketEvidence": "Market Evidence",
-    "validationPending": "Market validation pending.",
-    "validationPendingDesc": "Top-scoring ideas are validated daily against real conversations on X and Reddit.",
+    "whatPeopleAreSaying": "What People Are Saying",
+    "noConversationsFound": "No public conversations found yet.",
+    "relevantConversations": "{{xCount}} conversations on X, {{redditCount}} posts on Reddit",
+    "marketPotential": "Market Potential",
     "realWorldSignals": "Real-World Signals",
     "whatPeopleSay": "What people are saying",
     "whereTheyTalk": "Where they talk about it",
@@ -157,7 +159,10 @@
     "betterIdeas": "There are better ideas in the lab.",
     "sources": "sources",
     "tweets": "tweets",
-    "posts": "posts"
+    "posts": "posts",
+    "webIntelligence": "Web Intelligence",
+    "productHuntLaunches": "related Product Hunt launches",
+    "recentNews": "Recent News"
   },
   "analytics": {
     "seoTitle": "Ideas Lab Analytics | Fly Labs",

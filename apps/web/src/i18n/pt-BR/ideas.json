@@ -47,14 +47,14 @@
     "title": "Lançados do lab",
     "badge": "Lançado",
     "checkItOut": "Conferir",
-    "flybotDesc": "Parceiro de IA que pontua ideias, encontra padrões entre fontes e responde perguntas sobre o lab. Construído com Claude.",
+    "flybotDesc": "Parceiro de IA que pontua ideias, encontra padrões entre fontes e responde perguntas sobre o lab. Movido por IA.",
     "flyboardDesc": "Quadro branco com 12 templates, 5 estilos de grade e exportações limpas. Powered by Excalidraw.",
     "garminDesc": "Sincronização automática de dados de saúde do Garmin para o Notion. Nasceu de um pedido da comunidade, agora open source.",
     "blueprintDesc": "Breakdown completo do stack de como esse site foi construído. Open source e livre para fork."
   },
   "howItWorks": {
     "title": "Como funciona",
-    "description": "Puxamos problemas reais de {{sourceCount}} fontes diariamente, pontuamos cada um com 4 perguntas usando o Fly Labs Method, e depois validamos as melhores ideias contra conversas reais no X e Reddit. Cada ideia recebe um veredito: construir, validar primeiro, ou seguir em frente.",
+    "description": "Buscamos problemas reais de {{sourceCount}} fontes diariamente, pesquisamos o mercado no X e Reddit, e pontuamos cada um com {{questionCount}} perguntas. Cada ideia recebe um veredito: construir, validar primeiro ou seguir em frente.",
     "link": "Como a pontuação funciona"
   },
   "flybot": {
@@ -113,8 +113,10 @@
     "expertPerspectives": "Perspectivas de Especialistas",
     "expertDescription": "{{count}} perspectivas de IA inspiradas em diferentes pensadores de negócios. Essas pontuações são apenas para contexto e não afetam o veredito.",
     "marketEvidence": "Evidência de Mercado",
-    "validationPending": "Validação de mercado pendente.",
-    "validationPendingDesc": "As melhores ideias são validadas diariamente contra conversas reais no X e Reddit.",
+    "whatPeopleAreSaying": "O Que as Pessoas Estao Dizendo",
+    "noConversationsFound": "Nenhuma conversa publica encontrada ainda.",
+    "relevantConversations": "{{xCount}} conversas no X, {{redditCount}} posts no Reddit",
+    "marketPotential": "Potencial de Mercado",
     "realWorldSignals": "Sinais do Mundo Real",
     "whatPeopleSay": "O que as pessoas dizem",
     "whereTheyTalk": "Onde falam sobre isso",
@@ -157,7 +159,10 @@
     "betterIdeas": "Existem ideias melhores no lab.",
     "sources": "fontes",
     "tweets": "tweets",
-    "posts": "posts"
+    "posts": "posts",
+    "webIntelligence": "Inteligencia Web",
+    "productHuntLaunches": "lancamentos relacionados no Product Hunt",
+    "recentNews": "Noticias Recentes"
   },
   "analytics": {
     "seoTitle": "Analytics do Ideas Lab | Fly Labs",

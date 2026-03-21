@@ -11,7 +11,7 @@ import { fadeUp } from '@/lib/animations.js';
 import { useAuth } from '@/contexts/AuthContext.jsx';
 import { useChatContext } from '@/contexts/ChatContext.jsx';
 
-import { categories, industries, sortOptions, sourceOptions, verdictOptions, frequencyOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
+import { categories, sortOptions, sourceOptions, verdictOptions, verdictColors, SOURCE_COUNT } from '@/lib/data/ideas.js';
 import { QUESTION_COUNT } from '@/lib/data/siteStats.js';
 import { isValidEmail } from '@/lib/utils.js';
 import { trackEvent } from '@/lib/analytics.js';
