@@ -222,7 +222,7 @@ const WebsiteBlueprintPage = () => {
   return (
     <PageLayout
       seo={{
-        title: "Website Blueprint | Fly Labs",
+        title: "Website Blueprint - How flylabs.fun Was Built | Fly Labs",
         description: "How flylabs.fun was built. React, Supabase, Claude AI, Grok, open source. Full stack breakdown of every layer.",
         keywords: "website blueprint, React SPA, open source, Supabase, AI scoring, data pipeline, Claude AI, Grok, Tailwind CSS, Vite, web development, architecture guide",
         url: "https://flylabs.fun/templates/website-blueprint",

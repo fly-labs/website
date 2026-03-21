@@ -450,6 +450,18 @@ const PromptsPage = () => {
           },
           {
             "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "AI Prompt Library",
+            "numberOfItems": prompts.length,
+            "itemListElement": prompts.slice(0, 10).map((p, i) => ({
+              "@type": "ListItem",
+              "position": i + 1,
+              "name": p.title,
+              "description": p.description
+            }))
+          },
+          {
+            "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": [
               { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },

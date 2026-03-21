@@ -8,20 +8,20 @@ const supabase = createClient(
 const SITE = 'https://flylabs.fun';
 
 const staticRoutes = [
-  { path: '/', priority: '1.0', changefreq: 'weekly' },
-  { path: '/ideas', priority: '0.9', changefreq: 'daily' },
-  { path: '/flybot', priority: '0.8', changefreq: 'monthly' },
-  { path: '/explore', priority: '0.8', changefreq: 'weekly' },
-  { path: '/prompts', priority: '0.8', changefreq: 'weekly' },
-  { path: '/scoring', priority: '0.7', changefreq: 'monthly' },
-  { path: '/newsletter', priority: '0.7', changefreq: 'weekly' },
-  { path: '/about', priority: '0.7', changefreq: 'monthly' },
-  { path: '/library', priority: '0.6', changefreq: 'monthly' },
-  { path: '/templates/website-blueprint', priority: '0.6', changefreq: 'monthly' },
-  { path: '/templates/launch-checklist', priority: '0.4', changefreq: 'monthly' },
-  { path: '/templates/one-page-business-plan', priority: '0.4', changefreq: 'monthly' },
-  { path: '/flyboard', priority: '0.5', changefreq: 'monthly' },
-  { path: '/microsaas', priority: '0.4', changefreq: 'monthly' },
+  { path: '/', priority: '1.0', changefreq: 'weekly', lastmod: null },
+  { path: '/ideas', priority: '0.9', changefreq: 'daily', lastmod: null },
+  { path: '/flybot', priority: '0.8', changefreq: 'monthly', lastmod: '2025-12-01' },
+  { path: '/explore', priority: '0.8', changefreq: 'weekly', lastmod: null },
+  { path: '/prompts', priority: '0.8', changefreq: 'weekly', lastmod: null },
+  { path: '/scoring', priority: '0.7', changefreq: 'monthly', lastmod: '2025-10-01' },
+  { path: '/newsletter', priority: '0.7', changefreq: 'weekly', lastmod: null },
+  { path: '/about', priority: '0.7', changefreq: 'monthly', lastmod: '2025-09-01' },
+  { path: '/library', priority: '0.6', changefreq: 'monthly', lastmod: '2025-11-01' },
+  { path: '/templates/website-blueprint', priority: '0.6', changefreq: 'monthly', lastmod: '2025-08-01' },
+  { path: '/templates/launch-checklist', priority: '0.4', changefreq: 'monthly', lastmod: '2025-07-01' },
+  { path: '/templates/one-page-business-plan', priority: '0.4', changefreq: 'monthly', lastmod: '2025-07-01' },
+  { path: '/flyboard', priority: '0.5', changefreq: 'monthly', lastmod: '2025-11-01' },
+  { path: '/microsaas', priority: '0.4', changefreq: 'monthly', lastmod: '2025-10-01' },
 ];
 
 function escapeXml(str) {
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     for (const route of staticRoutes) {
       xml += `  <url>\n`;
       xml += `    <loc>${SITE}${route.path}</loc>\n`;
-      xml += `    <lastmod>${today}</lastmod>\n`;
+      xml += `    <lastmod>${route.lastmod || today}</lastmod>\n`;
       xml += `    <changefreq>${route.changefreq}</changefreq>\n`;
       xml += `    <priority>${route.priority}</priority>\n`;
       xml += `  </url>\n`;

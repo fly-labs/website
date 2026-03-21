@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "FlyBot | Fly Labs",
-    "description": "Descreva um problema, receba um veredito real. O FlyBot já pontuou centenas de ideias com {{questionCount}} perguntas e conhece {{promptCount}} prompts pelo nome. Grátis durante o beta."
+    "title": "FlyBot - Validador de Ideias com IA Gratis | Fly Labs",
+    "description": "Descreva uma ideia de negocio e receba uma pontuacao em 4 frameworks. O FlyBot busca ideias similares, valida com dados reais e da um veredito."
   },
   "landing": {
     "badge": "Grátis durante o beta",

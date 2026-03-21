@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "FlyBot | Fly Labs",
-    "description": "Describe a problem, get a real verdict. FlyBot has scored hundreds of ideas across {{questionCount}} questions and knows {{promptCount}} prompts by name. Free during beta."
+    "title": "FlyBot - Free AI Idea Validator & Building Partner | Fly Labs",
+    "description": "Describe a business idea, get scored against 4 frameworks. FlyBot pulls similar ideas, validates against real data, gives you a verdict."
   },
   "landing": {
     "badge": "Free during beta",

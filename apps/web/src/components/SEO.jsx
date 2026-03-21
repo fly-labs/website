@@ -55,7 +55,16 @@ export const SEO = ({
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={url} />
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
+      {noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      )}
+
+      {/* Hreflang tags (language is state-based, not URL-based) */}
+      <link rel="alternate" hrefLang="en" href={url} />
+      <link rel="alternate" hrefLang="pt-BR" href={url} />
+      <link rel="alternate" hrefLang="x-default" href={url} />
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />

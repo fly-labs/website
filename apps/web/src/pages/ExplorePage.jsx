@@ -27,6 +27,12 @@ const ExplorePage = () => {
         description: t('seo.description'),
         keywords: "AI tools, Notion templates, automation, open source projects, indie maker tools, productivity tools, launch tools",
         url: "https://flylabs.fun/explore",
+        schema: {
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "Explore Fly Labs Projects",
+          "description": "Browse all projects and tools at Fly Labs"
+        },
       }}
       className="pt-32 pb-24"
     >

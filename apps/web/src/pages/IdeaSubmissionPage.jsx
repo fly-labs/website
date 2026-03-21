@@ -335,9 +335,33 @@ const IdeaSubmissionPage = () => {
       <PageLayout
         seo={{
           title: t('seo.title'),
-          description: t('seo.description', { sourceCount: SOURCE_COUNT }),
+          description: t('seo.description'),
           keywords: "submit idea, project idea, community, vote, tool request, reddit ideas, product hunt, hacker news, github issues, validation, competitive analysis, business opportunities, build verdict",
           url: "https://flylabs.fun/ideas",
+          schema: [
+            {
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              "name": "AI-Scored Business Ideas",
+              "description": "Hundreds of real problems scored by AI across 4 frameworks from 9 sources",
+              "url": "https://flylabs.fun/ideas",
+              "numberOfItems": totalCount || 0,
+              "itemListElement": (paginated || []).slice(0, 10).map((idea, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "name": idea.idea_title,
+                "url": `https://flylabs.fun/ideas/${idea.id}`
+              }))
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },
+                { "@type": "ListItem", "position": 2, "name": "Ideas Lab" },
+              ],
+            },
+          ],
         }}
         className="pt-32 pb-28 sm:pb-24"
       >

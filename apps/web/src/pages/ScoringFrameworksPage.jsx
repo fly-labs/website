@@ -303,6 +303,36 @@ const ScoringFrameworksPage = () => {
           },
           {
             "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How does idea scoring work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Every idea gets scored by asking 4 questions across the Fly Labs Method, Hormozi, Dan Koe, and Okamoto frameworks. The FL score is the primary score. Ideas scoring 65+ with buildable characteristics get a BUILD verdict."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is a BUILD verdict?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "BUILD means the idea scored 65+ on the FL score and shows strong buildable characteristics. VALIDATE_FIRST means the score is between 40-64 and needs more validation. SKIP means the score is below 40."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is the scoring free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, all scoring is free and automated. Ideas are scored by AI using Claude Sonnet across multiple frameworks, validated against X and Reddit, and given a verdict."
+                }
+              }
+            ]
+          },
+          {
+            "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": [
               { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://flylabs.fun/" },

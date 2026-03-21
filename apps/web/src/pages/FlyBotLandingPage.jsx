@@ -117,19 +117,43 @@ const FlyBotLandingPage = () => {
     <PageLayout
       seo={{
         title: t('seo.title'),
-        description: t('seo.description', { questionCount: QUESTION_COUNT, promptCount: PROMPT_COUNT }),
+        description: t('seo.description'),
         keywords: "AI idea scoring, business idea evaluator, FlyBot, idea validation AI, vibe building, content strategy AI, solo builder tools",
         url: "https://flylabs.fun/flybot",
-        schema: {
-          "@context": "https://schema.org",
-          "@type": "SoftwareApplication",
-          "name": "FlyBot",
-          "applicationCategory": "BusinessApplication",
-          "operatingSystem": "Web",
-          "url": "https://flylabs.fun/flybot",
-          "description": `AI partner for solo builders. Scores ideas, writes content, catches blind spots. Loaded with hundreds of scored problems and ${PROMPT_COUNT} prompts.`,
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        },
+        schema: [
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "FlyBot",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://flylabs.fun/flybot",
+            "description": `AI partner for solo builders. Scores ideas, writes content, catches blind spots. Loaded with hundreds of scored problems and ${PROMPT_COUNT} prompts.`,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is FlyBot free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, FlyBot is free during beta with 5 messages per day. Sign up for a free account to start using it."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does FlyBot score ideas?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "FlyBot asks 4 questions about your idea across the Fly Labs Method, Hormozi, Dan Koe, and Okamoto frameworks. It pulls similar ideas from the database, validates against real data, and gives you a BUILD, VALIDATE_FIRST, or SKIP verdict."
+                }
+              }
+            ]
+          }
+        ],
       }}
     >
 

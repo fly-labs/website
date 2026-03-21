@@ -22,7 +22,7 @@ npm run lint     # ESLint (quiet mode)
 - **Icons:** Lucide React
 - **Backend:** Supabase (PostgreSQL + Auth) + Cloudflare R2 (music storage)
 - **Auth:** Email/password + Google OAuth via Supabase
-- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root). Dynamic sitemap via `api/sitemap.js`, Core Web Vitals via web-vitals. OG image function (`api/og.js.disabled`) temporarily disabled due to @vercel/og edge runtime incompatibility
+- **SEO:** react-helmet-async + JSON-LD (wrapped in `<HelmetProvider>` at App root). Dynamic sitemap via `api/sitemap.js` with fixed lastmod dates. Robots meta with rich snippet directives (max-image-preview, max-snippet). Hreflang tags (en, pt-BR, x-default). Per-page structured data: CollectionPage (Explore), ItemList (Prompts, Ideas), FAQPage (Scoring, FlyBot), SoftwareApplication (FlyBot, FlyBoard), Article (Scoring), Person (About), Blog (Newsletter), Book[] (Library). Core Web Vitals via web-vitals. OG image function (`api/og.js.disabled`) temporarily disabled due to @vercel/og edge runtime incompatibility
 - **Analytics:** Google Analytics 4 via `lib/analytics.js` (trackPageView, trackEvent, trackError, trackWebVitals, trackScrollDepth, trackEventOnce, setUserProperties, setUserId). UTM/referrer tracking on page view. Debug mode (`debug_mode: true` + console logs) auto-enabled in dev
 - **i18n:** react-i18next + i18next (EN + PT-BR). State-based toggle (localStorage `language` key), browser language detection. 11 namespace files per language. `LanguageToggle.jsx` in Header. FlyBot responds in user's UI language via system prompt injection. `scripts/translate-missing.mjs` checks coverage and auto-translates with Claude Haiku
 - **Deploy:** Vercel (auto-deploy on push to `main`)
@@ -42,7 +42,7 @@ apps/web/
 │   │   ├── ui/               # shadcn/ui components (button, avatar, input, tabs)
 │   │   ├── Header.jsx        # Nav bar (sticky, blur backdrop)
 │   │   ├── Footer.jsx        # Footer with social links
-│   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD, noindex, array schema support)
+│   │   ├── SEO.jsx           # Helmet wrapper (title, meta, OG, JSON-LD, noindex, array schema, robots meta, hreflang)
 │   │   ├── PageLayout.jsx    # Page wrapper (SEO, Header, Footer, ScrollProgress, background)
 │   │   ├── ScrollProgress.jsx # 2px scroll progress bar (Framer Motion useScroll)
 │   │   ├── ErrorBoundary.jsx # Error boundary fallback
