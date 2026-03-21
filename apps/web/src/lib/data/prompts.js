@@ -2545,4 +2545,109 @@ Spending insights must surface automatically without requiring users to navigate
 OUTPUT:
 Dashboard > Transaction Management > Budget System > Spending Analysis > Goals Tracker > Complete App`,
   },
+
+  // ── Strategy (Finance) ─────────────────────────────────────
+  {
+    id: 90,
+    title: 'The Investment Thesis Builder',
+    category: 'Strategy',
+    description: 'Structure a complete investment thesis memo with variant perception, valuation, catalysts, and position sizing. The framework hedge fund analysts use.',
+    content: `You are a senior equity research analyst. Build a complete investment thesis memo for the company or asset I describe. Follow this exact structure, in order:
+
+COMPANY/ASSET: [NAME]
+
+Required sections:
+
+1. VARIANT PERCEPTION: What is the market getting wrong about this company? State the specific consensus view you disagree with and why. Cite the consensus view being challenged.
+
+2. BUSINESS QUALITY: Competitive position, pricing power, returns on capital vs. cost of capital, management track record. Be specific with numbers.
+
+3. VALUATION: Intrinsic value estimate, current discount or premium, margin of safety. Show your DCF assumptions explicitly (WACC, terminal growth rate, implied exit multiple). Never present a standalone number without context.
+
+4. MID-CYCLE EARNINGS: Normalize for the cycle. Document where in the cycle the company sits. Don't value cyclicals at peak earnings.
+
+5. CATALYST TIMELINE: What closes the gap between price and value? Be specific about timing and triggers.
+
+6. BULL CASE: Price target, what drives multiple expansion or earnings acceleration. Key upside driver.
+
+7. BEAR CASE: Price target, what breaks the thesis. Maximum drawdown estimate.
+
+8. SHORT HEDGE: For long positions, identify the paired short or index hedge and its rationale.
+
+9. POSITION SIZING: Conviction tier (high / medium / starter). Recommended gross and net exposure impact.
+
+Rules:
+- Lead with the variant perception. If there is no variant view, there is no thesis.
+- Intrinsic value is a living estimate, not a price target. Size to the margin of safety.
+- Flag any data point you cannot confirm from a primary source with [VERIFY].
+- Max 2 pages. No filler. Every sentence must earn its place.`,
+  },
+  {
+    id: 91,
+    title: 'The Kill Criteria Framework',
+    category: 'Strategy',
+    description: 'Define automatic disqualifiers for any investment, partnership, or business decision. Hard thresholds that end analysis before you waste time.',
+    content: `You are a risk-focused analyst. I need you to build a kill criteria framework: a set of hard thresholds that automatically disqualify an opportunity BEFORE deep analysis begins.
+
+CONTEXT: [Describe the type of decision: investment, partnership, acquisition, hiring, business idea, etc.]
+
+For each criterion, provide:
+1. The specific threshold (numbers, not vague language)
+2. Why it matters (the risk it prevents)
+3. Whether there are any legitimate exceptions
+
+Generate 8-12 kill criteria. They must be:
+- Binary (yes/no, pass/fail). No "it depends."
+- Specific enough that two analysts would reach the same conclusion independently
+- Ordered from fastest to check (top) to most research-intensive (bottom)
+
+Example format:
+KILL if: [specific measurable condition]
+WHY: [the risk this catches]
+EXCEPTION: [only if genuinely applicable, otherwise "None"]
+
+After the list, add a section called "Soft Flags" for 3-5 concerns that don't kill but require explicit documentation of why you're proceeding despite the flag.
+
+The goal: save time by killing bad opportunities in minutes, not days. Surface fatal flaws early so you can focus energy on the opportunities that survive.`,
+  },
+  {
+    id: 92,
+    title: 'The Valuation Sanity Check',
+    category: 'Strategy',
+    description: 'Run a multi-method valuation cross-check on any company. DCF, comparables, and historical multiples with automatic red flags.',
+    content: `You are a valuation specialist. Run a valuation sanity check on the company I describe using three methods simultaneously. Flag any inconsistencies.
+
+COMPANY: [NAME]
+CURRENT PRICE: [if known]
+KEY FINANCIALS: [revenue, EBITDA, FCF, growth rate, or say "look up public data"]
+
+Run these three valuation methods:
+
+1. DCF (Discounted Cash Flow):
+- State your WACC assumption and justify it
+- State your terminal growth rate and justify it
+- Show the implied exit multiple from your terminal value
+- Calculate intrinsic value per share
+- Show margin of safety vs. current price
+
+2. COMPARABLE COMPANIES:
+- Select 3-5 relevant peers (state why each is comparable)
+- Compare on: EV/EBITDA, P/FCF, EV/Revenue (if high-growth)
+- Use both trailing and forward multiples
+- Benchmark to 3-year and 7-year sector median
+- Note where the company trades vs. peers and why
+
+3. HISTORICAL MULTIPLE:
+- What has this company's own multiple averaged over 5-7 years?
+- Where does it trade now vs. its own history?
+- Is there a structural reason for re-rating (up or down)?
+
+AUTOMATIC RED FLAGS (check all):
+- Trading >1.5 standard deviations above 7-year median multiple without a structural change
+- DCF implies a terminal growth rate above GDP growth
+- The three methods disagree by more than 30%
+- Margin of safety below 20% for a long thesis
+
+OUTPUT: One paragraph summary stating whether the valuation supports, contradicts, or is inconclusive for the investment thesis. Be direct.`,
+  },
 ];
