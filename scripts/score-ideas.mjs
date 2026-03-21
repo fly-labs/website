@@ -30,7 +30,7 @@ const fillResearch = process.argv.includes('--fill-research');
 const backfill = process.argv.includes('--backfill');
 const useAnthropic = process.argv.includes('--anthropic');
 
-const MAX_IDEAS_PER_RUN = backfill ? 500 : scoreAll ? 200 : 25;
+const MAX_IDEAS_PER_RUN = backfill ? 500 : (scoreAll || fillResearch) ? 200 : 25;
 const THINKING_BUDGET = backfill ? 1024 : 2048;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -892,10 +892,18 @@ async function main() {
     console.log(`WARNING: --all re-scores ALL ideas including already-researched ones.`);
   } else if (fillResearch) {
     // Score ideas that have a score but no research data (the smart backfill)
-    const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
+    // Two cases: meta is null entirely, or meta exists but has no research key
+    const { data: batch1 } = await supabase.from('ideas').select('*').eq('approved', true)
       .not('flylabs_score', 'is', null)
-      .is('meta->research', null)
+      .is('meta', null)
       .limit(MAX_IDEAS_PER_RUN);
+    const { data: batch2 } = await supabase.from('ideas').select('*').eq('approved', true)
+      .not('flylabs_score', 'is', null)
+      .not('meta', 'is', null)
+      .is('meta->research', null)
+      .limit(MAX_IDEAS_PER_RUN - (batch1?.length || 0));
+    const data = [...(batch1 || []), ...(batch2 || [])];
+    const error = null;
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
     mode = '--fill-research';
