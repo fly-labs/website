@@ -162,7 +162,9 @@
     "posts": "posts",
     "webIntelligence": "Web Intelligence",
     "productHuntLaunches": "related Product Hunt launches",
-    "recentNews": "Recent News"
+    "recentNews": "Recent News",
+    "pricingLandscape": "Pricing Landscape",
+    "userFrustrations": "What users complain about"
   },
   "analytics": {
     "seoTitle": "Ideas Lab Analytics | Fly Labs",

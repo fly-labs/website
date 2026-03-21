@@ -25,6 +25,7 @@ const scoreAll = process.argv.includes('--all');
 const skipReddit = process.argv.includes('--skip-reddit');
 const skipResearch = process.argv.includes('--skip-research');
 const skipWeb = process.argv.includes('--skip-web');
+const useGrok = process.argv.includes('--grok');
 const backfill = process.argv.includes('--backfill');
 const useAnthropic = process.argv.includes('--anthropic');
 
@@ -41,9 +42,8 @@ if (!useAnthropic && !GEMINI_API_KEY) {
   process.exit(1);
 }
 
-if (!skipResearch && !XAI_API_KEY) {
-  console.warn('XAI_API_KEY not set. Research phase will be skipped (X evidence + competitors).');
-}
+// Note: Grok x_search is reserved for sourcing (sync-x.mjs), not research.
+// Research uses Google Search + Reddit. Use --grok flag to add Grok research (costs ~$0.10/idea).
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
@@ -325,16 +325,24 @@ async function geminiWebSearch(idea) {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Search for competitors, funded startups, and existing solutions for this problem: "${idea.idea_title}"${idea.idea_description ? `. Context: ${idea.idea_description.slice(0, 200)}` : ''}.
+      contents: `Research this business problem thoroughly: "${idea.idea_title}"${idea.idea_description ? `. Context: ${idea.idea_description.slice(0, 200)}` : ''}${idea.industry ? `. Industry: ${idea.industry}` : ''}.
 
-Focus on: funded players (Series A+, YC-backed), pricing pages, Product Hunt launches, comparison blog posts, and recent news.
+Search for:
+1. COMPETITORS: Every tool, startup, and product solving this problem. Include name, URL, what they do, pricing (actual numbers from pricing pages), funding status (check Crunchbase, TechCrunch), and key weakness
+2. MARKET SIZE: Is this a niche, growing, or large market? Any recent funding rounds in this space?
+3. PRODUCT HUNT: How many similar products launched on Product Hunt?
+4. NEWS: Recent articles, blog posts, or announcements about this problem space
+5. PRICING LANDSCAPE: What do existing solutions charge? Free tier? Enterprise pricing?
+6. COMPLAINTS: Search for "[competitor name] alternative" and "[competitor name] vs" to find real user frustrations
 
-Return ONLY a JSON object with this structure (no markdown, no explanation):
+Return ONLY a JSON object (no markdown, no explanation):
 {
-  "competitors": [{ "name": "string", "url": "string", "description": "string", "pricing": "string", "funded": true/false, "funding_detail": "string" }],
+  "competitors": [{ "name": "string", "url": "string", "description": "what they do in 1 sentence", "pricing": "actual pricing from their site", "funded": true/false, "funding_detail": "Series X, $Nm or bootstrapped", "weakness": "main user complaint or gap" }],
   "product_hunt_launches": integer,
   "recent_news": [{ "title": "string", "source": "string", "date": "string" }],
-  "market_signals": "one sentence summary"
+  "market_signals": "2-3 sentence market overview: size, growth direction, key trends",
+  "pricing_landscape": "what the market charges, free vs paid, price ranges",
+  "user_frustrations": ["real complaints found via 'alternative' and 'vs' searches"]
 }`,
       config: {
         tools: [{ googleSearch: {} }],
@@ -359,23 +367,30 @@ Return ONLY a JSON object with this structure (no markdown, no explanation):
 }
 
 async function researchIdea(idea) {
-  // Run X evidence + X competitors + Reddit + Google Search in parallel
+  // Default: Google Search + Reddit (cheap, effective)
+  // --grok flag adds Grok x_search (expensive, adds tweet sentiment)
   const searchPlan = generateSearchQueries(idea);
   const redditDelay = redditToken ? 500 : 3000;
 
-  // Run all research sources in parallel
   const researchPromises = [
-    grokEvidenceSearch(idea),
-    grokCompetitorSearch(idea),
     geminiWebSearch(idea),
+    ...(useGrok && XAI_API_KEY ? [grokEvidenceSearch(idea), grokCompetitorSearch(idea)] : []),
     ...(!skipReddit ? searchPlan.subreddits.slice(0, 2).map(async (sub, i) => {
       if (i > 0) await sleep(redditDelay);
-      const query = searchPlan.queries[0];
-      return searchReddit(query, sub);
+      return searchReddit(searchPlan.queries[0], sub);
     }) : []),
   ];
 
-  const [xEvidence, xCompetitors, webSearch, ...redditResults] = await Promise.all(researchPromises);
+  let webSearch, xEvidence, xCompetitors;
+  if (useGrok && XAI_API_KEY) {
+    const [web, xEv, xComp, ...redditRaw] = await Promise.all(researchPromises);
+    webSearch = web; xEvidence = xEv; xCompetitors = xComp;
+    var redditResults = redditRaw;
+  } else {
+    const [web, ...redditRaw] = await Promise.all(researchPromises);
+    webSearch = web; xEvidence = null; xCompetitors = null;
+    var redditResults = redditRaw;
+  }
 
   // Flatten and deduplicate Reddit results
   const allRedditPosts = new Map();
@@ -390,44 +405,49 @@ async function researchIdea(idea) {
   const redditHighlights = Array.from(allRedditPosts.values())
     .sort((a, b) => b.upvotes - a.upvotes)
     .slice(0, 8);
-
   const redditSubreddits = [...new Set(redditHighlights.map(p => `r/${p.subreddit}`))];
 
-  // Merge web competitors into x_competitors (deduplicate by name, case-insensitive)
-  let mergedCompetitors = (xCompetitors?.competitors || []).slice(0, 8);
+  // Build competitor list: web search is primary, Grok adds if available
+  const webCompetitors = (webSearch?.competitors || []).map(wc => ({
+    name: wc.name,
+    description: wc.description,
+    pricing: wc.pricing || 'unknown',
+    funded: wc.funded || false,
+    funding_detail: wc.funding_detail || 'unknown',
+    complaints: [],
+    url: wc.url,
+  }));
+
+  let mergedCompetitors = [...webCompetitors];
   const seenNames = new Set(mergedCompetitors.map(c => c.name.toLowerCase()));
 
-  if (webSearch?.competitors?.length > 0) {
-    for (const wc of webSearch.competitors) {
-      if (!seenNames.has(wc.name.toLowerCase())) {
-        mergedCompetitors.push({
-          name: wc.name,
-          description: wc.description,
-          pricing: wc.pricing || 'unknown',
-          funded: wc.funded || false,
-          funding_detail: wc.funding_detail || 'unknown',
-          complaints: [],
-          url: wc.url,
-        });
-        seenNames.add(wc.name.toLowerCase());
+  // Merge Grok competitors if available (dedup by name)
+  if (xCompetitors?.competitors?.length > 0) {
+    for (const gc of xCompetitors.competitors) {
+      if (!seenNames.has(gc.name.toLowerCase())) {
+        mergedCompetitors.push(gc);
+        seenNames.add(gc.name.toLowerCase());
       }
     }
   }
 
-  const hasFundedFromWeb = webSearch?.competitors?.some(c => c.funded) || false;
+  const hasFunded = mergedCompetitors.some(c => c.funded) || xCompetitors?.has_funded_players || false;
+
+  // Preserve existing x_evidence if we didn't run Grok this time
+  const existingXEvidence = idea.meta?.research?.x_evidence;
 
   return {
     x_evidence: xEvidence ? {
       total_found: xEvidence.total_found || 0,
       search_queries: xEvidence.search_queries || [],
       highlights: (xEvidence.highlights || []).slice(0, 10),
-    } : { total_found: 0, search_queries: [], highlights: [] },
+    } : (existingXEvidence?.total_found > 0 ? existingXEvidence : { total_found: 0, search_queries: [], highlights: [] }),
     x_competitors: {
       competitors: mergedCompetitors.slice(0, 12),
       competitor_count: mergedCompetitors.length,
-      has_funded_players: (xCompetitors?.has_funded_players || hasFundedFromWeb) || false,
+      has_funded_players: hasFunded,
       has_big_tech: xCompetitors?.has_big_tech || false,
-      market_maturity: xCompetitors?.market_maturity || 'emerging',
+      market_maturity: xCompetitors?.market_maturity || (webSearch?.market_signals?.includes('mature') ? 'mature' : 'emerging'),
       pricing_signals: xCompetitors?.pricing_signals || [],
       feature_gaps: xCompetitors?.feature_gaps || [],
     },
@@ -441,6 +461,8 @@ async function researchIdea(idea) {
       product_hunt_launches: webSearch.product_hunt_launches || 0,
       recent_news: (webSearch.recent_news || []).slice(0, 5),
       market_signals: webSearch.market_signals || '',
+      pricing_landscape: webSearch.pricing_landscape || '',
+      user_frustrations: (webSearch.user_frustrations || []).slice(0, 5),
       searched_at: new Date().toISOString(),
     } : null,
     searched_at: new Date().toISOString(),
@@ -451,7 +473,7 @@ async function researchIdea(idea) {
 // PHASE 2: SCORING (Gemini 2.5 Flash)
 // ════════════════════════════════════════════
 
-const SYSTEM_PROMPT = `You score business ideas for solo builders. You have real research data about this idea (X/Twitter evidence and competitor intelligence). Use it.
+const SYSTEM_PROMPT = `You score business ideas for solo builders. You have real research data about this idea (Google Search competitor intelligence, Reddit community evidence, and sometimes X/Twitter sentiment). Use it. Competitor pricing, user frustrations, and market signals are especially valuable for scoring Pillar 2 (Solution Gap) and Pillar 3 (Willingness to Pay).
 
 **FLY LABS METHOD (0-100)** - The primary score. Would a solo builder's weekend be well spent?
 
@@ -664,20 +686,30 @@ function buildUserPrompt(idea, research) {
       }
     }
 
-    // Google Search (broader web)
+    // Google Search (broader web - primary competitor source)
     if (research.web) {
+      if (research.web.market_signals) {
+        parts.push('', '=== Market Intelligence (Google Search) ===');
+        parts.push(`Market overview: ${research.web.market_signals}`);
+      }
+      if (research.web.pricing_landscape) {
+        parts.push(`Pricing landscape: ${research.web.pricing_landscape}`);
+      }
       if (research.web.product_hunt_launches > 0) {
-        parts.push('', `=== Product Hunt ===`);
-        parts.push(`${research.web.product_hunt_launches} related Product Hunt launches found.`);
+        parts.push(`Product Hunt: ${research.web.product_hunt_launches} related launches found.`);
+      }
+      if (research.web.user_frustrations?.length > 0) {
+        parts.push('User frustrations (from "alternative" and "vs" searches):');
+        for (const f of research.web.user_frustrations.slice(0, 5)) {
+          parts.push(`  - ${f}`);
+        }
+        parts.push('Use these real frustrations when scoring Pillar 2 (addressable_complaints) and Pillar 3 (switching_motivation).');
       }
       if (research.web.recent_news?.length > 0) {
-        parts.push('', '=== Recent News ===');
+        parts.push('Recent news in this space:');
         for (const n of research.web.recent_news.slice(0, 3)) {
           parts.push(`  ${n.title} (${n.source}, ${n.date})`);
         }
-      }
-      if (research.web.market_signals) {
-        parts.push(`Market signals from web: ${research.web.market_signals}`);
       }
     }
   }
@@ -781,14 +813,14 @@ async function processIdea(idea) {
     try {
       // Step 1: Research (unless skipped or using existing data)
       let research = null;
-      if (!skipResearch && XAI_API_KEY) {
+      if (!skipResearch) {
         process.stdout.write('research... ');
         research = await researchIdea(idea);
         const xCount = research.x_evidence?.total_found || 0;
         const rCount = research.reddit?.total_found || 0;
         const cCount = research.x_competitors?.competitor_count || 0;
         const wCount = research.web?.competitors_found || 0;
-        process.stdout.write(`X:${xCount} R:${rCount} C:${cCount} W:${wCount} `);
+        process.stdout.write(`G:${wCount} R:${rCount} C:${cCount}${xCount > 0 ? ' X:' + xCount : ''} `);
       } else if (idea.meta?.research) {
         research = idea.meta.research;
         process.stdout.write('(cached research) ');
@@ -839,7 +871,7 @@ async function processIdea(idea) {
 
 async function main() {
   const model = useAnthropic ? (backfill ? 'Claude Haiku' : 'Claude Sonnet') : 'Gemini 2.5 Flash';
-  console.log(`Scoring with ${model}${skipResearch ? ' (no research)' : ''}${skipReddit ? ' (no Reddit)' : ''}${skipWeb ? ' (no web)' : ''}`);
+  console.log(`Scoring with ${model}${skipResearch ? ' (no research)' : ''}${skipReddit ? ' (no Reddit)' : ''}${skipWeb ? ' (no web)' : ''}${useGrok ? ' (+Grok)' : ''}`);
 
   // Init Reddit OAuth
   if (!skipReddit && !skipResearch) {

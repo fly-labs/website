@@ -757,7 +757,7 @@ const IdeaDetailPage = () => {
             </section>
           )}
           {/* ── Web Intelligence ── */}
-          {idea.meta?.research?.web && (idea.meta.research.web.product_hunt_launches > 0 || idea.meta.research.web.recent_news?.length > 0) && (
+          {idea.meta?.research?.web && (idea.meta.research.web.product_hunt_launches > 0 || idea.meta.research.web.recent_news?.length > 0 || idea.meta.research.web.user_frustrations?.length > 0 || idea.meta.research.web.pricing_landscape) && (
             <section>
               <div className="flex items-center gap-3 mb-4">
                 <div className="h-px flex-1 bg-border" />
@@ -766,6 +766,28 @@ const IdeaDetailPage = () => {
               </div>
 
               <div className="space-y-3">
+                {idea.meta.research.web.market_signals && (
+                  <p className="text-sm text-muted-foreground">{idea.meta.research.web.market_signals}</p>
+                )}
+
+                {idea.meta.research.web.pricing_landscape && (
+                  <div className="p-3 rounded-lg border border-border/40 bg-card/50">
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-1">{t('detail.pricingLandscape')}</p>
+                    <p className="text-sm text-muted-foreground">{idea.meta.research.web.pricing_landscape}</p>
+                  </div>
+                )}
+
+                {idea.meta.research.web.user_frustrations?.length > 0 && (
+                  <div>
+                    <p className="text-xs font-medium text-muted-foreground/60 mb-1.5">{t('detail.userFrustrations')}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {idea.meta.research.web.user_frustrations.slice(0, 5).map((f, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">{f}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {idea.meta.research.web.product_hunt_launches > 0 && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <span className="px-2 py-0.5 rounded bg-orange-500/10 text-orange-500 text-xs font-bold">PH</span>
@@ -786,10 +808,6 @@ const IdeaDetailPage = () => {
                       </div>
                     ))}
                   </div>
-                )}
-
-                {idea.meta.research.web.market_signals && (
-                  <p className="text-xs text-muted-foreground/60 italic">{idea.meta.research.web.market_signals}</p>
                 )}
               </div>
             </section>

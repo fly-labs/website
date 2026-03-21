@@ -162,7 +162,9 @@
     "posts": "posts",
     "webIntelligence": "Inteligencia Web",
     "productHuntLaunches": "lancamentos relacionados no Product Hunt",
-    "recentNews": "Noticias Recentes"
+    "recentNews": "Noticias Recentes",
+    "pricingLandscape": "Panorama de Precos",
+    "userFrustrations": "O que os usuarios reclamam"
   },
   "analytics": {
     "seoTitle": "Analytics do Ideas Lab | Fly Labs",
