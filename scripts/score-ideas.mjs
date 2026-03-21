@@ -26,6 +26,7 @@ const skipReddit = process.argv.includes('--skip-reddit');
 const skipResearch = process.argv.includes('--skip-research');
 const skipWeb = process.argv.includes('--skip-web');
 const useGrok = process.argv.includes('--grok');
+const fillResearch = process.argv.includes('--fill-research');
 const backfill = process.argv.includes('--backfill');
 const useAnthropic = process.argv.includes('--anthropic');
 
@@ -881,21 +882,35 @@ async function main() {
 
   // Fetch ideas
   let ideas = [];
+  let mode = '';
   if (scoreAll) {
+    // Re-score everything (use sparingly)
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true).limit(MAX_IDEAS_PER_RUN);
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
-    const costPerIdea = useAnthropic ? (backfill ? 0.005 : 0.05) : 0.003;
-    console.log(`WARNING: --all re-scores existing ideas. Est cost: ~$${(data.length * costPerIdea).toFixed(2)}`);
+    mode = '--all';
+    console.log(`WARNING: --all re-scores ALL ideas including already-researched ones.`);
+  } else if (fillResearch) {
+    // Score ideas that have a score but no research data (the smart backfill)
+    const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
+      .not('flylabs_score', 'is', null)
+      .is('meta->research', null)
+      .limit(MAX_IDEAS_PER_RUN);
+    if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
+    ideas = data;
+    mode = '--fill-research';
   } else {
+    // Default: only unscored ideas
     const { data, error } = await supabase.from('ideas').select('*').eq('approved', true)
       .or('flylabs_score.is.null,hormozi_score.is.null,koe_score.is.null,okamoto_score.is.null,yc_score.is.null')
       .limit(MAX_IDEAS_PER_RUN);
     if (error) { console.error('Failed to fetch ideas:', error.message); process.exit(1); }
     ideas = data;
+    mode = 'default (unscored)';
   }
 
-  console.log(`Found ${ideas.length} ideas to score${scoreAll ? ' (--all mode)' : ''}`);
+  const costPerIdea = useAnthropic ? (backfill ? 0.005 : 0.05) : 0.003;
+  console.log(`Found ${ideas.length} ideas to score (${mode}). Est cost: ~$${(ideas.length * costPerIdea).toFixed(2)}`);
   if (ideas.length === 0) return;
 
   let scored = 0;
@@ -954,7 +969,6 @@ async function main() {
     }
   }
 
-  const costPerIdea = useAnthropic ? (backfill ? 0.005 : 0.05) : 0.003;
   console.log(`\nDone. Scored: ${scored}, Failed: ${failed}`);
   console.log(`Est cost: ~$${(scored * costPerIdea).toFixed(2)} (${model})`);
 }
