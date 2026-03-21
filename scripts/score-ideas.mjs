@@ -39,10 +39,11 @@ const SYSTEM_PROMPT = `You score business ideas for solo builders. Return ONLY v
    - How bad is it? (0-10) Daily frustration = 8-10. Mild annual annoyance = 1-3.
 
 2. IS THERE A GAP? (25 points)
-   Competition is GOOD. It proves demand. The question is whether there's a specific angle left.
-   - How well do current tools solve this? (0-8) Excellent incumbents = 0-2. Mediocre or overpriced for a specific audience = 5-8.
-   - Are there specific complaints you could fix? (0-8) "It's expensive" = 2. "Zapier breaks on webhook timeouts with no retry" = 7.
-   - Is there a narrow angle nobody took? (0-9) "Better UI" = 1. "Built for Notion freelancers" = 8. Can you name the specific user AND their workflow in one sentence? If yes, there's an angle.
+   Competition proves demand but heavily competed spaces are harder to win. Score based on whether a specific UNSERVED user exists with evidence, not whether an angle could theoretically exist.
+   - How well do current tools solve this? (0-7) Well-funded tools solving it well = 0-2. Mediocre or overpriced for a SPECIFIC nameable audience = 5-7.
+   - Are there specific complaints you could fix? (0-7) "It's expensive" = 2. "Zapier breaks on webhook timeouts with no retry" = 6.
+   - Is there a narrow angle nobody took? (0-7) "Better UI" = 1. "Built for Notion freelancers who bill hourly" = 6. Hypothetical angles without evidence of demand score 1-3.
+   - How strong are the incumbents? (0-4) No funded competitors = 4. A few small tools = 3. Multiple startups with funding = 1-2. Unicorns or Big Tech = 0.
 
 3. WOULD SOMEONE PAY? (25 points)
    - Is the pain bad enough to switch tools? (0-10) People hate switching. The pain must overcome that.
@@ -79,7 +80,7 @@ Return this JSON:
   "flylabs": {
     "total": <0-100>,
     "problem_clarity": { "score": <0-30>, "max": 30, "existence": <0-10>, "specificity": <0-10>, "severity": <0-10>, "reasoning": "..." },
-    "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-8>, "addressable_complaints": <0-8>, "whitespace": <0-9>, "reasoning": "..." },
+    "solution_gap": { "score": <0-25>, "max": 25, "alternative_quality": <0-7>, "addressable_complaints": <0-7>, "whitespace": <0-7>, "incumbent_strength": <0-4>, "reasoning": "..." },
     "willingness": { "score": <0-25>, "max": 25, "switching_motivation": <0-10>, "payment_signals": <0-8>, "urgency": <0-7>, "reasoning": "..." },
     "buildability": { "score": <0-20>, "max": 20, "solo_feasibility": <0-8>, "speed_to_market": <0-7>, "compound_value": <0-5>, "reasoning": "..." },
     "summary": "...", "reasoning": "..."
@@ -132,13 +133,17 @@ Return this JSON:
     "the_pain": "<The felt pain in one sentence. Use real language.>",
     "the_gap": "<What current solutions miss. Be specific.>",
     "build_angle": "<The narrow angle for a solo builder: format, scope, price point.>",
+    "competition_level": "<none|low|moderate|crowded|dominated>",
     "saturation_capped": false,
     "strengths": ["...", "..."],
     "risks": ["...", "..."],
     "next_steps": ["...", "...", "..."],
     "reasoning": "<2-3 sentences explaining the verdict>"
   }
-}`;
+}
+
+For competition_level: "none" (0-1 known tools), "low" (2-3 small/niche tools), "moderate" (4-5 tools, some funded), "crowded" (5+ tools with funding), "dominated" (unicorns or Big Tech present).
+If competition_level is "crowded" or "dominated", the FL total should rarely exceed 65 unless the whitespace angle names a SPECIFIC unserved audience with real evidence of demand.`;
 
 async function scoreIdea(idea) {
   const parts = [
@@ -164,6 +169,25 @@ async function scoreIdea(idea) {
       parts.push(`\nWARNING: This startup had ${fa.team_size} employees. A large team suggests the problem may require significant engineering, ops, or infrastructure that a solo builder cannot replicate. Score buildability accordingly. Be skeptical of solo feasibility for problems that needed 10+ people to attempt.`);
     }
     parts.push('Score this idea in its CURRENT context. The YC failure provides useful signal about risks and timing.');
+  }
+
+  // Include competitor scout data if available (from scout-competitors.mjs)
+  if (idea.meta?.competitor_scout) {
+    const scout = idea.meta.competitor_scout;
+    parts.push('');
+    parts.push('=== Competitor Intelligence (from live search) ===');
+    parts.push(`Market maturity: ${scout.market_maturity}`);
+    parts.push(`Competitors found: ${scout.competitor_count}`);
+    parts.push(`Funded players: ${scout.has_funded_players ? 'YES' : 'no'}`);
+    parts.push(`Big Tech presence: ${scout.has_big_tech ? 'YES' : 'no'}`);
+    if (scout.competitors && scout.competitors.length > 0) {
+      parts.push('Known competitors:');
+      for (const c of scout.competitors.slice(0, 8)) {
+        parts.push(`  - ${c.name}: ${c.description} (${c.funding_detail})`);
+      }
+    }
+    parts.push(`Market summary: ${scout.summary}`);
+    parts.push('Use this real competitor data when scoring Pillar 2 (IS THERE A GAP?). Do NOT ignore funded competitors.');
   }
 
   const userPrompt = parts.filter(Boolean).join('\n');

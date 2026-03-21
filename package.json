@@ -26,11 +26,13 @@
     "sync:hackernews": "node scripts/sync-hackernews.mjs",
     "sync:github": "node scripts/sync-github.mjs",
     "sync:yc": "node scripts/sync-yc.mjs",
+    "scout": "node scripts/scout-competitors.mjs",
     "score": "node scripts/score-ideas.mjs",
     "score:backfill": "node scripts/score-ideas.mjs --all --backfill",
     "score:yc": "node scripts/backfill-yc.mjs",
     "enrich": "node scripts/enrich-ideas.mjs",
     "setup:music": "node --env-file=apps/web/.env scripts/setup-music.mjs",
+    "weekly": "node scripts/weekly-briefing.mjs --pretty",
     "translate": "node scripts/translate-missing.mjs",
     "translate:auto": "node scripts/translate-missing.mjs --translate"
   },

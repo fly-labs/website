@@ -566,21 +566,48 @@ async function main() {
       const validationScore = result.validation?.strength || 0;
       let enrichmentVerdict = result.verdict?.recommendation || null;
 
-      // Post-enrichment saturation check: 5+ competitors WITHOUT a clear gap caps verdict
+      // Post-enrichment saturation check with semantic gap detection
       const competitorCount = result.competitors?.products?.length || 0;
-      const hasMarketGap = result.competitors?.market_gap && result.competitors.market_gap.length > 20;
-      const hasDiffAngle = result.competitors?.differentiation_angle && result.competitors.differentiation_angle.length > 20;
-      if (competitorCount >= 5 && enrichmentVerdict === 'BUILD' && !hasMarketGap && !hasDiffAngle) {
-        console.log(`  Saturation cap: ${competitorCount} competitors, no clear gap, overriding BUILD → VALIDATE_FIRST`);
+
+      // Check for funded competitors
+      const hasFundedCompetitors = result.competitors?.products?.some(p => {
+        const desc = ((p.description || '') + ' ' + (p.name || '') + ' ' + (p.positioning || '') + ' ' + (p.key_complaint || '')).toLowerCase();
+        return desc.includes('raised') || desc.includes('funding') || desc.includes('series') || desc.includes('unicorn') || desc.includes('yc') || desc.includes('acquired');
+      }) || false;
+
+      // Also check scout data for funded competitors
+      const scoutHasFunded = idea.meta?.competitor_scout?.has_funded_players || false;
+      const anyFunded = hasFundedCompetitors || scoutHasFunded;
+
+      // Semantic gap check: gap must name a SPECIFIC unserved user, not just "better/cheaper"
+      const marketGap = (result.competitors?.market_gap || '').toLowerCase();
+      const diffAngle = (result.competitors?.differentiation_angle || '').toLowerCase();
+      const genericPatterns = ['better', 'cheaper', 'simpler', 'easier', 'faster', 'more affordable', 'small teams', 'indie', 'solo', 'individual', 'lightweight', 'open source alternative'];
+      const isGenericGap = genericPatterns.some(w => marketGap.includes(w)) && !marketGap.match(/\b(for|targeting|built for)\s+\w+\s+\w+\s+(who|that|with)\b/);
+      const hasSpecificGap = marketGap.length > 20 && !isGenericGap;
+      const hasSpecificAngle = diffAngle.length > 20 && !genericPatterns.some(w => diffAngle.includes(w));
+
+      // Saturation cap: 5+ competitors without SPECIFIC gap = VALIDATE_FIRST
+      if (competitorCount >= 5 && enrichmentVerdict === 'BUILD' && !hasSpecificGap && !hasSpecificAngle) {
+        console.log(`  Saturation cap: ${competitorCount} competitors, generic gap, overriding BUILD -> VALIDATE_FIRST`);
         enrichmentVerdict = 'VALIDATE_FIRST';
         result.verdict.recommendation = 'VALIDATE_FIRST';
         result.verdict.saturation_override = true;
         result.verdict.competitor_count = competitorCount;
         result.verdict.original_recommendation = result.verdict.original_recommendation || 'BUILD';
-        result.verdict.override_reason = `${competitorCount} established competitors with no clear differentiation angle`;
+        result.verdict.override_reason = `${competitorCount} established competitors without specific differentiation`;
+      } else if (competitorCount >= 3 && anyFunded && enrichmentVerdict === 'BUILD' && !hasSpecificGap) {
+        // 3+ competitors with funding and no specific gap = also cap
+        console.log(`  Funded competitor cap: ${competitorCount} funded competitors, generic gap, overriding BUILD -> VALIDATE_FIRST`);
+        enrichmentVerdict = 'VALIDATE_FIRST';
+        result.verdict.recommendation = 'VALIDATE_FIRST';
+        result.verdict.saturation_override = true;
+        result.verdict.competitor_count = competitorCount;
+        result.verdict.funded_competitors = true;
+        result.verdict.original_recommendation = result.verdict.original_recommendation || 'BUILD';
+        result.verdict.override_reason = `${competitorCount} competitors including funded players without specific differentiation`;
       } else if (competitorCount >= 5 && enrichmentVerdict === 'BUILD') {
-        // Competitors exist but there's a clear gap, keep BUILD but flag it
-        console.log(`  ${competitorCount} competitors found but clear gap identified, keeping BUILD`);
+        console.log(`  ${competitorCount} competitors found but specific gap identified, keeping BUILD`);
         result.verdict.competitor_count = competitorCount;
         result.verdict.has_gap = true;
       }
@@ -592,6 +619,25 @@ async function main() {
       if (competitorCount <= 1 && result.validation) {
         result.validation.confidence = 'high';
         result.validation.underserved_market = true;
+      }
+
+      // Post-enrichment FL score adjustment for crowded markets
+      if (competitorCount >= 5 && !hasSpecificGap) {
+        const currentFl = idea.flylabs_score || 0;
+        const penalty = anyFunded ? 15 : 10;
+        const adjustedFl = Math.max(30, currentFl - penalty);
+        if (adjustedFl !== currentFl) {
+          console.log(`  FL adjustment: ${currentFl} -> ${adjustedFl} (-${penalty} for ${competitorCount} competitors${anyFunded ? ', funded' : ''})`);
+          result.fl_adjustment = { original: currentFl, adjusted: adjustedFl, penalty, reason: `${competitorCount} competitors${anyFunded ? ' (funded)' : ''}` };
+        }
+      } else if (competitorCount >= 3 && anyFunded && !hasSpecificGap) {
+        const currentFl = idea.flylabs_score || 0;
+        const penalty = 10;
+        const adjustedFl = Math.max(30, currentFl - penalty);
+        if (adjustedFl !== currentFl) {
+          console.log(`  FL adjustment: ${currentFl} -> ${adjustedFl} (-${penalty} for funded competitors)`);
+          result.fl_adjustment = { original: currentFl, adjusted: adjustedFl, penalty, reason: `${competitorCount} funded competitors` };
+        }
       }
 
       // Server-side FL score gate: enrichment cannot set BUILD if FL < 65
@@ -623,21 +669,44 @@ async function main() {
         result.verdict.verdict_changed = true;
       }
 
+      const updateData = {
+        enrichment: result,
+        validation_score: validationScore,
+        confidence: result.validation?.confidence || null,
+      };
+
+      // Apply FL score adjustment from competition analysis
+      if (result.fl_adjustment) {
+        updateData.flylabs_score = result.fl_adjustment.adjusted;
+        updateData.composite_score = result.fl_adjustment.adjusted;
+      }
+
+      // Recompute verdict based on potentially adjusted FL score
+      const effectiveFl = updateData.flylabs_score || idea.flylabs_score;
+      if (effectiveFl != null) {
+        const effectiveBuildability = idea.score_breakdown?.flylabs?.buildability?.score;
+        if (effectiveFl >= 65 && effectiveBuildability >= 10 && enrichmentVerdict === 'BUILD') {
+          updateData.verdict = 'BUILD';
+        } else if (effectiveFl >= 40) {
+          updateData.verdict = 'VALIDATE_FIRST';
+        } else {
+          updateData.verdict = 'SKIP';
+        }
+      } else {
+        updateData.verdict = enrichmentVerdict;
+      }
+
       const { error: updateErr } = await supabase
         .from('ideas')
-        .update({
-          enrichment: result,
-          validation_score: validationScore,
-          verdict: enrichmentVerdict,
-          confidence: result.validation?.confidence || null,
-        })
+        .update(updateData)
         .eq('id', idea.id);
 
       if (updateErr) {
         console.log('  DB error:', updateErr.message);
         failed++;
       } else {
-        console.log(`  Saved. V:${validationScore}`);
+        const flNote = result.fl_adjustment ? ` FL:${result.fl_adjustment.original}->${result.fl_adjustment.adjusted}` : '';
+        console.log(`  Saved. V:${validationScore} Verdict:${updateData.verdict}${flNote}`);
         enriched++;
       }
     } else {

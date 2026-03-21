@@ -379,6 +379,19 @@ const IdeaDetailPage = () => {
                   {synthesis?.saturation_capped && (
                     <p className="text-xs text-amber-500/80">{t('detail.scoreCapped')}</p>
                   )}
+                  {idea.enrichment?.fl_adjustment && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Info className="w-3.5 h-3.5 shrink-0" />
+                      <span>{t('detail.scoreAdjusted', { original: idea.enrichment.fl_adjustment.original, adjusted: idea.enrichment.fl_adjustment.adjusted, reason: idea.enrichment.fl_adjustment.reason })}</span>
+                    </div>
+                  )}
+                  {idea.meta?.competitor_scout && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="px-1.5 py-0.5 rounded bg-muted/50 font-medium capitalize">{idea.meta.competitor_scout.market_maturity}</span>
+                      {idea.meta.competitor_scout.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 font-medium">Big Tech</span>}
+                      {idea.meta.competitor_scout.has_funded_players && !idea.meta.competitor_scout.has_big_tech && <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 font-medium">Funded</span>}
+                    </div>
+                  )}
                 </div>
 
                 {/* FL Method pillars */}

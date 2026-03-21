@@ -4,6 +4,27 @@ All notable changes to FlyLabs (flylabs.fun) are documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning follows [Semantic Versioning](https://semver.org/).
 
+## [1.25.0] - 2026-03-21
+
+### Added
+- Competition-aware scoring: pre-score competitor scout via Grok x_search + optional OpenAI GPT-4o-mini
+- `scout-competitors.mjs` script: searches for competitors before scoring, stores in meta.competitor_scout
+- `incumbent_strength` sub-dimension (0-4) in FL Method Pillar 2 (IS THERE A GAP?)
+- `competition_level` field in score synthesis (none/low/moderate/crowded/dominated)
+- Post-enrichment FL score adjustment for crowded markets with funded competitors
+- Competitor intelligence display on idea detail pages (market maturity badge, funded/big tech indicators, FL adjustment note)
+- "Scout" step in ScoringFrameworksPage pipeline visual (Find -> Scout -> Score -> Validate -> Verdict)
+- `npm run scout` command
+
+### Changed
+- Pillar 2 reframed: sub-dimensions now 0-7/0-7/0-7/0-4 (was 0-8/0-8/0-9), competition awareness replaces "competition is GOOD"
+- Scoring prompt receives live competitor data from scout when available
+- Enrichment saturation cap: semantic gap detection replaces string length check
+- Funded competitor detection: 3+ funded competitors without specific gap triggers VALIDATE_FIRST cap
+- Enrichment can now adjust FL score downward (-10 to -15) for crowded markets
+- Pipeline order: Sync -> Scout -> Score -> Enrich (was Sync -> Score -> Enrich)
+- Daily GitHub Actions workflow includes scout step before scoring
+
 ## [1.24.0] - 2026-03-18
 
 ### Added

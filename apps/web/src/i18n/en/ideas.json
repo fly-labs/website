@@ -103,6 +103,7 @@
     "crowdedMarket": "Crowded market: {{count}} known competitors",
     "underservedMarket": "Underserved market",
     "scoreCapped": "Score capped due to market saturation. Real problem, crowded space.",
+    "scoreAdjusted": "Score adjusted from {{original}} to {{adjusted}} based on competitive analysis ({{reason}}).",
     "confidence": "confidence",
     "ycGraveyard": "YC Graveyard",
     "whyItFailed": "Why it failed",

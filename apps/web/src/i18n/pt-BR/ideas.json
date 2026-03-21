@@ -103,6 +103,7 @@
     "crowdedMarket": "Mercado concorrido: {{count}} competidores conhecidos",
     "underservedMarket": "Mercado pouco atendido",
     "scoreCapped": "Pontuação limitada por saturação de mercado. Problema real, espaço concorrido.",
+    "scoreAdjusted": "Pontuação ajustada de {{original}} para {{adjusted}} com base em análise competitiva ({{reason}}).",
     "confidence": "confiança",
     "ycGraveyard": "YC Graveyard",
     "whyItFailed": "Por que falhou",

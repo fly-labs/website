@@ -30,7 +30,7 @@ export const confidenceColors = { high: 'text-primary', medium: 'text-amber-500'
 // FL Method: THE scoring framework (4 questions, one score)
 export const FL_PILLARS = [
   { key: 'problem_clarity', label: 'Is the Pain Real?' },
-  { key: 'solution_gap', label: 'Is There a Gap?' },
+  { key: 'solution_gap', label: 'Is There a Gap?', subDimensions: ['alternative_quality', 'addressable_complaints', 'whitespace', 'incumbent_strength'] },
   { key: 'willingness', label: 'Would Someone Pay?' },
   { key: 'buildability', label: 'Can You Build It?' },
 ];

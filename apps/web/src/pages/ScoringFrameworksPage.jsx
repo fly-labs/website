@@ -98,7 +98,7 @@ const ScoringFrameworksPage = () => {
       points: 25,
       icon: Search,
       what: t('questions.q2What'),
-      signals: [t('questions.q2Signal1'), t('questions.q2Signal2'), t('questions.q2Signal3')],
+      signals: [t('questions.q2Signal1'), t('questions.q2Signal2'), t('questions.q2Signal3'), t('questions.q2Signal4')],
     },
     {
       question: t('questions.q3'),
@@ -223,6 +223,14 @@ const ScoringFrameworksPage = () => {
       color: 'text-secondary',
       bg: 'bg-secondary/10',
       border: 'border-secondary/20',
+    },
+    {
+      label: t('steps.scout'),
+      detail: t('steps.scoutDesc'),
+      icon: Eye,
+      color: 'text-orange-500',
+      bg: 'bg-orange-500/10',
+      border: 'border-orange-500/20',
     },
     {
       label: t('steps.score'),
