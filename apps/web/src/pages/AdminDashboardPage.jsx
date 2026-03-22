@@ -270,8 +270,16 @@ export default function AdminDashboardPage() {
     if (data?.researched != null && prevResearched == null) setPrevResearched(data.researched);
   }, [data, prevResearched]);
 
-  if (authLoading) return null;
-  if (!currentUser || !isAdmin) return <Navigate to="/" replace />;
+  if (authLoading || !currentUser) return null;
+  if (!isAdmin) {
+    return (
+      <PageLayout seo={{ title: 'Not Found', noindex: true }}>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <p className="text-muted-foreground">Page not found.</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   const d = data;
   const coveragePct = d ? ((d.researched / d.total) * 100).toFixed(1) : '0';
