@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(err.status || 401).json({ error: err.message });
   }
 
-  const { user, isAdmin, supabase } = auth;
+  const { user, supabase } = auth;
 
   if (req.method === 'POST') {
     const { message_id, rating, comment } = req.body;

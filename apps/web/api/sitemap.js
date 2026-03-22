@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 const SITE = 'https://flylabs.fun';
@@ -10,18 +10,18 @@ const SITE = 'https://flylabs.fun';
 const staticRoutes = [
   { path: '/', priority: '1.0', changefreq: 'weekly', lastmod: null },
   { path: '/ideas', priority: '0.9', changefreq: 'daily', lastmod: null },
-  { path: '/flybot', priority: '0.8', changefreq: 'monthly', lastmod: '2025-12-01' },
+  { path: '/flybot', priority: '0.8', changefreq: 'monthly', lastmod: '2026-03-01' },
   { path: '/explore', priority: '0.8', changefreq: 'weekly', lastmod: null },
   { path: '/prompts', priority: '0.8', changefreq: 'weekly', lastmod: null },
-  { path: '/scoring', priority: '0.7', changefreq: 'monthly', lastmod: '2025-10-01' },
+  { path: '/scoring', priority: '0.7', changefreq: 'monthly', lastmod: '2026-03-01' },
   { path: '/newsletter', priority: '0.7', changefreq: 'weekly', lastmod: null },
-  { path: '/about', priority: '0.7', changefreq: 'monthly', lastmod: '2025-09-01' },
-  { path: '/library', priority: '0.6', changefreq: 'monthly', lastmod: '2025-11-01' },
-  { path: '/templates/website-blueprint', priority: '0.6', changefreq: 'monthly', lastmod: '2025-08-01' },
-  { path: '/templates/launch-checklist', priority: '0.4', changefreq: 'monthly', lastmod: '2025-07-01' },
-  { path: '/templates/one-page-business-plan', priority: '0.4', changefreq: 'monthly', lastmod: '2025-07-01' },
-  { path: '/flyboard', priority: '0.5', changefreq: 'monthly', lastmod: '2025-11-01' },
-  { path: '/microsaas', priority: '0.4', changefreq: 'monthly', lastmod: '2025-10-01' },
+  { path: '/about', priority: '0.7', changefreq: 'monthly', lastmod: '2026-03-01' },
+  { path: '/library', priority: '0.6', changefreq: 'monthly', lastmod: '2026-03-01' },
+  { path: '/templates/website-blueprint', priority: '0.6', changefreq: 'monthly', lastmod: '2026-01-01' },
+  { path: '/templates/launch-checklist', priority: '0.4', changefreq: 'monthly', lastmod: '2026-01-01' },
+  { path: '/templates/one-page-business-plan', priority: '0.4', changefreq: 'monthly', lastmod: '2026-01-01' },
+  { path: '/flyboard', priority: '0.5', changefreq: 'monthly', lastmod: '2026-03-01' },
+  { path: '/microsaas', priority: '0.4', changefreq: 'monthly', lastmod: '2026-01-01' },
 ];
 
 function escapeXml(str) {

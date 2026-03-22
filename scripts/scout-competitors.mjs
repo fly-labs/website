@@ -276,4 +276,4 @@ async function main() {
   console.log(`\nDone. Scouted: ${scouted}, Failed: ${failed}`);
 }
 
-main();
+main().catch(err => { console.error('Scout failed:', err); process.exit(1); });

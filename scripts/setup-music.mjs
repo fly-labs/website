@@ -137,7 +137,7 @@ async function main() {
   if (!existsSync(MUSIC_DIR)) {
     console.error(`No scripts/music/ directory found.`);
     console.error(`Create it with vibe subfolders and add CC0/royalty-free MP3 files:`);
-    console.error(`  mkdir -p scripts/music/{ideate,build,create,study,retro}`);
+    console.error(`  mkdir -p scripts/music/{ideate,build,create,study,cafe,retro}`);
     console.error(`  # Add MP3 files named like: 01-track-title--artist-name.mp3`);
     process.exit(1);
   }

@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { streamChat, loadMessages, listConversations, createConversation, deleteConversation, submitFeedback, deleteFeedback } from '@/lib/chatApi.js';
+import { streamChat, loadMessages, listConversations, deleteConversation, submitFeedback, deleteFeedback } from '@/lib/chatApi.js';
 import { trackEvent } from '@/lib/analytics.js';
 
 export function useChat() {

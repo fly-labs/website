@@ -102,7 +102,7 @@ const Header = () => {
                   size="icon"
                   onClick={handleLogout}
                   className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                  title={t('nav.logout')}
+                  title={t('nav.logOut')}
                   aria-label={t('nav.logOut')}
                 >
                   <LogOut className="w-4 h-4" />

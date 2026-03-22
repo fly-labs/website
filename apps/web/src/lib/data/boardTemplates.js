@@ -736,5 +736,3 @@ export const boardTemplates = [
 ];
 
 export const boardCategories = ['All', 'Journal', 'Strategy', 'Planning', 'Productivity', 'Content'];
-
-export const BOARD_TEMPLATE_COUNT = boardTemplates.length;

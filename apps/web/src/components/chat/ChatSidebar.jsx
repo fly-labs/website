@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, MessageSquare, Trash2, X, Shield, Bot } from 'lucide-react';
-import { cn } from '@/lib/utils.js';
-import { timeAgo } from '@/lib/utils.js';
+import { cn, timeAgo } from '@/lib/utils.js';
 
 export function ChatSidebar({
   conversations,

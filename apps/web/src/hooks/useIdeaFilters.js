@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { industries } from '@/lib/data/ideas.js';
 import { trackEvent } from '@/lib/analytics.js';
@@ -40,7 +40,6 @@ export function useIdeaFilters() {
     verdict: { all: 0 },
     confidence: { all: 0 },
   });
-  const abortRef = useRef(null);
 
   // Fetch total idea count once (unaffected by filters)
   useEffect(() => {
@@ -411,7 +410,6 @@ export function useIdeaFilters() {
 
   const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
   const paginated = ideas;
-  const sorted = ideas; // Already sorted from server
 
   // Dynamic industries based on counts
   const industryCounts = counts.industry;
@@ -570,7 +568,6 @@ export function useIdeaFilters() {
     globalCount,
 
     // Computed
-    sorted,
     paginated,
     totalPages,
     sourceCounts: counts.source,

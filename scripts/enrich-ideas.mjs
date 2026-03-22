@@ -717,4 +717,4 @@ async function main() {
   console.log(`\nDone. Enriched: ${enriched}, Failed: ${failed}`);
 }
 
-main();
+main().catch(err => { console.error('Enrichment failed:', err); process.exit(1); });
