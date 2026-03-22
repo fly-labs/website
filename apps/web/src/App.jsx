@@ -43,6 +43,7 @@ const LibraryPage = lazy(() => import('@/pages/LibraryPage.jsx'));
 const FlyBotLandingPage = lazy(() => import('@/pages/FlyBotLandingPage.jsx'));
 const FlyBotPage = lazy(() => import('@/pages/FlyBotPage.jsx'));
 const FlyBoardPage = lazy(() => import('@/pages/FlyBoardPage.jsx'));
+const AdminDashboardPage = lazy(() => import('@/pages/AdminDashboardPage.jsx'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage.jsx'));
 
 const PageFallback = () => (
@@ -91,6 +92,7 @@ const AnimatedRoutes = () => {
         <Route path="/flyboard" element={<FlyBoardPage />} />
         <Route path="/coach" element={<Navigate to="/flybot" replace />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
 
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
