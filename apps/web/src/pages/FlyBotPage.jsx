@@ -12,14 +12,14 @@ import { ChatEmpty } from '@/components/chat/ChatEmpty.jsx';
 import { ChatLimitReached } from '@/components/chat/ChatLimitReached.jsx';
 import { trackEvent } from '@/lib/analytics.js';
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_UID = import.meta.env.VITE_ADMIN_UID;
 
 export default function FlyBotPage() {
   const { currentUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const isAdmin = currentUser?.email === ADMIN_EMAIL;
+  const isAdmin = currentUser?.id === ADMIN_UID;
 
   const {
     messages,

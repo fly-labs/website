@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_UID = process.env.ADMIN_UID;
 
 let supabaseAdmin;
 
@@ -32,9 +32,9 @@ export async function verifyAuth(req) {
 
   return {
     user,
-    isAdmin: user.email === ADMIN_EMAIL,
+    isAdmin: user.id === ADMIN_UID,
     supabase,
   };
 }
 
-export { getSupabaseAdmin, ADMIN_EMAIL };
+export { getSupabaseAdmin, ADMIN_UID };

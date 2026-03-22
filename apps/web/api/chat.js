@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
-import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
+import { verifyAuth } from './lib/auth.js';
 import { buildSystemPrompt, findSimilarIdeas, fetchIdeaAnalytics, searchIdeas } from './lib/coach-prompt.js';
 import { prompts as promptLibrary } from '../src/lib/data/prompts.js';
 

@@ -14,7 +14,7 @@ import { ChatEmpty } from '@/components/chat/ChatEmpty.jsx';
 import { ChatLimitReached } from '@/components/chat/ChatLimitReached.jsx';
 import { trackEvent } from '@/lib/analytics.js';
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const ADMIN_UID = import.meta.env.VITE_ADMIN_UID;
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() =>
@@ -200,7 +200,7 @@ export function FlyBotPanel({ isOpen, onClose }) {
   const isMobile = useIsMobile();
   const { t } = useTranslation('flybot');
   const isAuthenticated = !!currentUser;
-  const isAdmin = currentUser?.email === ADMIN_EMAIL;
+  const isAdmin = currentUser?.id === ADMIN_UID;
   const isOnFlyBoard = location.pathname === '/flyboard';
   const { getCanvasRef } = useBoardContext();
 

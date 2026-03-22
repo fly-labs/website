@@ -1,4 +1,4 @@
-import { verifyAuth, ADMIN_EMAIL } from './lib/auth.js';
+import { verifyAuth } from './lib/auth.js';
 
 export default async function handler(req, res) {
   let auth;
