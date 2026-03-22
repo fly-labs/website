@@ -15,7 +15,7 @@ import {
   PieChart, Pie, AreaChart, Area, CartesianGrid,
 } from 'recharts';
 
-const ADMIN_UID = import.meta.env.VITE_ADMIN_UID;
+const ADMIN_UID = (import.meta.env.VITE_ADMIN_UID || '').trim();
 const REFRESH_INTERVAL = 15_000; // 15s for real-time feel
 
 // ── Real API pricing (from official docs, March 2026) ──
@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
   const [secondsAgo, setSecondsAgo] = useState(0);
   const [prevResearched, setPrevResearched] = useState(null);
 
-  const isAdmin = currentUser?.id === ADMIN_UID;
+  const isAdmin = !!(currentUser?.id && ADMIN_UID && currentUser.id === ADMIN_UID);
 
   const fetchData = useCallback(async () => {
     try {
