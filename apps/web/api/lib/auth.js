@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const ADMIN_EMAIL = 'alvesluiz7@icloud.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 let supabaseAdmin;
 

@@ -14,7 +14,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell,
 } from 'recharts';
 
-const ADMIN_EMAIL = 'alvesluiz7@icloud.com';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 const REFRESH_INTERVAL = 30_000;
 
 const SCORE_BUCKETS = [

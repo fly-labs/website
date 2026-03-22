@@ -14,7 +14,7 @@ import { ChatEmpty } from '@/components/chat/ChatEmpty.jsx';
 import { ChatLimitReached } from '@/components/chat/ChatLimitReached.jsx';
 import { trackEvent } from '@/lib/analytics.js';
 
-const ADMIN_EMAIL = 'alvesluiz7@icloud.com';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() =>
